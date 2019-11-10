@@ -10,8 +10,12 @@
           <option name="url" value="https://github.com/alexsykes/Calory.git" />
           <option name="userName" value="" />
         </UrlAndUserName>
+        <UrlAndUserName>
+          <option name="url" value="https://github.com/alexsykes/ScoreMonsterR.git" />
+          <option name="userName" value="" />
+        </UrlAndUserName>
       </list>
     </option>
-    <option name="cloneParentDir" value="$USER_HOME$/Desktop/AndroidStudioProjects" />
+    <option name="cloneParentDir" value="$USER_HOME$/Documents" />
   </component>
 </application>
