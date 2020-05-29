@@ -60,7 +60,7 @@ public class SetupActivity extends AppCompatActivity implements AdapterView.OnIt
     Spinner trialSelect;
     ProgressDialog dialog = null;
     CheckBox resetCheckBox, confirmCheckBox;
-    TextView observerTextInput, sectionTextInput, trialDetailView;
+    TextView observerTextInput, /* sectionTextInput, */ trialDetailView;
     ImageView warningImageView;
     private Button button;
 
@@ -73,7 +73,7 @@ public class SetupActivity extends AppCompatActivity implements AdapterView.OnIt
         theFinishTimeDB = new FinishTimeDbHelper(this);
         // Set up activity fields
         observerTextInput = findViewById(R.id.observerTextInput);
-        sectionTextInput = findViewById(R.id.sectionTextInput);
+    //    sectionTextInput = findViewById(R.id.sectionTextInput);
         trialDetailView = findViewById(R.id.trialDetailView);
         modeSwitch = findViewById(R.id.padViewGroup);
         dabPadSelect = findViewById(R.id.dabPadSelect);
@@ -291,7 +291,7 @@ public class SetupActivity extends AppCompatActivity implements AdapterView.OnIt
         numsections = localPrefs.getInt("numsections", 0);
         numlaps = localPrefs.getInt("numlaps", 0);
         observer = localPrefs.getString("observer", "");
-        section = localPrefs.getInt("section", 0);
+        // section = localPrefs.getInt("section", 0);
         //showDabPad = localPrefs.getBoolean("showDabPad", false);
         modeIdx = localPrefs.getInt("modeIndex", 0);
 
@@ -303,7 +303,7 @@ public class SetupActivity extends AppCompatActivity implements AdapterView.OnIt
 
         // Sync inputs to saved values
         observerTextInput.setText(observer);
-        sectionTextInput.setText(sectionNumber);
+        // sectionTextInput.setText(sectionNumber);
 
         RadioButton selected = (RadioButton) modeSwitch.getChildAt(modeIdx);
         selected.setChecked(true);
@@ -337,7 +337,7 @@ public class SetupActivity extends AppCompatActivity implements AdapterView.OnIt
             errorMsg += "\nThe observer field is empty";
         }
 
-        // Check that section field is populated
+/*        // Check that section field is populated
         if (sectionTextInput.getText().toString().equals("")) {
             // If empty, then append message
             hasErrors = true;
@@ -351,6 +351,8 @@ public class SetupActivity extends AppCompatActivity implements AdapterView.OnIt
                 errorMsg += "\nInvalid section number";
             }
         }
+
+ */
 
         // Inform user if errors
         if (hasErrors) {
