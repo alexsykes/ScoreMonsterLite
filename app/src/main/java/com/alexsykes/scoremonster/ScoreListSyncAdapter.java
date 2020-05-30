@@ -59,7 +59,7 @@ public class ScoreListSyncAdapter extends RecyclerView.Adapter<ScoreListSyncAdap
         scoreHolder.score.setText(theScore.get("score"));
         scoreHolder.lap.setText(theScore.get("lap"));
         scoreHolder.rider.setText(theScore.get("rider"));
-        scoreHolder.rider.setText(theScore.get("rider"));
+        scoreHolder.section.setText(theScore.get("section"));
         // scoreHolder.trial.setText(theScore.get("trialid"));
         // scoreHolder.trial.setText("trial");
         scoreHolder.sync.setText(syncState);
@@ -86,7 +86,7 @@ public class ScoreListSyncAdapter extends RecyclerView.Adapter<ScoreListSyncAdap
         TextView lap;
         TextView score;
         TextView sync;
-        // TextView trial;
+        TextView section;
 
         public ScoreHolder(@NonNull View itemView) {
             super(itemView);
@@ -94,7 +94,7 @@ public class ScoreListSyncAdapter extends RecyclerView.Adapter<ScoreListSyncAdap
             lap = itemView.findViewById(R.id.lap);
             rider = itemView.findViewById(R.id.rider);
             sync = itemView.findViewById(R.id.sync);
-           // trial = itemView.findViewById(R.id.trial);
+            section = itemView.findViewById(R.id.section);
         }
 
         public void bind(final HashMap<String, String> theScore, final OnItemClickListener listener) {

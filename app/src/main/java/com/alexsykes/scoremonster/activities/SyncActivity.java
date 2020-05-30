@@ -65,7 +65,7 @@ public class SyncActivity extends AppCompatActivity {
         // Get shared preferences for trialid, section
         localPrefs = getSharedPreferences("monster", MODE_PRIVATE);
 
-        section = localPrefs.getInt("section", 0);
+        section = localPrefs.getInt("section", 1);
         trialid = localPrefs.getInt("trialid", 0);
 
         // Create database connection
@@ -185,8 +185,19 @@ public class SyncActivity extends AppCompatActivity {
 
     }
 
+    /*
     private void populateScoreList() {
         theScoreList = mDbHelper.getScoreList(trialid, section);
+        scoreView = findViewById(R.id.scoreView);
+        LinearLayoutManager llm = new LinearLayoutManager(this);
+        scoreView.setLayoutManager(llm);
+        scoreView.setHasFixedSize(true);
+
+        initializeAdapter();
+    }
+*/
+    private void populateScoreList() {
+        theScoreList = mDbHelper.getScoreList(trialid);
         scoreView = findViewById(R.id.scoreView);
         LinearLayoutManager llm = new LinearLayoutManager(this);
         scoreView.setLayoutManager(llm);

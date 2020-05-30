@@ -21,7 +21,6 @@
         app:layout_constraintTop_toTopOf="parent"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
-
     <TextView
         android:id="@+id/statusLine"
         android:layout_width="match_parent"
@@ -32,6 +31,54 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/my_toolbar" />
+
+
+    <LinearLayout
+        android:id="@+id/sectionPicker"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@id/statusLine"
+        >
+
+        <Button
+            android:id="@+id/decrement"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="#00FFFFFF"
+            android:onClick="decrement"
+            android:text="@string/prev"
+            android:textAlignment="textEnd"
+            android:textColor="@color/colorButtonBlue"
+            android:textSize="32sp"
+            android:textStyle="normal" />
+
+        <TextView
+            android:id="@+id/sectionNumber"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="1"
+            android:textAlignment="center"
+            android:textColor="@color/colorButtonBlue"
+            android:textSize="64sp"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/increment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="#00FFFFFF"
+            android:onClick="increment"
+            android:text="@string/next"
+            android:textAlignment="textStart"
+            android:textColor="@color/colorButtonBlue"
+            android:textSize="36sp"
+            android:textStyle="normal" />
+
+    </LinearLayout>
 
     <TextView
         android:id="@+id/numberLabel"
@@ -44,7 +91,7 @@
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/statusLine" />
+        app:layout_constraintTop_toBottomOf="@+id/sectionPicker" />
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/top"
@@ -71,8 +118,9 @@
         android:id="@+id/bottom"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/scoreLabel"
+        app:layout_constraintBottom_toTopOf="@id/saveButton"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent">
 
     </android.support.constraint.ConstraintLayout>

@@ -51,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
     private int section;
     private int trialid;
     private int numlaps;
+    private int numsections;
     private int score;
     private boolean showDabPad;
     private boolean showNumberPad;
@@ -95,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         if (!getPrefs()) {
-            //  goSetup();
+              goSetup();
         }
     }
 
@@ -111,29 +112,7 @@ public class MainActivity extends AppCompatActivity {
         clearScore();
         super.onStart();
         getPrefs();
-        switch (modeIndex) {
-            case 1:
-                getSupportFragmentManager().beginTransaction().replace(R.id.bottom, touchFragment).commit();
-                break;
-            case 0:
-                getSupportFragmentManager().beginTransaction().replace(R.id.bottom, scorePadFragment).commit();
-                break;
-            /*case 2:
-                Intent intent = new Intent(this, TimerActivity.class);
-                intent.putExtra("trialid", trialid);
-                startActivityForResult(intent, TEXT_REQUEST);
-                break;*/
-        }
-       /* if (showDabPad) {
-            getSupportFragmentManager().beginTransaction().replace(R.id.bottom, touchFragment).commit();
-        } else if (showNumberPad) {
-            getSupportFragmentManager().beginTransaction().replace(R.id.bottom, scorePadFragment).commit();
-        }
-       else if (timingModeSelect) {
-            Intent intent = new Intent(this, TimerActivity.class);
-            intent.putExtra("trialid", trialid);
-            startActivityForResult(intent, TEXT_REQUEST);
-        }*/
+        getSupportFragmentManager().beginTransaction().replace(R.id.bottom, touchFragment).commit();
     }
 
     @Override
@@ -354,22 +333,15 @@ public class MainActivity extends AppCompatActivity {
 
     private boolean getPrefs() {
         localPrefs = getSharedPreferences("monster", MODE_PRIVATE);
-
         observer = localPrefs.getString("observer", "");
-        section = localPrefs.getInt("section", 0);
+        section = localPrefs.getInt("section", 1);
         trialid = localPrefs.getInt("trialid", 0);
         numlaps = localPrefs.getInt("numlaps", 0);
+        numsections = localPrefs.getInt("numsections", 0);
         theTrialName = localPrefs.getString("theTrialName", "None selected");
-        showDabPad = localPrefs.getBoolean("showDabPad", true);
-        showNumberPad = localPrefs.getBoolean("showNumberPad", true);
-        showDabPad = localPrefs.getBoolean("showDabPad", true);
-        showNumberPad = localPrefs.getBoolean("showNumberPad", true);
-        modeIndex = localPrefs.getInt("modeIndex", 0);
-
-        status = theTrialName + " - Section: " + section + " - Observer: " + observer;
+        status = theTrialName + " - Observer: " + observer;
 
         statusLine.setText(status);
-
         return trialid != 0;
     }
 
@@ -397,5 +369,26 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(MainActivity.this, "Not Connected", Toast.LENGTH_LONG).show();
         }
         editor.commit();
+    }
+
+    public void increment(View view) {
+        TextView sectionNumber = findViewById(R.id.sectionNumber);
+        if (section < numsections) {
+            section++ ; }
+        else if (section == numsections) {
+            section = 1 ;
+        }
+            sectionNumber.setText(String.valueOf(section));
+
+    }
+
+    public void decrement(View view) {
+        TextView sectionNumber = findViewById(R.id.sectionNumber);
+        if (section > 1) {
+            section--;
+        } else if (section == 1) {
+            section = numsections;
+        }
+            sectionNumber.setText(String.valueOf(section));
     }
 }

@@ -370,24 +370,7 @@ public class SetupActivity extends AppCompatActivity implements AdapterView.OnIt
             editor.putInt("numsections", numsections);
             editor.putInt("numlaps", numlaps);
             editor.putString("observer", observer);
-            editor.putInt("section", section);
-            //editor.putBoolean("showDabPad", dabPadSelect.isChecked());
-            //editor.putBoolean("showNumberPad", numberPadSelect.isChecked());
-            // editor.putLong("starttime", startTime);
-            editor.putInt("modeIndex", idx);
-
-            /* Moving time setting to TimerActivity
-            if (startTime > 0) {
-                editor.putBoolean("isStartTimeSet", true);
-            } else {
-                editor.putBoolean("isStartTimeSet", false);
-            }
-
-             */
-
             boolean success = editor.commit();
-
-
             // Read resetCheckBox
             boolean reset = resetCheckBox.isChecked();
 
