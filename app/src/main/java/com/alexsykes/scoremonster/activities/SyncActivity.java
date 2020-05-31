@@ -76,7 +76,7 @@ public class SyncActivity extends AppCompatActivity {
         processButton = findViewById(R.id.processButton);
 
         /*  Php script path  */
-        upLoadServerUri = "http://www.trialmonster.uk/android/UploadToServer.php";
+        upLoadServerUri = "http://android.trialmonster.uk/UploadToServer.php";
 
        /* uploadButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -118,6 +118,8 @@ public class SyncActivity extends AppCompatActivity {
         amendScore(scoreid, score);
     }
 
+    // Method to update scores for display
+    // Responds to click on score line
     public void amendScore(final String scoreid, final int score) {
         AlertDialog.Builder builder = new AlertDialog.Builder(SyncActivity.this);
 
@@ -177,30 +179,15 @@ public class SyncActivity extends AppCompatActivity {
 
                     }
                 })
-
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
                         // removes the dialog from the screen
-
                     }
                 })
-
                 .show();
-
     }
 
-    /*
-    private void populateScoreList() {
-        theScoreList = mDbHelper.getScoreList(trialid, section);
-        scoreView = findViewById(R.id.scoreView);
-        LinearLayoutManager llm = new LinearLayoutManager(this);
-        scoreView.setLayoutManager(llm);
-        scoreView.setHasFixedSize(true);
-
-        initializeAdapter();
-    }
-*/
     private void populateScoreList() {
         theScoreList = mDbHelper.getScoreList(trialid);
         scoreView = findViewById(R.id.scoreView);
@@ -218,7 +205,6 @@ public class SyncActivity extends AppCompatActivity {
 
     private boolean saveToCSV() {
         String id, observer, section, rider, lap, created, updated, edited, sync, score, thetrialid;
-       // filename = "scores.csv";
 
         try {
             exportDir = new File(getFilesDir(), filename);
@@ -292,6 +278,15 @@ public class SyncActivity extends AppCompatActivity {
                 dialog.dismiss();
                 mDbHelper.markAsDone(trialid);
                 populateScoreList();
+
+                if (s.contentEquals("OK")){
+                    runOnUiThread(new Runnable() {
+                        public void run() {
+                            Toast.makeText(SyncActivity.this, "Score Update Complete",
+                                    Toast.LENGTH_LONG).show();
+                        }
+                    });
+                }
             }
 
             //in this method we are fetching the json string
@@ -305,8 +300,8 @@ public class SyncActivity extends AppCompatActivity {
 
                     //Opening the URL using HttpURLConnection
                     HttpURLConnection con = (HttpURLConnection) url.openConnection();
-
-                    return con.getResponseMessage();
+                    String message = con.getResponseMessage();
+                    return message;
 
                 } catch (Exception e) {
                     return null;
@@ -404,12 +399,12 @@ public class SyncActivity extends AppCompatActivity {
                 Log.i("uploadFile", "HTTP Response is : "
                         + serverResponseMessage + ": " + serverResponseCode);
 
-                if (serverResponseCode == 200) {
+                if (serverResponseCode != 200) {
 
                     runOnUiThread(new Runnable() {
                         public void run() {
-                            Toast.makeText(SyncActivity.this, "Score Upload Complete",
-                                    Toast.LENGTH_SHORT).show();
+                            Toast.makeText(SyncActivity.this, "Error processing data",
+                                    Toast.LENGTH_LONG).show();
                         }
                     });
                 }
