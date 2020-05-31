@@ -189,13 +189,14 @@ public class MainActivity extends AppCompatActivity {
 
     private void sendEmail() {    try {
         // email = "alex@alexsykes.net";
+        saveToCSV();
 
         File path = new File(Environment.getExternalStoragePublicDirectory("Documents/Scoremonster"), "");
+        path = new File(Environment.getExternalStoragePublicDirectory("files/"),"");
         File newFile = new File(path, "Scores.csv");
-        Uri URI = getUriForFile(MainActivity.this, "com.alexsykes.fileprovider", newFile);
+        Uri URI = FileProvider.getUriForFile(this, "com.alexsykes.scoremonster.fileprovider", newFile);
 
 
-        saveToCSV();
         subject = "Scores from " + theTrialName;
         message ="Attached";
         final Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);
