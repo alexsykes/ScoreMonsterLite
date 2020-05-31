@@ -41,7 +41,7 @@ public class SetupActivity extends AppCompatActivity implements AdapterView.OnIt
     private static final String BASE_URL = "https://android.trialmonster.uk/";
     int trialid, section, numsections, numlaps;
     boolean showDabPad;
-    String observer, theTrialName, detail;
+    String observer, theTrialName, detail, email;
     // long startTime;
     String[] theTrials, theIDs;
     ArrayList<HashMap<String, String>> theTrialList;
@@ -201,7 +201,7 @@ public class SetupActivity extends AppCompatActivity implements AdapterView.OnIt
              */
             private ArrayList<HashMap<String, String>> populateResultArrayList(String json) {
                 ArrayList<HashMap<String, String>> theTrialList = new ArrayList<>();
-                String date, name, id, club, numsections, numlaps, starttime;
+                String date, name, id, club, numsections, numlaps, starttime, email;
 
                 try {
                     // Parse string data into JSON
@@ -216,6 +216,7 @@ public class SetupActivity extends AppCompatActivity implements AdapterView.OnIt
                         numsections = jsonArray.getJSONObject(index).getString("numsections");
                         numlaps = jsonArray.getJSONObject(index).getString("numlaps");
                         starttime = jsonArray.getJSONObject(index).getString("starttime");
+                        email = jsonArray.getJSONObject(index).getString("email");
 
                         // trial = club + " - " + name;
                         theTrial.put("id", id);
@@ -225,6 +226,7 @@ public class SetupActivity extends AppCompatActivity implements AdapterView.OnIt
                         theTrial.put("numsections", numsections);
                         theTrial.put("numlaps", numlaps);
                         theTrial.put("starttime", starttime);
+                        theTrial.put("email", email);
                         theTrialList.add(theTrial);
                     }
 
@@ -291,6 +293,7 @@ public class SetupActivity extends AppCompatActivity implements AdapterView.OnIt
         numsections = localPrefs.getInt("numsections", 0);
         numlaps = localPrefs.getInt("numlaps", 0);
         observer = localPrefs.getString("observer", "");
+        email = localPrefs.getString("email", "");
         // section = localPrefs.getInt("section", 0);
         //showDabPad = localPrefs.getBoolean("showDabPad", false);
         modeIdx = localPrefs.getInt("modeIndex", 0);
@@ -370,6 +373,7 @@ public class SetupActivity extends AppCompatActivity implements AdapterView.OnIt
             editor.putInt("numsections", numsections);
             editor.putInt("numlaps", numlaps);
             editor.putString("observer", observer);
+            editor.putString("email", email);
             boolean success = editor.commit();
             // Read resetCheckBox
             boolean reset = resetCheckBox.isChecked();
@@ -390,6 +394,7 @@ public class SetupActivity extends AppCompatActivity implements AdapterView.OnIt
         numsections = Integer.parseInt(theTrial.get("numsections").toString());
         numlaps = Integer.parseInt(theTrial.get("numlaps").toString());
         trialid = Integer.parseInt(theTrial.get("id").toString());
+        email = theTrial.get("email").toString();
         theTrialName = theTrial.get("name").toString();
 
 //         Moving startTime to TimerActivity

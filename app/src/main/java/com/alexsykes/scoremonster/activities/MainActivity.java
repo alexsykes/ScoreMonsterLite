@@ -5,15 +5,20 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.media.AudioManager;
 import android.media.ToneGenerator;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -28,6 +33,13 @@ import com.alexsykes.scoremonster.TouchFragment;
 import com.alexsykes.scoremonster.data.FinishTimeDbHelper;
 import com.alexsykes.scoremonster.data.ScoreContract;
 import com.alexsykes.scoremonster.data.ScoreDbHelper;
+import com.opencsv.CSVWriter;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+
+import static android.support.v4.content.FileProvider.getUriForFile;
 
 // TODO Important - move database setup method from ScoreDbHelper
 
@@ -36,7 +48,12 @@ public class MainActivity extends AppCompatActivity {
     public static final int TEXT_REQUEST = 1;
     public static final int NOT_SYNCED = -1;
 
-    TextView numberLabel, scoreLabel, statusLine;
+    String email;
+    String subject;
+    String message;
+    Uri URI = null;
+
+    TextView numberLabel, scoreLabel, statusLine, sectionNumber;
     String riderNumber, status, theTrialName;
     ScorePadFragment scorePadFragment;
     NumberPadFragment numberPadFragment;
@@ -81,6 +98,7 @@ public class MainActivity extends AppCompatActivity {
         numberLabel = findViewById(R.id.numberLabel);
         scoreLabel = findViewById(R.id.scoreLabel);
         statusLine = findViewById(R.id.statusLine);
+        sectionNumber = findViewById(R.id.sectionNumber);
 
 
         getSupportFragmentManager().beginTransaction().add(R.id.top, numberPadFragment).commit();
@@ -122,6 +140,7 @@ public class MainActivity extends AppCompatActivity {
         // Save the state of item position
         outState.putString("rider", numberLabel.getText().toString());
         outState.putString("score", scoreLabel.getText().toString());
+     //   outState.putString("section", sectionNumber.getText().toString());
     }
 
     @Override
@@ -131,6 +150,7 @@ public class MainActivity extends AppCompatActivity {
         // Read the state of item position
         numberLabel.setText(savedInstanceState.getString("rider"));
         scoreLabel.setText(savedInstanceState.getString("score"));
+       // sectionNumber.setText(savedInstanceState.getString("section"));
     }
 
     @Override
@@ -143,9 +163,10 @@ public class MainActivity extends AppCompatActivity {
                 return true;
 
             // Show scores on remote server
-            case R.id.list:
+            case R.id.email:
                 // goShowScoresFromServer();
-                goShowSummaryScores();
+                // goShowSummaryScores();
+                sendEmail();
                 return true;
 
             // Sync scores with remote db
@@ -164,6 +185,36 @@ public class MainActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
 
         }
+    }
+
+    private void sendEmail() {    try {
+        // email = "alex@alexsykes.net";
+
+        File path = new File(Environment.getExternalStoragePublicDirectory("Documents/Scoremonster"), "");
+        File newFile = new File(path, "Scores.csv");
+        Uri URI = getUriForFile(MainActivity.this, "com.alexsykes.fileprovider", newFile);
+
+
+        saveToCSV();
+        subject = "Scores from " + theTrialName;
+        message ="Attached";
+        final Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);
+        emailIntent.setType("plain/text");
+        emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, new String[]{email});
+        emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, subject);
+        String filename = "Scores.csv";
+        File file  = new File(getFilesDir(), filename);
+
+       // URI = Uri.fromFile(file);
+       // URI = FileProvider.getUriForFile(this, this.getApplicationContext().getPackageName() + ".provider")
+         if (URI != null) {
+            emailIntent.putExtra(Intent.EXTRA_STREAM, URI);
+        }
+        emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, message);
+        this.startActivity(Intent.createChooser(emailIntent, "Sending email..."));
+    } catch (Throwable t) {
+        Toast.makeText(this, "Request failed try again: "+ t.toString(), Toast.LENGTH_LONG).show();
+    }
     }
 
 /*
@@ -338,8 +389,11 @@ public class MainActivity extends AppCompatActivity {
         trialid = localPrefs.getInt("trialid", 0);
         numlaps = localPrefs.getInt("numlaps", 0);
         numsections = localPrefs.getInt("numsections", 0);
+        section = localPrefs.getInt("section", 1);
+        email = localPrefs.getString("email", "");
         theTrialName = localPrefs.getString("theTrialName", "None selected");
         status = theTrialName + " - Observer: " + observer;
+        sectionNumber.setText(String.valueOf(section));
 
         statusLine.setText(status);
         return trialid != 0;
@@ -349,11 +403,7 @@ public class MainActivity extends AppCompatActivity {
         ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = cm.getActiveNetworkInfo();
 
-        if (netInfo != null && netInfo.isConnectedOrConnecting()) {
-            return true;
-        } else {
-            return false;
-        }
+        return netInfo != null && netInfo.isConnectedOrConnecting();
     }
 
     public void checkConnection() {
@@ -372,23 +422,72 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void increment(View view) {
-        TextView sectionNumber = findViewById(R.id.sectionNumber);
+        SharedPreferences.Editor editor = localPrefs.edit();
         if (section < numsections) {
             section++ ; }
         else if (section == numsections) {
             section = 1 ;
         }
             sectionNumber.setText(String.valueOf(section));
-
+        editor.putInt("section", section);
+        editor.commit();
     }
 
     public void decrement(View view) {
-        TextView sectionNumber = findViewById(R.id.sectionNumber);
+        SharedPreferences.Editor editor = localPrefs.edit();
         if (section > 1) {
             section--;
         } else if (section == 1) {
             section = numsections;
         }
             sectionNumber.setText(String.valueOf(section));
+        editor.putInt("section", section);
+        editor.commit();
+    }
+
+    private boolean saveToCSV() {
+        File exportDir = new File(Environment.getExternalStoragePublicDirectory("Documents/Scoremonster"), "");
+        String filename = "Scores.csv";
+        String id, observer, section, rider, lap, created, updated, edited, sync, score, thetrialid;
+
+        try {
+            exportDir = new File(getFilesDir(), filename);
+
+            exportDir.createNewFile();
+            CSVWriter csvWrite = new CSVWriter(new FileWriter(exportDir));
+
+            String[] header = {"id", "rider", "section",
+                    "lap", "score", "observer", "created", "updated", "edited", "trialid", "sync"};
+
+            csvWrite.writeNext(header, false);
+
+            // Get current data
+
+            Cursor curChild = mDbHelper.getAll(trialid);
+            while (curChild.moveToNext()) {
+                id = curChild.getString(0);
+                observer = curChild.getString(1);
+                section = curChild.getString(2);
+                rider = curChild.getString(3);
+                lap = curChild.getString(4);
+                created = curChild.getString(5);
+                updated = curChild.getString(6);
+                edited = curChild.getString(7);
+                thetrialid = curChild.getString(8);
+                sync = curChild.getString(9);
+                score = curChild.getString(10);
+
+                String[] arrStr = {id, rider, section, lap, score, observer, created, updated, edited, thetrialid, sync
+                };
+
+                csvWrite.writeNext(arrStr, false);
+            }
+            csvWrite.close();
+            return true;
+
+        } catch (IOException e) {
+            Log.e("Child", e.getMessage(), e);
+            return false;
+        }
     }
 }
