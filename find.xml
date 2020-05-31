@@ -1,9 +1,9 @@
 <application>
   <component name="FindSettings">
-    <option name="customScope" value="Project 'ScoreMonsterR'" />
-    <option name="defaultScopeName" value="Project 'ScoreMonsterR'" />
+    <option name="customScope" value="Project 'ScoreMonster-and'" />
+    <option name="defaultScopeName" value="Project 'ScoreMonster-and'" />
     <option name="localCaseSensitive" value="true" />
     <option name="LOCAL_CASE_SENSITIVE_SEARCH" value="true" />
-    <option name="SEARCH_SCOPE" value="Project 'ScoreMonsterR'" />
+    <option name="SEARCH_SCOPE" value="Project 'ScoreMonster-and'" />
   </component>
 </application>
