@@ -1,7 +1,7 @@
 package com.alexsykes.scoremonster.data;
 
 import android.provider.BaseColumns;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 
 public class EntryContract extends AppCompatActivity {
     private EntryContract() {}

@@ -15,9 +15,9 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.v4.content.FileProvider;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import androidx.core.content.FileProvider;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -39,7 +39,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
-import static android.support.v4.content.FileProvider.getUriForFile;
+import static androidx.core.content.FileProvider.getUriForFile;
 
 // TODO Important - move database setup method from ScoreDbHelper
 
@@ -114,7 +114,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         if (!getPrefs()) {
-              goSetup();
+            goSetup();
         }
     }
 
@@ -140,7 +140,7 @@ public class MainActivity extends AppCompatActivity {
         // Save the state of item position
         outState.putString("rider", numberLabel.getText().toString());
         outState.putString("score", scoreLabel.getText().toString());
-     //   outState.putString("section", sectionNumber.getText().toString());
+        //   outState.putString("section", sectionNumber.getText().toString());
     }
 
     @Override
@@ -150,7 +150,7 @@ public class MainActivity extends AppCompatActivity {
         // Read the state of item position
         numberLabel.setText(savedInstanceState.getString("rider"));
         scoreLabel.setText(savedInstanceState.getString("score"));
-       // sectionNumber.setText(savedInstanceState.getString("section"));
+        // sectionNumber.setText(savedInstanceState.getString("section"));
     }
 
     @Override
@@ -187,12 +187,14 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void sendEmail() {    try {
-        // email = "alex@alexsykes.net";
-        saveToCSV();
+    private void sendEmail() {
+        if(!saveToCSV()) { return;
+        }
 
-        File path = new File(Environment.getExternalStoragePublicDirectory("Documents/Scoremonster"), "");
-        path = new File(Environment.getExternalStoragePublicDirectory("files/"),"");
+
+        try {
+
+        File path = new File(Environment.getExternalStoragePublicDirectory(""),"data");
         File newFile = new File(path, "Scores.csv");
         Uri URI = FileProvider.getUriForFile(this, "com.alexsykes.scoremonster.fileprovider", newFile);
 
@@ -206,13 +208,14 @@ public class MainActivity extends AppCompatActivity {
         String filename = "Scores.csv";
         File file  = new File(getFilesDir(), filename);
 
-       // URI = Uri.fromFile(file);
-       // URI = FileProvider.getUriForFile(this, this.getApplicationContext().getPackageName() + ".provider")
-         if (URI != null) {
+        // URI = Uri.fromFile(newFile);
+        if (URI != null) {
+            emailIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             emailIntent.putExtra(Intent.EXTRA_STREAM, URI);
+
         }
         emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, message);
-        this.startActivity(Intent.createChooser(emailIntent, "Sending email..."));
+        this.startActivity(emailIntent);
     } catch (Throwable t) {
         Toast.makeText(this, "Request failed try again: "+ t.toString(), Toast.LENGTH_LONG).show();
     }
@@ -429,7 +432,7 @@ public class MainActivity extends AppCompatActivity {
         else if (section == numsections) {
             section = 1 ;
         }
-            sectionNumber.setText(String.valueOf(section));
+        sectionNumber.setText(String.valueOf(section));
         editor.putInt("section", section);
         editor.commit();
     }
@@ -441,18 +444,18 @@ public class MainActivity extends AppCompatActivity {
         } else if (section == 1) {
             section = numsections;
         }
-            sectionNumber.setText(String.valueOf(section));
+        sectionNumber.setText(String.valueOf(section));
         editor.putInt("section", section);
         editor.commit();
     }
 
     private boolean saveToCSV() {
-        File exportDir = new File(Environment.getExternalStoragePublicDirectory("Documents/Scoremonster"), "");
+       // File exportDir = new File(Environment.getExternalStoragePublicDirectory("Documents/Scoremonster"), "");
         String filename = "Scores.csv";
         String id, observer, section, rider, lap, created, updated, edited, sync, score, thetrialid;
 
         try {
-            exportDir = new File(getFilesDir(), filename);
+            File exportDir = new File(getFilesDir(), filename);
 
             exportDir.createNewFile();
             CSVWriter csvWrite = new CSVWriter(new FileWriter(exportDir));
