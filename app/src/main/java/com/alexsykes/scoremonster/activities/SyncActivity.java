@@ -65,7 +65,7 @@ public class SyncActivity extends AppCompatActivity {
         // Get shared preferences for trialid, section
         localPrefs = getSharedPreferences("monster", MODE_PRIVATE);
 
-        section = localPrefs.getInt("section", 1);
+       // section = localPrefs.getInt("section", 1);
         trialid = localPrefs.getInt("trialid", 0);
 
         // Create database connection
@@ -77,7 +77,6 @@ public class SyncActivity extends AppCompatActivity {
 
         /*  Php script path  */
         upLoadServerUri = "http://www.trialmonster.uk/android/UploadToServer.php";
-        processURL = "http://www.trialmonster.uk/android/addCSVtodb.php";
 
        /* uploadButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -102,18 +101,24 @@ public class SyncActivity extends AppCompatActivity {
         processButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // Get timestamp and add to filename
+
+                Date date = new Date();
+                // getTime() returns current time in milliseconds
+                long time = date.getTime();
+                String ts = String.valueOf(time);
+                filename = "scores_" + ts + ".csv";
+                processURL = "http://www.trialmonster.uk/android/addCSVtodb.php?id=" + filename;
                 processCSV(processURL);
             }
         });
     }
 
     public void onClickCalled(String scoreid, int score) {
-        alertSingleChoiceItems(scoreid, score);
+        amendScore(scoreid, score);
     }
 
-    public void alertSingleChoiceItems(final String scoreid, final int score) {
-
-
+    public void amendScore(final String scoreid, final int score) {
         AlertDialog.Builder builder = new AlertDialog.Builder(SyncActivity.this);
 
         // Set the dialog title
@@ -213,15 +218,7 @@ public class SyncActivity extends AppCompatActivity {
 
     private boolean saveToCSV() {
         String id, observer, section, rider, lap, created, updated, edited, sync, score, thetrialid;
-
-        // Get timestamp and add to filename
-
-        Date date = new Date();
-        //getTime() returns current time in milliseconds
-        long time = date.getTime();
-        String ts = String.valueOf(time);
-        filename = "scores_" + ts + ".csv";
-        filename = "scores.csv";
+       // filename = "scores.csv";
 
         try {
             exportDir = new File(getFilesDir(), filename);
@@ -229,15 +226,14 @@ public class SyncActivity extends AppCompatActivity {
             exportDir.createNewFile();
             CSVWriter csvWrite = new CSVWriter(new FileWriter(exportDir));
 
-            String[] header = {"id", "section", "rider",
-                    "lap", "score", "observer", "created", "updated", "edited", "trialid",
-                    "sync"};
+            String[] header = {"id", "rider", "section",
+                    "lap", "score", "observer", "created", "updated", "edited", "trialid", "sync"};
 
             csvWrite.writeNext(header, false);
 
             // Get current data
 
-            Cursor curChild = mDbHelper.getUnSynced(trialid);
+            Cursor curChild = mDbHelper.getAll(trialid);
             while (curChild.moveToNext()) {
                 id = curChild.getString(0);
                 observer = curChild.getString(1);
@@ -251,7 +247,7 @@ public class SyncActivity extends AppCompatActivity {
                 sync = curChild.getString(9);
                 score = curChild.getString(10);
 
-                String[] arrStr = {id, section, rider, lap, score, observer, created, updated, edited, thetrialid, sync
+                String[] arrStr = {id, rider, section, lap, score, observer, created, updated, edited, thetrialid, sync
                 };
 
                 csvWrite.writeNext(arrStr, false);
@@ -302,7 +298,7 @@ public class SyncActivity extends AppCompatActivity {
             @Override
             protected String doInBackground(Void... voids) {
 
-                int response = uploadFile(uploadFilePath + uploadFileName);
+                int response = uploadFile(uploadFilePath + filename);
                 try {
                     //creating a URL
                     URL url = new URL(urlWebService);
@@ -397,7 +393,7 @@ public class SyncActivity extends AppCompatActivity {
 
                 }
 
-                // send multipart form data necesssary after file data...
+                // send multipart form data necessary after file data...
                 dos.writeBytes(lineEnd);
                 dos.writeBytes(twoHyphens + boundary + twoHyphens + lineEnd);
 
