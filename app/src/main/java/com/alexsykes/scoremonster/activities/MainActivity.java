@@ -124,7 +124,7 @@ public class MainActivity extends AppCompatActivity {
         localPrefs = getSharedPreferences("monster", MODE_PRIVATE);
         SharedPreferences.Editor editor = localPrefs.edit();
         editor.putBoolean("canConnect", isOnline());
-        editor.commit();
+        editor.apply();
 
 
         clearScore();
@@ -234,6 +234,7 @@ public class MainActivity extends AppCompatActivity {
 */
 
     private void goTimingMode() {
+        //
         Intent intent = new Intent(this, TimerActivity.class);
         intent.putExtra("trialid", trialid);
         startActivityForResult(intent, TEXT_REQUEST);
@@ -422,7 +423,7 @@ public class MainActivity extends AppCompatActivity {
             editor.putBoolean("canConnect", false);
             Toast.makeText(MainActivity.this, "Not Connected", Toast.LENGTH_LONG).show();
         }
-        editor.commit();
+        editor.apply();
     }
 
     public void increment(View view) {
@@ -434,7 +435,7 @@ public class MainActivity extends AppCompatActivity {
         }
         sectionNumber.setText(String.valueOf(section));
         editor.putInt("section", section);
-        editor.commit();
+        editor.apply();
     }
 
     public void decrement(View view) {
@@ -446,7 +447,7 @@ public class MainActivity extends AppCompatActivity {
         }
         sectionNumber.setText(String.valueOf(section));
         editor.putInt("section", section);
-        editor.commit();
+        editor.apply();
     }
 
     private boolean saveToCSV() {
@@ -457,7 +458,7 @@ public class MainActivity extends AppCompatActivity {
         try {
             File exportDir = new File(getFilesDir(), filename);
 
-            exportDir.createNewFile();
+            // exportDir.createNewFile();
             CSVWriter csvWrite = new CSVWriter(new FileWriter(exportDir));
 
             String[] header = {"id", "rider", "section",
