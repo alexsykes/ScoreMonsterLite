@@ -1,6 +1,7 @@
 package com.alexsykes.scoremonster.activities;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -13,6 +14,7 @@ import android.media.ToneGenerator;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import androidx.core.content.FileProvider;
@@ -35,9 +37,15 @@ import com.alexsykes.scoremonster.data.ScoreContract;
 import com.alexsykes.scoremonster.data.ScoreDbHelper;
 import com.opencsv.CSVWriter;
 
+import java.io.DataOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Date;
 
 import static androidx.core.content.FileProvider.getUriForFile;
 
@@ -59,6 +67,9 @@ public class MainActivity extends AppCompatActivity {
     NumberPadFragment numberPadFragment;
     TouchFragment touchFragment;
     SharedPreferences localPrefs;
+    ProgressDialog dialog = null;
+    final String uploadFilePath = "mnt/sdcard/Documents/Scoremonster/";
+    final String uploadFileName = "scores.csv";
 
     // Databases
     private ScoreDbHelper mDbHelper;
@@ -72,12 +83,18 @@ public class MainActivity extends AppCompatActivity {
     private int score;
     private boolean showDabPad;
     private boolean showNumberPad;
-    int modeIndex;
+    int modeIndex;;
+    int serverResponseCode = 0;
+    private String filename;
+    String upLoadServerUri = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        /*  Php script path  */
+        upLoadServerUri = "http://android.trialmonster.uk/sendMailWithFile.php";
 
         // Create database connection
         mDbHelper = new ScoreDbHelper(this);
@@ -188,11 +205,22 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void sendEmail() {
-        if(!saveToCSV()) { return;
+        // Process data to produce CSV file
+        String time_saved = saveToCSV();
+        if(time_saved == "") { return;
         }
+        String fileName = "scores_" + time_saved + ".csv";
+        String processURL = upLoadServerUri + fileName;
+        // Upload file
+        processCSV(processURL);
+
+        // Prepare and send email
 
 
-        try {
+
+
+
+ /*       try {
 
         File path = new File(Environment.getExternalStoragePublicDirectory(""),"data");
         File newFile = new File(path, "Scores.csv");
@@ -215,10 +243,207 @@ public class MainActivity extends AppCompatActivity {
 
         }
         emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, message);
-        this.startActivity(emailIntent);
+        //this.startActivity(emailIntent);
+            this.startActivity(Intent.createChooser(emailIntent, "Sending email..."));
+
     } catch (Throwable t) {
         Toast.makeText(this, "Request failed try again: "+ t.toString(), Toast.LENGTH_LONG).show();
+    } */
     }
+    private void processCSV(final String urlWebService) {
+        /*
+         * Processing the CSV done online
+         * so we need an AsyncTask
+         * The constrains defined here are
+         * Void -> We are not passing anything
+         * Void -> Nothing at progress update as well
+         * String -> After completion it should return a string and it will be the json string
+         * */
+        class ProcessCSV extends AsyncTask<Void, Void, String> {
+
+            //this method will be called before execution
+            //you can display a progress bar or something
+            //so that user can understand that he should wait
+            //as network operation may take some time
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+                dialog = ProgressDialog.show(MainActivity.this, "Scoremonster",
+                        "Processing scores… this make take some time!", true);
+                // Prepare CSV file
+                saveToCSV();
+            }
+
+            protected void onPostExecute(String s) {
+                super.onPostExecute(s);
+                dialog.dismiss();
+
+                if (s.contentEquals("OK")){
+                    runOnUiThread(new Runnable() {
+                        public void run() {
+                            Toast.makeText(MainActivity.this, "Score Update Complete",
+                                    Toast.LENGTH_LONG).show();
+                        }
+                    });
+                }
+            }
+
+            //in this method we are fetching the json string
+            @Override
+            protected String doInBackground(Void... voids) {
+
+                int response = uploadFile(uploadFilePath + filename);
+                try {
+                    //creating a URL
+                    URL url = new URL(urlWebService);
+
+                    //Opening the URL using HttpURLConnection
+                    HttpURLConnection con = (HttpURLConnection) url.openConnection();
+                    String message = con.getResponseMessage();
+                    return message;
+
+                } catch (Exception e) {
+                    return null;
+                }
+            }
+        }
+        ProcessCSV processCSV = new ProcessCSV();
+        processCSV.execute();
+    }
+    public int uploadFile(String sourceFileUri) {
+        File directory = getFilesDir();
+        File sourceFile = new File(directory, filename);
+
+
+        String fileName = sourceFileUri;
+
+        HttpURLConnection conn = null;
+        DataOutputStream dos = null;
+        String lineEnd = "\r\n";
+        String twoHyphens = "--";
+        String boundary = "*****";
+        int bytesRead, bytesAvailable, bufferSize;
+        byte[] buffer;
+        int maxBufferSize = 1024 * 1024;
+        //File sourceFile = new File(sourceFileUri);
+
+        if (!sourceFile.isFile()) {
+
+            dialog.dismiss();
+
+            Log.e("uploadFile", "Source File not exist :"
+                    + uploadFilePath + "" + uploadFileName);
+
+           /* runOnUiThread(new Runnable() {
+                public void run() {
+                    messageText.setText("Source File not exist :"
+                            + uploadFilePath + "" + uploadFileName);
+                }
+            }); */
+
+            return 0;
+
+        } else {
+            try {
+                // open a URL connection to the Servlet
+                FileInputStream fileInputStream = new FileInputStream(sourceFile);
+                URL url = new URL(upLoadServerUri);
+
+                // Open a HTTP  connection to  the URL
+                conn = (HttpURLConnection) url.openConnection();
+                conn.setDoInput(true); // Allow Inputs
+                conn.setDoOutput(true); // Allow Outputs
+                conn.setUseCaches(false); // Don't use a Cached Copy
+                conn.setRequestMethod("POST");
+                conn.setRequestProperty("Connection", "Keep-Alive");
+                conn.setRequestProperty("ENCTYPE", "multipart/form-data");
+                conn.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + boundary);
+                conn.setRequestProperty("uploaded_file", fileName);
+
+                dos = new DataOutputStream(conn.getOutputStream());
+
+                dos.writeBytes(twoHyphens + boundary + lineEnd);
+                dos.writeBytes("Content-Disposition: form-data; name=\"uploaded_file\";filename=\""
+                        + fileName + "\"" + lineEnd);
+
+                dos.writeBytes(lineEnd);
+
+                // create a buffer of  maximum size
+                bytesAvailable = fileInputStream.available();
+
+                bufferSize = Math.min(bytesAvailable, maxBufferSize);
+                buffer = new byte[bufferSize];
+
+                // read file and write it into form...
+                bytesRead = fileInputStream.read(buffer, 0, bufferSize);
+
+                while (bytesRead > 0) {
+
+                    dos.write(buffer, 0, bufferSize);
+                    bytesAvailable = fileInputStream.available();
+                    bufferSize = Math.min(bytesAvailable, maxBufferSize);
+                    bytesRead = fileInputStream.read(buffer, 0, bufferSize);
+
+                }
+
+                // send multipart form data necessary after file data...
+                dos.writeBytes(lineEnd);
+                dos.writeBytes(twoHyphens + boundary + twoHyphens + lineEnd);
+
+                // Responses from the server (code and message)
+                serverResponseCode = conn.getResponseCode();
+                String serverResponseMessage = conn.getResponseMessage();
+
+                Log.i("uploadFile", "HTTP Response is : "
+                        + serverResponseMessage + ": " + serverResponseCode);
+
+                if (serverResponseCode != 200) {
+
+                    runOnUiThread(new Runnable() {
+                        public void run() {
+                            Toast.makeText(MainActivity.this, "Error processing data",
+                                    Toast.LENGTH_LONG).show();
+                        }
+                    });
+                }
+
+                //close the streams //
+                fileInputStream.close();
+                dos.flush();
+                dos.close();
+
+            } catch (MalformedURLException ex) {
+
+                dialog.dismiss();
+                ex.printStackTrace();
+
+                runOnUiThread(new Runnable() {
+                    public void run() {
+                     //   messageText.setText("MalformedURLException Exception : check script url.");
+                        Toast.makeText(MainActivity.this, "MalformedURLException",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+                Log.e("Upload file to server", "error: " + ex.getMessage(), ex);
+            } catch (Exception e) {
+
+                dialog.dismiss();
+                e.printStackTrace();
+
+                runOnUiThread(new Runnable() {
+                    public void run() {
+                      //  messageText.setText("Got Exception : see logcat ");
+                        Toast.makeText(MainActivity.this, "Got Exception : see logcat ",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
+                Log.e("Upload file Exception", "Exception : "
+                        + e.getMessage(), e);
+            }
+            dialog.dismiss();
+            return serverResponseCode;
+        }
     }
 
 /*
@@ -450,9 +675,14 @@ public class MainActivity extends AppCompatActivity {
         editor.apply();
     }
 
-    private boolean saveToCSV() {
-       // File exportDir = new File(Environment.getExternalStoragePublicDirectory("Documents/Scoremonster"), "");
-        String filename = "Scores.csv";
+    private String saveToCSV() {
+        // Get timestamp and add to filename
+
+        Date date = new Date();
+        // getTime() returns current time in milliseconds
+        long time = date.getTime();
+        String ts = String.valueOf(time);
+        String filename = "scores_" + ts + ".csv";
         String id, observer, section, rider, lap, created, updated, edited, sync, score, thetrialid;
 
         try {
@@ -488,11 +718,11 @@ public class MainActivity extends AppCompatActivity {
                 csvWrite.writeNext(arrStr, false);
             }
             csvWrite.close();
-            return true;
+            return ts;
 
         } catch (IOException e) {
             Log.e("Child", e.getMessage(), e);
-            return false;
+            return "";
         }
     }
 }
