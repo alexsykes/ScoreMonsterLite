@@ -59,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
     String email;
     String subject;
     String message;
+    String timestamp;
     Uri URI = null;
 
     TextView numberLabel, scoreLabel, statusLine, sectionNumber;
@@ -94,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         /*  Php script path  */
-        upLoadServerUri = "http://android.trialmonster.uk/sendMailWithFile.php";
+         upLoadServerUri = "http://android.trialmonster.uk/sendMailWithFile.php";
 
         // Create database connection
         mDbHelper = new ScoreDbHelper(this);
@@ -206,11 +207,12 @@ public class MainActivity extends AppCompatActivity {
 
     private void sendEmail() {
         // Process data to produce CSV file
-        String time_saved = saveToCSV();
-        if(time_saved == "") { return;
-        }
-        String fileName = "scores_" + time_saved + ".csv";
-        String processURL = upLoadServerUri + fileName;
+        Date date = new Date();
+        // getTime() returns current time in milliseconds
+        long time = date.getTime();
+        timestamp = String.valueOf(time);
+        filename = "scores_" + timestamp + ".csv";
+        String processURL = "http://android.trialmonster.uk/sendMailWithFile.php?ts=";
         // Upload file
         processCSV(processURL);
 
@@ -295,6 +297,7 @@ public class MainActivity extends AppCompatActivity {
                 int response = uploadFile(uploadFilePath + filename);
                 try {
                     //creating a URL
+                   // URL url = new URL(urlWebService + ts);
                     URL url = new URL(urlWebService);
 
                     //Opening the URL using HttpURLConnection
@@ -314,7 +317,6 @@ public class MainActivity extends AppCompatActivity {
         File directory = getFilesDir();
         File sourceFile = new File(directory, filename);
 
-
         String fileName = sourceFileUri;
 
         HttpURLConnection conn = null;
@@ -328,9 +330,7 @@ public class MainActivity extends AppCompatActivity {
         //File sourceFile = new File(sourceFileUri);
 
         if (!sourceFile.isFile()) {
-
             dialog.dismiss();
-
             Log.e("uploadFile", "Source File not exist :"
                     + uploadFilePath + "" + uploadFileName);
 
@@ -675,20 +675,20 @@ public class MainActivity extends AppCompatActivity {
         editor.apply();
     }
 
-    private String saveToCSV() {
+    private boolean saveToCSV() {
         // Get timestamp and add to filename
 
         Date date = new Date();
         // getTime() returns current time in milliseconds
         long time = date.getTime();
         String ts = String.valueOf(time);
-        String filename = "scores_" + ts + ".csv";
+        filename = "scores_" + ts + ".csv";
         String id, observer, section, rider, lap, created, updated, edited, sync, score, thetrialid;
 
         try {
             File exportDir = new File(getFilesDir(), filename);
 
-            // exportDir.createNewFile();
+            exportDir.createNewFile();
             CSVWriter csvWrite = new CSVWriter(new FileWriter(exportDir));
 
             String[] header = {"id", "rider", "section",
@@ -718,11 +718,11 @@ public class MainActivity extends AppCompatActivity {
                 csvWrite.writeNext(arrStr, false);
             }
             csvWrite.close();
-            return ts;
+            return true;
 
         } catch (IOException e) {
             Log.e("Child", e.getMessage(), e);
-            return "";
+            return false;
         }
     }
 }
