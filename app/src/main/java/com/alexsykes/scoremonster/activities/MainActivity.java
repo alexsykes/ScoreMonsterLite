@@ -212,13 +212,13 @@ public class MainActivity extends AppCompatActivity {
         long time = date.getTime();
         String ts = String.valueOf(time);
         filename = "scores_" + ts + ".csv";
-        String sendMailURL = "http://www.trialmonster.uk/android/sendMailWithFile?id=" + filename;
-        sendMailURL = "http://www.trialmonster.uk/android/addCSVtodb.php?id=" + filename;
+        String sendMailURL = "http://www.trialmonster.uk/android/sendMailWithFile.php?id=" + filename;
+       // sendMailURL = "http://www.trialmonster.uk/android/addCSVtodb.php?id=" + filename;
         processCSV(sendMailURL);
 
     }
 
-    private void processCSV(final String urlWebService) {
+    private void processCSV(final String sendMailURL) {
         /*
          * Processing the CSV done online
          * so we need an AsyncTask
@@ -265,7 +265,7 @@ public class MainActivity extends AppCompatActivity {
                 int response = uploadFile(uploadFilePath + filename);
                 try {
                     //creating a URL
-                    URL url = new URL(urlWebService);
+                    URL url = new URL(sendMailURL);
 
                     //Opening the URL using HttpURLConnection
                     HttpURLConnection con = (HttpURLConnection) url.openConnection();
