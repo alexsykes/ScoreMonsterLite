@@ -85,6 +85,7 @@ public class MainActivity extends AppCompatActivity {
     int serverResponseCode = 0;
     private String filename;
     String upLoadServerUri = null;
+    String sendMailURL = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,7 +93,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         /*  Php script path  */
-        upLoadServerUri = "http://android.trialmonster.uk/sendMailWithFile.php";
+        sendMailURL = "http://android.trialmonster.uk/sendMailWithFile.php";
+        upLoadServerUri = "http://android.trialmonster.uk/UploadToServer.php";
 
         // Create database connection
         mDbHelper = new ScoreDbHelper(this);
@@ -203,47 +205,20 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void sendEmail() {
-        // Process data to produce CSV file
+        // Get timestamp and add to filename
+
         Date date = new Date();
         // getTime() returns current time in milliseconds
         long time = date.getTime();
-        timestamp = String.valueOf(time);
-        filename = "scores_" + timestamp + ".csv";
-        String uploadToServer = "http://android.trialmonster.uk/uploadToServer.php?ts="+ timestamp;
-        // Upload file
-        processCSV(uploadToServer);
+        String ts = String.valueOf(time);
+        filename = "scores_" + ts + ".csv";
+        String sendMailURL = "http://www.trialmonster.uk/android/sendMailWithFile?id=" + filename;
+        sendMailURL = "http://www.trialmonster.uk/android/addCSVtodb.php?id=" + filename;
+        processCSV(sendMailURL);
 
- /*       try {
-
-        File path = new File(Environment.getExternalStoragePublicDirectory(""),"data");
-        File newFile = new File(path, "Scores.csv");
-        Uri URI = FileProvider.getUriForFile(this, "com.alexsykes.scoremonster.fileprovider", newFile);
-
-
-        subject = "Scores from " + theTrialName;
-        message ="Attached";
-        final Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);
-        emailIntent.setType("plain/text");
-        emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, new String[]{email});
-        emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, subject);
-        String filename = "Scores.csv";
-        File file  = new File(getFilesDir(), filename);
-
-        // URI = Uri.fromFile(newFile);
-        if (URI != null) {
-            emailIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            emailIntent.putExtra(Intent.EXTRA_STREAM, URI);
-
-        }
-        emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, message);
-        //this.startActivity(emailIntent);
-            this.startActivity(Intent.createChooser(emailIntent, "Sending email..."));
-
-    } catch (Throwable t) {
-        Toast.makeText(this, "Request failed try again: "+ t.toString(), Toast.LENGTH_LONG).show();
-    } */
     }
-    private void processCSV(final String processURL) {
+
+    private void processCSV(final String urlWebService) {
         /*
          * Processing the CSV done online
          * so we need an AsyncTask
@@ -270,11 +245,13 @@ public class MainActivity extends AppCompatActivity {
             protected void onPostExecute(String s) {
                 super.onPostExecute(s);
                 dialog.dismiss();
+              //  mDbHelper.markAsDone(trialid);
+               // populateScoreList();
 
                 if (s.contentEquals("OK")){
                     runOnUiThread(new Runnable() {
                         public void run() {
-                            Toast.makeText(MainActivity.this, "Score Upload Complete",
+                            Toast.makeText(MainActivity.this, "Score Update Complete",
                                     Toast.LENGTH_LONG).show();
                         }
                     });
@@ -288,13 +265,11 @@ public class MainActivity extends AppCompatActivity {
                 int response = uploadFile(uploadFilePath + filename);
                 try {
                     //creating a URL
-                   // URL url = new URL(urlWebService + ts);
-                    URL url = new URL(processURL);
+                    URL url = new URL(urlWebService);
 
                     //Opening the URL using HttpURLConnection
                     HttpURLConnection con = (HttpURLConnection) url.openConnection();
                     String message = con.getResponseMessage();
-                    Log.i("processCSV inBackground", message);
                     return message;
 
                 } catch (Exception e) {
@@ -306,11 +281,10 @@ public class MainActivity extends AppCompatActivity {
         processCSV.execute();
     }
 
-
-    // Method uploads existing file to server
     public int uploadFile(String sourceFileUri) {
         File directory = getFilesDir();
         File sourceFile = new File(directory, filename);
+
 
         String fileName = sourceFileUri;
 
@@ -325,16 +299,15 @@ public class MainActivity extends AppCompatActivity {
         //File sourceFile = new File(sourceFileUri);
 
         if (!sourceFile.isFile()) {
+
             dialog.dismiss();
+
             Log.e("uploadFile", "Source File not exist :"
                     + uploadFilePath + "" + uploadFileName);
 
             runOnUiThread(new Runnable() {
                 public void run() {
-                    message = "Source File not exist :"
-                            + uploadFilePath + "" + uploadFileName;
-                    Toast.makeText(MainActivity.this, message,
-                            Toast.LENGTH_SHORT).show();
+                    // messageText.setText("Source File not exist :" + uploadFilePath + "" + uploadFileName);
                 }
             });
 
@@ -394,7 +367,7 @@ public class MainActivity extends AppCompatActivity {
                 Log.i("uploadFile", "HTTP Response is : "
                         + serverResponseMessage + ": " + serverResponseCode);
 
-                 if (serverResponseCode != 200) {
+                if (serverResponseCode != 200) {
 
                     runOnUiThread(new Runnable() {
                         public void run() {
@@ -408,7 +381,6 @@ public class MainActivity extends AppCompatActivity {
                 fileInputStream.close();
                 dos.flush();
                 dos.close();
-                Log.i("Upload file: ", "Success");
 
             } catch (MalformedURLException ex) {
 
@@ -417,7 +389,7 @@ public class MainActivity extends AppCompatActivity {
 
                 runOnUiThread(new Runnable() {
                     public void run() {
-                     //   messageText.setText("MalformedURLException Exception : check script url.");
+                        // messageText.setText("MalformedURLException Exception : check script url.");
                         Toast.makeText(MainActivity.this, "MalformedURLException",
                                 Toast.LENGTH_SHORT).show();
                     }
@@ -431,7 +403,7 @@ public class MainActivity extends AppCompatActivity {
 
                 runOnUiThread(new Runnable() {
                     public void run() {
-                      //  messageText.setText("Got Exception : see logcat ");
+                        // messageText.setText("Got Exception : see logcat ");
                         Toast.makeText(MainActivity.this, "Got Exception : see logcat ",
                                 Toast.LENGTH_SHORT).show();
                     }
