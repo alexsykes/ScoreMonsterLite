@@ -57,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
     String subject;
     String message;
     String timestamp;
+    String ts;
     Uri URI = null;
 
     TextView numberLabel, scoreLabel, statusLine, sectionNumber;
@@ -208,11 +209,11 @@ public class MainActivity extends AppCompatActivity {
         // Get timestamp and add to filename
 
         Date date = new Date();
-        // getTime() returns current time in milliseconds
+       // getTime() returns current time in milliseconds
         long time = date.getTime();
         String ts = String.valueOf(time);
         filename = "scores_" + ts + ".csv";
-        String sendMailURL = "http://www.trialmonster.uk/android/sendMailWithFile.php?id=" + filename;
+        String sendMailURL = "http://www.trialmonster.uk/android/sendMailWithFile.php?id=" + ts + "&trialid=" + trialid;
        // sendMailURL = "http://www.trialmonster.uk/android/addCSVtodb.php?id=" + filename;
         processCSV(sendMailURL);
 
@@ -638,9 +639,9 @@ public class MainActivity extends AppCompatActivity {
 
         Date date = new Date();
         // getTime() returns current time in milliseconds
-        long time = date.getTime();
-        String ts = String.valueOf(time);
-        filename = "scores_" + ts + ".csv";
+      //  long time = date.getTime();
+      //  ts = String.valueOf(time);
+      //  filename = "scores_" + ts + ".csv";
         String id, observer, section, rider, lap, created, updated, edited, sync, score, thetrialid;
 
         try {
