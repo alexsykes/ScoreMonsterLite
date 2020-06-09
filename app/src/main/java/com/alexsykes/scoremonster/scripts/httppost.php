@@ -41,12 +41,11 @@ $make = $decoded["make"];
 $postcode = $decoded["postcode"];
 $size =  $decoded["size"];
 $trialid = $decoded["trialid"];
-
+$pg_name = $decoded["pg_name"];
 
 // Process the JSON.
 
- $query = "INSERT INTO up93k_entryman_entry (accept, acu, address, class, course, dob, email, firstname, isyouth, lastname, mobile_phone, make, postcode, size, trialid, created, created_by) VALUES ('$accept', '$acu', '$address', '$class', '$course', '$dob', '$email', '$firstname', '$isyouth', '$lastname', '$mobile_phone', '$make', '$postcode', '$size', '$trialid', NOW(),'999')";
-//$query = "INSERT INTO up93k_entryman_entry (`trialid`) VALUES (999) ";
+ $query = "INSERT INTO ".$dbprefix."entryman_entry (accept, acu, address, class, course, dob, email, firstname, isyouth, lastname, mobile_phone, make, postcode, size, trialid, created, created_by, pg_name) VALUES ('$accept', '$acu', '$address', '$class', '$course', '$dob', '$email', '$firstname', '$isyouth', '$lastname', '$mobile_phone', '$make', '$postcode', '$size', '$trialid', NOW(),'999', '$pg_name')";
 
 // Create connection
 $conn = new mysqli($servername, $username, $password, $database);

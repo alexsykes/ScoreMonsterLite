@@ -82,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
     private int score;
     private boolean showDabPad;
     private boolean showNumberPad;
-    int modeIndex;;
+    int modeIndex;
     int serverResponseCode = 0;
     private String filename;
     String upLoadServerUri = null;
@@ -270,7 +270,7 @@ public class MainActivity extends AppCompatActivity {
 
                     //Opening the URL using HttpURLConnection
                     HttpURLConnection con = (HttpURLConnection) url.openConnection();
-                    String message = con.getResponseMessage();
+                     message = con.getResponseMessage();
                     return message;
 
                 } catch (Exception e) {
@@ -289,8 +289,8 @@ public class MainActivity extends AppCompatActivity {
 
         String fileName = sourceFileUri;
 
-        HttpURLConnection conn = null;
-        DataOutputStream dos = null;
+        HttpURLConnection conn;
+        DataOutputStream dos ;
         String lineEnd = "\r\n";
         String twoHyphens = "--";
         String boundary = "*****";
@@ -303,8 +303,7 @@ public class MainActivity extends AppCompatActivity {
 
             dialog.dismiss();
 
-            Log.e("uploadFile", "Source File not exist :"
-                    + uploadFilePath + "" + uploadFileName);
+        //    Log.e("uploadFile", "Source File not exist :" + uploadFilePath + "" + uploadFileName);
 
             runOnUiThread(new Runnable() {
                 public void run() {
@@ -365,8 +364,7 @@ public class MainActivity extends AppCompatActivity {
                 serverResponseCode = conn.getResponseCode();
                 String serverResponseMessage = conn.getResponseMessage();
 
-                Log.i("uploadFile", "HTTP Response is : "
-                        + serverResponseMessage + ": " + serverResponseCode);
+             //   Log.i("uploadFile", "HTTP Response is : "  + serverResponseMessage + ": " + serverResponseCode);
 
                 if (serverResponseCode != 200) {
 
@@ -396,7 +394,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
-                Log.e("Upload file to server", "error: " + ex.getMessage(), ex);
+             //   Log.e("Upload file to server", "error: " + ex.getMessage(), ex);
             } catch (Exception e) {
 
                 dialog.dismiss();
@@ -409,8 +407,7 @@ public class MainActivity extends AppCompatActivity {
                                 Toast.LENGTH_SHORT).show();
                     }
                 });
-                Log.e("Upload file Exception", "Exception : "
-                        + e.getMessage(), e);
+             //   Log.e("Upload file Exception", "Exception : " + e.getMessage(), e);
             }
             dialog.dismiss();
             return serverResponseCode;
@@ -647,7 +644,7 @@ public class MainActivity extends AppCompatActivity {
         try {
             File exportDir = new File(getFilesDir(), filename);
 
-            exportDir.createNewFile();
+//            exportDir.createNewFile();
             CSVWriter csvWrite = new CSVWriter(new FileWriter(exportDir));
 
             String[] header = {"id", "rider", "section",
@@ -680,7 +677,7 @@ public class MainActivity extends AppCompatActivity {
             return true;
 
         } catch (IOException e) {
-            Log.e("Child", e.getMessage(), e);
+          //  Log.e("Child", e.getMessage(), e);
             return false;
         }
     }
