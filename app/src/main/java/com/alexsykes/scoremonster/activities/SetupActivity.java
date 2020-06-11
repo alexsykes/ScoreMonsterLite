@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
@@ -40,7 +41,7 @@ public class SetupActivity extends AppCompatActivity implements AdapterView.OnIt
     // Set up data fields
     private static final String BASE_URL = "https://android.trialmonster.uk/";
     int trialid, section, numsections, numlaps;
-    boolean showDabPad;
+    // boolean showDabPad;
     String observer, theTrialName, detail, email;
     // long startTime;
     String[] theTrials, theIDs;
@@ -48,19 +49,21 @@ public class SetupActivity extends AppCompatActivity implements AdapterView.OnIt
 
     SharedPreferences localPrefs;
 
+    LinearLayout trialDetailsInput;
+
     // Database access
     ScoreDbHelper theScoreDB;
     FinishTimeDbHelper theFinishTimeDB;
 
     // Interface widgets
-    RadioGroup modeSwitch;
-    int modeIdx;
+    //  RadioGroup modeSwitch;
+    //  int modeIdx;
 
-    RadioButton dabPadSelect, numberPadSelect;
+    //  RadioButton dabPadSelect, numberPadSelect;
     Spinner trialSelect;
     ProgressDialog dialog = null;
     CheckBox resetCheckBox, confirmCheckBox;
-    TextView observerTextInput, /* sectionTextInput, */ trialDetailView;
+    TextView observerTextInput, trialNameTextInput, emailTextInput, numSectionsTextInput, numLapsTextInput, /* sectionTextInput, */ trialDetailView;
     ImageView warningImageView;
     private Button button;
 
@@ -73,11 +76,18 @@ public class SetupActivity extends AppCompatActivity implements AdapterView.OnIt
         theFinishTimeDB = new FinishTimeDbHelper(this);
         // Set up activity fields
         observerTextInput = findViewById(R.id.observerTextInput);
-    //    sectionTextInput = findViewById(R.id.sectionTextInput);
         trialDetailView = findViewById(R.id.trialDetailView);
-        modeSwitch = findViewById(R.id.padViewGroup);
-        dabPadSelect = findViewById(R.id.dabPadSelect);
-        numberPadSelect = findViewById(R.id.numberPadSelect);
+        trialNameTextInput = findViewById(R.id.trialNameTextInput);
+        emailTextInput = findViewById(R.id.emailTextInput);
+        trialDetailsInput = findViewById(( R.id.trialDetailsInput));
+        numSectionsTextInput = findViewById(( R.id.numSectionsTextInput));
+        numLapsTextInput = findViewById(( R.id.numLapsTextInput));
+
+        // Unused
+//        modeSwitch = findViewById(R.id.padViewGroup);
+//        dabPadSelect = findViewById(R.id.dabPadSelect);
+//        numberPadSelect = findViewById(R.id.numberPadSelect);
+        //    sectionTextInput = findViewById(R.id.sectionTextInput);
         resetCheckBox = findViewById(R.id.resetCheckBox);
         confirmCheckBox = findViewById(R.id.confirmCheckBox);
         warningImageView = findViewById(R.id.warningImageView);
@@ -122,6 +132,7 @@ public class SetupActivity extends AppCompatActivity implements AdapterView.OnIt
         trialSelect.setOnItemSelectedListener(this);
 
         checkPrefs();
+
 
         // Get trialList from server
         String URL = BASE_URL + "getTrialList.php";
@@ -296,7 +307,13 @@ public class SetupActivity extends AppCompatActivity implements AdapterView.OnIt
         email = localPrefs.getString("email", "");
         // section = localPrefs.getInt("section", 0);
         //showDabPad = localPrefs.getBoolean("showDabPad", false);
-        modeIdx = localPrefs.getInt("modeIndex", 0);
+        // modeIdx = localPrefs.getInt("modeIndex", 0);
+
+        if (trialid == 0 ) {
+            trialDetailsInput.setVisibility(View.VISIBLE);
+        } else {
+            trialDetailsInput.setVisibility(View.GONE);
+        }
 
         if (section == 0) {
             sectionNumber = "";
@@ -308,8 +325,8 @@ public class SetupActivity extends AppCompatActivity implements AdapterView.OnIt
         observerTextInput.setText(observer);
         // sectionTextInput.setText(sectionNumber);
 
-        RadioButton selected = (RadioButton) modeSwitch.getChildAt(modeIdx);
-        selected.setChecked(true);
+        //  RadioButton selected = (RadioButton) modeSwitch.getChildAt(modeIdx);
+        // selected.setChecked(true);
 /*
         if (showDabPad) {
             dabPadSelect.setChecked(true);
@@ -328,6 +345,7 @@ public class SetupActivity extends AppCompatActivity implements AdapterView.OnIt
     public void setPrefs(View view) {
         // Field validation routine
         boolean hasErrors = false;
+        String response;
 
         // Set errorMsg with initial message
         String errorMsg = "The following error(s) need to be corrected:";
@@ -338,6 +356,53 @@ public class SetupActivity extends AppCompatActivity implements AdapterView.OnIt
             // If empty, then append message
             hasErrors = true;
             errorMsg += "\nThe observer field is empty";
+        }
+
+        // Check for manual entries
+        if (trialid == 0 ) {
+            theTrialName = trialNameTextInput.getText().toString();
+            if (theTrialName.equals("")) {
+                // If empty, then append message
+                hasErrors = true;
+                errorMsg += "\nThe trial name field is empty";
+            }
+
+            email = emailTextInput.getText().toString();
+            if (email.equals("")) {
+                // If empty, then append message
+                hasErrors = true;
+                errorMsg += "\nThe email field is empty";
+            }
+
+            response = numSectionsTextInput.getText().toString();
+            if(response.equals("")) {
+                // If empty, then append message
+                hasErrors = true;
+                errorMsg += "\nThe number of sections field is empty";
+
+            } else {
+                numsections = Integer.valueOf(numSectionsTextInput.getText().toString());
+                if (numsections == 0) {
+                    // If empty, then append message
+                    hasErrors = true;
+                    errorMsg += "\nThe number of sections must be more than zero";
+                }
+            }
+
+            response = numLapsTextInput.getText().toString();
+            if(response.equals("")) {
+                // If empty, then append message
+                hasErrors = true;
+                errorMsg += "\nThe number of laps field is empty";
+
+            } else {
+                numlaps = Integer.valueOf(numLapsTextInput.getText().toString());
+                if (numlaps == 0) {
+                    // If empty, then append message
+                    hasErrors = true;
+                    errorMsg += "\nThe number of laps must be more than zero";
+                }
+            }
         }
 
 /*        // Check that section field is populated
@@ -362,9 +427,8 @@ public class SetupActivity extends AppCompatActivity implements AdapterView.OnIt
             Toast.makeText(this, errorMsg, Toast.LENGTH_LONG).show();
         } else {
             // otherwise save values
-            int radioButtonID = modeSwitch.getCheckedRadioButtonId();
-            View radioButton = modeSwitch.findViewById(radioButtonID);
-            int idx = modeSwitch.indexOfChild(radioButton);
+//            View radioButton = modeSwitch.findViewById(radioButtonID);
+            //   int idx = modeSwitch.indexOfChild(radioButton);
 
             localPrefs = getSharedPreferences("monster", MODE_PRIVATE);
             SharedPreferences.Editor editor = localPrefs.edit();
@@ -397,12 +461,12 @@ public class SetupActivity extends AppCompatActivity implements AdapterView.OnIt
         email = theTrial.get("email").toString();
         theTrialName = theTrial.get("name").toString();
 
-//         Moving startTime to TimerActivity
-//        try {
-//             startTime = Long.valueOf(theTrial.get("starttime").toString());
-//        } catch (Exception e) {
-//             startTime = -1;
-//         }
+
+        if (trialid == 0 ) {
+            trialDetailsInput.setVisibility(View.VISIBLE);
+        } else {
+            trialDetailsInput.setVisibility(View.GONE);
+        }
 
         detail = theTrialName + "\n" + numlaps + " laps \n" + numsections + " sections";
         trialDetailView.setText(detail);

@@ -180,9 +180,10 @@ f) In favour of the rider who completes the course with the least marks lost on 
     <string name="penalties">Penalties</string>
     <string name="name">Name</string>
     <string name="select_trial">Select trial</string>
-    <string name="email">email</string>
+    <string name="email">Email address</string>
     <string name="prev">prev</string>
     <string name="next">next</string>
+    <string name="trial_name">Trial name</string>
     <string-array name="scores">
         <item>Clean</item>
         <item>One</item>
