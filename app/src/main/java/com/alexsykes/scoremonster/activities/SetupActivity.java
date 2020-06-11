@@ -305,6 +305,16 @@ public class SetupActivity extends AppCompatActivity implements AdapterView.OnIt
         numlaps = localPrefs.getInt("numlaps", 0);
         observer = localPrefs.getString("observer", "");
         email = localPrefs.getString("email", "");
+
+        // Set up manual fields
+        trialNameTextInput.setText(theTrialName);
+        emailTextInput.setText(email);
+        numLapsTextInput.setText(String.valueOf(numlaps));
+        numSectionsTextInput.setText(String.valueOf(numsections));
+        detail = theTrialName + "\n" + numlaps + " laps \n" + numsections + " sections";
+        trialDetailView.setText(detail);
+
+
         // section = localPrefs.getInt("section", 0);
         //showDabPad = localPrefs.getBoolean("showDabPad", false);
         // modeIdx = localPrefs.getInt("modeIndex", 0);
@@ -381,7 +391,7 @@ public class SetupActivity extends AppCompatActivity implements AdapterView.OnIt
                 errorMsg += "\nThe number of sections field is empty";
 
             } else {
-                numsections = Integer.valueOf(numSectionsTextInput.getText().toString());
+                numsections = Integer.parseInt(numSectionsTextInput.getText().toString());
                 if (numsections == 0) {
                     // If empty, then append message
                     hasErrors = true;
@@ -396,7 +406,7 @@ public class SetupActivity extends AppCompatActivity implements AdapterView.OnIt
                 errorMsg += "\nThe number of laps field is empty";
 
             } else {
-                numlaps = Integer.valueOf(numLapsTextInput.getText().toString());
+                numlaps = Integer.parseInt(numLapsTextInput.getText().toString());
                 if (numlaps == 0) {
                     // If empty, then append message
                     hasErrors = true;
