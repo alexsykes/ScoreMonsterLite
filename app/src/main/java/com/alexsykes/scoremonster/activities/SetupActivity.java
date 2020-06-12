@@ -35,16 +35,16 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+// TODO: Select trial in list from prefs or select item 0
 
+//
 public class SetupActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
     // Set up data fields
     private static final String BASE_URL = "https://android.trialmonster.uk/";
     int trialid, section, numsections, numlaps;
-    // boolean showDabPad;
     boolean isOnline;
     String observer, theTrialName, detail, email;
-    // long startTime;
     String[] theTrials, theIDs;
     ArrayList<HashMap<String, String>> theTrialList;
 
@@ -61,6 +61,9 @@ public class SetupActivity extends AppCompatActivity implements AdapterView.OnIt
     //  int modeIdx;
 
     //  RadioButton dabPadSelect, numberPadSelect;
+    // boolean showDabPad;
+    // long startTime;
+
     Spinner trialSelect;
     ProgressDialog dialog = null;
     CheckBox resetCheckBox, confirmCheckBox;
@@ -319,37 +322,21 @@ public class SetupActivity extends AppCompatActivity implements AdapterView.OnIt
         detail = theTrialName + "\n" + numlaps + " laps \n" + numsections + " sections";
         trialDetailView.setText(detail);
 
-
-        // section = localPrefs.getInt("section", 0);
-        //showDabPad = localPrefs.getBoolean("showDabPad", false);
-        // modeIdx = localPrefs.getInt("modeIndex", 0);
-
         if (trialid == 0 ) {
             trialDetailsInput.setVisibility(View.VISIBLE);
         } else {
             trialDetailsInput.setVisibility(View.GONE);
         }
 
-        if (section == 0) {
+ /*       if (section == 0) {
             sectionNumber = "";
         } else {
             sectionNumber = String.valueOf(section);
         }
-
+*/
         // Sync inputs to saved values
         observerTextInput.setText(observer);
-        // sectionTextInput.setText(sectionNumber);
 
-        //  RadioButton selected = (RadioButton) modeSwitch.getChildAt(modeIdx);
-        // selected.setChecked(true);
-/*
-        if (showDabPad) {
-            dabPadSelect.setChecked(true);
-        } else {
-            numberPadSelect.setChecked(true);
-        }*/
-
-        // Check for missing values
         if (observer.equals("") || section == 0 || numlaps == 0 || numsections == 0) {
             // If incomplete, set flag to false
             prefsSet = false;

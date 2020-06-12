@@ -134,11 +134,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         getPrefs();
-
-
-       /* if (!getPrefs()) {
-            goSetup();
-        }*/
     }
 
     @Override

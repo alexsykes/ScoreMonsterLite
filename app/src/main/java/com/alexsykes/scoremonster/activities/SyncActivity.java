@@ -54,6 +54,8 @@ public class SyncActivity extends AppCompatActivity {
     private ScoreDbHelper mDbHelper;
     private String filename;
 
+    boolean isOnline;
+
     SharedPreferences localPrefs;
 
     @Override
@@ -65,7 +67,7 @@ public class SyncActivity extends AppCompatActivity {
         // Get shared preferences for trialid, section
         localPrefs = getSharedPreferences("monster", MODE_PRIVATE);
 
-       // section = localPrefs.getInt("section", 1);
+        // section = localPrefs.getInt("section", 1);
         trialid = localPrefs.getInt("trialid", 0);
 
         // Create database connection
@@ -78,41 +80,33 @@ public class SyncActivity extends AppCompatActivity {
         /*  Php script path  */
         upLoadServerUri = "http://android.trialmonster.uk/UploadToServer.php";
 
-       /* uploadButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                dialog = ProgressDialog.show(SyncActivity.this, "Scoremonster", "Uploading scores...", true);
-
-                new Thread(new Runnable() {
-                    public void run() {
-                        runOnUiThread(new Runnable() {
-                            public void run() {
-                            }
-                        });
-
-                        uploadFile(uploadFilePath + "" + uploadFileName);
-
-                    }
-                }).start();
-            }
-        }); */
-
         processButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Get timestamp and add to filename
+                isOnline = localPrefs.getBoolean("canConnect", false);
+                if(!isOnline) {
+                    // processButton.setEnabled(false);
+                    Toast.makeText(SyncActivity.this, "Scores cannot be sent at this time - no Internet connection.", Toast.LENGTH_LONG).show();
+                } else {
 
-                Date date = new Date();
-                // getTime() returns current time in milliseconds
-                long time = date.getTime();
-                String ts = String.valueOf(time);
-                filename = "scores_" + ts + ".csv";
-                processURL = "http://www.trialmonster.uk/android/addCSVtodb.php?id=" + filename;
-                processCSV(processURL);
+                    // Get timestamp and add to filename
+                    Date date = new Date();
+                    // getTime() returns current time in milliseconds
+                    long time = date.getTime();
+                    String ts = String.valueOf(time);
+                    filename = "scores_" + ts + ".csv";
+                    processURL = "http://www.trialmonster.uk/android/addCSVtodb.php?id=" + filename;
+                    processCSV(processURL);
+                }
             }
         });
+
+        isOnline = localPrefs.getBoolean("canConnect", false);
+        if(!isOnline) {
+           // processButton.setEnabled(false);
+        }
     }
+
 
     public void onClickCalled(String scoreid, int score) {
         amendScore(scoreid, score);
