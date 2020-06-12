@@ -42,6 +42,7 @@ public class SetupActivity extends AppCompatActivity implements AdapterView.OnIt
     private static final String BASE_URL = "https://android.trialmonster.uk/";
     int trialid, section, numsections, numlaps;
     // boolean showDabPad;
+    boolean isOnline;
     String observer, theTrialName, detail, email;
     // long startTime;
     String[] theTrials, theIDs;
@@ -83,11 +84,13 @@ public class SetupActivity extends AppCompatActivity implements AdapterView.OnIt
         numSectionsTextInput = findViewById(( R.id.numSectionsTextInput));
         numLapsTextInput = findViewById(( R.id.numLapsTextInput));
 
-        // Unused
+//        Unused
 //        modeSwitch = findViewById(R.id.padViewGroup);
 //        dabPadSelect = findViewById(R.id.dabPadSelect);
 //        numberPadSelect = findViewById(R.id.numberPadSelect);
-        //    sectionTextInput = findViewById(R.id.sectionTextInput);
+//        sectionTextInput = findViewById(R.id.sectionTextInput);
+
+
         resetCheckBox = findViewById(R.id.resetCheckBox);
         confirmCheckBox = findViewById(R.id.confirmCheckBox);
         warningImageView = findViewById(R.id.warningImageView);
@@ -132,14 +135,15 @@ public class SetupActivity extends AppCompatActivity implements AdapterView.OnIt
         trialSelect.setOnItemSelectedListener(this);
 
         checkPrefs();
+        if(isOnline) {
 
-
-        // Get trialList from server
-        String URL = BASE_URL + "getTrialList.php";
-        try {
-            getJSONDataset(URL);
-        } catch (NullPointerException e) {
-            Toast.makeText(SetupActivity.this, "Empty data", Toast.LENGTH_LONG).show();
+            // Get trialList from server
+            String URL = BASE_URL + "getTrialList.php";
+            try {
+                getJSONDataset(URL);
+            } catch (NullPointerException e) {
+                Toast.makeText(SetupActivity.this, "Empty data", Toast.LENGTH_LONG).show();
+            }
         }
     }
 
@@ -305,6 +309,7 @@ public class SetupActivity extends AppCompatActivity implements AdapterView.OnIt
         numlaps = localPrefs.getInt("numlaps", 0);
         observer = localPrefs.getString("observer", "");
         email = localPrefs.getString("email", "");
+        isOnline = localPrefs.getBoolean("canConnect", false);
 
         // Set up manual fields
         trialNameTextInput.setText(theTrialName);
@@ -345,7 +350,7 @@ public class SetupActivity extends AppCompatActivity implements AdapterView.OnIt
         }*/
 
         // Check for missing values
-        if (observer.equals("") || section == 0 || trialid == 0 || numlaps == 0 || numsections == 0) {
+        if (observer.equals("") || section == 0 || numlaps == 0 || numsections == 0) {
             // If incomplete, set flag to false
             prefsSet = false;
         }
@@ -474,8 +479,10 @@ public class SetupActivity extends AppCompatActivity implements AdapterView.OnIt
 
         if (trialid == 0 ) {
             trialDetailsInput.setVisibility(View.VISIBLE);
+            trialDetailView.setVisibility(View.GONE);
         } else {
             trialDetailsInput.setVisibility(View.GONE);
+            trialDetailView.setVisibility(View.VISIBLE);
         }
 
         detail = theTrialName + "\n" + numlaps + " laps \n" + numsections + " sections";

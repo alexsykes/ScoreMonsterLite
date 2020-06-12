@@ -60,6 +60,8 @@ public class MainActivity extends AppCompatActivity {
     String ts;
     Uri URI = null;
 
+    MenuItem goEmail;
+
     TextView numberLabel, scoreLabel, statusLine, sectionNumber;
     String riderNumber, status, theTrialName;
     ScorePadFragment scorePadFragment;
@@ -82,6 +84,7 @@ public class MainActivity extends AppCompatActivity {
     private int score;
     private boolean showDabPad;
     private boolean showNumberPad;
+    private boolean isOnline;
     int modeIndex;
     int serverResponseCode = 0;
     private String filename;
@@ -130,10 +133,12 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
+        getPrefs();
 
-        if (!getPrefs()) {
+
+       /* if (!getPrefs()) {
             goSetup();
-        }
+        }*/
     }
 
     @Override
@@ -206,17 +211,21 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void sendEmail() {
-        // Get timestamp and add to filename
+        isOnline = isOnline();
+        if(!isOnline){
+            Toast.makeText(MainActivity.this, "Email cannot be sent at this time - no Internet connection.",
+                    Toast.LENGTH_LONG).show();
+        } else {
+            // Get timestamp and add to filename
+            Date date = new Date();
+            // getTime() returns current time in milliseconds
+            long time = date.getTime();
+            String ts = String.valueOf(time);
+            filename = "scores_" + ts + ".csv";
+            String sendMailURL = "http://www.trialmonster.uk/android/sendMailWithFile.php?id=" + ts + "&trialid=" + trialid + "&email=" + email;
 
-        Date date = new Date();
-       // getTime() returns current time in milliseconds
-        long time = date.getTime();
-        String ts = String.valueOf(time);
-        filename = "scores_" + ts + ".csv";
-        String sendMailURL = "http://www.trialmonster.uk/android/sendMailWithFile.php?id=" + ts + "&trialid=" + trialid;
-       // sendMailURL = "http://www.trialmonster.uk/android/addCSVtodb.php?id=" + filename;
-        processCSV(sendMailURL);
-
+            processCSV(sendMailURL);
+        }
     }
 
     private void processCSV(final String sendMailURL) {
@@ -252,7 +261,7 @@ public class MainActivity extends AppCompatActivity {
                 if (s.contentEquals("OK")){
                     runOnUiThread(new Runnable() {
                         public void run() {
-                            Toast.makeText(MainActivity.this, "Score Update Complete",
+                            Toast.makeText(MainActivity.this, "The email has been sent successfully.",
                                     Toast.LENGTH_LONG).show();
                         }
                     });
@@ -567,7 +576,7 @@ public class MainActivity extends AppCompatActivity {
         numberLabel.setText("");
         scoreLabel.setText("0");
     }
-
+/*
     private boolean getPrefs() {
         localPrefs = getSharedPreferences("monster", MODE_PRIVATE);
         observer = localPrefs.getString("observer", "");
@@ -583,6 +592,22 @@ public class MainActivity extends AppCompatActivity {
 
         statusLine.setText(status);
         return trialid != 0;
+    }
+*/
+    private void getPrefs() {
+        localPrefs = getSharedPreferences("monster", MODE_PRIVATE);
+        observer = localPrefs.getString("observer", "");
+        section = localPrefs.getInt("section", 1);
+        trialid = localPrefs.getInt("trialid", 0);
+        numlaps = localPrefs.getInt("numlaps", 0);
+        numsections = localPrefs.getInt("numsections", 0);
+        section = localPrefs.getInt("section", 1);
+        email = localPrefs.getString("email", "");
+        theTrialName = localPrefs.getString("theTrialName", "None selected");
+        status = theTrialName + " - Observer: " + observer;
+        sectionNumber.setText(String.valueOf(section));
+
+        statusLine.setText(status);
     }
 
     protected boolean isOnline() {
@@ -648,7 +673,7 @@ public class MainActivity extends AppCompatActivity {
             CSVWriter csvWrite = new CSVWriter(new FileWriter(exportDir));
 
             String[] header = {"id", "rider", "section",
-                    "lap", "score", "observer", "created", "updated", "edited", "trialid", "sync"};
+                    "lap", "score", "observer", "created", "updated", "edited", "trialid", "sync", email};
 
             csvWrite.writeNext(header, false);
 
