@@ -35,9 +35,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-// TODO: Select trial in list from prefs or select item 0
 
-//
 public class SetupActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
     // Set up data fields
@@ -56,18 +54,10 @@ public class SetupActivity extends AppCompatActivity implements AdapterView.OnIt
     ScoreDbHelper theScoreDB;
     FinishTimeDbHelper theFinishTimeDB;
 
-    // Interface widgets
-    //  RadioGroup modeSwitch;
-    //  int modeIdx;
-
-    //  RadioButton dabPadSelect, numberPadSelect;
-    // boolean showDabPad;
-    // long startTime;
-
     Spinner trialSelect;
     ProgressDialog dialog = null;
     CheckBox resetCheckBox, confirmCheckBox;
-    TextView observerTextInput, trialNameTextInput, emailTextInput, numSectionsTextInput, numLapsTextInput, /* sectionTextInput, */ trialDetailView;
+    TextView observerTextInput, trialNameTextInput, emailTextInput, numSectionsTextInput, numLapsTextInput, trialDetailView;
     ImageView warningImageView;
     private Button button;
 
@@ -196,14 +186,18 @@ public class SetupActivity extends AppCompatActivity implements AdapterView.OnIt
                 // Populate ArrayList with JSON data
                 theTrialList = populateResultArrayList(s);
 
-                theTrials = new String[theTrialList.size()];
-                theIDs = new String[theTrialList.size()];
+                int size = theTrialList.size();
+                theTrials = new String[size];
+                theIDs = new String[size];
 
                 for (int index = 0; index < theTrialList.size(); index++) {
                     theTrials[index] = theTrialList.get(index).get("name");
                     theIDs[index] = theTrialList.get(index).get("id");
                 }
 
+                if (trialid == 0) {
+                    theTrialName = "Manual Entry";
+                }
                 // Set up Spinner
                 ArrayAdapter aa = new ArrayAdapter(getApplicationContext(), android.R.layout.simple_spinner_item, theTrials);
                 aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -327,13 +321,6 @@ public class SetupActivity extends AppCompatActivity implements AdapterView.OnIt
         } else {
             trialDetailsInput.setVisibility(View.GONE);
         }
-
- /*       if (section == 0) {
-            sectionNumber = "";
-        } else {
-            sectionNumber = String.valueOf(section);
-        }
-*/
         // Sync inputs to saved values
         observerTextInput.setText(observer);
 
@@ -407,31 +394,11 @@ public class SetupActivity extends AppCompatActivity implements AdapterView.OnIt
             }
         }
 
-/*        // Check that section field is populated
-        if (sectionTextInput.getText().toString().equals("")) {
-            // If empty, then append message
-            hasErrors = true;
-            errorMsg += "\nThe section field is empty";
-        } else {
-            // Check section number validity against numsections
-            section = Integer.parseInt(sectionTextInput.getText().toString());
-            // If out of range, then append message
-            if (section > numsections || section <= 0) {
-                hasErrors = true;
-                errorMsg += "\nInvalid section number";
-            }
-        }
-
- */
-
         // Inform user if errors
         if (hasErrors) {
             Toast.makeText(this, errorMsg, Toast.LENGTH_LONG).show();
         } else {
             // otherwise save values
-//            View radioButton = modeSwitch.findViewById(radioButtonID);
-            //   int idx = modeSwitch.indexOfChild(radioButton);
-
             localPrefs = getSharedPreferences("monster", MODE_PRIVATE);
             SharedPreferences.Editor editor = localPrefs.edit();
             editor.putString("theTrialName", theTrialName);
@@ -462,7 +429,6 @@ public class SetupActivity extends AppCompatActivity implements AdapterView.OnIt
         trialid = Integer.parseInt(theTrial.get("id").toString());
         email = theTrial.get("email").toString();
         theTrialName = theTrial.get("name").toString();
-
 
         if (trialid == 0 ) {
             trialDetailsInput.setVisibility(View.VISIBLE);
