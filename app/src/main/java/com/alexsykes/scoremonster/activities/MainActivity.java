@@ -175,6 +175,11 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
 
+            // Show scores on remote server
+            case R.id.help:
+                goHelp();
+                return true;
+
             // Enter andinitialise section details
             case R.id.setup:
                 goSetup();
@@ -193,9 +198,6 @@ public class MainActivity extends AppCompatActivity {
                 goSync();
                 return true;
 
-            case R.id.timeMode:
-                goTimingMode();
-                return true;
 
             default:
                 // If we got here, the user's action was not recognized.
@@ -205,9 +207,14 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void goHelp() {
+        Intent intent = new Intent(this, HelpActivity.class);
+        startActivityForResult(intent, TEXT_REQUEST);
+    }
+
     private void sendEmail() {
         isOnline = isOnline();
-        if(!isOnline){
+        if (!isOnline) {
             Toast.makeText(MainActivity.this, "Email cannot be sent at this time - no Internet connection.",
                     Toast.LENGTH_LONG).show();
         } else {

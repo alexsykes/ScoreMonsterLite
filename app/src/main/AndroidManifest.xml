@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.alexsykes.scoremonster"
-    android:versionName="1.0"
-    android:versionCode="1">
+    android:versionCode="1"
+    android:versionName="1.0">
+
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_INTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -18,9 +19,12 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
+            android:name=".activities.HelpActivity"
+            android:parentActivityName=".activities.MainActivity" />
+        <activity
             android:name=".activities.TimeSheetActivity"
             android:label="@string/timesheet"
-            android:parentActivityName=".activities.TimerActivity"></activity>
+            android:parentActivityName=".activities.TimerActivity" />
         <activity
             android:name=".activities.TimerActivity"
             android:label="Timer"
@@ -53,14 +57,15 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="com.alexsykes.scoremonster.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true">
-<meta-data
-    android:name="android.support.FILE_PROVIDER_PATHS"
-    android:resource="@xml/filepaths"/>
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/filepaths" />
         </provider>
     </application>
 

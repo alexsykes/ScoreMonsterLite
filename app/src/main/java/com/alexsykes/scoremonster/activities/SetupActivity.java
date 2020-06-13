@@ -76,14 +76,6 @@ public class SetupActivity extends AppCompatActivity implements AdapterView.OnIt
         trialDetailsInput = findViewById(( R.id.trialDetailsInput));
         numSectionsTextInput = findViewById(( R.id.numSectionsTextInput));
         numLapsTextInput = findViewById(( R.id.numLapsTextInput));
-
-//        Unused
-//        modeSwitch = findViewById(R.id.padViewGroup);
-//        dabPadSelect = findViewById(R.id.dabPadSelect);
-//        numberPadSelect = findViewById(R.id.numberPadSelect);
-//        sectionTextInput = findViewById(R.id.sectionTextInput);
-
-
         resetCheckBox = findViewById(R.id.resetCheckBox);
         confirmCheckBox = findViewById(R.id.confirmCheckBox);
         warningImageView = findViewById(R.id.warningImageView);

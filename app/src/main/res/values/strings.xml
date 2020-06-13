@@ -17,48 +17,8 @@
     <string name="backSpace">⌫</string>
     <string name="score_entry">Score Entry</string>
     <string name="riding_number">Riding Number</string>
-    <string name="tsr">TSR22 METHOD OF MARKING
-A machine will be deemed to be in an Observed Section or Sub-Section when the front wheel spindle has passed the ‘Section Begins’ Card and until the front wheel spindle has passed the ‘Section Ends’ Card. Marks will be lost as follows:\n
-A. STOP PERMITTED\n
-0 Clean\n
-1 Footing once\n
-2 Footing twice\n
-3 Footing more than twice\n
-5 Failure\n
-5 When requested by a rider rather than attempt the section\n
-5 Entering a section before being called upon to do so by an official\n
-10 Not attempting a section when called upon to do so by an official\n
-10 For missing a section or failing to have punch card marked.\n\n
-Graded Hills.\nWhere a Section is to be termed a ‘Graded Hill’ a notice to that effect must be displayed at the Section Begins, and the following shall apply: Numbered boards must be placed at defined places along the Section, in order that a rider’s performance may be determined. Marks will be lost in a decreasing manner from 5 to 0 depending on the distance a rider can traverse the Section without failure. The front wheel spindle is the part of the machine to be used in assessing the distance traversed.\nFooting is allowed without penalty.\n0 Clean
-1 Reaching or passing the “1 Board” without Failure
-2 Reaching or passing the “2 Board” without Failure
-3 Reaching or passing the “3 Board” without Failure
-5 Failure to reach the “3 Board”
-5 When requested by a rider rather than attempt the section
-10 Not attempting a Section when called upon to do so by an official
-10 For missing a section or failing to have punch card marked.
-DEFINITIONS
-Clean: A rider traversing a Section as defined above without penalty as described under FOOTING or FAILURE shall be unpenalised and given a “CLEAN”.
-Footing: Footing will be considered to have occurred if any part of the rider’s body or any part of the machine, (with the exception of the tyres or the sump shield) touches the ground or the rider benefit from any part of their body, or any part of the machine, (with the exception of the tyres or the sump shield) leaning on an obstacle (tree, wall etc.)
-Footing outside the lateral limits of a Section does not constitute a failure but should simply be classed as footing.
-Failure: A failure is considered to have occurred if:
-a) The machine moves backwards.
-b) The rider does not have both hands on the handlebar WHEN HE FOOTS WHILST STATIONARY.
-c) The engine stops WHILST ANY PART OF THE MACHINE, WITH THE EXCEPTION OF THE TYRES, TOUCHES THE GROUND OR THE RIDER IS FOOTING.
-d) The rider dismounts from the machine. Dismount will be deemed to have occurred when both of the rider’s feet are on the ground at the same side of, or behind the machine.
-e) A rider is requested to leave the section by the observer for “unnecessary delay”.
-f) A machine does not stay within the intended limits of the section as defined by the Observer.
-g) If any wheel of the machine crosses any boundary tape or goes over or on the wrong side of
-a marker, whether the wheel be on the ground or airborne, before the front wheel spindle
-passes the “Section ends” sign.
-h) The rider is held responsible for displacing a marker or support in an observed section
-whereby the observer considers it necessary to reinstate the flag/marker prior to the passage of the next rider.
-The displacing of any marking not relating to the competitor’s route will be considered to constitute a failure.
-i) Travelling in a forward direction against the direction of the Section. j) The motorcycle crosses its own track with either wheel.
-k) The machine or rider receives outside assistance.
-l) A rider or person having an interest in a rider’s performance, who in any way alters the severity of a section without the authority of an official.
-For all trials other than those for which Championship Regulations apply the organiser may, with the agreement of the Permit Issuing Authority, apply a time limit to each section. The time allowed must be the same for each and every Section and the penalty for a rider not completing the Section within that time would be failure. If a time limit is to be applied to the Sections then this must be clearly stated in the Supplementary Regulations.
-B. NON-STOP
+    <string name="tsr22SP"><p><b>Stop Permitted</b><br />A machine will be deemed to be in an Observed Section or Sub-Section when the front wheel spindle has passed the ‘Section Begins’ Card and until the front wheel spindle has passed the ‘Section Ends’ Card. Marks will be lost as follows:\n<br />A. STOP PERMITTED\n<br />0 Clean\n<br />1 Footing once\n<br />2 Footing twice\n<br />3 Footing more than twice\n<br />5 Failure\n<br />5 When requested by a rider rather than attempt the section\n<br />5 Entering a section before being called upon to do so by an official\n<br />10 Not attempting a section when called upon to do so by an official\n<br />10 For missing a section or failing to have punch card marked.\n\n<br /><br />DEFINITIONS<br />Clean: A rider traversing a Section as defined above without penalty as described under FOOTING or FAILURE shall be unpenalised and given a CLEAN.\n<br />Footing: Footing will be considered to have occurred if any part of the rider’s body or any part of the machine, (with the exception of the tyres or the sump shield) touches the ground or the rider benefit from any part of their body, or any part of the machine, (with the exception of the tyres or the sump shield) leaning on an obstacle (tree, wall etc.)\nFooting outside the lateral limits of a Section does not constitute a failure but should simply be classed as footing.<br />Failure \nA failure is considered to have occurred if:\n<br />a) The machine moves backwards.\n<br />b) The rider does not have both hands on the handlebar WHEN HE FOOTS WHILST STATIONARY.\n<br />c) The engine stops WHILST ANY PART OF THE MACHINE, WITH THE EXCEPTION OF THE TYRES, TOUCHES THE GROUND OR THE RIDER IS FOOTING.\n<br />d) The rider dismounts from the machine. Dismount will be deemed to have occurred when both of the rider’s feet are on the ground at the same side of, or behind the machine.\n<br />e) A rider is requested to leave the section by the observer for “unnecessary delay”.\n<br />f) A machine does not stay within the intended limits of the section as defined by the Observer.\n<br />g) If any wheel of the machine crosses any boundary tape or goes over or on the wrong side of<br />a marker, whether the wheel be on the ground or airborne, before the front wheel spindle<br />passes the “Section ends” sign.\n<br />h) The rider is held responsible for displacing a marker or support in an observed section<br />whereby the observer considers it necessary to reinstate the flag/marker prior to the passage of the next rider.\n<br />The displacing of any marking not relating to the competitor’s route will be considered to constitute a failure.\n<br />i) Travelling in a forward direction against the direction of the Section. j) The motorcycle crosses its own track with either wheel.\n<br />k) The machine or rider receives outside assistance.\n<br />l) A rider or person having an interest in a rider’s performance, who in any way alters the severity of a section without the authority of an official.\n<br />For all trials other than those for which Championship Regulations apply the organiser may, with the agreement of the Permit Issuing Authority, apply a time limit to each section. The time allowed must be the same for each and every Section and the penalty for a rider not completing the Section within that time would be failure. If a time limit is to be applied to the Sections then this must be clearly stated in the Supplementary Regulations.</p></string>
+    <string name="tsr22NS">
 0 Clean
 1 Footing once
 2 Footing twice
@@ -113,6 +73,7 @@ c) In favour of the rider with the highest number of two marks.
 d) In favour of the rider with the highest number of three marks.
 e) In favour of the rider who travelled furthest with the least marks lost.
 f) In favour of the rider who completes the course with the least marks lost on time.</string>
+
     <string name="score">Score</string>
     <string name="rider">Rider</string>
     <string name="textview">TextView</string>
@@ -184,6 +145,8 @@ f) In favour of the rider who completes the course with the least marks lost on 
     <string name="prev">prev</string>
     <string name="next">next</string>
     <string name="trial_name">Trial name</string>
+    <string name="sendmail">Email scores</string>
+    <string name="help">Help</string>
     <string-array name="scores">
         <item>Clean</item>
         <item>One</item>
