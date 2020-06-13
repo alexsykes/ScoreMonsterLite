@@ -20,6 +20,6 @@
             android:layout_margin="8dp"
             android:lineSpacingExtra="4sp"
             android:textColor="@color/colorButtonBlue"
-            android:textSize="12sp" />
+            android:textSize="16sp" />
     </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>

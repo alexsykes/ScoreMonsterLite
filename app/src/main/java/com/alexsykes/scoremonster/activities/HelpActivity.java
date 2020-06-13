@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.text.Html;
+import android.text.Spanned;
 import android.widget.TextView;
 import android.text.Html;
 
@@ -18,7 +19,10 @@ public class HelpActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_help);
         helpTextView = findViewById(R.id.helpApp);
-        helpText = getResources().getString(R.string.tsr22SP);
-        helpTextView.setText(Html.fromHtml((helpText)));
+        helpText = getResources().getString(R.string.textStyle);
+        Spanned text = Html.fromHtml(helpText);
+
+
+        helpTextView.setText(Html.fromHtml(getString(R.string.tsr22NS)));
     }
 }
