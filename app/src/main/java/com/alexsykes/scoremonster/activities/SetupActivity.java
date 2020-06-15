@@ -1,11 +1,16 @@
 package com.alexsykes.scoremonster.activities;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
+
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -130,6 +135,17 @@ public class SetupActivity extends AppCompatActivity implements AdapterView.OnIt
                 Toast.makeText(SetupActivity.this, "Empty data", Toast.LENGTH_LONG).show();
             }
         }
+    }
+
+    @Override
+    protected void onStart() {
+        // Check network connectivity and set Prefs
+        localPrefs = getSharedPreferences("monster", MODE_PRIVATE);
+        SharedPreferences.Editor editor = localPrefs.edit();
+        isOnline = isOnline();
+        editor.putBoolean("canConnect", isOnline);
+        editor.apply();
+        super.onStart();
     }
 
     private void getJSONDataset(final String urlWebService) {
@@ -409,6 +425,13 @@ public class SetupActivity extends AppCompatActivity implements AdapterView.OnIt
             }
             finish();
         }
+    }
+
+    protected boolean isOnline() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+
+        return netInfo != null && netInfo.isConnectedOrConnecting();
     }
 
     // Reading trial details into variables

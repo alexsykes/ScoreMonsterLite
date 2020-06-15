@@ -10,6 +10,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.media.ToneGenerator;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -47,11 +48,13 @@ import java.net.URL;
 import java.util.Date;
 
 // TODO Important - move database setup method from ScoreDbHelper
+// TODO Important - add message to setup for no connection
 
 public class MainActivity extends AppCompatActivity {
 
     public static final int TEXT_REQUEST = 1;
     public static final int NOT_SYNCED = -1;
+    MediaPlayer mediaPlayer;
 
     String email;
     String subject;
@@ -296,10 +299,6 @@ public class MainActivity extends AppCompatActivity {
     public int uploadFile(String sourceFileUri) {
         File directory = getFilesDir();
         File sourceFile = new File(directory, filename);
-
-
-        String fileName = sourceFileUri;
-
         HttpURLConnection conn;
         DataOutputStream dos ;
         String lineEnd = "\r\n";
@@ -326,6 +325,7 @@ public class MainActivity extends AppCompatActivity {
 
         } else {
             try {
+                String fileName = sourceFileUri;
                 // open a URL connection to the Servlet
                 FileInputStream fileInputStream = new FileInputStream(sourceFile);
                 URL url = new URL(upLoadServerUri);
@@ -531,6 +531,9 @@ public class MainActivity extends AppCompatActivity {
 
         if (score.equals("") || rider.equals("")) {
             toneGen1.startTone(ToneGenerator.TONE_PROP_BEEP2, 150);
+
+            //
+
             new AlertDialog.Builder(this).setTitle("Warning").setMessage("Missing rider number or score").setNeutralButton("Close", null).show();
         } else {
             // Otherwise enter scores
@@ -567,7 +570,9 @@ public class MainActivity extends AppCompatActivity {
             values.put(ScoreContract.ScoreEntry.COLUMN_SCORE_SYNC, NOT_SYNCED);
 
             db.insert(ScoreContract.ScoreEntry.TABLE_NAME, null, values);
-            toneGen1.startTone(ToneGenerator.TONE_CDMA_CONFIRM, ToneGenerator.MAX_VOLUME);
+            //   toneGen1.startTone(ToneGenerator.TONE_CDMA_CONFIRM, ToneGenerator.MAX_VOLUME);
+
+            playSoundFile(R.raw.ting);
             Toast.makeText(this, "Score saved", Toast.LENGTH_SHORT).show();
         }
     }
@@ -619,7 +624,7 @@ public class MainActivity extends AppCompatActivity {
         return netInfo != null && netInfo.isConnectedOrConnecting();
     }
 
-    public void checkConnection() {
+/*    public void checkConnection() {
 
         localPrefs = getSharedPreferences("monster", MODE_PRIVATE);
         SharedPreferences.Editor editor = localPrefs.edit();
@@ -632,7 +637,7 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(MainActivity.this, "Not Connected", Toast.LENGTH_LONG).show();
         }
         editor.apply();
-    }
+    }*/
 
     public void increment(View view) {
         SharedPreferences.Editor editor = localPrefs.edit();
@@ -704,8 +709,14 @@ public class MainActivity extends AppCompatActivity {
             return true;
 
         } catch (IOException e) {
-          //  Log.e("Child", e.getMessage(), e);
+            //  Log.e("Child", e.getMessage(), e);
             return false;
         }
+    }
+
+    //play a soundfile
+    public void playSoundFile(Integer fileName) {
+        mediaPlayer = MediaPlayer.create(this, fileName);
+        mediaPlayer.start();
     }
 }

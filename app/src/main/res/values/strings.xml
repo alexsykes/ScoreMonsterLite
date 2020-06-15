@@ -17,66 +17,67 @@
     <string name="backSpace">⌫</string>
     <string name="score_entry">Score Entry</string>
     <string name="riding_number">Riding Number</string>
-    <string name="tsr22SP"><![CDATA[<b>TSR 22 - Stop Permitted</b><br />A machine will be deemed to be in an Observed Section or Sub-Section when the front wheel spindle has passed the ‘Section Begins’ Card and until the front wheel spindle has passed the ‘Section Ends’ Card. Marks will be lost as follows:<br /><br />
-  0 - Clean<br />
-  1 - Footing once<br />
-  2 - Footing twice<br />
-  3 - Footing more than twice<br />
-  5 - Failure<br />
-  5 - When requested by a rider rather than attempt the section<br />
-  5 - Entering a section before being called upon to do so by an official<br />
-  10 - Not attempting a section when called upon to do so by an official<br />10 - For missing a section or failing to have punch card marked.<br /><br />
- <b>Definitions</b><br />
- <b>Clean:</b><br /> A rider traversing a Section as defined above without penalty as described under footing or failure shall be unpenalised and given a clean.<br />
- <b>Footing:</b> Footing will be considered to have occurred if any part of the rider’s body or any part of the machine, (with the exception of the tyres or the sump shield) touches the ground or the rider benefit from any part of their body, or any part of the machine, (with the exception of the tyres or the sump shield) leaning on an obstacle (tree, wall etc.)Footing outside the lateral limits of a Section does not constitute a failure but should simply be classed as footing.<br />
- <b>Failure:</b><br /> A failure is considered to have occurred if:<br />
- • The machine moves backwards.<br />
- • The rider does not have both hands on the handlebar when he foots whilst stationary.<br />
- • The engine stops whilst any part of the machine, with the exception of the tyres, touches the ground or the rider is footing.<br />
- • The rider dismounts from the machine. Dismount will be deemed to have occurred when both of the rider’s feet are on the ground at the same side of, or behind, the machine.<br />
- • A rider is requested to leave the section by the observer for “unnecessary delay”.<br />
- • A machine does not stay within the intended limits of the section as defined by the Observer.<br />
- • If any wheel of the machine crosses any boundary tape or goes over or on the wrong side of a marker, whether the wheel be on the ground or airborne, before the front wheel spindle<br />passes the “Section ends” sign.<br />
- • The rider is held responsible for displacing a marker or support in an observed section whereby the observer considers it necessary to reinstate the flag/marker prior to the passage of the next rider.<br />
- • The displacing of any marking not relating to the competitor’s route will be considered to constitute a failure.<br />• Travelling in a forward direction against the direction of the Section.<br />• The motorcycle crosses its own track with either wheel.<br />
+    <string name="tsr22SP"><![CDATA[<b>TSR 22 - Stop Permitted</b><br/>A machine will be deemed to be in an Observed Section or Sub-Section when the front wheel spindle has passed the ‘Section Begins’ Card and until the front wheel spindle has passed the ‘Section Ends’ Card. Marks will be lost as follows:<br/><br/>
+  0 - Clean<br/>
+  1 - Footing once<br/>
+  2 - Footing twice<br/>
+  3 - Footing more than twice<br/>
+  5 - Failure<br/>
+  5 - When requested by a rider rather than attempt the section<br/>
+  5 - Entering a section before being called upon to do so by an official<br/>
+  10 - Not attempting a section when called upon to do so by an official<br/>
+  10 - For missing a section or failing to have punch card marked<br/><br/>
+ <b>Definitions</b><br/>
+ <b>Clean:</b><br/> A rider traversing a Section as defined above without penalty as described under footing or failure shall be unpenalised and given a clean.<br/>
+ <b>Footing:</b> Footing will be considered to have occurred if any part of the rider’s body or any part of the machine, (with the exception of the tyres or the sump shield) touches the ground or the rider benefit from any part of their body, or any part of the machine, (with the exception of the tyres or the sump shield) leaning on an obstacle (tree, wall etc.)Footing outside the lateral limits of a Section does not constitute a failure but should simply be classed as footing.<br/>
+ <b>Failure:</b><br/> A failure is considered to have occurred if:<br/>
+ • The machine moves backwards.<br/>
+ • The rider does not have both hands on the handlebar when he foots whilst stationary.<br/>
+ • The engine stops whilst any part of the machine, with the exception of the tyres, touches the ground or the rider is footing.<br/>
+ • The rider dismounts from the machine. Dismount will be deemed to have occurred when both of the rider’s feet are on the ground at the same side of, or behind, the machine.<br/>
+ • A rider is requested to leave the section by the observer for “unnecessary delay”.<br/>
+ • A machine does not stay within the intended limits of the section as defined by the Observer.<br/>
+ • If any wheel of the machine crosses any boundary tape or goes over or on the wrong side of a marker, whether the wheel be on the ground or airborne, before the front wheel spindle<br/>passes the “Section ends” sign.<br/>
+ • The rider is held responsible for displacing a marker or support in an observed section whereby the observer considers it necessary to reinstate the flag/marker prior to the passage of the next rider.<br/>
+ • The displacing of any marking not relating to the competitor’s route will be considered to constitute a failure.<br/>• Travelling in a forward direction against the direction of the Section.<br/>• The motorcycle crosses its own track with either wheel.<br/>
  • The machine or rider receives outside assistance.
- <br />• A rider or person having an interest in a rider’s performance, who in any way alters the severity of a section without the authority of an official.
- <br /><b>For Sidecar events only</b>
- <br />A failure is considered to have occurred if:
-<br />The passenger foots i.e. if any part of the passenger’s body touches the ground, or benefit is gained from any part of his body leaning on an obstacle (tree, wall etc.)<br/><br />
+ <br/>• A rider or person having an interest in a rider’s performance, who in any way alters the severity of a section without the authority of an official.
+ <br/><b>For Sidecar events only</b>
+ <br/>A failure is considered to have occurred if:
+<br/>The passenger foots i.e. if any part of the passenger’s body touches the ground, or benefit is gained from any part of his body leaning on an obstacle (tree, wall etc.)<br/>
 ]]></string>
-    <string name="tsr22NS"><![CDATA[<b>TSR 22 - Non-stop</b><br />A machine will be deemed to be in an Observed Section or Sub-Section when the front wheel spindle has passed the ‘Section Begins’ Card and until the front wheel spindle has passed the ‘Section Ends’ Card. Marks will be lost as follows:<br /><br />
-  0 - Clean<br />
-  1 - Footing once<br />
-  2 - Footing twice<br />
-  3 - Footing more than twice<br />
-  5 - Failure<br />
-  5 - When requested by a rider rather than attempt the section<br />
-  5 - Entering a section before being called upon to do so by an official<br />
-    10 - Not attempting a section when called upon to do so by an official<br />
-    10 - For missing a section or failing to have punch card marked.<br /><br />
+    <string name="tsr22NS"><![CDATA[<b>TSR 22 - Non-stop</b><br/>A machine will be deemed to be in an Observed Section or Sub-Section when the front wheel spindle has passed the ‘Section Begins’ Card and until the front wheel spindle has passed the ‘Section Ends’ Card. Marks will be lost as follows:<br/><br/>
+  0 - Clean<br/>
+  1 - Footing once<br/>
+  2 - Footing twice<br/>
+  3 - Footing more than twice<br/>
+  5 - Failure<br/>
+  5 - When requested by a rider rather than attempt the section<br/>
+  5 - Entering a section before being called upon to do so by an official<br/>
+  10 - Not attempting a section when called upon to do so by an official<br/>
+  10 - For missing a section or failing to have punch card marked<br/><br/>
 
-<b>Definitions</b><br />
-<b>Clean:</b><br />
+<b>Definitions</b><br/>
+<b>Clean:</b><br/>
 A rider traversing a Section as defined above without penalty as described under Footing or Failure shall be unpenalised and given a Clean.
-<br /><b>Footing: </b><br />
+<br/><b>Footing: </b><br/>
 Footing will be considered to have occurred if any part of the rider’s body or any part of the machine, (with the exception of the tyres or the sump shield) touches the ground or the rider benefit from any part of their body, or any part of the machine, (with the exception of the tyres or the sump shield) leaning on an obstacle (tree, wall etc.),
 Footing outside the lateral limits of a Section does not constitute a failure but should simply be classed as footing.
-<br /><b>Failure:</b><br />
+<br/><b>Failure:</b><br/>
 A failure is considered to have occurred if:
-<br />• The machine ceases to move in a forward direction.
-<br />• The rider dismounts from the machine. Dismount will be deemed to have occurred when both of the rider’s feet are on the ground at the same side of or behind the machine.
-<br />• A machine does not stay within the intended limits of the section as defined by the Observer.
-<br />• If any wheel of the machine crosses any boundary tape or goes over or the wrong side of a marker, whether the wheel be on the ground or airborne, before the front wheel spindle passes the “Section ends” sign.
-<br />• The rider or passenger is held responsible for displacing any marker or support in an observed section whereby the observer considers it necessary to reinstate the flag/marker prior to the passage of the next rider. The displacement of any marking not relating to the competitor’s route will also be considered to warrant a failure.
-<br />• The machine or rider travels in a forward direction against the direction of the Section.
-<br />• The motorcycle crosses its own track with either wheel.
-<br />• The machine, or rider or passenger receives outside assistance.
-<br />• A rider or person having an interest in a rider’s performance, in any way alters the severity of a section without the authority of an official.
-<b><br />
-<br />For Sidecar events only</b><br />
+<br/>• The machine ceases to move in a forward direction.
+<br/>• The rider dismounts from the machine. Dismount will be deemed to have occurred when both of the rider’s feet are on the ground at the same side of or behind the machine.
+<br/>• A machine does not stay within the intended limits of the section as defined by the Observer.
+<br/>• If any wheel of the machine crosses any boundary tape or goes over or the wrong side of a marker, whether the wheel be on the ground or airborne, before the front wheel spindle passes the “Section ends” sign.
+<br/>• The rider or passenger is held responsible for displacing any marker or support in an observed section whereby the observer considers it necessary to reinstate the flag/marker prior to the passage of the next rider. The displacement of any marking not relating to the competitor’s route will also be considered to warrant a failure.
+<br/>• The machine or rider travels in a forward direction against the direction of the Section.
+<br/>• The motorcycle crosses its own track with either wheel.
+<br/>• The machine, or rider or passenger receives outside assistance.
+<br/>• A rider or person having an interest in a rider’s performance, in any way alters the severity of a section without the authority of an official.
+<b><br/>
+<br/>For Sidecar events only</b><br/>
 A failure is considered to have occurred if:
-<br />The passenger foots i.e. if any part of the passenger’s body touches the ground, or benefit is gained from any part of his body leaning on an obstacle (tree, wall etc.)<br /><br/>]]></string>
+<br/>The passenger foots i.e. if any part of the passenger’s body touches the ground, or benefit is gained from any part of his body leaning on an obstacle (tree, wall etc.)<br/>]]></string>
 
 
     <string name="score">Score</string>
@@ -167,13 +168,13 @@ A failure is considered to have occurred if:
 <b>Setting up a trial</b><br/>
 
 <b>Entering a score</b><br/>
-On the main screen, select the correct section by clicking on the PREV or NEXT buttons until the section number is visible. The rider\'s number is selected from the main number pad and the score from the lower pad. If the rider takes a dab, simply click the Dab button for each dab. <br/>To record the score, hold down the SAVE button for a longer period - around 1 second - until a beep is heard. The scoring pad will then be blank and ready for the next attempt. <br/>
+On the main screen, select the correct section by clicking on the <b>PREV</b> or <b>NEXT</b> buttons until the section number is visible. The rider\'s number is selected from the main number pad and the score from the lower pad. If the rider takes a dab, simply click the Dab button for each dab. <br/>To record the score, hold down the <b>SAVE</b> button for a longer period - around 1 second - until a beep is heard. The scoring pad will then be blank and ready for the next attempt. <br/><br/>
 <b>Changing a score</b><br/>
-To change a score, click on the list icon in the toolbar. This will display a list of scores with the most recent at the top. Select the score you wish to change, then select the correct score. Click OK to confirm the change.<br/>
+To change a score, click on the list icon in the toolbar. This will display a list of scores with the most recent at the top. Select the score you wish to change, then select the correct score. Click <b>OK</b> to confirm the change.<br/><br/>
 <b>Uploading scores</b><br/>
-<b>An Internet connection is needed for uploading scores.</b> To upload a set of scores, click on the list icon in the toolbar. This will display a list of scores with the most recent at the top. Click on the Upload Data button at the bottom of the screen. This can take a few moments depending on the amount of data and speed of connection.<br/>
+<b>An Internet connection is needed for uploading scores.</b> To upload a set of scores, click on the list icon in the toolbar. This will display a list of scores with the most recent at the top. Click on the Upload Data button at the bottom of the screen. This can take a few moments depending on the amount of data and speed of connection.<br/><br/>
 <b>Emailing scores</b><br/>
-<b>An Internet connection is needed for emailing scores.</b> To email a set of scores, click on the list icon in the toolbar. This will display a list of scores with the most recent at the top. Click on the Upload Data button at the bottom of the screen. <br/><br/>
+<b>An Internet connection is needed for emailing scores.</b> To email a set of scores, click on the three dots at the end of the toolbar. A link <b>Email scores</b> will appear. Select this. Sending the email may take a few moments depending on the amount of data and speed of connection.<br/>
 
       ]]>
    </string>
