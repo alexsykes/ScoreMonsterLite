@@ -8,9 +8,6 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
-
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -19,11 +16,11 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.alexsykes.scoremonster.R;
 import com.alexsykes.scoremonster.data.FinishTimeDbHelper;
@@ -125,7 +122,7 @@ public class SetupActivity extends AppCompatActivity implements AdapterView.OnIt
         trialSelect.setOnItemSelectedListener(this);
 
         checkPrefs();
-        if(isOnline) {
+        if (isOnline()) {
 
             // Get trialList from server
             String URL = BASE_URL + "getTrialList.php";

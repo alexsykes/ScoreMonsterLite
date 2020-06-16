@@ -1,6 +1,14 @@
 apply plugin: 'com.android.application'
 
 android {
+    signingConfigs {
+        debug {
+            storeFile file('/Users/alex/Developer/keys/keystore.jks')
+            storePassword 'AleSyk12'
+            keyPassword 'AleSyk12'
+            keyAlias 'monster'
+        }
+    }
     compileSdkVersion 28
     defaultConfig {
         applicationId "com.alexsykes.scoremonster"

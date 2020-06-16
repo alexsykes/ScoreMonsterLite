@@ -1,16 +1,21 @@
 package com.alexsykes.scoremonster.activities;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
+
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -54,7 +59,7 @@ public class SyncActivity extends AppCompatActivity {
     private ScoreDbHelper mDbHelper;
     private String filename;
 
-    boolean isOnline;
+    // boolean isOnline;
 
     SharedPreferences localPrefs;
 
@@ -83,8 +88,8 @@ public class SyncActivity extends AppCompatActivity {
         processButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                isOnline = localPrefs.getBoolean("canConnect", false);
-                if(!isOnline) {
+                //   isOnline = localPrefs.getBoolean("canConnect", false);
+                if (!isOnline()) {
                     // processButton.setEnabled(false);
                     Toast.makeText(SyncActivity.this, "Scores cannot be sent at this time - no Internet connection.", Toast.LENGTH_LONG).show();
                 } else {
@@ -101,9 +106,9 @@ public class SyncActivity extends AppCompatActivity {
             }
         });
 
-        isOnline = localPrefs.getBoolean("canConnect", false);
-        if(!isOnline) {
-           // processButton.setEnabled(false);
+        // isOnline = localPrefs.getBoolean("canConnect", false);
+        if (!isOnline()) {
+            //   processButton.setEnabled(false);
         }
     }
 
@@ -440,5 +445,13 @@ public class SyncActivity extends AppCompatActivity {
             dialog.dismiss();
             return serverResponseCode;
         }
+    }
+
+
+    protected boolean isOnline() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+
+        return netInfo != null && netInfo.isConnectedOrConnecting();
     }
 }
