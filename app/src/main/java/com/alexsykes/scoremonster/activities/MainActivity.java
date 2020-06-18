@@ -17,7 +17,6 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -277,7 +276,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             protected String doInBackground(Void... voids) {
 
-                int response = uploadFile(uploadFilePath + filename);
+              //  int response = uploadFile(uploadFilePath + filename);
                 try {
                     //creating a URL
                     URL url = new URL(sendMailURL);
