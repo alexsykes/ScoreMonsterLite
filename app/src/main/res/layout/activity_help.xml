@@ -52,15 +52,22 @@
         android:layout_height="wrap_content"
         android:layout_margin="0dp">
 
-        <TextView
-            android:id="@+id/helpApp"
+        <LinearLayout
+            android:id="@+id/layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:lineSpacingExtra="4sp"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:textColor="@color/colorButtonBlue"
-            android:textSize="16sp" />
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/helpApp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:lineSpacingExtra="4sp"
+                android:textColor="@color/colorButtonBlue"
+                android:textSize="16sp" />
+        </LinearLayout>
     </ScrollView>
 
 
