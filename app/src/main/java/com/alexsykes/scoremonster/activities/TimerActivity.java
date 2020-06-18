@@ -62,6 +62,7 @@ import java.util.HashMap;
 public class TimerActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
     // Constants
     public static final int TEXT_REQUEST = 1;
+    // private static final int SYNCED = 0; unused -
     private static final int NOT_SYNCED = -1;
     final String uploadFilePath = "mnt/sdcard/Documents/Scoremonster/";
     final String uploadFileName = "times.csv";
