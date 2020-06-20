@@ -19,14 +19,11 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.alexsykes.scoremonster.R;
-import com.alexsykes.scoremonster.data.FinishTimeDbHelper;
 import com.alexsykes.scoremonster.data.ScoreDbHelper;
 
 import org.json.JSONArray;
@@ -57,7 +54,6 @@ public class SetupActivity extends AppCompatActivity implements AdapterView.OnIt
 
     // Database access
     ScoreDbHelper theScoreDB;
-    FinishTimeDbHelper theFinishTimeDB;
 
     Spinner trialSelect;
     ProgressDialog dialog = null;
@@ -72,7 +68,6 @@ public class SetupActivity extends AppCompatActivity implements AdapterView.OnIt
         setContentView(R.layout.activity_setup);
 
         theScoreDB = new ScoreDbHelper(this);
-        theFinishTimeDB = new FinishTimeDbHelper(this);
         // Set up activity fields
         observerTextInput = findViewById(R.id.observerTextInput);
         trialDetailView = findViewById(R.id.trialDetailView);
@@ -302,10 +297,9 @@ public class SetupActivity extends AppCompatActivity implements AdapterView.OnIt
         getJSON.execute();
     }
 
-    private boolean checkPrefs() {
+    private void checkPrefs() {
         // set error flag to true
         boolean prefsSet = true;
-        String sectionNumber;
         // Get localPrefs and read values
         localPrefs = getSharedPreferences("monster", MODE_PRIVATE);
         trialid = localPrefs.getInt("trialid", 0);
@@ -336,7 +330,6 @@ public class SetupActivity extends AppCompatActivity implements AdapterView.OnIt
             // If incomplete, set flag to false
             prefsSet = false;
         }
-        return prefsSet;
     }
 
     public void setPrefs(View view) {
@@ -415,13 +408,12 @@ public class SetupActivity extends AppCompatActivity implements AdapterView.OnIt
             editor.putInt("numlaps", numlaps);
             editor.putString("observer", observer);
             editor.putString("email", email);
-            boolean success = editor.commit();
+            editor.commit();
             // Read resetCheckBox
             boolean reset = resetCheckBox.isChecked();
 
             if (reset) {
                 theScoreDB.clearResults();
-                theFinishTimeDB.clearTimes();
             }
             finish();
         }

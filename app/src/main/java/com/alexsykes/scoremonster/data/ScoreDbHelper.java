@@ -20,12 +20,10 @@ public class ScoreDbHelper extends SQLiteOpenHelper {
      * Name of the database file
      */
     private static final String DATABASE_NAME = "monster.db";
-    private static final String TAG = "ScoreDbHelper";
     /**
      * Database version. If you change the database schema, you must increment the database version.
      */
     private static final int DATABASE_VERSION = 2;
-    private ArrayList<Score> theScores;
 
     /**
      * Constructs a new instance of {@link ScoreDbHelper}.
@@ -58,18 +56,7 @@ public class ScoreDbHelper extends SQLiteOpenHelper {
 
         // Execute the SQL statement
         db.execSQL(SQL_CREATE_SCORES_TABLE);
-
-        // Create a String that contains the SQL statement to create the finishtimes table
-        String SQL_CREATE_FINISHTIMES_TABLE = "CREATE TABLE " + FinishTimeContract.FinishTimeEntry.TABLE_NAME + " ("
-                + FinishTimeContract.FinishTimeEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-                + FinishTimeContract.FinishTimeEntry.COLUMN_FINISHTIME_TIME + " TEXT NOT NULL, "
-                + FinishTimeContract.FinishTimeEntry.COLUMN_FINISHTIME_SYNC + " INTEGER NOT NULL DEFAULT 1, "
-                + FinishTimeContract.FinishTimeEntry.COLUMN_FINISHTIME_RIDER + " TEXT NOT NULL);";
-
-        // Execute the SQL statement
-        db.execSQL(SQL_CREATE_FINISHTIMES_TABLE);
-
-    }
+            }
 
     /**
      * This is called when the database needs to be upgraded.
@@ -82,35 +69,6 @@ public class ScoreDbHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-
-    /**
-     * Section imported from tutlane
-     *
-     * @return ArrayList of Score data
-     * @param trialid the trial id
-     * @param section the section
-     */
-
-    // Get Score Details
-    public ArrayList<HashMap<String, String>> getScoreList(int trialid, int section) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ArrayList<HashMap<String, String>> scoreList = new ArrayList<>();
-        String query = "SELECT * FROM scores WHERE trialid =" + trialid + " AND section = " + section + " ORDER BY _id DESC";
-        Cursor cursor = db.rawQuery(query, null);
-        while (cursor.moveToNext()) {
-            HashMap<String, String> scores = new HashMap<>();
-            scores.put("id", cursor.getString(cursor.getColumnIndex(ScoreEntry._ID)));
-            scores.put("rider", cursor.getString(cursor.getColumnIndex(ScoreEntry.COLUMN_SCORE_RIDER)));
-            scores.put("lap", cursor.getString(cursor.getColumnIndex(ScoreEntry.COLUMN_SCORE_LAP)));
-            scores.put("score", cursor.getString(cursor.getColumnIndex(ScoreEntry.COLUMN_SCORE_SCORE)));
-            scores.put("trialid", cursor.getString(cursor.getColumnIndex(ScoreEntry.COLUMN_SCORE_TRIALID)));
-            scores.put("sync", cursor.getString(cursor.getColumnIndex(ScoreEntry.COLUMN_SCORE_SYNC)));
-            scores.put("edited", cursor.getString(cursor.getColumnIndex(ScoreEntry.COLUMN_SCORE_EDITED)));
-            scoreList.add(scores);
-        }
-        cursor.close();
-        return scoreList;
-    }
     // Get Score Details
     public ArrayList<HashMap<String, String>> getScoreList(int trialid) {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -139,7 +97,7 @@ public class ScoreDbHelper extends SQLiteOpenHelper {
         String section, rider, lap, score, _id, observer, created, sync;
 
         SQLiteDatabase db = this.getWritableDatabase();
-        theScores = new ArrayList<>();
+        ArrayList<Score> theScores = new ArrayList<>();
 
         String query = "SELECT section, rider, lap, score, _id, observer, sync, created FROM scores ORDER BY _id DESC";
         Cursor cursor = db.rawQuery(query, null);
@@ -162,31 +120,6 @@ public class ScoreDbHelper extends SQLiteOpenHelper {
         cursor.close();
         return theScores;
     }
-
-
-    // Unused
-    public ArrayList<HashMap<String, String>> GetRidersScores() {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ArrayList<HashMap<String, String>> scoreList = new ArrayList<>();
-        String query = "SELECT * FROM scores ORDER BY rider, _id ASC ";
-        Cursor cursor = db.rawQuery(query, null);
-        while (cursor.moveToNext()) {
-            HashMap<String, String> scores = new HashMap<>();
-
-            scores.put("rider", cursor.getString(cursor.getColumnIndex(ScoreEntry.COLUMN_SCORE_RIDER)));
-            scores.put("_id", cursor.getString(cursor.getColumnIndex(ScoreEntry._ID)));
-            scores.put("lap", cursor.getString(cursor.getColumnIndex(ScoreEntry.COLUMN_SCORE_LAP)));
-            scores.put("section", cursor.getString(cursor.getColumnIndex(ScoreEntry.COLUMN_SCORE_SECTION)));
-            scores.put("score", cursor.getString(cursor.getColumnIndex(ScoreEntry.COLUMN_SCORE_SCORE)));
-            scores.put("sync", cursor.getString(cursor.getColumnIndex(ScoreEntry.COLUMN_SCORE_SYNC)));
-            scores.put("edited", cursor.getString(cursor.getColumnIndex(ScoreEntry.COLUMN_SCORE_EDITED)));
-            scoreList.add(scores);
-        }
-        cursor.close();
-        return scoreList;
-    }
-
-    //
 
     public void clearResults(){
         SQLiteDatabase db = this.getWritableDatabase();
@@ -239,30 +172,15 @@ public class ScoreDbHelper extends SQLiteOpenHelper {
         db.execSQL(query);
     }
 
-    public Cursor getUnSynced(int id) {
-        SQLiteDatabase db = this.getReadableDatabase();
-        return db.rawQuery("SELECT  * FROM scores WHERE sync = " + NOT_SYNCED + " AND trialid=" + id, new String[]{});
-    }
-
     public Cursor getAll(int id) {
         SQLiteDatabase db = this.getReadableDatabase();
         return db.rawQuery("SELECT  * FROM scores WHERE  trialid=" + id, new String[]{});
     }
-
-    public void delete(int id) {
-        // Unused
-        SQLiteDatabase db = this.getReadableDatabase();
-        //String query = "DELETE FROM scores WHERE _id = " + id;
-        String query = "UPDATE scores SET edited = 1 WHERE _id = " + id;
-        db.execSQL(query);
-    }
-
     public void update(String scoreid, String score) {
 
         SQLiteDatabase db = this.getReadableDatabase();
         // String query = "UPDATE scores SET score = " + score + ", edited = 1, updated = DATETIME('now','localtime'), sync = " + NOT_SYNCED + " WHERE _id = " + scoreid;
         String query = "UPDATE scores SET score = " + score + ", edited = 1, updated = DATETIME('now'), sync = " + NOT_SYNCED + " WHERE _id = " + scoreid;
         db.execSQL(query);
-
     }
 }

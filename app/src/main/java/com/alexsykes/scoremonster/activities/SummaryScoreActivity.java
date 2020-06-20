@@ -7,12 +7,12 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import androidx.appcompat.app.AppCompatActivity;
-import android.view.Gravity;
 import android.view.View;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.alexsykes.scoremonster.R;
 
@@ -28,13 +28,10 @@ import java.util.HashMap;
 
 public class SummaryScoreActivity extends AppCompatActivity {
     private static final String BASE_URL = "https://android.trialmonster.uk/";
-    TableLayout resultTable;
     int trialid, numsections, numlaps;
     ArrayList<HashMap<String, String>> theResultList;
     ProgressDialog dialog = null;
     SharedPreferences localPrefs;
-    int backgroundColor = Color.parseColor("#40bdc0d4");
-    int white = Color.parseColor("#ffffff");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,7 +94,6 @@ public class SummaryScoreActivity extends AppCompatActivity {
 
             private ArrayList<HashMap<String, String>> populateResultArrayList(String json) {
                 ArrayList<HashMap<String, String>> theResultList = new ArrayList<>();
-                final int TIMEOUT = 5000;
 
                 try {
                     // Parse string data into JSON
@@ -167,117 +163,13 @@ public class SummaryScoreActivity extends AppCompatActivity {
         getJSON.execute();
     }
 
-    private void displayResultTableOld(ArrayList<HashMap<String, String>> theResultList) {
-        String colStr;
-        TableRow tr = new TableRow(this);
-        TextView cell = new TextView(this);
-        cell.setText(R.string.rider);
-        cell.setGravity(Gravity.CENTER);
-        cell.setPadding(8, 8, 8, 8);
-        tr.addView(cell);
-
-
-        for (int col = 1; col < numsections + 1; col++) {
-            cell = new TextView(this);
-            colStr = String.valueOf(col);
-            cell.setText(colStr);
-            cell.setGravity(Gravity.CENTER);
-            resultTable.setColumnShrinkable(col, true);
-
-            cell.setWidth(2000);
-            cell.setPadding(8, 8, 8, 8);
-            tr.addView(cell);
-        }
-        cell = new TextView(this);
-        cell.setText(R.string.total);
-        cell.setPadding(8, 8, 8, 8);
-        cell.setWidth(120);
-        cell.setGravity(Gravity.CENTER);
-        tr.addView(cell);
-
-        resultTable.addView(tr);
-
-
-        int numRiders = theResultList.size();
-
-        // Iterate through result list
-        // Adding a row for each one
-        for (int index = 0; index < numRiders; index++) {
-
-            tr = new TableRow(this);
-            if (index % 2 != 0) {
-                tr.setBackgroundColor(backgroundColor);
-            } else {
-                tr.setBackgroundColor(white);
-            }
-
-            HashMap<String, String> theResult = theResultList.get(index);
-
-            // Get data from arraylist
-            String rider = theResult.get("rider");
-            String sections = theResult.get("sections");
-            String scorelist = theResult.get("scorelist");
-
-            // Then split to create arrays for section scores
-            // and create a pointer to go through arrays
-            // // to take account of missing sections
-
-            int pointer;
-            int numscores;
-            String[] theSectionArray = sections.split(",");
-            String[] theScoreArray = scorelist.split(",");
-            String[] theScoreValues = new String[numsections];
-
-            numscores = theSectionArray.length;
-
-            //
-            for (int i = 0; i < numscores; i++) {
-                pointer = Integer.valueOf(theSectionArray[i]) - 1;
-                theScoreValues[pointer] = theScoreArray[i];
-            }
-
-            // Add rider number at start of each line
-            cell = new TextView(this);
-            cell.setText(rider);
-            cell.setGravity(Gravity.END);
-            cell.setPadding(8, 8, 8, 8);
-            tr.addView(cell);
-
-            // Iterate through sections, adding rider number, section scores, total
-            for (int section = 0; section < numsections; section++) {
-                cell = new TextView(this);
-
-
-                if (theScoreValues[section] != null) {
-                    cell.setText(theScoreValues[section]);
-                }
-/*                else {
-                    //   cell.setText("|");
-                }*/
-
-                cell.setPadding(40, 8, 8, 8);
-                //cell.setGravity(Gravity.END);
-                tr.addView(cell);
-            }
-
-            // Add cell for total
-            cell = new TextView(this);
-            String total = theResult.get("totalscore");
-            cell.setText(total);
-            cell.setGravity(Gravity.END);
-            cell.setPadding(24, 8, 40, 8);
-            tr.addView(cell);
-
-            resultTable.addView(tr);
-        }
-    }
 
     private void displayResultTable(ArrayList<HashMap<String, String>> theResultList) {
 
         TableLayout resultTable;
         TableRow row;
         TextView cell;
-        String section, text, rider, total;
+        String section, rider, total;
         int numResults;
         HashMap<String, String> theResult;
 
@@ -366,8 +258,6 @@ public class SummaryScoreActivity extends AppCompatActivity {
             resultTable.addView(row);
         }
 
-        // Prepare array of scores
-        String[][] theScoreArray = new String[numResults][numsections];
         String sectionList, scoreList;
         String theScore;
 
@@ -375,8 +265,14 @@ public class SummaryScoreActivity extends AppCompatActivity {
             theResult = theResultList.get(index);
             sectionList = theResult.get("sections");
             scoreList = theResult.get("scorelist");
-            String[] theSectionArray = sectionList.split(",");
-            String[] theSectionScoreArray = scoreList.split(",");
+            String[] theSectionArray = new String[0];
+            if (sectionList != null) {
+                theSectionArray = sectionList.split(",");
+            }
+            String[] theSectionScoreArray = new String[0];
+            if (scoreList != null) {
+                theSectionScoreArray = scoreList.split(",");
+            }
             int numItems = theSectionScoreArray.length;
 
             // Get row for result insertion
@@ -385,7 +281,7 @@ public class SummaryScoreActivity extends AppCompatActivity {
             // Populate row from result list
             for (int sec = 0; sec < numItems; sec++) {
 
-                int sectionNumber = Integer.valueOf(theSectionArray[sec]);
+                int sectionNumber = Integer.parseInt(theSectionArray[sec]);
                 theScore = theSectionScoreArray[sec];
                 cell = (TextView) row.getChildAt(sectionNumber);
                 cell.setText(theScore);

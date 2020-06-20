@@ -17,7 +17,6 @@ public class Score {
     String sync;
     String section;
     String score;
-    // String total;
     String rider;
     String lap;
     String trialid;

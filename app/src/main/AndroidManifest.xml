@@ -23,15 +23,6 @@
             android:name=".activities.HelpActivity"
             android:parentActivityName=".activities.MainActivity" />
         <activity
-            android:name=".activities.TimeSheetActivity"
-            android:label="@string/timesheet"
-            android:parentActivityName=".activities.TimerActivity" />
-        <activity
-            android:name=".activities.TimerActivity"
-            android:label="Timer"
-            android:parentActivityName=".activities.MainActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
             android:name=".activities.SummaryScoreActivity"
             android:label="Leaderboard"
             android:parentActivityName=".activities.MainActivity" />

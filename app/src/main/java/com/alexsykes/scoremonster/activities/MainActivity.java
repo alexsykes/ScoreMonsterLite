@@ -14,7 +14,6 @@ import android.media.MediaPlayer;
 import android.media.ToneGenerator;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
@@ -29,9 +28,7 @@ import androidx.appcompat.widget.Toolbar;
 
 import com.alexsykes.scoremonster.NumberPadFragment;
 import com.alexsykes.scoremonster.R;
-import com.alexsykes.scoremonster.ScorePadFragment;
 import com.alexsykes.scoremonster.TouchFragment;
-import com.alexsykes.scoremonster.data.FinishTimeDbHelper;
 import com.alexsykes.scoremonster.data.ScoreContract;
 import com.alexsykes.scoremonster.data.ScoreDbHelper;
 import com.opencsv.CSVWriter;
@@ -56,27 +53,18 @@ public class MainActivity extends AppCompatActivity {
     MediaPlayer mediaPlayer;
 
     String email;
-    String subject;
     String message;
-    String timestamp;
-    String ts;
-    Uri URI = null;
-
-    MenuItem goEmail;
 
     TextView numberLabel, scoreLabel, statusLine, sectionNumber;
     String riderNumber, status, theTrialName;
-    ScorePadFragment scorePadFragment;
     NumberPadFragment numberPadFragment;
     TouchFragment touchFragment;
     SharedPreferences localPrefs;
     ProgressDialog dialog = null;
     final String uploadFilePath = "mnt/sdcard/Documents/Scoremonster/";
-    final String uploadFileName = "scores.csv";
 
     // Databases
     private ScoreDbHelper mDbHelper;
-    private FinishTimeDbHelper timeDbHelper;
 
     private String observer;
     private int section;
@@ -84,10 +72,6 @@ public class MainActivity extends AppCompatActivity {
     private int numlaps;
     private int numsections;
     private int score;
-    private boolean showDabPad;
-    private boolean showNumberPad;
-    private boolean isOnline;
-    int modeIndex;
     int serverResponseCode = 0;
     private String filename;
     String upLoadServerUri = null;
@@ -105,8 +89,6 @@ public class MainActivity extends AppCompatActivity {
         // Create database connection
         mDbHelper = new ScoreDbHelper(this);
         mDbHelper.getWritableDatabase();
-        timeDbHelper = new FinishTimeDbHelper(this);
-        timeDbHelper.getWritableDatabase();
 
         // Add custom ActionBar
         Toolbar myToolbar = findViewById(R.id.my_toolbar);
@@ -115,7 +97,6 @@ public class MainActivity extends AppCompatActivity {
         myToolbar.getMenu();
 
         // Add score and numberPad fragemnts
-        scorePadFragment = new ScorePadFragment();
         numberPadFragment = new NumberPadFragment();
         touchFragment = new TouchFragment();
         numberLabel = findViewById(R.id.numberLabel);
@@ -215,7 +196,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void sendEmail() {
-        isOnline = isOnline();
+        boolean isOnline = isOnline();
         if (!isOnline) {
             Toast.makeText(MainActivity.this, "Email cannot be sent at this time - no Internet connection.",
                     Toast.LENGTH_LONG).show();
@@ -293,11 +274,11 @@ public class MainActivity extends AppCompatActivity {
         processCSV.execute();
     }
 
-    public int uploadFile(String sourceFileUri) {
+    public void uploadFile(String sourceFileUri) {
         File directory = getFilesDir();
         File sourceFile = new File(directory, filename);
         HttpURLConnection conn;
-        DataOutputStream dos ;
+        DataOutputStream dos;
         String lineEnd = "\r\n";
         String twoHyphens = "--";
         String boundary = "*****";
@@ -312,11 +293,8 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
 
-            return 0;
-
         } else {
             try {
-                String fileName = sourceFileUri;
                 // open a URL connection to the Servlet
                 FileInputStream fileInputStream = new FileInputStream(sourceFile);
                 URL url = new URL(upLoadServerUri);
@@ -330,13 +308,13 @@ public class MainActivity extends AppCompatActivity {
                 conn.setRequestProperty("Connection", "Keep-Alive");
                 conn.setRequestProperty("ENCTYPE", "multipart/form-data");
                 conn.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + boundary);
-                conn.setRequestProperty("uploaded_file", fileName);
+                conn.setRequestProperty("uploaded_file", sourceFileUri);
 
                 dos = new DataOutputStream(conn.getOutputStream());
 
                 dos.writeBytes(twoHyphens + boundary + lineEnd);
                 dos.writeBytes("Content-Disposition: form-data; name=\"uploaded_file\";filename=\""
-                        + fileName + "\"" + lineEnd);
+                        + sourceFileUri + "\"" + lineEnd);
 
                 dos.writeBytes(lineEnd);
 
@@ -364,10 +342,6 @@ public class MainActivity extends AppCompatActivity {
 
                 // Responses from the server (code and message)
                 serverResponseCode = conn.getResponseCode();
-                String serverResponseMessage = conn.getResponseMessage();
-
-             //   Log.i("uploadFile", "HTTP Response is : "  + serverResponseMessage + ": " + serverResponseCode);
-
                 if (serverResponseCode != 200) {
 
                     runOnUiThread(new Runnable() {
@@ -412,23 +386,7 @@ public class MainActivity extends AppCompatActivity {
              //   Log.e("Upload file Exception", "Exception : " + e.getMessage(), e);
             }
             dialog.dismiss();
-            return serverResponseCode;
         }
-    }
-
-    private void goTimingMode() {
-        //
-        Intent intent = new Intent(this, TimerActivity.class);
-        intent.putExtra("trialid", trialid);
-        startActivityForResult(intent, TEXT_REQUEST);
-    }
-
-    private void goShowSummaryScores() {
-        Intent intent = new Intent(this, SummaryScoreActivity.class);
-        intent.putExtra("trialid", trialid);
-        intent.putExtra("section", section);
-        startActivityForResult(intent, TEXT_REQUEST);
-
     }
 
     public void countDabs(View view) {
@@ -654,20 +612,11 @@ public class MainActivity extends AppCompatActivity {
         editor.apply();
     }
 
-    private boolean saveToCSV() {
-        // Get timestamp and add to filename
-
-        Date date = new Date();
-        // getTime() returns current time in milliseconds
-      //  long time = date.getTime();
-      //  ts = String.valueOf(time);
-      //  filename = "scores_" + ts + ".csv";
+    private void saveToCSV() {
         String id, observer, section, rider, lap, created, updated, edited, sync, score, thetrialid;
 
         try {
             File exportDir = new File(getFilesDir(), filename);
-
-//            exportDir.createNewFile();
             CSVWriter csvWrite = new CSVWriter(new FileWriter(exportDir));
 
             String[] header = {"id", "rider", "section",
@@ -697,11 +646,9 @@ public class MainActivity extends AppCompatActivity {
                 csvWrite.writeNext(arrStr, false);
             }
             csvWrite.close();
-            return true;
 
         } catch (IOException e) {
             //  Log.e("Child", e.getMessage(), e);
-            return false;
         }
     }
 
