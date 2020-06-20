@@ -259,8 +259,6 @@ public class MainActivity extends AppCompatActivity {
             protected void onPostExecute(String s) {
                 super.onPostExecute(s);
                 dialog.dismiss();
-              //  mDbHelper.markAsDone(trialid);
-               // populateScoreList();
 
                 if (s.contentEquals("OK")){
                     runOnUiThread(new Runnable() {
@@ -276,7 +274,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             protected String doInBackground(Void... voids) {
 
-              //  int response = uploadFile(uploadFilePath + filename);
+              uploadFile(uploadFilePath + filename);
                 try {
                     //creating a URL
                     URL url = new URL(sendMailURL);
@@ -306,17 +304,11 @@ public class MainActivity extends AppCompatActivity {
         int bytesRead, bytesAvailable, bufferSize;
         byte[] buffer;
         int maxBufferSize = 1024 * 1024;
-        //File sourceFile = new File(sourceFileUri);
 
         if (!sourceFile.isFile()) {
-
             dialog.dismiss();
-
-        //    Log.e("uploadFile", "Source File not exist :" + uploadFilePath + "" + uploadFileName);
-
             runOnUiThread(new Runnable() {
                 public void run() {
-                    // messageText.setText("Source File not exist :" + uploadFilePath + "" + uploadFileName);
                 }
             });
 
