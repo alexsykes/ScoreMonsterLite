@@ -161,12 +161,15 @@ A failure is considered to have occurred if:
         <item>Five</item>
         <item>Ten</item>
     </string-array>
-
     <string name="helpApp">
       <![CDATA[
 <b>ScoreMonster Help</b><br/>
 <b>Setting up a trial</b><br/>
-
+<i>Trial selection should be set up when an Internet connection is available</i><br/>
+<b>Selecting a trial from TrialMonster</b><br/>
+From the status bar at the top of the screen, select the Settings link. If you are connected to the Internet, a list of available trials will appear. Simply select the appropriate trial from the menu. Enter the name of the observer in the space provided. Click the <b>SAVE</b> button to confirm thse setting.<br/><br/>
+<b>Manually add a trial</b><br/>
+Using the Settings link on the status bar, select the Manual Entry option from the drop-down menu. Complete the observer name and trial details, then click <b>SAVE</b> to confirm.<br/><br/>
 <b>Entering a score</b><br/>
 On the main screen, select the correct section by clicking on the <b>PREV</b> or <b>NEXT</b> buttons until the section number is visible. The rider\'s number is selected from the main number pad and the score from the lower pad. If the rider takes a dab, simply click the Dab button for each dab. <br/>To record the score, hold down the <b>SAVE</b> button for a longer period - around 1 second - until a beep is heard. The scoring pad will then be blank and ready for the next attempt. <br/><br/>
 <b>Changing a score</b><br/>
