@@ -85,14 +85,13 @@ public class SyncActivity extends AppCompatActivity {
                     // processButton.setEnabled(false);
                     Toast.makeText(SyncActivity.this, "Scores cannot be sent at this time - no Internet connection.", Toast.LENGTH_LONG).show();
                 } else {
-
                     // Get timestamp and add to filename
                     Date date = new Date();
                     // getTime() returns current time in milliseconds
                     long time = date.getTime();
                     String ts = String.valueOf(time);
                     filename = "scores_" + ts + ".csv";
-                    processURL = "http://android.trialmonster.uk/addCSVtodb.php?id=" + filename;
+                    processURL = "http://android.trialmonster.uk/addCSVtodb.php?id=" + ts;
                     processCSV(processURL);
                 }
             }
@@ -260,6 +259,7 @@ public class SyncActivity extends AppCompatActivity {
                         "Processing scores… this make take some time!", true);
                 // Prepare CSV file
                 saveToCSV();
+                // CSV file is now saved on local storage
             }
 
             protected void onPostExecute(String s) {
@@ -282,6 +282,7 @@ public class SyncActivity extends AppCompatActivity {
             @Override
             protected String doInBackground(Void... voids) {
 
+                // First upload the file
                 int response = uploadFile(uploadFilePath + filename);
                 try {
                     //creating a URL
