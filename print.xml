@@ -1,5 +1,9 @@
 <application>
   <component name="PrintSettings">
     <option name="printScope" value="1" />
+    <option name="SYNTAX_PRINTING" value="false" />
+    <option name="PRINT_AS_GRAPHICS" value="false" />
+    <option name="FONT_SIZE" value="9" />
+    <option name="DRAW_BORDER" value="false" />
   </component>
 </application>
