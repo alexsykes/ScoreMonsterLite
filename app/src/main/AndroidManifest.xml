@@ -23,16 +23,8 @@
             android:name=".activities.HelpActivity"
             android:parentActivityName=".activities.MainActivity" />
         <activity
-            android:name=".activities.SummaryScoreActivity"
-            android:label="Leaderboard"
-            android:parentActivityName=".activities.MainActivity" />
-        <activity
             android:name=".activities.SyncActivity"
             android:label="Upload Scores"
-            android:parentActivityName=".activities.MainActivity" />
-        <activity
-            android:name=".activities.ScoreListActivity"
-            android:label="Score list"
             android:parentActivityName=".activities.MainActivity" />
         <activity
             android:name=".activities.SetupActivity"
