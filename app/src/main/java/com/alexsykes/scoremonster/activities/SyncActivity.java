@@ -39,8 +39,8 @@ public class SyncActivity extends AppCompatActivity {
 
     /**********  File Path *************/
     final String uploadFilePath = "mnt/sdcard/Documents/Scoremonster/";
-    final String uploadFileName = "scores.csv";
-    // https://androidexample.com/Upload_File_To_Server_-_Android_Example/index.php?view=article_discription&aid=83
+  //   final String uploadFileName = "scores.csv";
+  // https://androidexample.com/Upload_File_To_Server_-_Android_Example/index.php?view=article_discription&aid=83
     RecyclerView scoreView;
     ArrayList<HashMap<String, String>> theScoreList;
     TextView messageText;
@@ -49,13 +49,10 @@ public class SyncActivity extends AppCompatActivity {
     ProgressDialog dialog = null;
     String upLoadServerUri = null;
     String processURL = null;
-    File datafile;
     File exportDir = new File(Environment.getExternalStoragePublicDirectory("Documents/Scoremonster"), "");
     private ScoreDbHelper mDbHelper;
     private String filename;
-
     boolean isOnline;
-
     SharedPreferences localPrefs;
 
     @Override
@@ -95,7 +92,7 @@ public class SyncActivity extends AppCompatActivity {
                     long time = date.getTime();
                     String ts = String.valueOf(time);
                     filename = "scores_" + ts + ".csv";
-                    processURL = "http://www.trialmonster.uk/android/addCSVtodb.php?id=" + filename;
+                    processURL = "http://android.trialmonster.uk/addCSVtodb.php?id=" + filename;
                     processCSV(processURL);
                 }
             }
@@ -309,7 +306,7 @@ public class SyncActivity extends AppCompatActivity {
         File sourceFile = new File(directory, filename);
 
 
-        String fileName = sourceFileUri;
+        final String fileName = sourceFileUri;
 
         HttpURLConnection conn = null;
         DataOutputStream dos = null;
@@ -326,12 +323,12 @@ public class SyncActivity extends AppCompatActivity {
             dialog.dismiss();
 
             Log.e("uploadFile", "Source File not exist :"
-                    + uploadFilePath + "" + uploadFileName);
+                    + uploadFilePath + "" + fileName);
 
             runOnUiThread(new Runnable() {
                 public void run() {
                     messageText.setText("Source File not exist :"
-                            + uploadFilePath + "" + uploadFileName);
+                            + uploadFilePath + "" + fileName);
                 }
             });
 
