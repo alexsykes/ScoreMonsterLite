@@ -127,7 +127,6 @@ public class MainActivity extends AppCompatActivity {
         editor.putBoolean("canConnect", isOnline());
         editor.apply();
 
-
         clearScore();
         super.onStart();
         getPrefs();
@@ -532,24 +531,7 @@ public class MainActivity extends AppCompatActivity {
         numberLabel.setText("");
         scoreLabel.setText("0");
     }
-/*
-    private boolean getPrefs() {
-        localPrefs = getSharedPreferences("monster", MODE_PRIVATE);
-        observer = localPrefs.getString("observer", "");
-        section = localPrefs.getInt("section", 1);
-        trialid = localPrefs.getInt("trialid", 0);
-        numlaps = localPrefs.getInt("numlaps", 0);
-        numsections = localPrefs.getInt("numsections", 0);
-        section = localPrefs.getInt("section", 1);
-        email = localPrefs.getString("email", "");
-        theTrialName = localPrefs.getString("theTrialName", "None selected");
-        status = theTrialName + " - Observer: " + observer;
-        sectionNumber.setText(String.valueOf(section));
 
-        statusLine.setText(status);
-        return trialid != 0;
-    }
-*/
     private void getPrefs() {
         localPrefs = getSharedPreferences("monster", MODE_PRIVATE);
         observer = localPrefs.getString("observer", "");
@@ -572,21 +554,6 @@ public class MainActivity extends AppCompatActivity {
 
         return netInfo != null && netInfo.isConnectedOrConnecting();
     }
-
-/*    public void checkConnection() {
-
-        localPrefs = getSharedPreferences("monster", MODE_PRIVATE);
-        SharedPreferences.Editor editor = localPrefs.edit();
-
-        if (isOnline()) {
-            editor.putBoolean("canConnect", true);
-            Toast.makeText(MainActivity.this, "Connected", Toast.LENGTH_SHORT).show();
-        } else {
-            editor.putBoolean("canConnect", false);
-            Toast.makeText(MainActivity.this, "Not Connected", Toast.LENGTH_LONG).show();
-        }
-        editor.apply();
-    }*/
 
     public void increment(View view) {
         SharedPreferences.Editor editor = localPrefs.edit();

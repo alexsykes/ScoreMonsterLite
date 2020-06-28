@@ -104,7 +104,6 @@ public class ScoreDbHelper extends SQLiteOpenHelper {
         Score theScore;
 
         while (cursor.moveToNext()) {
-
             section = cursor.getString(cursor.getColumnIndex(ScoreEntry.COLUMN_SCORE_SECTION));
             rider = cursor.getString(cursor.getColumnIndex(ScoreEntry.COLUMN_SCORE_RIDER));
             lap = cursor.getString(cursor.getColumnIndex(ScoreEntry.COLUMN_SCORE_LAP));
