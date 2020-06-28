@@ -237,8 +237,6 @@ public class SyncActivity extends AppCompatActivity {
 
         } catch (IOException e) {
             Log.e("Child", e.getMessage(), e);
-
-
             return false;
         }
     }
@@ -283,7 +281,7 @@ public class SyncActivity extends AppCompatActivity {
                 }
             }
 
-            //in this method we are fetching the json string
+
             @Override
             protected String doInBackground(Void... voids) {
 
