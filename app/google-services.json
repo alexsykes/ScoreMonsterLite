@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "6995937091",
+    "firebase_url": "https://scoremonster-ecfe0.firebaseio.com",
+    "project_id": "scoremonster-ecfe0",
+    "storage_bucket": "scoremonster-ecfe0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:6995937091:android:a23712232076b5d9",
+        "android_client_info": {
+          "package_name": "com.alexsykes.scoremonster"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "6995937091-pnlmmgmi3tib4ong95uj40kpsethb8i3.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.alexsykes.scoremonster",
+            "certificate_hash": "242c66f3046af6c385cf5feda4cbd9c6f61c240b"
+          }
+        },
+        {
+          "client_id": "6995937091-jro1efedvup1ji33ruoslufonqn1o2hs.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDTLFDXjnWgBFPuVg4wi4NHC-bdaRr2bq8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "6995937091-jro1efedvup1ji33ruoslufonqn1o2hs.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

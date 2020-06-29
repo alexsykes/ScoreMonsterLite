@@ -14,7 +14,7 @@ import java.util.HashMap;
 public class SummaryListAdapter extends RecyclerView.Adapter<SummaryListAdapter.ResultHolder> {
     ArrayList<HashMap<String, String>> theResultList;
 
-    SummaryListAdapter(ArrayList<HashMap<String, String>> theResultList) {
+    public SummaryListAdapter(ArrayList<HashMap<String, String>> theResultList) {
         this.theResultList = theResultList;
     }
 
@@ -38,19 +38,17 @@ public class SummaryListAdapter extends RecyclerView.Adapter<SummaryListAdapter.
         int white = Color.parseColor("#ffffff");
 
         // Populate TextViews with data
-     //   resultHolder.sectionView.setText(theResultList.get(i).get("section".toString()));
-        resultHolder.riderView.setText(theResultList.get(i).get("rider".toString()));
-        resultHolder.nameView.setText(theResultList.get(i).get("name".toString()));
-        resultHolder.courseView.setText(theResultList.get(i).get("course".toString()));
-        resultHolder.totalView.setText(theResultList.get(i).get("total".toString()));
+        //   resultHolder.sectionView.setText(theResultList.get(i).get("section".toString()));
+        resultHolder.riderView.setText(theResultList.get(i).get("rider"));
+        resultHolder.nameView.setText(theResultList.get(i).get("scores"));
+        resultHolder.totalView.setText(theResultList.get(i).get("laps"));
+        resultHolder.courseView.setText(theResultList.get(i).get("total"));
 
         if (i % 2 != 0) {
             resultHolder.itemView.setBackgroundColor(backgroundColor);
         } else {
             resultHolder.itemView.setBackgroundColor(white);
         }
-
-
     }
 
     @Override
@@ -58,20 +56,20 @@ public class SummaryListAdapter extends RecyclerView.Adapter<SummaryListAdapter.
         return theResultList.size();
     }
 
-    public class ResultHolder extends RecyclerView.ViewHolder {
+    class ResultHolder extends RecyclerView.ViewHolder {
 
         TextView nameView;
         TextView totalView;
         TextView riderView;
         TextView courseView;
 
-        public ResultHolder(@NonNull View itemView) {
+        ResultHolder(@NonNull View itemView) {
             super(itemView);
             // Instantiate fields to be populated
-            nameView = (TextView) itemView.findViewById(R.id.scoreView);
-            totalView = (TextView) itemView.findViewById(R.id.totalView);
-            riderView = (TextView) itemView.findViewById(R.id.riderView);
-            courseView = (TextView) itemView.findViewById(R.id.courseView);
+            nameView = itemView.findViewById(R.id.scoreView);
+            totalView = itemView.findViewById(R.id.totalView);
+            riderView = itemView.findViewById(R.id.riderView);
+            courseView = itemView.findViewById(R.id.lapsView);
         }
     }
 }

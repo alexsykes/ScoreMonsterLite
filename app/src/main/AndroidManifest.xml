@@ -4,6 +4,7 @@
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
@@ -14,26 +15,35 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".LayoutActivity" />
         <activity
-            android:name=".SummaryActivity"
+            android:name=".activities.TimeSheetActivity"
+            android:label="@string/timesheet"
+            android:parentActivityName=".activities.TimerActivity"></activity>
+        <activity
+            android:name=".activities.TimerActivity"
+            android:label="Timer"
+            android:parentActivityName=".activities.MainActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activities.SummaryScoreActivity"
             android:label="Leaderboard"
-            android:parentActivityName=".MainActivity" />
+            android:parentActivityName=".activities.MainActivity" />
         <activity
-            android:name=".SyncActivity"
+            android:name=".activities.SyncActivity"
             android:label="Upload Scores"
-            android:parentActivityName=".MainActivity" />
+            android:parentActivityName=".activities.MainActivity" />
         <activity
-            android:name=".ScoreListActivity"
+            android:name=".activities.ScoreListActivity"
             android:label="Score list"
-            android:parentActivityName=".MainActivity" />
+            android:parentActivityName=".activities.MainActivity" />
         <activity
-            android:name=".SetupActivity"
+            android:name=".activities.SetupActivity"
             android:label="Set up"
-            android:parentActivityName=".MainActivity"
+            android:parentActivityName=".activities.MainActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity
-            android:name=".MainActivity"
+            android:name=".activities.MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

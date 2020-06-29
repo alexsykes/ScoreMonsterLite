@@ -9,6 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.alexsykes.scoremonster.activities.SyncActivity;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -17,11 +19,11 @@ public class ScoreListSyncAdapter extends RecyclerView.Adapter<ScoreListSyncAdap
     HashMap<String, String> theScore;
     OnItemClickListener listener;
 
-    ScoreListSyncAdapter(ArrayList<HashMap<String, String>> theScores) {
+    public ScoreListSyncAdapter(ArrayList<HashMap<String, String>> theScores) {
         this.theScores = theScores;
     }
 
-    ScoreListSyncAdapter(ArrayList<HashMap<String, String>> theScores, OnItemClickListener listener) {
+    public ScoreListSyncAdapter(ArrayList<HashMap<String, String>> theScores, OnItemClickListener listener) {
         this.theScores = theScores;
         this.listener = listener;
     }
@@ -54,10 +56,12 @@ public class ScoreListSyncAdapter extends RecyclerView.Adapter<ScoreListSyncAdap
         int backgroundColor = Color.parseColor("#40bdc0d4");
         int white = Color.parseColor("#ffffff");
 
-        scoreHolder.score.setText(theScore.get("score".toString()));
-        scoreHolder.lap.setText(theScore.get("lap".toString()));
-        scoreHolder.rider.setText(theScore.get("rider".toString()));
-        scoreHolder.sync.setText(theScore.get("sync".toString()));;
+        scoreHolder.score.setText(theScore.get("score"));
+        scoreHolder.lap.setText(theScore.get("lap"));
+        scoreHolder.rider.setText(theScore.get("rider"));
+        scoreHolder.rider.setText(theScore.get("rider"));
+        scoreHolder.trial.setText(theScore.get("trialid"));
+        // scoreHolder.trial.setText("trial");
         scoreHolder.sync.setText(syncState);
         scoreHolder.bind(theScore, listener);
 
@@ -82,13 +86,15 @@ public class ScoreListSyncAdapter extends RecyclerView.Adapter<ScoreListSyncAdap
         TextView lap;
         TextView score;
         TextView sync;
+        TextView trial;
 
         public ScoreHolder(@NonNull View itemView) {
             super(itemView);
-            score = (TextView) itemView.findViewById(R.id.score);
-            lap = (TextView) itemView.findViewById(R.id.lap);
-            rider = (TextView) itemView.findViewById(R.id.rider);
-            sync = (TextView) itemView.findViewById(R.id.sync);
+            score = itemView.findViewById(R.id.score);
+            lap = itemView.findViewById(R.id.lap);
+            rider = itemView.findViewById(R.id.rider);
+            sync = itemView.findViewById(R.id.sync);
+            trial = itemView.findViewById(R.id.trial);
         }
 
         public void bind(final HashMap<String, String> theScore, final OnItemClickListener listener) {
@@ -126,87 +132,4 @@ public class ScoreListSyncAdapter extends RecyclerView.Adapter<ScoreListSyncAdap
             });
         }
     }
-
-
-    /*
-
-
-    ScoreDbHelper scoreDbHelper;
-
-    ScoreListSyncAdapter(ArrayList<HashMap<String, String>> theScores) {
-       //this.context = context;
-        this.theScores = theScores;
-    }
-
-    @Override
-    public void onAttachedToRecyclerView(RecyclerView recyclerView) {
-        super.onAttachedToRecyclerView(recyclerView);
-    }
-
-    @NonNull
-    @Override
-    public ScoreHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        scoreDbHelper = new ScoreDbHelper(viewGroup.getContext());
-
-
-        // Point to data holder layout
-        View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.score_row, viewGroup, false);
-        ScoreHolder scoreViewHolder = new ScoreHolder(v);
-        return scoreViewHolder;
-    }
-
-    @Override
-    public void onBindViewHolder(@NonNull ScoreHolder scoreHolder, final int i) {
-        //
-        String syncStatus = theScores.get(i).get("sync");
-        if (syncStatus.equals("-1")){
-            syncStatus = "Pending";
-        } else {
-            syncStatus = "Done";
-        }
-
-        scoreHolder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int id = new Integer(theScores.get(i).get("id"));
-                updateScore(id);
-            }
-        });
-
-        // Populate TextViews with data
-        scoreHolder.rider.setText(theScores.get(i).get("rider".toString()));
-        scoreHolder.score.setText(theScores.get(i).get("score".toString()));
-        scoreHolder.lap.setText(theScores.get(i).get("edited".toString()));
-        scoreHolder.sync.setText(syncStatus);
-    }
-
-    private void updateScore(int id) {
-        scoreDbHelper.delete(id);
-
-    }
-
-    @Override
-    public int getItemCount() {
-        return theScores.size();
-    }
-
-    public static class ScoreHolder extends RecyclerView.ViewHolder {
-
-        TextView rider;
-        TextView score;
-        TextView sync;
-        TextView lap;
-
-        public ScoreHolder(@NonNull View itemView) {
-            super(itemView);
-
-            // Instantiate fields to be populated
-            rider = (TextView) itemView.findViewById(R.id.rider);
-            score = (TextView) itemView.findViewById(R.id.score);
-            sync = (TextView) itemView.findViewById(R.id.sync);
-            lap = (TextView) itemView.findViewById(R.id.lap);
-        }
-    }
-    */
-
 }

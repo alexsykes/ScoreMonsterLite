@@ -16,7 +16,7 @@ public class ScoreListAdapter extends RecyclerView.Adapter<ScoreListAdapter.Scor
 
     ArrayList<HashMap<String, String>> theSummaryScores;
 
-    ScoreListAdapter(ArrayList<HashMap<String, String>> theSummaryScores) {
+    public ScoreListAdapter(ArrayList<HashMap<String, String>> theSummaryScores) {
         this.theSummaryScores = theSummaryScores;
     }
 
@@ -40,10 +40,10 @@ public class ScoreListAdapter extends RecyclerView.Adapter<ScoreListAdapter.Scor
         int white = Color.parseColor("#ffffff");
 
         // Populate TextViews with data
-        scoreHolder.riderTextView.setText(theSummaryScores.get(i).get("rider".toString()));
-        scoreHolder.scoresTextView.setText(theSummaryScores.get(i).get("scoredata".toString()));
-        scoreHolder.totalTextView.setText(theSummaryScores.get(i).get("total".toString()));
-        scoreHolder.lapsTextView.setText(theSummaryScores.get(i).get("count".toString()));
+        scoreHolder.riderTextView.setText(theSummaryScores.get(i).get("rider"));
+        scoreHolder.scoresTextView.setText(theSummaryScores.get(i).get("scores"));
+        scoreHolder.totalTextView.setText(theSummaryScores.get(i).get("total"));
+        scoreHolder.lapsTextView.setText(theSummaryScores.get(i).get("laps"));
 
         if (i % 2 != 0) {
             scoreHolder.itemView.setBackgroundColor(backgroundColor);
@@ -68,10 +68,10 @@ public class ScoreListAdapter extends RecyclerView.Adapter<ScoreListAdapter.Scor
             super(itemView);
 
             // Instantiate fields to be populated
-            riderTextView = (TextView) itemView.findViewById(R.id.riderTextView);
-            scoresTextView = (TextView) itemView.findViewById(R.id.scoresTextView);
-            totalTextView = (TextView) itemView.findViewById(R.id.totalTextView);
-            lapsTextView = (TextView) itemView.findViewById(R.id.lapsTextView);
+            riderTextView = itemView.findViewById(R.id.riderTextView);
+            scoresTextView = itemView.findViewById(R.id.scoresTextView);
+            totalTextView = itemView.findViewById(R.id.totalTextView);
+            lapsTextView = itemView.findViewById(R.id.lapsTextView);
         }
     }
 }

@@ -9,7 +9,6 @@
     tools:context=".NumberPadFragment">
 
 
-
     <Button
         android:id="@+id/button1"
         style="@android:style/Widget.Button"
@@ -20,6 +19,7 @@
         android:textColor="@color/colorButtonBlue"
         android:textSize="18sp"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         tools:text="@string/_1" />
 
     <Button
@@ -32,6 +32,7 @@
         android:textColor="@color/colorButtonBlue"
         android:textSize="18sp"
         app:layout_constraintStart_toEndOf="@+id/button1"
+        app:layout_constraintTop_toTopOf="parent"
         tools:text="@string/_2" />
 
     <Button
@@ -44,6 +45,7 @@
         android:textColor="@color/colorButtonBlue"
         android:textSize="18sp"
         app:layout_constraintStart_toEndOf="@+id/button2"
+        app:layout_constraintTop_toTopOf="parent"
         tools:text="@string/_3" />
 
 

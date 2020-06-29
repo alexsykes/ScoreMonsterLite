@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context=".MainActivity">
+    tools:context=".activities.MainActivity">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/my_toolbar"
@@ -35,16 +35,15 @@
         android:id="@+id/topContainer"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginBottom="8dp"
         android:baselineAligned="false"
-        app:layout_constraintBottom_toTopOf="@+id/riderNumberView"
+        app:layout_constraintBottom_toTopOf="@+id/saveButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/my_toolbar">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="100dp"
             android:layout_weight="1"
             android:gravity="center_horizontal"
             android:orientation="vertical">
@@ -56,7 +55,7 @@
                 android:gravity="center_horizontal"
                 android:text="@string/rider_number"
                 android:textColor="@color/colorButtonBlue"
-                android:textSize="24sp" />
+                android:textSize="36sp" />
 
             <android.support.constraint.ConstraintLayout
                 android:id="@+id/top"
@@ -70,7 +69,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="100dp"
             android:layout_weight="1"
             android:gravity="center_horizontal"
             android:orientation="vertical">
@@ -82,7 +81,7 @@
                 android:gravity="center_horizontal"
                 android:text="@string/score"
                 android:textColor="@color/colorButtonBlue"
-                android:textSize="24sp" />
+                android:textSize="36sp" />
 
             <android.support.constraint.ConstraintLayout
                 android:id="@+id/bottom"
@@ -94,38 +93,6 @@
 
         </LinearLayout>
     </LinearLayout>
-
-    <TextView
-        android:id="@+id/scoreView"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_weight="1"
-        android:background="@color/colorButtonAmber"
-        android:text=""
-        android:textColor="@color/colorButtonBlue"
-        android:textSize="36sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/saveButton"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/riderNumberView" />
-
-    <TextView
-        android:id="@+id/riderNumberView"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_weight="1"
-        android:background="@color/colorButtonGreen"
-        android:text=""
-        android:textColor="@color/colorButtonBlue"
-        android:textSize="36sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/saveButton"
-        app:layout_constraintEnd_toStartOf="@+id/scoreView"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent" />
 
 
     <Button
