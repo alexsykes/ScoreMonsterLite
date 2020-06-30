@@ -479,9 +479,6 @@ public class MainActivity extends AppCompatActivity {
 
         if (score.equals("") || rider.equals("")) {
             toneGen1.startTone(ToneGenerator.TONE_PROP_BEEP2, 150);
-
-            //
-
             new AlertDialog.Builder(this).setTitle("Warning").setMessage("Missing rider number or score").setNeutralButton("Close", null).show();
         } else {
             // Otherwise enter scores
