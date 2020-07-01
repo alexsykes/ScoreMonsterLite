@@ -20,6 +20,7 @@ import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -43,7 +44,7 @@ public class SetupActivity extends AppCompatActivity implements AdapterView.OnIt
     // Set up data fields
     private static final String BASE_URL = "https://android.trialmonster.uk/";
     int trialid, section, numsections, numlaps;
-    boolean isOnline;
+    boolean isOnline, isSingleUser;
     String observer, theTrialName, detail, email;
     String[] theTrials, theIDs;
     ArrayList<HashMap<String, String>> theTrialList;
@@ -60,6 +61,7 @@ public class SetupActivity extends AppCompatActivity implements AdapterView.OnIt
     CheckBox resetCheckBox, confirmCheckBox;
     TextView observerTextInput, trialNameTextInput, emailTextInput, numSectionsTextInput, numLapsTextInput, trialDetailView;
     ImageView warningImageView;
+    Switch modeSwitch;
     private Button button;
 
     @Override
@@ -80,6 +82,7 @@ public class SetupActivity extends AppCompatActivity implements AdapterView.OnIt
         confirmCheckBox = findViewById(R.id.confirmCheckBox);
         warningImageView = findViewById(R.id.warningImageView);
         button = findViewById(R.id.button);
+        modeSwitch = findViewById(R.id.modeSwitch);
 
         confirmCheckBox.setVisibility(View.GONE);
         warningImageView.setVisibility(View.GONE);
@@ -309,6 +312,8 @@ public class SetupActivity extends AppCompatActivity implements AdapterView.OnIt
         observer = localPrefs.getString("observer", "");
         email = localPrefs.getString("email", "");
         isOnline = localPrefs.getBoolean("canConnect", false);
+        isSingleUser = localPrefs.getBoolean("isSingleUser", false);
+
 
         // Set up manual fields
         trialNameTextInput.setText(theTrialName);
@@ -317,6 +322,7 @@ public class SetupActivity extends AppCompatActivity implements AdapterView.OnIt
         numSectionsTextInput.setText(String.valueOf(numsections));
         detail = theTrialName + "\n" + numlaps + " laps \n" + numsections + " sections";
         trialDetailView.setText(detail);
+        modeSwitch.setChecked(isSingleUser);
 
         if (trialid == 0 ) {
             trialDetailsInput.setVisibility(View.VISIBLE);
@@ -347,6 +353,7 @@ public class SetupActivity extends AppCompatActivity implements AdapterView.OnIt
             hasErrors = true;
             errorMsg += "\nThe observer field is empty";
         }
+
 
         // Check for manual entries
         if (trialid == 0 ) {
@@ -395,6 +402,7 @@ public class SetupActivity extends AppCompatActivity implements AdapterView.OnIt
             }
         }
 
+        isSingleUser = modeSwitch.isChecked();
         // Inform user if errors
         if (hasErrors) {
             Toast.makeText(this, errorMsg, Toast.LENGTH_LONG).show();
@@ -408,6 +416,7 @@ public class SetupActivity extends AppCompatActivity implements AdapterView.OnIt
             editor.putInt("numlaps", numlaps);
             editor.putString("observer", observer);
             editor.putString("email", email);
+            editor.putBoolean("isSingleUser", isSingleUser);
             editor.commit();
             // Read resetCheckBox
             boolean reset = resetCheckBox.isChecked();

@@ -72,6 +72,7 @@ public class MainActivity extends AppCompatActivity {
     private int numlaps;
     private int numsections;
     private int score;
+    boolean isSingleUser;
     int serverResponseCode = 0;
     private String filename;
     String upLoadServerUri = null;
@@ -486,7 +487,6 @@ public class MainActivity extends AppCompatActivity {
             int scoreValue = Integer.parseInt(score);
 
             insertScore(riderNumber, scoreValue);
-
             clearScore();
         }
     }
@@ -523,9 +523,22 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // Reset the  rider/score values
+    // Patched for singleUserMode
     private void clearScore() {
         score = 0;
-        numberLabel.setText("");
+        if (!isSingleUser) {
+            numberLabel.setText("");
+        } else {
+            SharedPreferences.Editor editor = localPrefs.edit();
+            if (section < numsections) {
+                section++;
+            } else if (section == numsections) {
+                section = 1;
+            }
+            sectionNumber.setText(String.valueOf(section));
+            editor.putInt("section", section);
+            editor.apply();
+        }
         scoreLabel.setText("0");
     }
 
@@ -541,6 +554,7 @@ public class MainActivity extends AppCompatActivity {
         theTrialName = localPrefs.getString("theTrialName", "None selected");
         status = theTrialName + " - Observer: " + observer;
         sectionNumber.setText(String.valueOf(section));
+        isSingleUser = localPrefs.getBoolean("isSingleUser", false);
 
         statusLine.setText(status);
     }

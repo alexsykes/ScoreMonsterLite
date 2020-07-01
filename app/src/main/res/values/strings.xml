@@ -184,4 +184,7 @@ To change a score, click on the list icon in the toolbar. This will display a li
     <string name="helpText">App Help</string>
     <string name="stop_permitted">Stop Permitted Rules</string>
     <string name="no_stop">Non Stop Rules</string>
+    <string name="togglebutton">ToggleButton</string>
+    <string name="single_user_mode">Single user mode</string>
+    <string name="modeSwitch">Single User mode</string>
 </resources>
