@@ -1,6 +1,7 @@
 package com.alexsykes.scoremonster.activities;
 
 import android.app.AlertDialog;
+import android.app.FragmentManager;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.Context;
@@ -25,6 +26,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.alexsykes.scoremonster.NumberPadFragment;
 import com.alexsykes.scoremonster.R;
@@ -56,7 +58,9 @@ public class MainActivity extends AppCompatActivity {
     String message;
 
     TextView numberLabel, scoreLabel, statusLine, sectionNumber;
-    String riderNumber, status, theTrialName;
+    int ridingNumber;
+    String status;
+    String theTrialName;
     NumberPadFragment numberPadFragment;
     TouchFragment touchFragment;
     SharedPreferences localPrefs;
@@ -75,6 +79,7 @@ public class MainActivity extends AppCompatActivity {
     boolean isSingleUser;
     int serverResponseCode = 0;
     private String filename;
+    // private int ridingNumber;
     String upLoadServerUri = null;
     String sendMailURL = null;
 
@@ -105,8 +110,14 @@ public class MainActivity extends AppCompatActivity {
         statusLine = findViewById(R.id.statusLine);
         sectionNumber = findViewById(R.id.sectionNumber);
 
+        getPrefs();
 
         getSupportFragmentManager().beginTransaction().add(R.id.top, numberPadFragment).commit();
+
+
+        if (!isSingleUser) {
+            numberLabel.setText("");
+        }
 
         // Set up button to save scores
         Button saveButton = findViewById(R.id.saveButton);
@@ -117,7 +128,6 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
-        getPrefs();
     }
 
     @Override
@@ -431,7 +441,7 @@ public class MainActivity extends AppCompatActivity {
     public void addDigit(View view) {
         // Get length of rider riderNumber
         numberLabel = findViewById(R.id.numberLabel);
-        riderNumber = numberLabel.getText().toString();
+        String riderNumber = numberLabel.getText().toString();
         int len = riderNumber.length();
 
         // Get id from clicked button to get clicked digit
@@ -555,7 +565,10 @@ public class MainActivity extends AppCompatActivity {
         status = theTrialName + " - Observer: " + observer;
         sectionNumber.setText(String.valueOf(section));
         isSingleUser = localPrefs.getBoolean("isSingleUser", false);
-
+        ridingNumber = localPrefs.getInt("ridingNumber", 0);
+        if (isSingleUser) {
+            numberLabel.setText(String.valueOf(ridingNumber));
+        }
         statusLine.setText(status);
     }
 

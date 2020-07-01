@@ -51,13 +51,34 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:checked="true"
+        android:checked="false"
         android:text="@string/modeSwitch"
         android:textColor="@color/colorPrimaryDark"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/trialDetailView" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/ridingNumberTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/modeSwitch">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/ridingNumberTextInput"
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/riding_number"
+            android:inputType="number"
+            android:textColor="@color/colorPrimaryDark" />
+    </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/observerTextView"
@@ -68,7 +89,7 @@
         android:layout_marginEnd="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/modeSwitch">
+        app:layout_constraintTop_toBottomOf="@+id/ridingNumberTextView">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/observerTextInput"
@@ -205,6 +226,7 @@
         android:layout_marginBottom="16dp"
         android:onClick="setPrefs"
         android:text="@string/save"
+        android:textColor="@color/colorButtonBlue"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 

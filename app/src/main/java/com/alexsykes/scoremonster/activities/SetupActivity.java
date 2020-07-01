@@ -26,6 +26,7 @@ import android.widget.Toast;
 
 import com.alexsykes.scoremonster.R;
 import com.alexsykes.scoremonster.data.ScoreDbHelper;
+import com.google.android.material.textfield.TextInputLayout;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -43,7 +44,7 @@ public class SetupActivity extends AppCompatActivity implements AdapterView.OnIt
 
     // Set up data fields
     private static final String BASE_URL = "https://android.trialmonster.uk/";
-    int trialid, section, numsections, numlaps;
+    int trialid, section, numsections, numlaps, ridingNumber;
     boolean isOnline, isSingleUser;
     String observer, theTrialName, detail, email;
     String[] theTrials, theIDs;
@@ -59,8 +60,9 @@ public class SetupActivity extends AppCompatActivity implements AdapterView.OnIt
     Spinner trialSelect;
     ProgressDialog dialog = null;
     CheckBox resetCheckBox, confirmCheckBox;
-    TextView observerTextInput, trialNameTextInput, emailTextInput, numSectionsTextInput, numLapsTextInput, trialDetailView;
+    TextView observerTextInput, trialNameTextInput, emailTextInput, numSectionsTextInput, numLapsTextInput, trialDetailView, ridingNumberTextInput;
     ImageView warningImageView;
+    TextInputLayout riderNumberTextView;
     Switch modeSwitch;
     private Button button;
 
@@ -75,18 +77,23 @@ public class SetupActivity extends AppCompatActivity implements AdapterView.OnIt
         trialDetailView = findViewById(R.id.trialDetailView);
         trialNameTextInput = findViewById(R.id.trialNameTextInput);
         emailTextInput = findViewById(R.id.emailTextInput);
-        trialDetailsInput = findViewById(( R.id.trialDetailsInput));
-        numSectionsTextInput = findViewById(( R.id.numSectionsTextInput));
-        numLapsTextInput = findViewById(( R.id.numLapsTextInput));
+        trialDetailsInput = findViewById((R.id.trialDetailsInput));
+        numSectionsTextInput = findViewById((R.id.numSectionsTextInput));
+        numLapsTextInput = findViewById((R.id.numLapsTextInput));
         resetCheckBox = findViewById(R.id.resetCheckBox);
         confirmCheckBox = findViewById(R.id.confirmCheckBox);
         warningImageView = findViewById(R.id.warningImageView);
+
+        // New stuff
+        riderNumberTextView = findViewById(R.id.ridingNumberTextView);
+        ridingNumberTextInput = findViewById(R.id.ridingNumberTextInput);
         button = findViewById(R.id.button);
         modeSwitch = findViewById(R.id.modeSwitch);
 
         confirmCheckBox.setVisibility(View.GONE);
         warningImageView.setVisibility(View.GONE);
 
+        // Set up listeners
         resetCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -103,7 +110,6 @@ public class SetupActivity extends AppCompatActivity implements AdapterView.OnIt
             }
         });
 
-
         confirmCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -117,13 +123,23 @@ public class SetupActivity extends AppCompatActivity implements AdapterView.OnIt
             }
         });
 
+        modeSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                ridingNumberTextInput.setText(String.valueOf(ridingNumber));
+                if (isChecked) {
+                    riderNumberTextView.setVisibility(View.VISIBLE);
+                } else {
+                    riderNumberTextView.setVisibility(View.GONE);
+                }
+            }
+        });
 
         // Set up spinner
         trialSelect = findViewById(R.id.trialSelect);
         trialSelect.setOnItemSelectedListener(this);
 
         checkPrefs();
-        if(isOnline) {
+        if (isOnline) {
 
             // Get trialList from server
             String URL = BASE_URL + "getTrialList.php";
@@ -133,12 +149,17 @@ public class SetupActivity extends AppCompatActivity implements AdapterView.OnIt
                 Toast.makeText(SetupActivity.this, "Empty data", Toast.LENGTH_LONG).show();
             }
         }
+
+        if (isSingleUser) {
+            riderNumberTextView.setVisibility(View.VISIBLE);
+            ridingNumberTextInput.setText(String.valueOf(ridingNumber));
+        }
     }
 
     @Override
     protected void onStart() {
         // Check network connectivity and set Prefs
-        localPrefs = getSharedPreferences("monster", MODE_PRIVATE);
+
         SharedPreferences.Editor editor = localPrefs.edit();
         isOnline = isOnline();
         editor.putBoolean("canConnect", isOnline);
@@ -313,6 +334,14 @@ public class SetupActivity extends AppCompatActivity implements AdapterView.OnIt
         email = localPrefs.getString("email", "");
         isOnline = localPrefs.getBoolean("canConnect", false);
         isSingleUser = localPrefs.getBoolean("isSingleUser", false);
+        ridingNumber = localPrefs.getInt("ridingNumber", 0);
+
+        ridingNumberTextInput.setText(String.valueOf(ridingNumber));
+        if (isSingleUser) {
+            riderNumberTextView.setVisibility(View.VISIBLE);
+        } else {
+            riderNumberTextView.setVisibility(View.GONE);
+        }
 
 
         // Set up manual fields
@@ -403,6 +432,18 @@ public class SetupActivity extends AppCompatActivity implements AdapterView.OnIt
         }
 
         isSingleUser = modeSwitch.isChecked();
+
+        if (isSingleUser) {
+            // Check that observer field is complete
+            if (ridingNumberTextInput.getText().toString().equals("")) {
+                // If empty, then append message
+                hasErrors = true;
+                errorMsg += "\nThe riding number field is empty";
+            } else {
+                ridingNumber = Integer.parseInt(ridingNumberTextInput.getText().toString());
+            }
+        }
+
         // Inform user if errors
         if (hasErrors) {
             Toast.makeText(this, errorMsg, Toast.LENGTH_LONG).show();
@@ -414,6 +455,7 @@ public class SetupActivity extends AppCompatActivity implements AdapterView.OnIt
             editor.putInt("trialid", trialid);
             editor.putInt("numsections", numsections);
             editor.putInt("numlaps", numlaps);
+            editor.putInt("ridingNumber", ridingNumber);
             editor.putString("observer", observer);
             editor.putString("email", email);
             editor.putBoolean("isSingleUser", isSingleUser);
