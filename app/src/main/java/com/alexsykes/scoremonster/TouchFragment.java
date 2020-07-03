@@ -27,10 +27,13 @@ public class TouchFragment extends Fragment {
         super.onCreate(savedInstanceState);
     }
 
-    public void clean(View view){// Get id from clicked button to get clicked digit
+    public void clean(View view) {// Get id from clicked button to get clicked digit
         int intID = view.getId();
         Button button = view.findViewById(intID);
         String digit = button.getText().toString();
+    }
+
+    public void countDabs(View view) {
     }
 
 
