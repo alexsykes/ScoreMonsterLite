@@ -112,13 +112,6 @@ public class MainActivity extends AppCompatActivity {
 
         getPrefs();
 
-        getSupportFragmentManager().beginTransaction().add(R.id.top, numberPadFragment).commit();
-
-
-        if (!isSingleUser) {
-            numberLabel.setText("");
-        }
-
         // Set up button to save scores
         Button saveButton = findViewById(R.id.saveButton);
         saveButton.setOnLongClickListener(new View.OnLongClickListener() {
@@ -141,6 +134,11 @@ public class MainActivity extends AppCompatActivity {
         clearScore();
         super.onStart();
         getPrefs();
+
+        if (!isSingleUser) {
+            getSupportFragmentManager().beginTransaction().add(R.id.top, numberPadFragment).commit();
+            numberLabel.setText("");
+        }
         getSupportFragmentManager().beginTransaction().replace(R.id.bottom, touchFragment).commit();
     }
 
