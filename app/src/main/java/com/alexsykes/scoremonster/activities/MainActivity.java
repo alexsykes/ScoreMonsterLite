@@ -131,13 +131,14 @@ public class MainActivity extends AppCompatActivity {
         editor.putBoolean("canConnect", isOnline());
         editor.apply();
 
-        // clearScore();
         super.onStart();
         getPrefs();
 
         if (!isSingleUser) {
             getSupportFragmentManager().beginTransaction().add(R.id.top, numberPadFragment).commit();
             numberLabel.setText("");
+        } else {
+            getSupportFragmentManager().beginTransaction().remove(numberPadFragment).commit();
         }
         getSupportFragmentManager().beginTransaction().replace(R.id.bottom, touchFragment).commit();
     }
