@@ -143,6 +143,32 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onPause() {
+        super.onPause();
+        saveCurrentState();
+    }
+
+    private void saveCurrentState() {
+        localPrefs = getSharedPreferences("monster", MODE_PRIVATE);
+        int score = Integer.parseInt(scoreLabel.getText().toString());
+        int rider = Integer.parseInt(numberLabel.getText().toString());
+        SharedPreferences.Editor editor = localPrefs.edit();
+        editor.putInt("section", section);
+        editor.putInt("score", score);
+        editor.putInt("ridingNumber", rider);
+        editor.commit();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        getPrefs();
+        scoreLabel.setText(String.valueOf(score));
+        sectionNumber.setText(String.valueOf(section));
+        numberLabel.setText(String.valueOf(ridingNumber));
+    }
+
+    @Override
     protected void onSaveInstanceState(final Bundle outState) {
         super.onSaveInstanceState(outState);
 
@@ -569,6 +595,7 @@ public class MainActivity extends AppCompatActivity {
         sectionNumber.setText(String.valueOf(section));
         isSingleUser = localPrefs.getBoolean("isSingleUser", false);
         ridingNumber = localPrefs.getInt("ridingNumber", 0);
+        score = localPrefs.getInt("score", 0);
         if (isSingleUser) {
             numberLabel.setText(String.valueOf(ridingNumber));
         }
