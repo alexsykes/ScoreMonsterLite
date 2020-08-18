@@ -125,7 +125,7 @@ public class SetupActivity extends AppCompatActivity implements AdapterView.OnIt
 
         modeSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                ridingNumberTextInput.setText(String.valueOf(ridingNumber));
+                // ridingNumberTextInput.setText(String.valueOf(ridingNumber));
                 if (isChecked) {
                     riderNumberTextView.setVisibility(View.VISIBLE);
                 } else {
@@ -150,8 +150,15 @@ public class SetupActivity extends AppCompatActivity implements AdapterView.OnIt
             }
         }
 
+        // Check
         if (isSingleUser) {
             riderNumberTextView.setVisibility(View.VISIBLE);
+            // ridingNumberTextInput.setText(String.valueOf(ridingNumber));
+        }
+
+        if (ridingNumber == 0) {
+            ridingNumberTextInput.setText("");
+        } else {
             ridingNumberTextInput.setText(String.valueOf(ridingNumber));
         }
     }
@@ -159,7 +166,6 @@ public class SetupActivity extends AppCompatActivity implements AdapterView.OnIt
     @Override
     protected void onStart() {
         // Check network connectivity and set Prefs
-
         SharedPreferences.Editor editor = localPrefs.edit();
         isOnline = isOnline();
         editor.putBoolean("canConnect", isOnline);
@@ -336,7 +342,11 @@ public class SetupActivity extends AppCompatActivity implements AdapterView.OnIt
         isSingleUser = localPrefs.getBoolean("isSingleUser", false);
         ridingNumber = localPrefs.getInt("ridingNumber", 0);
 
-        ridingNumberTextInput.setText(String.valueOf(ridingNumber));
+        if (ridingNumber == 0) {
+            ridingNumberTextInput.setText("");
+        } else {
+            ridingNumberTextInput.setText(String.valueOf(ridingNumber));
+        }
         if (isSingleUser) {
             riderNumberTextView.setVisibility(View.VISIBLE);
         } else {
@@ -347,13 +357,20 @@ public class SetupActivity extends AppCompatActivity implements AdapterView.OnIt
         // Set up manual fields
         trialNameTextInput.setText(theTrialName);
         emailTextInput.setText(email);
-        numLapsTextInput.setText(String.valueOf(numlaps));
-        numSectionsTextInput.setText(String.valueOf(numsections));
+        if (numlaps > 0) {
+            numLapsTextInput.setText(String.valueOf(numlaps));
+        }
+
+        if (numsections > 0) {
+            numSectionsTextInput.setText(String.valueOf(numsections));
+        }
+
+
         detail = theTrialName + "\n" + numlaps + " laps \n" + numsections + " sections";
         trialDetailView.setText(detail);
         modeSwitch.setChecked(isSingleUser);
 
-        if (trialid == 0 ) {
+        if (trialid == 0) {
             trialDetailsInput.setVisibility(View.VISIBLE);
         } else {
             trialDetailsInput.setVisibility(View.GONE);

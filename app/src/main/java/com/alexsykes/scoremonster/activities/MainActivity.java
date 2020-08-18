@@ -131,7 +131,7 @@ public class MainActivity extends AppCompatActivity {
         editor.putBoolean("canConnect", isOnline());
         editor.apply();
 
-        clearScore();
+        // clearScore();
         super.onStart();
         getPrefs();
 
@@ -149,17 +149,17 @@ public class MainActivity extends AppCompatActivity {
         // Save the state of item position
         outState.putString("rider", numberLabel.getText().toString());
         outState.putString("score", scoreLabel.getText().toString());
-        //   outState.putString("section", sectionNumber.getText().toString());
+        outState.putInt("section", section);
     }
 
     @Override
     protected void onRestoreInstanceState(final Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-
         // Read the state of item position
         numberLabel.setText(savedInstanceState.getString("rider"));
         scoreLabel.setText(savedInstanceState.getString("score"));
-        // sectionNumber.setText(savedInstanceState.getString("section"));
+        section = savedInstanceState.getInt("section");
+        sectionNumber.setText(String.valueOf(section));
+        super.onRestoreInstanceState(savedInstanceState);
     }
 
     @Override
@@ -533,10 +533,16 @@ public class MainActivity extends AppCompatActivity {
     // Reset the  rider/score values
     // Patched for singleUserMode
     private void clearScore() {
+        // Clear score label
         score = 0;
+        scoreLabel.setText("0");
+
+        // Clear rider number if not a single rider
         if (!isSingleUser) {
             numberLabel.setText("");
-        } else {
+        }
+        // If a single rider, then increment section
+        else {
             SharedPreferences.Editor editor = localPrefs.edit();
             if (section < numsections) {
                 section++;
@@ -547,7 +553,6 @@ public class MainActivity extends AppCompatActivity {
             editor.putInt("section", section);
             editor.apply();
         }
-        scoreLabel.setText("0");
     }
 
     private void getPrefs() {
