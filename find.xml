@@ -1,7 +1,7 @@
 <application>
   <component name="FindSettings">
-    <option name="customScope" value="Project 'Observer'" />
-    <option name="defaultScopeName" value="Project 'Observer'" />
-    <option name="SEARCH_SCOPE" value="Project 'Observer'" />
+    <option name="customScope" value="File '.../app/src/main/java/com/alexsykes/scoremonster/activities/MainActivity.java [app]'" />
+    <option name="defaultScopeName" value="File '.../app/src/main/java/com/alexsykes/scoremonster/activities/MainActivity.java [app]'" />
+    <option name="SEARCH_SCOPE" value="File '.../app/src/main/java/com/alexsykes/scoremonster/activities/MainActivity.java [app]'" />
   </component>
 </application>
