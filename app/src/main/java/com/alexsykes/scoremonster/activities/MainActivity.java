@@ -26,6 +26,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.alexsykes.scoremonster.NumberPadFragment;
@@ -58,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
     String message;
 
     TextView numberLabel, scoreLabel, statusLine, sectionNumber;
+    ConstraintLayout top;
     int ridingNumber;
     String status;
     String theTrialName;
@@ -109,8 +111,16 @@ public class MainActivity extends AppCompatActivity {
         scoreLabel = findViewById(R.id.scoreLabel);
         statusLine = findViewById(R.id.statusLine);
         sectionNumber = findViewById(R.id.sectionNumber);
+        top = findViewById(R.id.top);
+
+        getSupportFragmentManager().beginTransaction().add(R.id.top, numberPadFragment).commit();
+        getSupportFragmentManager().beginTransaction().replace(R.id.bottom, touchFragment).commit();
 
         getPrefs();
+
+        if (theTrialName.equals("None selected")) {
+            goSetup();
+        }
 
         // Set up button to save scores
         Button saveButton = findViewById(R.id.saveButton);
@@ -135,12 +145,11 @@ public class MainActivity extends AppCompatActivity {
         getPrefs();
 
         if (!isSingleUser) {
-            getSupportFragmentManager().beginTransaction().add(R.id.top, numberPadFragment).commit();
             numberLabel.setText("");
+            top.setVisibility(View.VISIBLE);
         } else {
-            getSupportFragmentManager().beginTransaction().remove(numberPadFragment).commit();
+            top.setVisibility(View.INVISIBLE);
         }
-        getSupportFragmentManager().beginTransaction().replace(R.id.bottom, touchFragment).commit();
     }
 
     @Override
@@ -455,7 +464,7 @@ public class MainActivity extends AppCompatActivity {
     private void goSetup() {
         Intent intent = new Intent(this, SetupActivity.class);
         startActivityForResult(intent, TEXT_REQUEST);
-
+        getPrefs();
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -610,19 +619,19 @@ public class MainActivity extends AppCompatActivity {
         return netInfo != null && netInfo.isConnectedOrConnecting();
     }
 
-    public void increment(View view) {
+    public void increment() {
         SharedPreferences.Editor editor = localPrefs.edit();
         if (section < numsections) {
-            section++ ; }
-        else if (section == numsections) {
-            section = 1 ;
+            section++;
+        } else if (section == numsections) {
+            section = 1;
         }
         sectionNumber.setText(String.valueOf(section));
         editor.putInt("section", section);
         editor.apply();
     }
 
-    public void decrement(View view) {
+    public void decrement() {
         SharedPreferences.Editor editor = localPrefs.edit();
         if (section > 1) {
             section--;
