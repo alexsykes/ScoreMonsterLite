@@ -166,7 +166,7 @@ public class MainActivity extends AppCompatActivity {
         editor.putInt("section", section);
         editor.putInt("score", score);
         editor.putInt("ridingNumber", rider);
-        editor.commit();
+        editor.apply();
     }
 
     @Override
