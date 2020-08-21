@@ -152,7 +152,7 @@ public class ScoreDbHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        
+
     }
 
     @Override

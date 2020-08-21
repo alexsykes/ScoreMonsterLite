@@ -143,7 +143,7 @@ public class MainActivity extends AppCompatActivity {
         SQLiteDatabase db = openOrCreateDatabase(DATABASE_NAME, MODE_PRIVATE, null);
 
         // Create a String that contains the SQL statement to create the scores table
-        String SQL_CREATE_SCORES_TABLE = "CREATE TABLE " + ScoreContract.ScoreEntry.TABLE_NAME + " ("
+        String SQL_CREATE_SCORES_TABLE = "CREATE TABLE IF NOT EXISTS " + ScoreContract.ScoreEntry.TABLE_NAME + " ("
                 + ScoreContract.ScoreEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + ScoreContract.ScoreEntry.COLUMN_SCORE_OBSERVER + " TEXT NOT NULL, "
                 + ScoreContract.ScoreEntry.COLUMN_SCORE_SECTION + " INTEGER NOT NULL, "
@@ -187,12 +187,17 @@ public class MainActivity extends AppCompatActivity {
 
     private void saveCurrentState() {
         localPrefs = getSharedPreferences("monster", MODE_PRIVATE);
-        int score = Integer.parseInt(scoreLabel.getText().toString());
-        int rider = Integer.parseInt(numberLabel.getText().toString());
         SharedPreferences.Editor editor = localPrefs.edit();
+        int score = Integer.parseInt(scoreLabel.getText().toString());
+        String currentRiderText = numberLabel.getText().toString();
+        if (!currentRiderText.equals("")) {
+            int rider = Integer.parseInt(numberLabel.getText().toString());
+            editor.putInt("ridingNumber", rider);
+        } else {
+            editor.putInt("ridingNumber", 0);
+        }
         editor.putInt("section", section);
         editor.putInt("score", score);
-        editor.putInt("ridingNumber", rider);
         editor.apply();
     }
 
@@ -202,7 +207,11 @@ public class MainActivity extends AppCompatActivity {
         getPrefs();
         scoreLabel.setText(String.valueOf(score));
         sectionNumber.setText(String.valueOf(section));
-        numberLabel.setText(String.valueOf(ridingNumber));
+        if (ridingNumber != 0) {
+            numberLabel.setText(String.valueOf(ridingNumber));
+        } else {
+            numberLabel.setText("");
+        }
     }
 
     @Override
