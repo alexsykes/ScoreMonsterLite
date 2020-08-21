@@ -94,6 +94,8 @@ public class MainActivity extends AppCompatActivity {
         sendMailURL = "http://android.trialmonster.uk/sendMailWithFile.php";
         upLoadServerUri = "http://android.trialmonster.uk/UploadToServer.php";
 
+        dbInit();
+
         // Create database connection
         mDbHelper = new ScoreDbHelper(this);
         mDbHelper.getWritableDatabase();
@@ -131,6 +133,31 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
+    }
+
+    // Databaise initialisation
+    private void dbInit() {
+        // Database operations - https://www.tutorialspoint.com/android/android_sqlite_database.htm
+        // First, get your database
+        final String DATABASE_NAME = "monster.db";
+        SQLiteDatabase db = openOrCreateDatabase(DATABASE_NAME, MODE_PRIVATE, null);
+
+        // Create a String that contains the SQL statement to create the scores table
+        String SQL_CREATE_SCORES_TABLE = "CREATE TABLE " + ScoreContract.ScoreEntry.TABLE_NAME + " ("
+                + ScoreContract.ScoreEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + ScoreContract.ScoreEntry.COLUMN_SCORE_OBSERVER + " TEXT NOT NULL, "
+                + ScoreContract.ScoreEntry.COLUMN_SCORE_SECTION + " INTEGER NOT NULL, "
+                + ScoreContract.ScoreEntry.COLUMN_SCORE_RIDER + " INTEGER NOT NULL, "
+                + ScoreContract.ScoreEntry.COLUMN_SCORE_LAP + " INTEGER NOT NULL DEFAULT 0, "
+                + ScoreContract.ScoreEntry.COLUMN_SCORE_CREATED + " TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP, "
+                + ScoreContract.ScoreEntry.COLUMN_SCORE_UPDATED + " TEXT , "
+                + ScoreContract.ScoreEntry.COLUMN_SCORE_EDITED + " INTEGER NOT NULL DEFAULT 0, "
+                + ScoreContract.ScoreEntry.COLUMN_SCORE_TRIALID + " INTEGER NOT NULL DEFAULT 0, "
+                + ScoreContract.ScoreEntry.COLUMN_SCORE_SYNC + " INTEGER NOT NULL DEFAULT 1, "
+                + ScoreContract.ScoreEntry.COLUMN_SCORE_SCORE + " INTEGER NOT NULL);";
+
+        // Execute the SQL statement
+        db.execSQL(SQL_CREATE_SCORES_TABLE);
     }
 
     @Override

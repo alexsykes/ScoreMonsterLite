@@ -35,40 +35,6 @@ public class ScoreDbHelper extends SQLiteOpenHelper {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
-    /**
-     * This is called when the database is created for the first time.
-     */
-    @Override
-    public void onCreate(SQLiteDatabase db) {
-        // Create a String that contains the SQL statement to create the scores table
-        String SQL_CREATE_SCORES_TABLE = "CREATE TABLE " + ScoreEntry.TABLE_NAME + " ("
-                + ScoreEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-                + ScoreEntry.COLUMN_SCORE_OBSERVER + " TEXT NOT NULL, "
-                + ScoreEntry.COLUMN_SCORE_SECTION + " INTEGER NOT NULL, "
-                + ScoreEntry.COLUMN_SCORE_RIDER + " INTEGER NOT NULL, "
-                + ScoreEntry.COLUMN_SCORE_LAP + " INTEGER NOT NULL DEFAULT 0, "
-                + ScoreEntry.COLUMN_SCORE_CREATED + " TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP, "
-                + ScoreEntry.COLUMN_SCORE_UPDATED + " TEXT , "
-                + ScoreEntry.COLUMN_SCORE_EDITED + " INTEGER NOT NULL DEFAULT 0, "
-                + ScoreEntry.COLUMN_SCORE_TRIALID + " INTEGER NOT NULL DEFAULT 0, "
-                + ScoreEntry.COLUMN_SCORE_SYNC + " INTEGER NOT NULL DEFAULT 1, "
-                + ScoreEntry.COLUMN_SCORE_SCORE + " INTEGER NOT NULL);";
-
-        // Execute the SQL statement
-        db.execSQL(SQL_CREATE_SCORES_TABLE);
-            }
-
-    /**
-     * This is called when the database needs to be upgraded.
-     */
-    @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        String sql = "DROP TABLE IF EXISTS " + ScoreContract.ScoreEntry.TABLE_NAME;
-        db.execSQL(sql);
-
-        onCreate(db);
-    }
-
     // Get Score Details
     public ArrayList<HashMap<String, String>> getScoreList(int trialid) {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -175,11 +141,22 @@ public class ScoreDbHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
         return db.rawQuery("SELECT  * FROM scores WHERE  trialid=" + id, new String[]{});
     }
+
     public void update(String scoreid, String score) {
 
         SQLiteDatabase db = this.getReadableDatabase();
         // String query = "UPDATE scores SET score = " + score + ", edited = 1, updated = DATETIME('now','localtime'), sync = " + NOT_SYNCED + " WHERE _id = " + scoreid;
         String query = "UPDATE scores SET score = " + score + ", edited = 1, updated = DATETIME('now'), sync = " + NOT_SYNCED + " WHERE _id = " + scoreid;
         db.execSQL(query);
+    }
+
+    @Override
+    public void onCreate(SQLiteDatabase db) {
+        
+    }
+
+    @Override
+    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+
     }
 }
