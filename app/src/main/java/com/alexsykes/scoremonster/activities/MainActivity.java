@@ -655,7 +655,7 @@ public class MainActivity extends AppCompatActivity {
         return netInfo != null && netInfo.isConnectedOrConnecting();
     }
 
-    public void increment() {
+    public void increment(View v) {
         SharedPreferences.Editor editor = localPrefs.edit();
         if (section < numsections) {
             section++;
@@ -667,7 +667,7 @@ public class MainActivity extends AppCompatActivity {
         editor.apply();
     }
 
-    public void decrement() {
+    public void decrement(View v) {
         SharedPreferences.Editor editor = localPrefs.edit();
         if (section > 1) {
             section--;
@@ -724,4 +724,6 @@ public class MainActivity extends AppCompatActivity {
         mediaPlayer = MediaPlayer.create(this, fileName);
         mediaPlayer.start();
     }
+
+
 }

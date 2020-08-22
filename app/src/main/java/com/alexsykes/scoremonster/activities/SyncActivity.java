@@ -265,10 +265,10 @@ public class SyncActivity extends AppCompatActivity {
             protected void onPostExecute(String s) {
                 super.onPostExecute(s);
                 dialog.dismiss();
-                mDbHelper.markAsDone(trialid);
                 populateScoreList();
 
                 if (s.contentEquals("OK")){
+                    mDbHelper.markAsDone(trialid);
                     runOnUiThread(new Runnable() {
                         public void run() {
                             Toast.makeText(SyncActivity.this, "Score Update Complete",
@@ -290,8 +290,7 @@ public class SyncActivity extends AppCompatActivity {
 
                     //Opening the URL using HttpURLConnection
                     HttpURLConnection con = (HttpURLConnection) url.openConnection();
-                    String message = con.getResponseMessage();
-                    return message;
+                    return con.getResponseMessage();
 
                 } catch (Exception e) {
                     return null;
