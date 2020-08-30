@@ -32,6 +32,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.SocketTimeoutException;
@@ -482,6 +483,15 @@ public class SetupActivity extends AppCompatActivity implements AdapterView.OnIt
 
             if (reset) {
                 theScoreDB.clearResults();
+                // Delete all files
+                File dir = new File(getFilesDir(), "");
+                String[] myFiles;
+
+                myFiles = dir.list();
+                for (int i = 0; i < myFiles.length; i++) {
+                    File myFile = new File(dir, myFiles[i]);
+                    myFile.delete();
+                }
             }
             finish();
         }
