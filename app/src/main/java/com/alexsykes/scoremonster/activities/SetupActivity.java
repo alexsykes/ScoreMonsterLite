@@ -45,7 +45,7 @@ public class SetupActivity extends AppCompatActivity implements AdapterView.OnIt
 
     // Set up data fields
     private static final String BASE_URL = "https://android.trialmonster.uk/";
-    int trialid, section, numsections, numlaps, ridingNumber;
+    int trialid, section, numsections, numlaps, ridingNumber, numberInGroup;
     boolean isOnline, isSingleUser;
     String observer, theTrialName, detail, email;
     String[] theTrials, theIDs;
@@ -61,7 +61,7 @@ public class SetupActivity extends AppCompatActivity implements AdapterView.OnIt
     Spinner trialSelect;
     ProgressDialog dialog = null;
     CheckBox resetCheckBox, confirmCheckBox;
-    TextView observerTextInput, trialNameTextInput, emailTextInput, numSectionsTextInput, numLapsTextInput, trialDetailView, ridingNumberTextInput;
+    TextView observerTextInput, trialNameTextInput, emailTextInput, numSectionsTextInput, numLapsTextInput, trialDetailView, ridingNumberTextInput, numberInGroupTextInput;
     ImageView warningImageView;
     TextInputLayout riderNumberTextView;
     Switch modeSwitch;
@@ -88,6 +88,7 @@ public class SetupActivity extends AppCompatActivity implements AdapterView.OnIt
         // New stuff
         riderNumberTextView = findViewById(R.id.ridingNumberTextView);
         ridingNumberTextInput = findViewById(R.id.ridingNumberTextInput);
+        numberInGroupTextInput = findViewById(R.id.numberInGroupTextInput);
         button = findViewById(R.id.button);
         modeSwitch = findViewById(R.id.modeSwitch);
 
@@ -342,6 +343,7 @@ public class SetupActivity extends AppCompatActivity implements AdapterView.OnIt
         isOnline = localPrefs.getBoolean("canConnect", false);
         isSingleUser = localPrefs.getBoolean("isSingleUser", false);
         ridingNumber = localPrefs.getInt("ridingNumber", 0);
+        numberInGroup = localPrefs.getInt("numberInGroup", 1);
 
         if (ridingNumber == 0) {
             ridingNumberTextInput.setText("");
@@ -364,6 +366,10 @@ public class SetupActivity extends AppCompatActivity implements AdapterView.OnIt
 
         if (numsections > 0) {
             numSectionsTextInput.setText(String.valueOf(numsections));
+        }
+
+        if (numberInGroup > 0) {
+            numberInGroupTextInput.setText((String.valueOf(numberInGroup)));
         }
 
 
@@ -449,6 +455,22 @@ public class SetupActivity extends AppCompatActivity implements AdapterView.OnIt
             }
         }
 
+
+        response = numberInGroupTextInput.getText().toString();
+        if (response.equals("")) {
+            // If empty, then append message
+            hasErrors = true;
+            errorMsg += "\nThe number of riders field is empty";
+
+        } else {
+            numberInGroup = Integer.parseInt(numberInGroupTextInput.getText().toString());
+            if (numberInGroup == 0) {
+                // If empty, then append message
+                hasErrors = true;
+                errorMsg += "\nThe number of riders must be more than zero";
+            }
+        }
+
         isSingleUser = modeSwitch.isChecked();
 
         if (isSingleUser) {
@@ -477,6 +499,7 @@ public class SetupActivity extends AppCompatActivity implements AdapterView.OnIt
             editor.putString("observer", observer);
             editor.putString("email", email);
             editor.putBoolean("isSingleUser", isSingleUser);
+            editor.putInt("numberInGroup", numberInGroup);
             editor.commit();
             // Read resetCheckBox
             boolean reset = resetCheckBox.isChecked();

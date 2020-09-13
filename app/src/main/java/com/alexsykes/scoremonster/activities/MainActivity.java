@@ -16,7 +16,10 @@ import android.media.ToneGenerator;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -78,6 +81,8 @@ public class MainActivity extends AppCompatActivity {
     private int numlaps;
     private int numsections;
     private int score;
+    private int numberInGroup;
+    private int scoreCount;
     boolean isSingleUser;
     int serverResponseCode = 0;
     private String filename;
@@ -198,6 +203,7 @@ public class MainActivity extends AppCompatActivity {
         }
         editor.putInt("section", section);
         editor.putInt("score", score);
+        editor.putInt("scoreCount", scoreCount);
         editor.apply();
     }
 
@@ -560,6 +566,12 @@ public class MainActivity extends AppCompatActivity {
 
         if (score.equals("") || rider.equals("")) {
             toneGen1.startTone(ToneGenerator.TONE_PROP_BEEP2, 150);
+            Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                vibrator.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE));
+            } else {
+                vibrator.vibrate(500);
+            }
             new AlertDialog.Builder(this).setTitle("Warning").setMessage("Missing rider number or score").setNeutralButton("Close", null).show();
         } else {
             // Otherwise enter scores
@@ -567,6 +579,7 @@ public class MainActivity extends AppCompatActivity {
             int scoreValue = Integer.parseInt(score);
 
             insertScore(riderNumber, scoreValue);
+            scoreCount++;
             clearScore();
         }
     }
@@ -642,6 +655,9 @@ public class MainActivity extends AppCompatActivity {
         isSingleUser = localPrefs.getBoolean("isSingleUser", false);
         ridingNumber = localPrefs.getInt("ridingNumber", 0);
         score = localPrefs.getInt("score", 0);
+        numberInGroup = localPrefs.getInt("numberInGroup", 1);
+        scoreCount = localPrefs.getInt("scoreCount", 0);
+
         if (isSingleUser) {
             numberLabel.setText(String.valueOf(ridingNumber));
         }
