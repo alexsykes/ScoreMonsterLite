@@ -20,6 +20,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -167,6 +168,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onStart() {
+        Log.i("Note", "onStart called");
         // Check network connectivity and set Prefs
         localPrefs = getSharedPreferences("monster", MODE_PRIVATE);
         SharedPreferences.Editor editor = localPrefs.edit();
@@ -186,6 +188,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onPause() {
+        Log.i("Note", "onPause called");
         super.onPause();
         saveCurrentState();
     }
@@ -210,6 +213,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        Log.i("Note", "onResume called");
         getPrefs();
         scoreLabel.setText(String.valueOf(score));
         sectionNumber.setText(String.valueOf(section));
@@ -224,19 +228,24 @@ public class MainActivity extends AppCompatActivity {
     protected void onSaveInstanceState(final Bundle outState) {
         super.onSaveInstanceState(outState);
 
+        Log.i("Note", "onSaveInstanceState called");
         // Save the state of item position
         outState.putString("rider", numberLabel.getText().toString());
         outState.putString("score", scoreLabel.getText().toString());
         outState.putInt("section", section);
+        outState.putInt("numberInGroup", numberInGroup);
     }
 
     @Override
     protected void onRestoreInstanceState(final Bundle savedInstanceState) {
+
+        Log.i("Note", "onRestoreInstanceState called");
         // Read the state of item position
         numberLabel.setText(savedInstanceState.getString("rider"));
         scoreLabel.setText(savedInstanceState.getString("score"));
         section = savedInstanceState.getInt("section");
         sectionNumber.setText(String.valueOf(section));
+        numberInGroup = savedInstanceState.getInt("numberInGroup");
         super.onRestoreInstanceState(savedInstanceState);
     }
 
@@ -655,7 +664,7 @@ public class MainActivity extends AppCompatActivity {
         isSingleUser = localPrefs.getBoolean("isSingleUser", false);
         ridingNumber = localPrefs.getInt("ridingNumber", 0);
         score = localPrefs.getInt("score", 0);
-        numberInGroup = localPrefs.getInt("numberInGroup", 1);
+        numberInGroup = localPrefs.getInt("numberInGroup", 6);
         scoreCount = localPrefs.getInt("scoreCount", 0);
 
         if (isSingleUser) {

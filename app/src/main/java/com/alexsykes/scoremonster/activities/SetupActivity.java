@@ -71,7 +71,6 @@ public class SetupActivity extends AppCompatActivity implements AdapterView.OnIt
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setup);
-
         theScoreDB = new ScoreDbHelper(this);
         // Set up activity fields
         observerTextInput = findViewById(R.id.observerTextInput);
@@ -130,8 +129,11 @@ public class SetupActivity extends AppCompatActivity implements AdapterView.OnIt
                 // ridingNumberTextInput.setText(String.valueOf(ridingNumber));
                 if (isChecked) {
                     riderNumberTextView.setVisibility(View.VISIBLE);
+                    numberInGroupTextInput.setVisibility(View.GONE);
+                    numberInGroup = 1;
                 } else {
                     riderNumberTextView.setVisibility(View.GONE);
+                    numberInGroupTextInput.setVisibility(View.VISIBLE);
                 }
             }
         });
@@ -343,7 +345,7 @@ public class SetupActivity extends AppCompatActivity implements AdapterView.OnIt
         isOnline = localPrefs.getBoolean("canConnect", false);
         isSingleUser = localPrefs.getBoolean("isSingleUser", false);
         ridingNumber = localPrefs.getInt("ridingNumber", 0);
-        numberInGroup = localPrefs.getInt("numberInGroup", 1);
+        numberInGroup = localPrefs.getInt("numberInGroup", 6);
 
         if (ridingNumber == 0) {
             ridingNumberTextInput.setText("");
