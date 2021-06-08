@@ -183,7 +183,6 @@ public class SyncActivity extends AppCompatActivity {
         LinearLayoutManager llm = new LinearLayoutManager(this);
         scoreView.setLayoutManager(llm);
         scoreView.setHasFixedSize(true);
-
         initializeAdapter();
     }
 
@@ -264,10 +263,10 @@ public class SyncActivity extends AppCompatActivity {
             protected void onPostExecute(String s) {
                 super.onPostExecute(s);
                 dialog.dismiss();
-                populateScoreList();
 
                 if (s.contentEquals("OK")){
                     mDbHelper.markAsDone(trialid);
+                    populateScoreList();
                     runOnUiThread(new Runnable() {
                         public void run() {
                             Toast.makeText(SyncActivity.this, "Score Update Complete",
