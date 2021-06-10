@@ -9,6 +9,8 @@
         <entry key="app/src/main/res/layout/fragment_number_pad.xml" value="0.335" />
         <entry key="app/src/main/res/layout/fragment_touch.xml" value="0.4192708333333333" />
         <entry key="app/src/main/res/layout/fragment_trial_detail.xml" value="0.5" />
+        <entry key="app/src/main/res/layout/score_holder.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/settings_activity.xml" value="0.32382246376811596" />
         <entry key="app/src/main/res/xml/root_preferences.xml" value="0.20390070921985815" />
       </map>
     </option>
