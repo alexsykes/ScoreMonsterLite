@@ -5,6 +5,8 @@
         <entry key="app/src/main/res/drawable/rounded_corners.xml" value="0.38697916666666665" />
         <entry key="app/src/main/res/layout/activity_setup.xml" value="0.33358662613981765" />
         <entry key="app/src/main/res/layout/fragment_number_pad.xml" value="0.335" />
+        <entry key="app/src/main/res/layout/fragment_touch.xml" value="0.33358662613981765" />
+        <entry key="app/src/main/res/layout/fragment_trial_detail.xml" value="0.33358662613981765" />
       </map>
     </option>
   </component>
