@@ -4,9 +4,11 @@
       <map>
         <entry key="app/src/main/res/drawable/rounded_corners.xml" value="0.38697916666666665" />
         <entry key="app/src/main/res/layout-land-v21/activity_main.xml" value="0.5" />
+        <entry key="app/src/main/res/layout-v21/activity_help.xml" value="0.4192708333333333" />
         <entry key="app/src/main/res/layout-v21/activity_main.xml" value="0.5" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.12407407407407407" />
         <entry key="app/src/main/res/layout/activity_setup.xml" value="0.5" />
+        <entry key="app/src/main/res/layout/activity_sync.xml" value="0.4192708333333333" />
         <entry key="app/src/main/res/layout/fragment_number_pad.xml" value="0.335" />
         <entry key="app/src/main/res/layout/fragment_section_picker.xml" value="0.5" />
         <entry key="app/src/main/res/layout/fragment_touch.xml" value="0.4192708333333333" />
