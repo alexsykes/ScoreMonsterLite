@@ -15,7 +15,7 @@
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.5" />
         <entry key="app/src/main/res/layout/activity_setup.xml" value="0.5" />
         <entry key="app/src/main/res/layout/activity_sync.xml" value="0.5" />
-        <entry key="app/src/main/res/layout/activity_trial_sync.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/activity_trial_sync.xml" value="0.4740740740740741" />
         <entry key="app/src/main/res/layout/fragment_number_pad.xml" value="0.5" />
         <entry key="app/src/main/res/layout/fragment_section_picker.xml" value="0.5" />
         <entry key="app/src/main/res/layout/fragment_touch.xml" value="0.4128205128205128" />
