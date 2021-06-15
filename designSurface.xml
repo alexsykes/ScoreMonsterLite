@@ -20,7 +20,10 @@
         <entry key="app/src/main/res/layout/fragment_section_picker.xml" value="0.5" />
         <entry key="app/src/main/res/layout/fragment_touch.xml" value="0.4128205128205128" />
         <entry key="app/src/main/res/layout/fragment_trial_detail.xml" value="0.5" />
-        <entry key="app/src/main/res/layout/score_holder.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/group_score_holder.xml" value="0.4740740740740741" />
+        <entry key="app/src/main/res/layout/group_score_row.xml" value="0.4740740740740741" />
+        <entry key="app/src/main/res/layout/score_holder.xml" value="0.4740740740740741" />
+        <entry key="app/src/main/res/layout/score_row.xml" value="0.4740740740740741" />
         <entry key="app/src/main/res/layout/settings_activity.xml" value="0.5" />
         <entry key="app/src/main/res/menu/timer_menu.xml" value="0.4101851851851852" />
         <entry key="app/src/main/res/menu/toolbar_menu.xml" value="0.5" />
