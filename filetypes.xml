@@ -1,5 +1,5 @@
 <application>
-  <component name="FileTypeManager" version="17">
+  <component name="FileTypeManager" version="18">
     <extensionMap>
       <mapping ext="main.kts" type="Kotlin" />
       <mapping pattern="my_menu_items" type="PLAIN_TEXT" />
@@ -9,6 +9,8 @@
       <mapping ext="db-journal" type="PLAIN_TEXT" />
       <mapping pattern="word_database" type="SQL" />
       <mapping ext="db" type="SQL" />
+      <removed_mapping ext="apk" approved="true" type="ARCHIVE" />
+      <removed_mapping ext="psd" approved="true" type="Image" />
     </extensionMap>
   </component>
 </application>
