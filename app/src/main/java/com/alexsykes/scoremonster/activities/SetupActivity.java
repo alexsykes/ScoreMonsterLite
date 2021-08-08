@@ -47,7 +47,7 @@ public class SetupActivity extends AppCompatActivity implements AdapterView.OnIt
     private static final String BASE_URL = "https://android.trialmonster.uk/";
     int trialid, section, numsections, numlaps, ridingNumber, numberInGroup;
     boolean isOnline, isSingleUser;
-    String observer, theTrialName, detail, email;
+    String observer, theTrialName, detail, email, scoringmode;
     String[] theTrials, theIDs;
     ArrayList<HashMap<String, String>> theTrialList;
 
@@ -95,46 +95,38 @@ public class SetupActivity extends AppCompatActivity implements AdapterView.OnIt
         warningImageView.setVisibility(View.GONE);
 
         // Set up listeners
-        resetCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    confirmCheckBox.setVisibility(View.VISIBLE);
-                    warningImageView.setVisibility(View.VISIBLE);
-                    button.setEnabled(false);
+        resetCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                confirmCheckBox.setVisibility(View.VISIBLE);
+                warningImageView.setVisibility(View.VISIBLE);
+                button.setEnabled(false);
 
-                } else {
-                    confirmCheckBox.setVisibility(View.GONE);
-                    warningImageView.setVisibility(View.GONE);
-                    button.setEnabled(true);
-                }
+            } else {
+                confirmCheckBox.setVisibility(View.GONE);
+                warningImageView.setVisibility(View.GONE);
+                button.setEnabled(true);
             }
         });
 
-        confirmCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    confirmCheckBox.setVisibility(View.VISIBLE);
-                    button.setEnabled(true);
+        confirmCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                confirmCheckBox.setVisibility(View.VISIBLE);
+                button.setEnabled(true);
 
-                } else {
-                    button.setEnabled(false);
-                }
+            } else {
+                button.setEnabled(false);
             }
         });
 
-        modeSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                // ridingNumberTextInput.setText(String.valueOf(ridingNumber));
-                if (isChecked) {
-                    riderNumberTextView.setVisibility(View.VISIBLE);
-                    numberInGroupTextInput.setVisibility(View.GONE);
-                    numberInGroup = 1;
-                } else {
-                    riderNumberTextView.setVisibility(View.GONE);
-                    numberInGroupTextInput.setVisibility(View.VISIBLE);
-                }
+        modeSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            // ridingNumberTextInput.setText(String.valueOf(ridingNumber));
+            if (isChecked) {
+                riderNumberTextView.setVisibility(View.VISIBLE);
+                numberInGroupTextInput.setVisibility(View.GONE);
+                numberInGroup = 1;
+            } else {
+                riderNumberTextView.setVisibility(View.GONE);
+                numberInGroupTextInput.setVisibility(View.VISIBLE);
             }
         });
 
@@ -200,12 +192,7 @@ public class SetupActivity extends AppCompatActivity implements AdapterView.OnIt
                 dialog = new ProgressDialog(SetupActivity.this);
                 dialog.setMessage("Loading…");
                 dialog.setCancelable(false);
-                dialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
+                dialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancel", (dialog, which) -> dialog.dismiss());
                 dialog.show();
             }
 
@@ -250,7 +237,7 @@ public class SetupActivity extends AppCompatActivity implements AdapterView.OnIt
              */
             private ArrayList<HashMap<String, String>> populateResultArrayList(String json) {
                 ArrayList<HashMap<String, String>> theTrialList = new ArrayList<>();
-                String date, name, id, club, numsections, numlaps, starttime, email;
+                String date, name, id, club, numsections, numlaps, starttime, email, scoringmode;
 
                 try {
                     // Parse string data into JSON
@@ -266,6 +253,7 @@ public class SetupActivity extends AppCompatActivity implements AdapterView.OnIt
                         numlaps = jsonArray.getJSONObject(index).getString("numlaps");
                         starttime = jsonArray.getJSONObject(index).getString("starttime");
                         email = jsonArray.getJSONObject(index).getString("email");
+                        scoringmode = jsonArray.getJSONObject(index).getString("scoringmode");
 
                         // trial = club + " - " + name;
                         theTrial.put("id", id);
@@ -276,6 +264,7 @@ public class SetupActivity extends AppCompatActivity implements AdapterView.OnIt
                         theTrial.put("numlaps", numlaps);
                         theTrial.put("starttime", starttime);
                         theTrial.put("email", email);
+                        theTrial.put("scoringmode", scoringmode);
                         theTrialList.add(theTrial);
                     }
 
@@ -342,6 +331,7 @@ public class SetupActivity extends AppCompatActivity implements AdapterView.OnIt
         numlaps = localPrefs.getInt("numlaps", 0);
         observer = localPrefs.getString("observer", "");
         email = localPrefs.getString("email", "");
+        scoringmode = localPrefs.getString("scoringmode", "0");
         isOnline = localPrefs.getBoolean("canConnect", false);
         isSingleUser = localPrefs.getBoolean("isSingleUser", false);
         ridingNumber = localPrefs.getInt("ridingNumber", 0);
@@ -500,9 +490,10 @@ public class SetupActivity extends AppCompatActivity implements AdapterView.OnIt
             editor.putInt("ridingNumber", ridingNumber);
             editor.putString("observer", observer);
             editor.putString("email", email);
+            editor.putString("scoringmode", scoringmode);
             editor.putBoolean("isSingleUser", isSingleUser);
             editor.putInt("numberInGroup", numberInGroup);
-            editor.commit();
+            editor.apply();
             // Read resetCheckBox
             boolean reset = resetCheckBox.isChecked();
 
@@ -513,8 +504,8 @@ public class SetupActivity extends AppCompatActivity implements AdapterView.OnIt
                 String[] myFiles;
 
                 myFiles = dir.list();
-                for (int i = 0; i < myFiles.length; i++) {
-                    File myFile = new File(dir, myFiles[i]);
+                for (String file : myFiles) {
+                    File myFile = new File(dir, file);
                     myFile.delete();
                 }
             }
@@ -539,6 +530,7 @@ public class SetupActivity extends AppCompatActivity implements AdapterView.OnIt
         trialid = Integer.parseInt(theTrial.get("id").toString());
         email = theTrial.get("email").toString();
         theTrialName = theTrial.get("name").toString();
+        scoringmode = theTrial.get("scoringmode").toString();
 
         if (trialid == 0 ) {
             trialDetailsInput.setVisibility(View.VISIBLE);
