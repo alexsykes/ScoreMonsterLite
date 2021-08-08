@@ -56,6 +56,8 @@ import java.util.Date;
 public class MainActivity extends AppCompatActivity {
 
     public static final int TEXT_REQUEST = 1;
+    public static final String EXTRA_MESSAGE = "com.alexsykes.scoremonster.activities.MESSAGE";
+
     public static final int NOT_SYNCED = -1;
     MediaPlayer mediaPlayer;
 
@@ -337,12 +339,8 @@ public class MainActivity extends AppCompatActivity {
                 dialog.dismiss();
 
                 if (s.contentEquals("OK")){
-                    runOnUiThread(new Runnable() {
-                        public void run() {
-                            Toast.makeText(MainActivity.this, "The email has been sent successfully.",
-                                    Toast.LENGTH_LONG).show();
-                        }
-                    });
+                    runOnUiThread(() -> Toast.makeText(MainActivity.this, "The email has been sent successfully.",
+                            Toast.LENGTH_LONG).show());
                 }
             }
 
@@ -383,9 +381,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (!sourceFile.isFile()) {
             dialog.dismiss();
-            runOnUiThread(new Runnable() {
-                public void run() {
-                }
+            runOnUiThread(() -> {
             });
 
         } else {
@@ -439,12 +435,8 @@ public class MainActivity extends AppCompatActivity {
                 serverResponseCode = conn.getResponseCode();
                 if (serverResponseCode != 200) {
 
-                    runOnUiThread(new Runnable() {
-                        public void run() {
-                            Toast.makeText(MainActivity.this, "Error processing data",
-                                    Toast.LENGTH_LONG).show();
-                        }
-                    });
+                    runOnUiThread(() -> Toast.makeText(MainActivity.this, "Error processing data",
+                            Toast.LENGTH_LONG).show());
                 }
 
                 //close the streams //
@@ -457,12 +449,10 @@ public class MainActivity extends AppCompatActivity {
                 dialog.dismiss();
                 ex.printStackTrace();
 
-                runOnUiThread(new Runnable() {
-                    public void run() {
-                        // messageText.setText("MalformedURLException Exception : check script url.");
-                        Toast.makeText(MainActivity.this, "MalformedURLException",
-                                Toast.LENGTH_SHORT).show();
-                    }
+                runOnUiThread(() -> {
+                    // messageText.setText("MalformedURLException Exception : check script url.");
+                    Toast.makeText(MainActivity.this, "MalformedURLException",
+                            Toast.LENGTH_SHORT).show();
                 });
 
              //   Log.e("Upload file to server", "error: " + ex.getMessage(), ex);
@@ -471,12 +461,10 @@ public class MainActivity extends AppCompatActivity {
                 dialog.dismiss();
                 e.printStackTrace();
 
-                runOnUiThread(new Runnable() {
-                    public void run() {
-                        // messageText.setText("Got Exception : see logcat ");
-                        Toast.makeText(MainActivity.this, "Got Exception : see logcat ",
-                                Toast.LENGTH_SHORT).show();
-                    }
+                runOnUiThread(() -> {
+                    // messageText.setText("Got Exception : see logcat ");
+                    Toast.makeText(MainActivity.this, "Got Exception : see logcat ",
+                            Toast.LENGTH_SHORT).show();
                 });
              //   Log.e("Upload file Exception", "Exception : " + e.getMessage(), e);
             }
@@ -509,12 +497,14 @@ public class MainActivity extends AppCompatActivity {
 
     private void goSync() {
         Intent intent = new Intent(this, SyncActivity.class);
-        startActivityForResult(intent, TEXT_REQUEST);
+        intent.putExtra(EXTRA_MESSAGE, message);
+        startActivity(intent);
     }
 
     private void goSetup() {
         Intent intent = new Intent(this, SettingsActivity.class);
-        startActivityForResult(intent, TEXT_REQUEST);
+        intent.putExtra(EXTRA_MESSAGE, message);
+        startActivity(intent);
         getPrefs();
     }
 
