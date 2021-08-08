@@ -126,9 +126,9 @@ public class MainActivity extends AppCompatActivity {
 
         getPrefs();
 
-        if (theTrialName.equals("None selected")) {
-            goSetup();
-        }
+//        if (theTrialName.equals("None selected")) {
+//            goSetup();
+//        }
 
         // Set up button to save scores
         Button saveButton = findViewById(R.id.saveButton);
@@ -513,7 +513,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void goSetup() {
-        Intent intent = new Intent(this, SetupActivity.class);
+        Intent intent = new Intent(this, SettingsActivity.class);
         startActivityForResult(intent, TEXT_REQUEST);
         getPrefs();
     }

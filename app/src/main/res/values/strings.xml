@@ -191,4 +191,21 @@ To change a score, click on the list icon in the toolbar. This will display a li
     <string name="modeSwitch">Single User mode</string>
     <string name="numberInGroup">Number in Group</string>
     <string name="drop_down_menu_of_trials">Drop down menu of trials</string>
+    <string name="title_activity_settings">Settings</string>
+
+    <!-- Preference Titles -->
+    <string name="mode_header">Mode</string>
+    <string name="trial_header">Trial details</string>
+
+    <!-- Messages Preferences -->
+    <string name="signature_title">Your signature</string>
+    <string name="mode_title">Scoring mode</string>
+
+    <!-- Sync Preferences -->
+    <string name="sync_title">Sync email periodically</string>
+    <string name="attachment_title">Download incoming attachments</string>
+    <string name="attachment_summary_on">Automatically download attachments for incoming emails
+    </string>
+    <string name="attachment_summary_off">Only download attachments when manually requested</string>
+    <string name="contact">Contact number</string>
 </resources>
