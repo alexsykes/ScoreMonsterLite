@@ -27,6 +27,8 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
+        android:contentDescription="@string/drop_down_menu_of_trials"
+        android:minHeight="48dp"
         android:spinnerMode="dialog"
         app:layout_constraintStart_toEndOf="@+id/selectLabel"
         app:layout_constraintTop_toTopOf="parent" />
@@ -52,6 +54,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:checked="false"
+        android:minHeight="48dp"
         android:text="@string/modeSwitch"
         android:textColor="@color/colorPrimaryDark"
         app:layout_constraintEnd_toEndOf="parent"
@@ -72,12 +75,14 @@
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/ridingNumberTextInput"
-
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/riding_number"
+            android:textColorHint="#546E7A"
             android:inputType="number"
-            android:textColor="@color/colorPrimaryDark" />
+            android:minHeight="48dp"
+            android:textColor="@color/colorPrimaryDark"
+            tools:ignore="TextContrastCheck" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
@@ -97,8 +102,11 @@
             android:layout_height="wrap_content"
             android:hint="@string/observer"
             android:inputType="textCapWords"
+            android:minHeight="48dp"
             android:singleLine="true"
-            android:textColor="@color/colorPrimaryDark" />
+            android:textColor="@color/colorPrimaryDark"
+            android:textColorHint="#546E7A"
+            tools:ignore="TextContrastCheck" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
@@ -118,8 +126,11 @@
             android:layout_height="wrap_content"
             android:hint="@string/numberInGroup"
             android:inputType="number"
+            android:minHeight="48dp"
             android:singleLine="true"
-            android:textColor="@color/colorPrimaryDark" />
+            android:textColor="@color/colorPrimaryDark"
+            android:textColorHint="#546E7A"
+            tools:ignore="TextContrastCheck" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <LinearLayout
@@ -146,7 +157,10 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/trial_name"
                 android:inputType="textCapWords"
-                android:textColor="@color/colorPrimaryDark" />
+                android:minHeight="48dp"
+                android:textColor="@color/colorPrimaryDark"
+                android:textColorHint="#546E7A"
+                tools:ignore="TextContrastCheck" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -163,7 +177,10 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/email"
                 android:inputType="textEmailAddress"
-                android:textColor="@color/colorPrimaryDark" />
+                android:minHeight="48dp"
+                android:textColor="@color/colorPrimaryDark"
+                android:textColorHint="#546E7A"
+                tools:ignore="TextContrastCheck" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -180,8 +197,11 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/number_of_sections"
                 android:inputType="number"
+                android:minHeight="48dp"
                 android:singleLine="true"
-                android:textColor="@color/colorPrimaryDark" />
+                android:textColor="@color/colorPrimaryDark"
+                android:textColorHint="#546E7A"
+                tools:ignore="TextContrastCheck" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -197,8 +217,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="number"
+                android:minHeight="48dp"
                 android:singleLine="true"
-                android:textColor="@color/colorPrimaryDark" />
+                android:textColor="@color/colorPrimaryDark"
+                android:textColorHint="#000000"
+                tools:ignore="TextContrastCheck,TextContrastCheck,TextContrastCheck,TextContrastCheck" />
         </com.google.android.material.textfield.TextInputLayout>
     </LinearLayout>
 
@@ -206,12 +229,15 @@
         android:id="@+id/resetCheckBox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:minHeight="48dp"
         android:text="@string/reset_scores"
         android:textColor="@color/colorPrimaryDark"
+        android:textColorHint="#546E7A"
         app:layout_constraintBottom_toTopOf="@id/confirmCheckBox"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.02"
-        app:layout_constraintStart_toStartOf="@id/button" />
+        app:layout_constraintStart_toStartOf="@id/button"
+        tools:ignore="TextContrastCheck" />
 
     <ImageView
         android:id="@+id/warningImageView"
@@ -229,15 +255,13 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:text="@string/warning"
-        android:textColor="@color/colorPrimaryDark"
+        android:textColor="#D50000"
         app:layout_constraintBottom_toTopOf="@+id/button"
         app:layout_constraintEnd_toStartOf="@+id/warningImageView"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@id/button"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintStart_toStartOf="@id/button" />
 
     <Button
         android:id="@+id/button"

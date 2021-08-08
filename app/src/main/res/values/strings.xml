@@ -190,4 +190,5 @@ To change a score, click on the list icon in the toolbar. This will display a li
     <string name="single_user_mode">Single user mode</string>
     <string name="modeSwitch">Single User mode</string>
     <string name="numberInGroup">Number in Group</string>
+    <string name="drop_down_menu_of_trials">Drop down menu of trials</string>
 </resources>
