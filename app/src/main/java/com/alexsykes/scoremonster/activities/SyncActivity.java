@@ -90,7 +90,7 @@ public class SyncActivity extends AppCompatActivity {
                     long time = date.getTime();
                     String ts = String.valueOf(time);
                     filename = "scores_" + ts + ".csv";
-                    processURL = "http://android.trialmonster.uk/addCSVtodb.php?id=" + ts;
+                    processURL = "http://android.trialmonster.uk/addCSVtodb.php?trialid="+ trialid + "&id=" + ts;
                     processCSV(processURL);
                 }
             }
