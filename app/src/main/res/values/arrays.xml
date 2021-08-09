@@ -11,4 +11,12 @@
         <item>1</item>
         <item>2</item>
     </string-array>
+
+    <string-array name="trial_values">
+        <item>0</item>
+    </string-array>
+
+    <string-array name="trial_entries">
+        <item>Manual Entry</item>
+    </string-array>
 </resources>

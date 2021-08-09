@@ -32,6 +32,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.preference.PreferenceManager;
 
 import com.alexsykes.scoremonster.NumberPadFragment;
 import com.alexsykes.scoremonster.R;
@@ -172,7 +173,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onStart() {
         Log.i("Note", "onStart called");
         // Check network connectivity and set Prefs
-        localPrefs = getSharedPreferences("monster", MODE_PRIVATE);
+        // localPrefs = getSharedPreferences("monster", MODE_PRIVATE);
+        localPrefs = PreferenceManager.getDefaultSharedPreferences(this /* Activity context */);
+
         SharedPreferences.Editor editor = localPrefs.edit();
         editor.putBoolean("canConnect", isOnline());
         editor.apply();
