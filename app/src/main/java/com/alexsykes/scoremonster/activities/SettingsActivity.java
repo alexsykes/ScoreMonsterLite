@@ -19,7 +19,10 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.preference.EditTextPreference;
+import androidx.preference.ListPreference;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceManager;
 
@@ -75,6 +78,12 @@ public class SettingsActivity extends AppCompatActivity {
                 Toast.makeText(SettingsActivity.this, "Empty data", Toast.LENGTH_LONG).show();
             }
         }
+
+        /* New
+        FragmentManager manager = getSupportFragmentManager();
+        SettingsFragment fragment = manager.findFragmentById(R.id.);
+        fragment.setTrials();
+        */
     }
 
     public static class SettingsFragment extends PreferenceFragmentCompat {
@@ -145,6 +154,15 @@ public class SettingsActivity extends AppCompatActivity {
                     editText.setInputType(InputType.TYPE_TEXT_FLAG_CAP_WORDS);
                 }
             });
+
+            setTrials();
+        }
+        public void setTrials() {
+            CharSequence[] entries = { "Wednesday", "Novice Beginner 2", "Club Championship" };
+            CharSequence[] entryValues = { "52", "53", "54" };
+            ListPreference lp = findPreference("thetrialid");
+            lp.setEntries(entries);
+            lp.setEntryValues(entryValues);
         }
     }
 
@@ -219,13 +237,6 @@ public class SettingsActivity extends AppCompatActivity {
                 if (trialid == 0) {
                     theTrialName = "Manual Entry";
                 }
-                // Set up Spinner
-                ArrayAdapter aa = new ArrayAdapter(getApplicationContext(), android.R.layout.simple_spinner_item, theTrials);
-                aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-                // Setting the ArrayAdapter data on the Spinner
-//                trialSelect.setAdapter(aa);
-//                trialSelect.setSelection(aa.getPosition(theTrialName));
             }
 
             /*
