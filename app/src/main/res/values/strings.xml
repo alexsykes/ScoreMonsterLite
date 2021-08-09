@@ -208,4 +208,5 @@ To change a score, click on the list icon in the toolbar. This will display a li
     </string>
     <string name="attachment_summary_off">Only download attachments when manually requested</string>
     <string name="contact">Contact number</string>
+    <string name="observer_details">Observer details</string>
 </resources>
