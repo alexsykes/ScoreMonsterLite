@@ -68,16 +68,16 @@ public class SettingsActivity extends AppCompatActivity {
         localPrefs = PreferenceManager.getDefaultSharedPreferences(this);
 
 
-        if (isOnline()) {
-
-            // Get trialList from server
-            String URL = BASE_URL + "getTrialList.php";
-            try {
-                getJSONDataset(URL);
-            } catch (NullPointerException e) {
-                Toast.makeText(SettingsActivity.this, "Empty data", Toast.LENGTH_LONG).show();
-            }
-        }
+//        if (isOnline()) {
+//
+//            // Get trialList from server
+//            String URL = BASE_URL + "getTrialList.php";
+//            try {
+//                getJSONDataset(URL);
+//            } catch (NullPointerException e) {
+//                Toast.makeText(SettingsActivity.this, "Empty data", Toast.LENGTH_LONG).show();
+//            }
+//        }
 
         /* New
         FragmentManager manager = getSupportFragmentManager();
@@ -87,76 +87,47 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     public static class SettingsFragment extends PreferenceFragmentCompat {
+        SharedPreferences localPrefs;
         @Override
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
             setPreferencesFromResource(R.xml.root_preferences, rootKey);
 
+            localPrefs = PreferenceManager.getDefaultSharedPreferences(getContext());
+            setup();
+            setTrials();
+        }
+
+        private void setup() {
             EditTextPreference mobilePref = findPreference("mobile");
             assert mobilePref != null;
-            mobilePref.setOnBindEditTextListener(new EditTextPreference.OnBindEditTextListener() {
-                @Override
-                public void onBindEditText(@NonNull EditText editText) {
-                    editText.setInputType(InputType.TYPE_CLASS_PHONE);
-                }
-            });
+            mobilePref.setOnBindEditTextListener(editText -> editText.setInputType(InputType.TYPE_CLASS_PHONE));
 
             EditTextPreference sectionPref = findPreference("section");
             assert sectionPref != null;
-            sectionPref.setOnBindEditTextListener(new EditTextPreference.OnBindEditTextListener() {
-                @Override
-                public void onBindEditText(@NonNull EditText editText) {
-                    editText.setInputType(InputType.TYPE_CLASS_NUMBER);
-                }
-            });
+            sectionPref.setOnBindEditTextListener(editText -> editText.setInputType(InputType.TYPE_CLASS_NUMBER));
 
             EditTextPreference numSectionsPref = findPreference("numsections");
             assert numSectionsPref != null;
-            numSectionsPref.setOnBindEditTextListener(new EditTextPreference.OnBindEditTextListener() {
-                @Override
-                public void onBindEditText(@NonNull EditText editText) {
-                    editText.setInputType(InputType.TYPE_CLASS_NUMBER);
-                }
-            });
+            numSectionsPref.setOnBindEditTextListener(editText -> editText.setInputType(InputType.TYPE_CLASS_NUMBER));
 
             EditTextPreference numLapsPref = findPreference("numlaps");
             assert numLapsPref != null;
-            numLapsPref.setOnBindEditTextListener(new EditTextPreference.OnBindEditTextListener() {
-                @Override
-                public void onBindEditText(@NonNull EditText editText) {
-                    editText.setInputType(InputType.TYPE_CLASS_NUMBER);
-                }
-            });
+            numLapsPref.setOnBindEditTextListener(editText -> editText.setInputType(InputType.TYPE_CLASS_NUMBER));
 
             EditTextPreference trialidPref = findPreference("trialid");
             assert trialidPref != null;
-            trialidPref.setOnBindEditTextListener(new EditTextPreference.OnBindEditTextListener() {
-                @Override
-                public void onBindEditText(@NonNull EditText editText) {
-                    editText.setInputType(InputType.TYPE_CLASS_NUMBER);
-                }
-            });
+            trialidPref.setOnBindEditTextListener(editText -> editText.setInputType(InputType.TYPE_CLASS_NUMBER));
 
             EditTextPreference emailPref = findPreference("email");
             assert emailPref != null;
-            emailPref.setOnBindEditTextListener(new EditTextPreference.OnBindEditTextListener() {
-                @Override
-                public void onBindEditText(@NonNull EditText editText) {
-                    editText.setInputType(InputType.TYPE_CLASS_TEXT |
-                            InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
-                }
-            });
+            emailPref.setOnBindEditTextListener(editText -> editText.setInputType(InputType.TYPE_CLASS_TEXT |
+                    InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS));
 
             EditTextPreference observerPref = findPreference("observer");
             assert observerPref != null;
-            observerPref.setOnBindEditTextListener(new EditTextPreference.OnBindEditTextListener() {
-                @Override
-                public void onBindEditText(@NonNull EditText editText) {
-                    editText.setInputType(InputType.TYPE_TEXT_FLAG_CAP_WORDS);
-                }
-            });
-
-            setTrials();
+            observerPref.setOnBindEditTextListener(editText -> editText.setInputType(InputType.TYPE_TEXT_FLAG_CAP_WORDS));
         }
+
         public void setTrials() {
             CharSequence[] entries = { "Wednesday", "Novice Beginner 2", "Club Championship" };
             CharSequence[] entryValues = { "52", "53", "54" };
