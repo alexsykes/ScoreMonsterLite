@@ -25,7 +25,7 @@
             app:useSimpleSummaryProvider="true" />
 
         <EditTextPreference
-            app:key="section"
+            app:key="sectionText"
             app:title="@string/section_number"
             app:useSimpleSummaryProvider="true" />
     </PreferenceCategory>
@@ -46,12 +46,12 @@
             app:useSimpleSummaryProvider="true" />
 
         <EditTextPreference
-            app:key="numlaps"
+            app:key="numlapsText"
             app:title="@string/number_of_laps"
             app:useSimpleSummaryProvider="true" />
 
         <EditTextPreference
-            app:key="numsections"
+            app:key="numsectionsText"
             app:title="@string/number_of_sections"
             app:useSimpleSummaryProvider="true" />
 

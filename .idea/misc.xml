@@ -13,7 +13,7 @@
         <entry key="app/src/main/res/layout/activity_setup.xml" value="0.5" />
         <entry key="app/src/main/res/layout/activity_sync.xml" value="0.6869791666666667" />
         <entry key="app/src/main/res/layout/settings_activity.xml" value="0.6132218844984803" />
-        <entry key="app/src/main/res/xml/root_preferences.xml" value="0.4203125" />
+        <entry key="app/src/main/res/xml/root_preferences.xml" value="0.1" />
       </map>
     </option>
   </component>

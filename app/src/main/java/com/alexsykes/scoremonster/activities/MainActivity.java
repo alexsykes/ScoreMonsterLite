@@ -136,7 +136,7 @@ public class MainActivity extends AppCompatActivity {
         getSupportFragmentManager().beginTransaction().add(R.id.top, numberPadFragment).commit();
         getSupportFragmentManager().beginTransaction().replace(R.id.bottom, touchFragment).commit();
 
-        getPrefs();
+        // getPrefs();
 
 //        if (theTrialName.equals("None selected")) {
 //            goSetup();
@@ -183,14 +183,14 @@ public class MainActivity extends AppCompatActivity {
         Log.i("Note", "onStart called");
         // Check network connectivity and set Prefs
         // localPrefs = getSharedPreferences("monster", MODE_PRIVATE);
-        localPrefs = PreferenceManager.getDefaultSharedPreferences(this /* Activity context */);
+        localPrefs = PreferenceManager.getDefaultSharedPreferences(this);
 
         SharedPreferences.Editor editor = localPrefs.edit();
         editor.putBoolean("canConnect", isOnline());
         editor.apply();
 
         super.onStart();
-        getPrefs();
+        // getPrefs();
 
         if (isOnline()) {
 
@@ -221,8 +221,8 @@ public class MainActivity extends AppCompatActivity {
     private void saveCurrentState() {
 
       //  Log.i("Note", "saveCurrentState called");
-        localPrefs = getSharedPreferences("monster", MODE_PRIVATE);
-        // localPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        // localPrefs = getSharedPreferences("monster", MODE_PRIVATE);
+        localPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor editor = localPrefs.edit();
         int score = Integer.parseInt(scoreLabel.getText().toString());
         String currentRiderText = numberLabel.getText().toString();
@@ -244,7 +244,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         Log.i("Note", "onResume called");
-        getPrefs();
+        // getPrefs();
         scoreLabel.setText(valueOf(score));
         sectionNumber.setText(valueOf(section));
         if (ridingNumber != 0) {
@@ -533,7 +533,7 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this, SettingsActivity.class);
         intent.putExtra(EXTRA_MESSAGE, message);
         startActivity(intent);
-        getPrefs();
+        // getPrefs();
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -668,7 +668,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void getPrefs() {
-        localPrefs = getSharedPreferences("monster", MODE_PRIVATE);
+        localPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         observer = localPrefs.getString("observer", "");
         section = localPrefs.getInt("section", 1);
         trialid = localPrefs.getInt("trialid", 0);

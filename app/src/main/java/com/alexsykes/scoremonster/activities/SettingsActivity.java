@@ -90,9 +90,9 @@ public class SettingsActivity extends AppCompatActivity {
         SharedPreferences localPrefs;
         @Override
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
+            localPrefs = PreferenceManager.getDefaultSharedPreferences(getContext());
             setPreferencesFromResource(R.xml.root_preferences, rootKey);
 
-            localPrefs = PreferenceManager.getDefaultSharedPreferences(getContext());
             setup();
             setTrials();
         }
@@ -102,15 +102,15 @@ public class SettingsActivity extends AppCompatActivity {
             assert mobilePref != null;
             mobilePref.setOnBindEditTextListener(editText -> editText.setInputType(InputType.TYPE_CLASS_PHONE));
 
-            EditTextPreference sectionPref = findPreference("section");
+            EditTextPreference sectionPref = findPreference("sectionText");
             assert sectionPref != null;
             sectionPref.setOnBindEditTextListener(editText -> editText.setInputType(InputType.TYPE_CLASS_NUMBER));
 
-            EditTextPreference numSectionsPref = findPreference("numsections");
+            EditTextPreference numSectionsPref = findPreference("numsectionsText");
             assert numSectionsPref != null;
             numSectionsPref.setOnBindEditTextListener(editText -> editText.setInputType(InputType.TYPE_CLASS_NUMBER));
 
-            EditTextPreference numLapsPref = findPreference("numlaps");
+            EditTextPreference numLapsPref = findPreference("numlapsText");
             assert numLapsPref != null;
             numLapsPref.setOnBindEditTextListener(editText -> editText.setInputType(InputType.TYPE_CLASS_NUMBER));
 
@@ -142,6 +142,7 @@ public class SettingsActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         // Check network connectivity and set Prefs
+        localPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor editor = localPrefs.edit();
         isOnline = isOnline();
         editor.putBoolean("canConnect", isOnline);
