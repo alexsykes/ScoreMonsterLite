@@ -136,11 +136,16 @@ public class MainActivity extends AppCompatActivity {
         getSupportFragmentManager().beginTransaction().add(R.id.top, numberPadFragment).commit();
         getSupportFragmentManager().beginTransaction().replace(R.id.bottom, touchFragment).commit();
 
-        // getPrefs();
+        if (isOnline()) {
 
-//        if (theTrialName.equals("None selected")) {
-//            goSetup();
-//        }
+            // Get trialList from server
+            String URL = BASE_URL + "getTrialList.php";
+            try {
+                getJSONDataset(URL);
+            } catch (NullPointerException e) {
+                Toast.makeText(MainActivity.this, "Empty data", Toast.LENGTH_LONG).show();
+            }
+        }
 
         // Set up button to save scores
         Button saveButton = findViewById(R.id.saveButton);
@@ -190,18 +195,7 @@ public class MainActivity extends AppCompatActivity {
         editor.apply();
 
         super.onStart();
-        // getPrefs();
-
-        if (isOnline()) {
-
-            // Get trialList from server
-            String URL = BASE_URL + "getTrialList.php";
-            try {
-                getJSONDataset(URL);
-            } catch (NullPointerException e) {
-                Toast.makeText(MainActivity.this, "Empty data", Toast.LENGTH_LONG).show();
-            }
-        }
+        getPrefs();
 
         if (!isSingleUser) {
             numberLabel.setText("");
@@ -244,7 +238,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         Log.i("Note", "onResume called");
-        // getPrefs();
+        getPrefs();
         scoreLabel.setText(valueOf(score));
         sectionNumber.setText(valueOf(section));
         if (ridingNumber != 0) {
@@ -637,6 +631,9 @@ public class MainActivity extends AppCompatActivity {
             db.insert(ScoreContract.ScoreEntry.TABLE_NAME, null, values);
             //   toneGen1.startTone(ToneGenerator.TONE_CDMA_CONFIRM, ToneGenerator.MAX_VOLUME);
 
+
+            Log.i("Note", "trialid: " + trialid);
+
             playSoundFile(R.raw.ting);
             Toast.makeText(this, "Score saved", Toast.LENGTH_SHORT).show();
         }
@@ -670,20 +667,22 @@ public class MainActivity extends AppCompatActivity {
     private void getPrefs() {
         localPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         observer = localPrefs.getString("observer", "");
-        section = localPrefs.getInt("section", 1);
-        trialid = localPrefs.getInt("trialid", 0);
-        numlaps = localPrefs.getInt("numlaps", 0);
-        numsections = localPrefs.getInt("numsections", 0);
-        section = localPrefs.getInt("section", 1);
+        // String sectionText  = localPrefs.getString("sectionText", "1");
+        section = Integer.valueOf(localPrefs.getString("sectionText", "1"));
+        trialid = Integer.valueOf(localPrefs.getString("thetrialid", "1"));
+        numlaps = Integer.valueOf(localPrefs.getString("numlapsText", "1"));
+        numsections = Integer.valueOf(localPrefs.getString("numsectionsText", "1"));
         email = localPrefs.getString("email", "");
-        theTrialName = localPrefs.getString("theTrialName", "None selected");
-        status = theTrialName + " - Observer: " + observer;
-        sectionNumber.setText(valueOf(section));
         isSingleUser = localPrefs.getBoolean("isSingleUser", false);
         ridingNumber = localPrefs.getInt("ridingNumber", 0);
         score = localPrefs.getInt("score", 0);
         numberInGroup = localPrefs.getInt("numberInGroup", 6);
         scoreCount = localPrefs.getInt("scoreCount", 0);
+        theTrialName = localPrefs.getString("theTrialName", "None selected");
+
+
+        status = theTrialName + " - Observer: " + observer;
+        sectionNumber.setText(valueOf(section));
 
         if (isSingleUser) {
             numberLabel.setText(valueOf(ridingNumber));
@@ -789,11 +788,11 @@ public class MainActivity extends AppCompatActivity {
                 super.onPreExecute();
                 // Show dialog during server transaction
                 // dialog = ProgressDialog.show(SetupActivity.this, "Scoremonster", "Getting trial list", true);
-                dialog = new ProgressDialog(MainActivity.this);
-                dialog.setMessage("Loading…");
-                dialog.setCancelable(false);
-                dialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancel", (dialog, which) -> dialog.dismiss());
-                dialog.show();
+//                dialog = new ProgressDialog(MainActivity.this);
+//                dialog.setMessage("Loading…");
+//                dialog.setCancelable(false);
+//                dialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancel", (dialog, which) -> dialog.dismiss());
+//                dialog.show();
             }
 
 
@@ -805,7 +804,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             protected void onPostExecute(String s) {
                 super.onPostExecute(s);
-                dialog.dismiss();
+              //  dialog.dismiss();
 
                 // Populate ArrayList with JSON data
                 theTrialList = populateResultArrayList(s);
@@ -937,6 +936,4 @@ public class MainActivity extends AppCompatActivity {
         editor.putString("theIds", theTrialListIds);
         editor.apply();
     }
-
-
 }

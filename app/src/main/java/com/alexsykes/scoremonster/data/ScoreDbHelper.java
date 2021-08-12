@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import com.alexsykes.scoremonster.data.ScoreContract.ScoreEntry;
 
@@ -39,7 +40,9 @@ public class ScoreDbHelper extends SQLiteOpenHelper {
     public ArrayList<HashMap<String, String>> getScoreList(int trialid) {
         SQLiteDatabase db = this.getWritableDatabase();
         ArrayList<HashMap<String, String>> scoreList = new ArrayList<>();
-        String query = "SELECT * FROM scores WHERE trialid =" + trialid + " ORDER BY _id DESC";
+       String query = "SELECT * FROM scores WHERE trialid = " + trialid + " ORDER BY _id DESC";
+       Log.i("Query", query);
+      //  String query = "SELECT * FROM scores  ORDER BY _id DESC";
         Cursor cursor = db.rawQuery(query, null);
         while (cursor.moveToNext()) {
             HashMap<String, String> scores = new HashMap<>();

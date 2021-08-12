@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
@@ -61,10 +62,10 @@ public class SyncActivity extends AppCompatActivity {
         setContentView(R.layout.activity_sync);
 
         // Get shared preferences for trialid, section
-        localPrefs = getSharedPreferences("monster", MODE_PRIVATE);
+        localPrefs = PreferenceManager.getDefaultSharedPreferences(this);
 
         // section = localPrefs.getInt("section", 1);
-        trialid = localPrefs.getInt("trialid", 0);
+        trialid = Integer.valueOf(localPrefs.getString("trialid", "1"));
 
         // Create database connection
         mDbHelper = new ScoreDbHelper(this);
@@ -91,6 +92,7 @@ public class SyncActivity extends AppCompatActivity {
                     String ts = String.valueOf(time);
                     filename = "scores_" + ts + ".csv";
                     processURL = "http://android.trialmonster.uk/addCSVtodb.php?trialid="+ trialid + "&id=" + ts;
+                   // Log.i("URL",processURL);
                     processCSV(processURL);
                 }
             }
@@ -179,6 +181,7 @@ public class SyncActivity extends AppCompatActivity {
 
     private void populateScoreList() {
         theScoreList = mDbHelper.getScoreList(trialid);
+        Log.i("trialid", "" + trialid);
         scoreView = findViewById(R.id.scoreView);
         LinearLayoutManager llm = new LinearLayoutManager(this);
         scoreView.setLayoutManager(llm);
