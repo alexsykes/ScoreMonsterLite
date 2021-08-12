@@ -76,7 +76,7 @@ public class SettingsActivity extends AppCompatActivity {
             setPreferencesFromResource(R.xml.root_preferences, rootKey);
 
             setup();
-            setTrials();
+            // setTrials();
         }
 
         private void setup() {
@@ -109,15 +109,7 @@ public class SettingsActivity extends AppCompatActivity {
             assert observerPref != null;
             observerPref.setOnBindEditTextListener(editText -> editText.setInputType(InputType.TYPE_TEXT_FLAG_CAP_WORDS));
         }
-
-        public void setTrials() {
-            CharSequence[] entries = { "Wednesday", "Novice Beginner 2", "Club Championship" };
-            CharSequence[] entryValues = { "52", "53", "54" };
-            ListPreference lp = findPreference("thetrialid");
-            lp.setEntries(entries);
-            lp.setEntryValues(entryValues);
-        }
-    }
+                                                                                    }
 
     // Imported from earlier Activity
 
