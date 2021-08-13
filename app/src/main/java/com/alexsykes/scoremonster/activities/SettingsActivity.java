@@ -84,8 +84,9 @@ public class SettingsActivity extends AppCompatActivity {
             localPrefs = PreferenceManager.getDefaultSharedPreferences(getContext());
 
             CharSequence[] entries = localPrefs.getString("theNames","").split(",");
-            CharSequence[] entryValues = localPrefs.getString("theIds","").split(",");
-            ListPreference lp = (ListPreference)findPreference("thetrialid");
+            // CharSequence[] entryValues = localPrefs.getString("theIds","").split(",");
+            CharSequence[] entryValues = {"0","1","2"};
+            ListPreference lp = (ListPreference)findPreference("theTrialIndex");
             lp.setEntries(entries);
             lp.setEntryValues(entryValues);
         }
@@ -121,7 +122,7 @@ public class SettingsActivity extends AppCompatActivity {
             observerPref.setOnBindEditTextListener(editText -> editText.setInputType(InputType.TYPE_TEXT_FLAG_CAP_WORDS));
 
 
-            ListPreference lp = (ListPreference)findPreference("thetrialid");
+            ListPreference lp = (ListPreference)findPreference("theTrialIndex");
             lp.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                 @Override
                 public boolean onPreferenceChange(Preference preference, Object newValue) {
