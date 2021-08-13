@@ -23,6 +23,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.preference.EditTextPreference;
 import androidx.preference.ListPreference;
+import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceManager;
 
@@ -118,6 +119,16 @@ public class SettingsActivity extends AppCompatActivity {
             EditTextPreference observerPref = findPreference("observer");
             assert observerPref != null;
             observerPref.setOnBindEditTextListener(editText -> editText.setInputType(InputType.TYPE_TEXT_FLAG_CAP_WORDS));
+
+
+            ListPreference lp = (ListPreference)findPreference("thetrialid");
+            lp.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                @Override
+                public boolean onPreferenceChange(Preference preference, Object newValue) {
+                    Log.i("Note: ","Trial changed");
+                    return true;
+                }
+            });
         }
                                                                                     }
 
