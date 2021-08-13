@@ -76,7 +76,17 @@ public class SettingsActivity extends AppCompatActivity {
             setPreferencesFromResource(R.xml.root_preferences, rootKey);
 
             setup();
-            // setTrials();
+            setTrials();
+        }
+
+        private void setTrials() {
+            localPrefs = PreferenceManager.getDefaultSharedPreferences(getContext());
+
+            CharSequence[] entries = localPrefs.getString("theNames","").split(",");
+            CharSequence[] entryValues = localPrefs.getString("theIds","").split(",");
+            ListPreference lp = (ListPreference)findPreference("thetrialid");
+            lp.setEntries(entries);
+            lp.setEntryValues(entryValues);
         }
 
         private void setup() {

@@ -17,7 +17,7 @@
         <EditTextPreference
             app:key="observer"
             app:title="@string/observer"
-            app:useSimpleSummaryProvider="true" />
+            app:useSimpleSummaryProvider="false" />
 
         <EditTextPreference
             app:key="mobile"

@@ -14,9 +14,13 @@
 
     <string-array name="trial_values">
         <item>0</item>
+        <item>1</item>
+        <item>2</item>
     </string-array>
 
     <string-array name="trial_entries">
-        <item>Manual Entry</item>
+        <item>Trial 1</item>
+        <item>Trial 2</item>
+        <item>Trial 3</item>
     </string-array>
 </resources>
