@@ -17,7 +17,7 @@
         <EditTextPreference
             app:key="observer"
             app:title="@string/observer"
-            app:useSimpleSummaryProvider="false" />
+            app:useSimpleSummaryProvider="true" />
 
         <EditTextPreference
             app:key="mobile"
@@ -36,7 +36,7 @@
         <ListPreference
             app:entries="@array/trial_entries"
             app:entryValues="@array/trial_values"
-            app:key="thetrialid"
+            app:key="theTrialIndex"
             app:title="@string/trial_name"
             app:useSimpleSummaryProvider="true" />
 

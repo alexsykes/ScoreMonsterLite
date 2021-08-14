@@ -105,6 +105,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.i("Note", "onCreate called");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -254,10 +255,10 @@ public class MainActivity extends AppCompatActivity {
 
         Log.i("Note", "onSaveInstanceState called");
         // Save the state of item position
-        outState.putString("rider", numberLabel.getText().toString());
-        outState.putString("score", scoreLabel.getText().toString());
-        outState.putInt("section", section);
-        outState.putInt("numberInGroup", numberInGroup);
+//        outState.putString("rider", numberLabel.getText().toString());
+//        outState.putString("score", scoreLabel.getText().toString());
+//        outState.putInt("section", section);
+//        outState.putInt("numberInGroup", numberInGroup);
     }
 
     @Override
@@ -265,12 +266,12 @@ public class MainActivity extends AppCompatActivity {
 
         Log.i("Note", "onRestoreInstanceState called");
         // Read the state of item position
-        numberLabel.setText(savedInstanceState.getString("rider"));
-        scoreLabel.setText(savedInstanceState.getString("score"));
-        section = savedInstanceState.getInt("section");
-        sectionNumber.setText(valueOf(section));
-        numberInGroup = savedInstanceState.getInt("numberInGroup");
-        super.onRestoreInstanceState(savedInstanceState);
+//        numberLabel.setText(savedInstanceState.getString("rider"));
+//        scoreLabel.setText(savedInstanceState.getString("score"));
+//        section = savedInstanceState.getInt("section");
+//        sectionNumber.setText(valueOf(section));
+//        numberInGroup = savedInstanceState.getInt("numberInGroup");
+//        super.onRestoreInstanceState(savedInstanceState);
     }
 
     @Override
@@ -590,9 +591,7 @@ public class MainActivity extends AppCompatActivity {
             Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 vibrator.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE));
-            } else {
-                vibrator.vibrate(500);
-            }
+            } else vibrator.vibrate(500);
             new AlertDialog.Builder(this).setTitle("Warning").setMessage("Missing rider number or score").setNeutralButton("Close", null).show();
         } else {
             // Otherwise enter scores
