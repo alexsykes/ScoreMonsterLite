@@ -104,15 +104,13 @@ public class SettingsActivity extends AppCompatActivity {
             setPreferencesFromResource(R.xml.root_preferences, rootKey);
 
             setup();
-          //  setTrials();
-            getJSONDataset(URL);
+            setTrials();
         }
 
         private void setTrials() {
             localPrefs = PreferenceManager.getDefaultSharedPreferences(getContext());
             CharSequence[] entries = localPrefs.getString("theNames","").split(",");
-            // CharSequence[] entryValues = localPrefs.getString("theIds","").split(",");
-            CharSequence[] entryValues = {"0","1","2"};
+            CharSequence[] entryValues = localPrefs.getString("theIds","").split(",");
             ListPreference lp = (ListPreference)findPreference("theTrialIndex");
             lp.setEntries(entries);
             lp.setEntryValues(entryValues);
@@ -153,15 +151,17 @@ public class SettingsActivity extends AppCompatActivity {
             lp.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                 @Override
                 public boolean onPreferenceChange(Preference preference, Object newValue) {
-                    Log.i("Note: ","Trial changed");
+                    SharedPreferences.Editor editor = localPrefs.edit();
+                    editor.putBoolean("trialHasChanged", true);
+                    editor.apply();
                     return true;
                 }
             });
         }
 
 
-        private void getJSONDataset(final String urlWebService) {
-            /*
+        /*private void getJSONDataset(final String urlWebService) {
+            *//*
              * As fetching the json string is a network operation
              * And we cannot perform a network operation in main thread
              * so we need an AsyncTask
@@ -169,7 +169,7 @@ public class SettingsActivity extends AppCompatActivity {
              * Void -> We are not passing anything
              * Void -> Nothing at progress update as well
              * String -> After completion it should return a string and it will be the json string
-             * */
+             * *//*
             class GetData extends AsyncTask<Void, Void, String> {
                 private ArrayList<HashMap<String, String>> theTrialList;
 
@@ -208,10 +208,10 @@ public class SettingsActivity extends AppCompatActivity {
                     editor.putString("theIds", theTrialListIds);
                     editor.apply();
                 }
-            /* this method will be called after execution
+            *//* this method will be called after execution
 
                 s contains trial details in JSON string
-             */
+             *//*
 
                 @Override
                 protected void onPostExecute(String s) {
@@ -238,10 +238,10 @@ public class SettingsActivity extends AppCompatActivity {
 
                 }
 
-                /*
+                *//*
                 @param String json JSON string returned from MySQL
                 @return ArrayList of trials data
-                 */
+                 *//*
                 private ArrayList<HashMap<String, String>> populateResultArrayList(String json) {
                     ArrayList<HashMap<String, String>> theTrialList = new ArrayList<>();
                     String date, name, id, club, numsections, numlaps, starttime, email, scoringmode;
@@ -325,7 +325,7 @@ public class SettingsActivity extends AppCompatActivity {
             //creating asynctask object and executing it
             GetData getJSON = new GetData();
             getJSON.execute();
-        }
+        }*/
     }
 
     // Imported from earlier Activity
