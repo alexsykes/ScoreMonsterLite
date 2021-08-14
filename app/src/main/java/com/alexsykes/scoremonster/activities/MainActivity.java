@@ -209,12 +209,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onPause() {
         Log.i("Note", "onPause called");
         super.onPause();
-       saveCurrentState();
+        saveCurrentState();
     }
 
     private void saveCurrentState() {
 
-      //  Log.i("Note", "saveCurrentState called");
+        //  Log.i("Note", "saveCurrentState called");
         // localPrefs = getSharedPreferences("monster", MODE_PRIVATE);
         localPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor editor = localPrefs.edit();
@@ -231,7 +231,7 @@ public class MainActivity extends AppCompatActivity {
         editor.putInt("scoreCount", scoreCount);
         editor.apply();
 
-       // Log.i("Note", "Current rider: " + currentRiderText);
+        // Log.i("Note", "Current rider: " + currentRiderText);
     }
 
     @Override
@@ -370,14 +370,14 @@ public class MainActivity extends AppCompatActivity {
             @Override
             protected String doInBackground(Void... voids) {
 
-              uploadFile(uploadFilePath + filename);
+                uploadFile(uploadFilePath + filename);
                 try {
                     //creating a URL
                     URL url = new URL(sendMailURL);
 
                     //Opening the URL using HttpURLConnection
                     HttpURLConnection con = (HttpURLConnection) url.openConnection();
-                     message = con.getResponseMessage();
+                    message = con.getResponseMessage();
                     return message;
 
                 } catch (Exception e) {
@@ -477,7 +477,7 @@ public class MainActivity extends AppCompatActivity {
                             Toast.LENGTH_SHORT).show();
                 });
 
-             //   Log.e("Upload file to server", "error: " + ex.getMessage(), ex);
+                //   Log.e("Upload file to server", "error: " + ex.getMessage(), ex);
             } catch (Exception e) {
 
                 dialog.dismiss();
@@ -488,7 +488,7 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(MainActivity.this, "Got Exception : see logcat ",
                             Toast.LENGTH_SHORT).show();
                 });
-             //   Log.e("Upload file Exception", "Exception : " + e.getMessage(), e);
+                //   Log.e("Upload file Exception", "Exception : " + e.getMessage(), e);
             }
             dialog.dismiss();
         }
@@ -804,7 +804,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             protected void onPostExecute(String s) {
                 super.onPostExecute(s);
-              //  dialog.dismiss();
+                //  dialog.dismiss();
 
                 // Populate ArrayList with JSON data
                 theTrialList = populateResultArrayList(s);
@@ -822,7 +822,7 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 setTrialsList(theTrialList);
-                
+
                 if (trialid == 0) {
                     theTrialName = "Manual Entry";
                 }
