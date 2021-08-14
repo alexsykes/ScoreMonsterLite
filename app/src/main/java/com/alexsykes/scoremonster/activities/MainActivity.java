@@ -66,50 +66,39 @@ public class MainActivity extends AppCompatActivity {
 
     public static final int TEXT_REQUEST = 1;
     public static final String EXTRA_MESSAGE = "com.alexsykes.scoremonster.activities.MESSAGE";
-
     public static final int NOT_SYNCED = -1;
+    final String uploadFilePath = "mnt/sdcard/Documents/Scoremonster/";
     MediaPlayer mediaPlayer;
 
-    String message;
+    private String message, status, filename, observer, theTrialName, detail, email;
+    String[] theTrials, theIDs;
+    ArrayList<HashMap<String, String>> theTrialData;
+    private int score, scoreCount, serverResponseCode = 0, trialid, section, numsections, numlaps, ridingNumber, numberInGroup;
+    private boolean isSingleUser, trialHasChanged;;
 
+    // Layout variables
     TextView numberLabel, scoreLabel, statusLine, sectionNumber;
     ConstraintLayout top;
-    String status;
     NumberPadFragment numberPadFragment;
     TouchFragment touchFragment;
+    Button saveButton;
+
     SharedPreferences localPrefs;
     ProgressDialog dialog = null;
-    final String uploadFilePath = "mnt/sdcard/Documents/Scoremonster/";
 
     // Databases
     private ScoreDbHelper mDbHelper;
 
-    private int score;
-    private int scoreCount;
-    boolean isSingleUser;
-    int serverResponseCode = 0;
-    private String filename;
-    // private int ridingNumber;
-    String upLoadServerUri = null;
-    String sendMailURL = null;
-
-
-    String[] theTrials, theIDs;
-    ArrayList<HashMap<String, String>> theTrialData;
+    // URL constants
+    private final String upLoadServerUri = "http://android.trialmonster.uk/sendMailWithFile.php";
+    private final String sendMailURL = "http://android.trialmonster.uk/sendMailWithFile.php";
     private static final String BASE_URL = "https://android.trialmonster.uk/";
-    int trialid, section, numsections, numlaps, ridingNumber, numberInGroup;
-    String observer, theTrialName, detail, email, scoringmode;
-    private boolean trialHasChanged;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.i("Note", "onCreate called");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        /*  Php script path  */
-        sendMailURL = "http://android.trialmonster.uk/sendMailWithFile.php";
-        upLoadServerUri = "http://android.trialmonster.uk/UploadToServer.php";
 
         dbInit();
 
@@ -136,7 +125,6 @@ public class MainActivity extends AppCompatActivity {
         getSupportFragmentManager().beginTransaction().replace(R.id.bottom, touchFragment).commit();
 
         if (isOnline()) {
-
             // Get trialList from server
             String URL = BASE_URL + "getTrialList.php";
             try {
@@ -147,7 +135,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         // Set up button to save scores
-        Button saveButton = findViewById(R.id.saveButton);
+        saveButton = findViewById(R.id.saveButton);
         saveButton.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {

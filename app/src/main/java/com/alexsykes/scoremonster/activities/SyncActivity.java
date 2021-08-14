@@ -48,8 +48,9 @@ public class SyncActivity extends AppCompatActivity {
     Button uploadButton, processButton;
     int serverResponseCode = 0, section, trialid;
     ProgressDialog dialog = null;
-    String upLoadServerUri = null;
-    String processURL = null;
+    private final String upLoadServerUri = "http://android.trialmonster.uk/UploadToServer.php";
+    private final String baseURL = "http://android.trialmonster.uk/addCSVtodb.php?trialid=";
+    private String processURL = null;
     File exportDir = new File(Environment.getExternalStoragePublicDirectory("Documents/Scoremonster"), "");
     private ScoreDbHelper mDbHelper;
     private String filename;
@@ -74,9 +75,6 @@ public class SyncActivity extends AppCompatActivity {
         // uploadButton = findViewById(R.id.uploadButton);
         processButton = findViewById(R.id.processButton);
 
-        /*  Php script path  */
-        upLoadServerUri = "http://android.trialmonster.uk/UploadToServer.php";
-
         processButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -91,7 +89,7 @@ public class SyncActivity extends AppCompatActivity {
                     long time = date.getTime();
                     String ts = String.valueOf(time);
                     filename = "scores_" + ts + ".csv";
-                    processURL = "http://android.trialmonster.uk/addCSVtodb.php?trialid="+ trialid + "&id=" + ts;
+                    processURL =  baseURL + trialid + "&id=" + ts;
                    // Log.i("URL",processURL);
                     processCSV(processURL);
                 }
