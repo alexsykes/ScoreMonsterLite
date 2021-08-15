@@ -1,6 +1,7 @@
 package com.alexsykes.scoremonster.activities;
 
-import static java.lang.String.*;
+import static java.lang.String.join;
+import static java.lang.String.valueOf;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -32,7 +33,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.preference.PreferenceManager;
 
 import com.alexsykes.scoremonster.NumberPadFragment;
@@ -71,13 +72,13 @@ public class MainActivity extends AppCompatActivity {
     final String uploadFilePath = "mnt/sdcard/Documents/Scoremonster/";
     MediaPlayer mediaPlayer;
 
-    MainViewModel mainViewModel;
+    MainViewModel model;
 
     private String message, status, filename, observer, theTrialName, detail, email;
     String[] theTrials, theIDs;
     ArrayList<HashMap<String, String>> theTrialData;
     private int score, scoreCount, serverResponseCode = 0, trialid, section, numsections, numlaps, ridingNumber, numberInGroup;
-    private boolean isSingleUser, trialHasChanged;;
+    private boolean isSingleUser, trialHasChanged;
 
     // Layout variables
     TextView numberLabel, scoreLabel, statusLine, sectionNumber;
@@ -101,9 +102,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         Log.i("Note", "MainActivity::onCreate called");
         super.onCreate(savedInstanceState);
+
+        model = new ViewModelProvider(this).get(MainViewModel.class);
+
         setContentView(R.layout.activity_main);
 
-        mainViewModel = ViewModelProviders.of(this).get(MainViewModel.class);
         dbInit();
 
         // Create database connection
@@ -969,10 +972,9 @@ public class MainActivity extends AppCompatActivity {
                 theTrialData = readTrialData(s);
 
 
-
-                    theTrialName = theTrialData.get(0).get("name");
-                    trialid = Integer.valueOf(theTrialData.get(0).get("id"));
-                numlaps  = Integer.valueOf(theTrialData.get(0).get("numlaps"));
+                theTrialName = theTrialData.get(0).get("name");
+                trialid = Integer.parseInt(theTrialData.get(0).get("id"));
+                numlaps = Integer.valueOf(theTrialData.get(0).get("numlaps"));
                 numsections  = Integer.valueOf(theTrialData.get(0).get("numsections"));
 
 
