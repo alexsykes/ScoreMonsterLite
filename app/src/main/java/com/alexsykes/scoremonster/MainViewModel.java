@@ -1,4 +1,4 @@
-package com.alexsykes.scoremonster.activities;
+package com.alexsykes.scoremonster;
 
 import androidx.lifecycle.ViewModel;
 
@@ -22,7 +22,7 @@ public class MainViewModel extends ViewModel {
     }
 
     public void setNumSections(int numsections) {
-        this.numlaps = numsections;
+        this.numsections = numsections;
     }
 
     public int getTrialid() {

@@ -36,6 +36,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.preference.PreferenceManager;
 
+import com.alexsykes.scoremonster.MainViewModel;
 import com.alexsykes.scoremonster.NumberPadFragment;
 import com.alexsykes.scoremonster.R;
 import com.alexsykes.scoremonster.TouchFragment;
@@ -107,30 +108,12 @@ public class MainActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_main);
 
+        // Create database connection
         dbInit();
 
-        // Create database connection
-        mDbHelper = new ScoreDbHelper(this);
-        mDbHelper.getWritableDatabase();
+        UISetup();
 
-        // Add custom ActionBar
-        Toolbar myToolbar = findViewById(R.id.my_toolbar);
-        myToolbar.setTitleTextColor(Color.WHITE);
-        setSupportActionBar(myToolbar);
-        myToolbar.getMenu();
-
-        // Add score and numberPad fragemnts
-        numberPadFragment = new NumberPadFragment();
-        touchFragment = new TouchFragment();
-        numberLabel = findViewById(R.id.numberLabel);
-        scoreLabel = findViewById(R.id.scoreLabel);
-        statusLine = findViewById(R.id.statusLine);
-        sectionNumber = findViewById(R.id.sectionNumber);
-        top = findViewById(R.id.top);
-
-        getSupportFragmentManager().beginTransaction().add(R.id.top, numberPadFragment).commit();
-        getSupportFragmentManager().beginTransaction().replace(R.id.bottom, touchFragment).commit();
-
+        // if online, loads list of trials
         if (isOnline()) {
             // Get trialList from server
             String URL = BASE_URL + "getTrialList.php";
@@ -150,6 +133,28 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
+
+        getPrefs();
+    }
+
+    private void UISetup() {
+        // Add custom ActionBar
+        Toolbar myToolbar = findViewById(R.id.my_toolbar);
+        myToolbar.setTitleTextColor(Color.WHITE);
+        setSupportActionBar(myToolbar);
+        myToolbar.getMenu();
+
+        // Add score and numberPad fragemnts
+        numberPadFragment = new NumberPadFragment();
+        touchFragment = new TouchFragment();
+        numberLabel = findViewById(R.id.numberLabel);
+        scoreLabel = findViewById(R.id.scoreLabel);
+        statusLine = findViewById(R.id.statusLine);
+        sectionNumber = findViewById(R.id.sectionNumber);
+        top = findViewById(R.id.top);
+
+        getSupportFragmentManager().beginTransaction().add(R.id.top, numberPadFragment).commit();
+        getSupportFragmentManager().beginTransaction().replace(R.id.bottom, touchFragment).commit();
     }
 
     // Databaise initialisation
@@ -175,6 +180,9 @@ public class MainActivity extends AppCompatActivity {
 
         // Execute the SQL statement
         db.execSQL(SQL_CREATE_SCORES_TABLE);
+
+        mDbHelper = new ScoreDbHelper(this);
+        mDbHelper.getWritableDatabase();
     }
 
     @Override
@@ -189,7 +197,6 @@ public class MainActivity extends AppCompatActivity {
         editor.apply();
 
         super.onStart();
-        getPrefs();
 
         if (!isSingleUser) {
             numberLabel.setText("");
@@ -693,9 +700,9 @@ public class MainActivity extends AppCompatActivity {
         status = theTrialName + " - Observer: " + observer;
         sectionNumber.setText(valueOf(section));
 
-//        mainViewModel.setNumLaps(numlaps);
-//        mainViewModel.setNumSections(numsections);
-//        mainViewModel.setTrialid(trialid);
+//        model.setNumLaps(numlaps);
+//        model.setNumSections(numsections);
+//        model.setTrialid(trialid);
 
         if (isSingleUser) {
             numberLabel.setText(valueOf(ridingNumber));
