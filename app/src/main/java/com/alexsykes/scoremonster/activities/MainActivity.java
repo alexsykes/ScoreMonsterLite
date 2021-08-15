@@ -32,6 +32,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.preference.PreferenceManager;
 
 import com.alexsykes.scoremonster.NumberPadFragment;
@@ -70,6 +71,8 @@ public class MainActivity extends AppCompatActivity {
     final String uploadFilePath = "mnt/sdcard/Documents/Scoremonster/";
     MediaPlayer mediaPlayer;
 
+    MainViewModel mainViewModel;
+
     private String message, status, filename, observer, theTrialName, detail, email;
     String[] theTrials, theIDs;
     ArrayList<HashMap<String, String>> theTrialData;
@@ -100,6 +103,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        mainViewModel = ViewModelProviders.of(this).get(MainViewModel.class);
         dbInit();
 
         // Create database connection
@@ -685,6 +689,10 @@ public class MainActivity extends AppCompatActivity {
 
         status = theTrialName + " - Observer: " + observer;
         sectionNumber.setText(valueOf(section));
+
+//        mainViewModel.setNumLaps(numlaps);
+//        mainViewModel.setNumSections(numsections);
+//        mainViewModel.setTrialid(trialid);
 
         if (isSingleUser) {
             numberLabel.setText(valueOf(ridingNumber));

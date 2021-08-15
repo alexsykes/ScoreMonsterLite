@@ -327,8 +327,4 @@ public class SettingsActivity extends AppCompatActivity {
             getJSON.execute();
         }*/
     }
-
-    // Imported from earlier Activity
-
-
 }
