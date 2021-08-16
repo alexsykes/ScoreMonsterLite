@@ -43,17 +43,16 @@ public class SettingsActivity extends AppCompatActivity {
     protected void onStart() {
         // Check network connectivity and set Prefs
         localPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-        SharedPreferences.Editor editor = localPrefs.edit();
-        isOnline = isOnline();
-        editor.putBoolean("canConnect", isOnline);
-        editor.apply();
+//        SharedPreferences.Editor editor = localPrefs.edit();
+//        isOnline = isOnline();
+//        editor.putBoolean("canConnect", isOnline);
+//        editor.apply();
         super.onStart();
     }
 
     protected boolean isOnline() {
         ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = cm.getActiveNetworkInfo();
-
         return netInfo != null && netInfo.isConnectedOrConnecting();
     }
 
@@ -70,8 +69,9 @@ public class SettingsActivity extends AppCompatActivity {
 
         private void setTrials() {
             localPrefs = PreferenceManager.getDefaultSharedPreferences(getContext());
-            CharSequence[] entries = localPrefs.getString("theNames","").split(",");
-            CharSequence[] entryValues = localPrefs.getString("theIds", "").split(",");
+
+            CharSequence[] entries = localPrefs.getString("theNames","Manual Entry").split(",");
+            CharSequence[] entryValues = localPrefs.getString("theIds", "0").split(",");
             ListPreference lp = findPreference("theTrialIndex");
             lp.setEntries(entries);
             lp.setEntryValues(entryValues);
@@ -112,7 +112,10 @@ public class SettingsActivity extends AppCompatActivity {
                 @Override
                 public boolean onPreferenceChange(Preference preference, Object newValue) {
                     SharedPreferences.Editor editor = localPrefs.edit();
+                    int trialid = Integer.parseInt(lp.getValue());
+                    editor.putString("theTrialIndex", newValue.toString());
                     editor.putBoolean("trialHasChanged", true);
+                    editor.putInt("trialid",trialid);
                     editor.apply();
                     return true;
                 }

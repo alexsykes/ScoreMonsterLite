@@ -95,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
     String[] theTrials, theIDs;
     ArrayList<HashMap<String, String>> theTrialData;
     private int score, scoreCount, serverResponseCode = 0, trialid, section, numsections, numlaps, ridingNumber, numberInGroup;
-    private boolean isSingleUser, trialHasChanged;
+    private boolean isSingleUser, trialHasChanged, isOnline;
 
     // Layout variables
     TextView numberLabel, scoreLabel, statusLine, sectionNumber;
@@ -121,19 +121,31 @@ public class MainActivity extends AppCompatActivity {
         Log.i("Note", "MainActivity::onCreate called");
         super.onCreate(savedInstanceState);
 
+        // Load existing settings and check for connectivity
+        localPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = localPrefs.edit();
+        editor.putBoolean("canConnect", isOnline());
+        editor.apply();
+
         model = new ViewModelProvider(this).get(MainViewModel.class);
         String theURL = BASE_URL + "getTrialListScoreMonster.php";
         model.setRefreshed(false);
-
         setContentView(R.layout.activity_main);
 
         // Create database connection
         dbInit();
-
         UISetup();
+        getPrefs();
 
+        isOnline = isOnline();
+
+        if(!isOnline && trialid==-999) {
+
+            Toast.makeText(MainActivity.this, "Offline only", Toast.LENGTH_LONG).show();
+            goSetup();
+        }
         // if online, loads list of trials
-        if (isOnline()) {
+        if (isOnline) {
 
             // model.getTrialList(theURL);
             // Get trialList from server
@@ -154,9 +166,7 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
-
-        getPrefs();
-        model.saveCurrentValuesToModel(ridingNumber,
+          model.saveCurrentValuesToModel(ridingNumber,
                 score,
                 section,
                 trialid,
@@ -164,56 +174,9 @@ public class MainActivity extends AppCompatActivity {
                 numsections);
     }
 
-    private void UISetup() {
-        // Add custom ActionBar
-        Toolbar myToolbar = findViewById(R.id.my_toolbar);
-        myToolbar.setTitleTextColor(Color.WHITE);
-        setSupportActionBar(myToolbar);
-        myToolbar.getMenu();
-
-        // Add score and numberPad fragemnts
-        numberPadFragment = new NumberPadFragment();
-        touchFragment = new TouchFragment();
-        numberLabel = findViewById(R.id.numberLabel);
-        scoreLabel = findViewById(R.id.scoreLabel);
-        statusLine = findViewById(R.id.statusLine);
-        sectionNumber = findViewById(R.id.sectionNumber);
-        top = findViewById(R.id.top);
-
-        getSupportFragmentManager().beginTransaction().add(R.id.top, numberPadFragment).commit();
-        getSupportFragmentManager().beginTransaction().replace(R.id.bottom, touchFragment).commit();
-    }
-
-    // Databaise initialisation
-    private void dbInit() {
-        // Database operations - https://www.tutorialspoint.com/android/android_sqlite_database.htm
-        // First, get your database
-        final String DATABASE_NAME = "monster.db";
-        SQLiteDatabase db = openOrCreateDatabase(DATABASE_NAME, MODE_PRIVATE, null);
-
-        // Create a String that contains the SQL statement to create the scores table
-        String SQL_CREATE_SCORES_TABLE = "CREATE TABLE IF NOT EXISTS " + ScoreContract.ScoreEntry.TABLE_NAME + " ("
-                + ScoreContract.ScoreEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-                + ScoreContract.ScoreEntry.COLUMN_SCORE_OBSERVER + " TEXT NOT NULL, "
-                + ScoreContract.ScoreEntry.COLUMN_SCORE_SECTION + " INTEGER NOT NULL, "
-                + ScoreContract.ScoreEntry.COLUMN_SCORE_RIDER + " INTEGER NOT NULL, "
-                + ScoreContract.ScoreEntry.COLUMN_SCORE_LAP + " INTEGER NOT NULL DEFAULT 0, "
-                + ScoreContract.ScoreEntry.COLUMN_SCORE_CREATED + " TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP, "
-                + ScoreContract.ScoreEntry.COLUMN_SCORE_UPDATED + " TEXT , "
-                + ScoreContract.ScoreEntry.COLUMN_SCORE_EDITED + " INTEGER NOT NULL DEFAULT 0, "
-                + ScoreContract.ScoreEntry.COLUMN_SCORE_TRIALID + " INTEGER NOT NULL DEFAULT 0, "
-                + ScoreContract.ScoreEntry.COLUMN_SCORE_SYNC + " INTEGER NOT NULL DEFAULT 1, "
-                + ScoreContract.ScoreEntry.COLUMN_SCORE_SCORE + " INTEGER NOT NULL);";
-
-        // Execute the SQL statement
-        db.execSQL(SQL_CREATE_SCORES_TABLE);
-
-        mDbHelper = new ScoreDbHelper(this);
-        mDbHelper.getWritableDatabase();
-    }
-
     @Override
     protected void onStart() {
+        super.onStart();
         Log.i("Note", "onStart called");
         // Check network connectivity and set Prefs
         // localPrefs = getSharedPreferences("monster", MODE_PRIVATE);
@@ -221,7 +184,6 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences.Editor editor = localPrefs.edit();
         editor.putBoolean("canConnect", isOnline());
         editor.apply();
-        super.onStart();
 
         int[] savedValues = model.readSavedValuesFromModel();
 
@@ -267,17 +229,17 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         Log.i("Note", "onResume called");
         // getPrefs();
-
+/*
         Log.i("Note","trialHasChanged is: " + trialHasChanged);
         scoreLabel.setText(valueOf(score));
         sectionNumber.setText(valueOf(section));
-        if (ridingNumber != 0) {
+                                                                                          if (ridingNumber != 0) {
             numberLabel.setText(valueOf(ridingNumber));
         } else {
             numberLabel.setText("");
         }
 
-        if(trialHasChanged) {
+        if(trialHasChanged && isOnline) {
             // Get trialList from server
             String URL = BASE_URL + "getTrialDetailsScoreMonster.php?id=" + trialid;
             try {
@@ -289,7 +251,7 @@ public class MainActivity extends AppCompatActivity {
             SharedPreferences.Editor editor = localPrefs.edit();
             editor.putBoolean("trialHasChanged", false);
             editor.apply();
-        }
+        }*/
     }
 
     @Override
@@ -352,6 +314,54 @@ public class MainActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
 
         }
+    }
+
+    private void UISetup() {
+        // Add custom ActionBar
+        Toolbar myToolbar = findViewById(R.id.my_toolbar);
+        myToolbar.setTitleTextColor(Color.WHITE);
+        setSupportActionBar(myToolbar);
+        myToolbar.getMenu();
+
+        // Add score and numberPad fragemnts
+        numberPadFragment = new NumberPadFragment();
+        touchFragment = new TouchFragment();
+        numberLabel = findViewById(R.id.numberLabel);
+        scoreLabel = findViewById(R.id.scoreLabel);
+        statusLine = findViewById(R.id.statusLine);
+        sectionNumber = findViewById(R.id.sectionNumber);
+        top = findViewById(R.id.top);
+
+        getSupportFragmentManager().beginTransaction().add(R.id.top, numberPadFragment).commit();
+        getSupportFragmentManager().beginTransaction().replace(R.id.bottom, touchFragment).commit();
+    }
+
+    // Databaise initialisation
+    private void dbInit() {
+        // Database operations - https://www.tutorialspoint.com/android/android_sqlite_database.htm
+        // First, get your database
+        final String DATABASE_NAME = "monster.db";
+        SQLiteDatabase db = openOrCreateDatabase(DATABASE_NAME, MODE_PRIVATE, null);
+
+        // Create a String that contains the SQL statement to create the scores table
+        String SQL_CREATE_SCORES_TABLE = "CREATE TABLE IF NOT EXISTS " + ScoreContract.ScoreEntry.TABLE_NAME + " ("
+                + ScoreContract.ScoreEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + ScoreContract.ScoreEntry.COLUMN_SCORE_OBSERVER + " TEXT NOT NULL, "
+                + ScoreContract.ScoreEntry.COLUMN_SCORE_SECTION + " INTEGER NOT NULL, "
+                + ScoreContract.ScoreEntry.COLUMN_SCORE_RIDER + " INTEGER NOT NULL, "
+                + ScoreContract.ScoreEntry.COLUMN_SCORE_LAP + " INTEGER NOT NULL DEFAULT 0, "
+                + ScoreContract.ScoreEntry.COLUMN_SCORE_CREATED + " TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP, "
+                + ScoreContract.ScoreEntry.COLUMN_SCORE_UPDATED + " TEXT , "
+                + ScoreContract.ScoreEntry.COLUMN_SCORE_EDITED + " INTEGER NOT NULL DEFAULT 0, "
+                + ScoreContract.ScoreEntry.COLUMN_SCORE_TRIALID + " INTEGER NOT NULL DEFAULT 0, "
+                + ScoreContract.ScoreEntry.COLUMN_SCORE_SYNC + " INTEGER NOT NULL DEFAULT 1, "
+                + ScoreContract.ScoreEntry.COLUMN_SCORE_SCORE + " INTEGER NOT NULL);";
+
+        // Execute the SQL statement
+        db.execSQL(SQL_CREATE_SCORES_TABLE);
+
+        mDbHelper = new ScoreDbHelper(this);
+        mDbHelper.getWritableDatabase();
     }
 
     private void goHelp() {
@@ -711,7 +721,7 @@ public class MainActivity extends AppCompatActivity {
         localPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         observer = localPrefs.getString("observer", "");
         section = Integer.parseInt(localPrefs.getString("sectionText", "1"));
-        trialid = Integer.parseInt(localPrefs.getString("trialid", "1"));
+        trialid = Integer.parseInt(localPrefs.getString("trialid", "-999"));
         numlaps = Integer.parseInt(localPrefs.getString("numlapsText", "1"));
         numsections = Integer.parseInt(localPrefs.getString("numsectionsText", "1"));
         email = localPrefs.getString("email", "");
