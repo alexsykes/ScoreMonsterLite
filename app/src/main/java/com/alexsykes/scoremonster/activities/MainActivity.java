@@ -65,6 +65,22 @@ import java.util.HashMap;
 // TODO Important - move database setup method from ScoreDbHelper
 // TODO Important - add message to setup for no connection
 
+/*
+    Method  getTrialList(URL)
+
+    * called - onCreate()
+    * returns
+
+    @ post
+    theNames - CSV String of trial names
+    theIds - - CSV String of trial ids
+    saved in prefs
+
+
+    Method getTrialDetails(int trialid)
+
+ */
+
 public class MainActivity extends AppCompatActivity {
 
     public static final int TEXT_REQUEST = 1;
@@ -98,6 +114,7 @@ public class MainActivity extends AppCompatActivity {
     private final String upLoadServerUri = "http://android.trialmonster.uk/sendMailWithFile.php";
     private final String sendMailURL = "http://android.trialmonster.uk/sendMailWithFile.php";
     private static final String BASE_URL = "https://android.trialmonster.uk/";
+    String theURL;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,6 +122,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         model = new ViewModelProvider(this).get(MainViewModel.class);
+        String theURL = BASE_URL + "getTrialListScoreMonster.php";
+        model.setRefreshed(false);
 
         setContentView(R.layout.activity_main);
 
@@ -115,10 +134,12 @@ public class MainActivity extends AppCompatActivity {
 
         // if online, loads list of trials
         if (isOnline()) {
+
+            // model.getTrialList(theURL);
             // Get trialList from server
             String URL = BASE_URL + "getTrialList.php";
             try {
-                getJSONDataset(URL);
+                getTrialList(URL);
             } catch (NullPointerException e) {
                 Toast.makeText(MainActivity.this, "Empty data", Toast.LENGTH_LONG).show();
             }
@@ -135,6 +156,12 @@ public class MainActivity extends AppCompatActivity {
         });
 
         getPrefs();
+        model.saveCurrentValuesToModel(ridingNumber,
+                score,
+                section,
+                trialid,
+                numlaps,
+                numsections);
     }
 
     private void UISetup() {
@@ -191,12 +218,12 @@ public class MainActivity extends AppCompatActivity {
         // Check network connectivity and set Prefs
         // localPrefs = getSharedPreferences("monster", MODE_PRIVATE);
         localPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-
         SharedPreferences.Editor editor = localPrefs.edit();
         editor.putBoolean("canConnect", isOnline());
         editor.apply();
-
         super.onStart();
+
+        int[] savedValues = model.readSavedValuesFromModel();
 
         if (!isSingleUser) {
             numberLabel.setText("");
@@ -239,7 +266,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         Log.i("Note", "onResume called");
-        getPrefs();
+        // getPrefs();
 
         Log.i("Note","trialHasChanged is: " + trialHasChanged);
         scoreLabel.setText(valueOf(score));
@@ -270,11 +297,12 @@ public class MainActivity extends AppCompatActivity {
         super.onSaveInstanceState(outState);
 
         Log.i("Note", "onSaveInstanceState called");
-        // Save the state of item position
-//        outState.putString("rider", numberLabel.getText().toString());
-//        outState.putString("score", scoreLabel.getText().toString());
-//        outState.putInt("section", section);
-//        outState.putInt("numberInGroup", numberInGroup);
+        model.saveCurrentValuesToModel(ridingNumber,
+                score,
+                section,
+                trialid,
+                numlaps,
+                numsections);
     }
 
     @Override
@@ -682,11 +710,10 @@ public class MainActivity extends AppCompatActivity {
     private void getPrefs() {
         localPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         observer = localPrefs.getString("observer", "");
-        // String sectionText  = localPrefs.getString("sectionText", "1");
-        section = Integer.valueOf(localPrefs.getString("sectionText", "1"));
-        trialid = Integer.valueOf(localPrefs.getString("thetrialid", "1"));
-        numlaps = Integer.valueOf(localPrefs.getString("numlapsText", "1"));
-        numsections = Integer.valueOf(localPrefs.getString("numsectionsText", "1"));
+        section = Integer.parseInt(localPrefs.getString("sectionText", "1"));
+        trialid = Integer.parseInt(localPrefs.getString("trialid", "1"));
+        numlaps = Integer.parseInt(localPrefs.getString("numlapsText", "1"));
+        numsections = Integer.parseInt(localPrefs.getString("numsectionsText", "1"));
         email = localPrefs.getString("email", "");
         isSingleUser = localPrefs.getBoolean("isSingleUser", false);
         ridingNumber = localPrefs.getInt("ridingNumber", 0);
@@ -699,10 +726,6 @@ public class MainActivity extends AppCompatActivity {
 
         status = theTrialName + " - Observer: " + observer;
         sectionNumber.setText(valueOf(section));
-
-//        model.setNumLaps(numlaps);
-//        model.setNumSections(numsections);
-//        model.setTrialid(trialid);
 
         if (isSingleUser) {
             numberLabel.setText(valueOf(ridingNumber));
@@ -788,7 +811,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    private void getJSONDataset(final String urlWebService) {
+    private void getTrialList(final String urlWebService) {
         /*
          * As fetching the json string is a network operation
          * And we cannot perform a network operation in main thread
@@ -828,6 +851,7 @@ public class MainActivity extends AppCompatActivity {
 
                 // Populate ArrayList with JSON data
                 theTrialData = populateResultArrayList(s);
+
 
                 int size = theTrialData.size();
                 theTrials = new String[size];

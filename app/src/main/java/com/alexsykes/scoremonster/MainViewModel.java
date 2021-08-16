@@ -2,14 +2,9 @@ package com.alexsykes.scoremonster;
 
 import static java.lang.String.join;
 
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
-import android.widget.Toast;
 
 import androidx.lifecycle.ViewModel;
-import androidx.preference.PreferenceManager;
-
-import com.alexsykes.scoremonster.activities.MainActivity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -26,16 +21,28 @@ public class MainViewModel extends ViewModel {
     private int trialid;
     private int numsections;
     private int numlaps;
+    private boolean isRefreshed;
     private ArrayList<HashMap<String, String>> theTrialData;
     private String[] theTrials, theIDs;
-    private String theTrialName;
+    private String theTrialName, data;
 
     // URL constants
     private final String upLoadServerUri = "http://android.trialmonster.uk/sendMailWithFile.php";
     private final String sendMailURL = "http://android.trialmonster.uk/sendMailWithFile.php";
     private static final String BASE_URL = "https://android.trialmonster.uk/";
+    private int ridingNumber, score, section;
 
     public MainViewModel() {
+        String theURL = BASE_URL + "getTrialListScoreMonster.php";
+        getTrialList(theURL);
+    }
+
+    public boolean isRefreshed() {
+        return isRefreshed;
+    }
+
+    public void setRefreshed(boolean refreshed) {
+        isRefreshed = refreshed;
     }
 
     public MainViewModel(int trialid, int numsections, int numlaps) {
@@ -68,8 +75,12 @@ public class MainViewModel extends ViewModel {
         this.trialid = trialid;
     }
 
+    public String getCurrentTrialData() {
+        return data;
+    }
 
-    private void getTrialList(final String urlWebService) {
+
+    public void getTrialList(final String urlWebService) {
         /*
          * As fetching the json string is a network operation
          * And we cannot perform a network operation in main thread
@@ -80,33 +91,14 @@ public class MainViewModel extends ViewModel {
          * String -> After completion it should return a string and it will be the json string
          * */
         class GetData extends AsyncTask<Void, Void, String> {
-
-            //this method will be called before execution
-
             @Override
             protected void onPreExecute() {
-
                 super.onPreExecute();
-                // Show dialog during server transaction
-                // dialog = ProgressDialog.show(SetupActivity.this, "Scoremonster", "Getting trial list", true);
-//                dialog = new ProgressDialog(MainActivity.this);
-//                dialog.setMessage("Loading…");
-//                dialog.setCancelable(false);
-//                dialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancel", (dialog, which) -> dialog.dismiss());
-//                dialog.show();
             }
-
-
-            /* this method will be called after execution
-
-                s contains trial details in JSON string
-             */
 
             @Override
             protected void onPostExecute(String s) {
                 super.onPostExecute(s);
-                //  dialog.dismiss();
-
                 // Populate ArrayList with JSON data
                 theTrialData = populateResultArrayList(s);
 
@@ -116,13 +108,14 @@ public class MainViewModel extends ViewModel {
                 String id;
 
                 for (int index = 0; index < theTrialData.size(); index++) {
-                    theTrialName= theTrialData.get(index).get("name");
+                    theTrialName = theTrialData.get(index).get("name");
                     id = theTrialData.get(index).get("id");
                     theTrials[index] = theTrialName;
                     theIDs[index] = id;
                 }
 
-                setTrialsList(theTrialData);
+                data = setTrialsList(theTrialData);
+                isRefreshed = true;
 
                 if (trialid == 0) {
                     theTrialName = "Manual Entry";
@@ -147,22 +140,12 @@ public class MainViewModel extends ViewModel {
                         date = jsonArray.getJSONObject(index).getString("date");
                         club = jsonArray.getJSONObject(index).getString("club");
                         name = jsonArray.getJSONObject(index).getString("name");
-                        numsections = jsonArray.getJSONObject(index).getString("numsections");
-                        numlaps = jsonArray.getJSONObject(index).getString("numlaps");
-                        starttime = jsonArray.getJSONObject(index).getString("starttime");
-                        email = jsonArray.getJSONObject(index).getString("email");
-                        scoringmode = jsonArray.getJSONObject(index).getString("scoringmode");
 
                         // trial = club + " - " + name;
                         theTrial.put("id", id);
                         theTrial.put("date", date);
                         theTrial.put("club", club);
                         theTrial.put("name", name);
-                        theTrial.put("numsections", numsections);
-                        theTrial.put("numlaps", numlaps);
-                        theTrial.put("starttime", starttime);
-                        theTrial.put("email", email);
-                        theTrial.put("scoringmode", scoringmode);
                         theTrialList.add(theTrial);
                     }
 
@@ -218,7 +201,7 @@ public class MainViewModel extends ViewModel {
         getJSON.execute();
     }
 
-    private void setTrialsList(ArrayList<HashMap<String, String>> theTrialList) {
+    private String setTrialsList(ArrayList<HashMap<String, String>> theTrialList) {
         // SharedPreferences localPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         // Need name and id from theTrialList
         int size = theTrialList.size();
@@ -226,11 +209,12 @@ public class MainViewModel extends ViewModel {
         String[] theTrialIds = new String[size];
         for (int index = 0; index < size; index++) {
             theTrialNames[index] = theTrialList.get(index).get("name");
-            theTrialIds[index] =  theTrialList.get(index).get("id");
+            theTrialIds[index] = theTrialList.get(index).get("id");
         }
         String theTrialListNames = join(",", theTrialNames);
         String theTrialListIds = join(",", theTrialIds);
-
+        String theData = theTrialListIds + ":" + theTrialListNames;
+        return theData;
 //        SharedPreferences.Editor editor = localPrefs.edit();
 //
 //        editor.putString("theNames", theTrialListNames);
@@ -365,5 +349,19 @@ public class MainViewModel extends ViewModel {
         //creating asynctask object and executing it
         GetData getJSON = new GetData();
         getJSON.execute();
+    }
+
+    public void saveCurrentValuesToModel(int ridingNumber, int score, int section, int trialid, int numlaps, int numsections) {
+        this.ridingNumber = ridingNumber;
+        this.score = score;
+        this.section = section;
+        this.trialid = trialid;
+        this.numlaps = numlaps;
+        this.numsections = numsections;
+    }
+
+    public int[] readSavedValuesFromModel() {
+        int[] savedValues = {ridingNumber, score, section, trialid, numlaps, numsections};
+        return savedValues;
     }
 }
