@@ -94,10 +94,6 @@ public class SettingsActivity extends AppCompatActivity {
             assert numLapsPref != null;
             numLapsPref.setOnBindEditTextListener(editText -> editText.setInputType(InputType.TYPE_CLASS_NUMBER));
 
-            EditTextPreference trialidPref = findPreference("trialid");
-            assert trialidPref != null;
-            trialidPref.setOnBindEditTextListener(editText -> editText.setInputType(InputType.TYPE_CLASS_NUMBER));
-
             EditTextPreference emailPref = findPreference("email");
             assert emailPref != null;
             emailPref.setOnBindEditTextListener(editText -> editText.setInputType(InputType.TYPE_CLASS_TEXT |
@@ -112,7 +108,7 @@ public class SettingsActivity extends AppCompatActivity {
                 @Override
                 public boolean onPreferenceChange(Preference preference, Object newValue) {
                     SharedPreferences.Editor editor = localPrefs.edit();
-                    int trialid = Integer.parseInt(lp.getValue());
+                    int trialid = Integer.parseInt(newValue.toString());
                     editor.putString("theTrialIndex", newValue.toString());
                     editor.putBoolean("trialHasChanged", true);
                     editor.putInt("trialid",trialid);

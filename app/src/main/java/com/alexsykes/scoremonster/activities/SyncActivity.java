@@ -7,16 +7,17 @@ import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.preference.PreferenceManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.preference.PreferenceManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.alexsykes.scoremonster.R;
 import com.alexsykes.scoremonster.ScoreListSyncAdapter;
@@ -66,7 +67,7 @@ public class SyncActivity extends AppCompatActivity {
         localPrefs = PreferenceManager.getDefaultSharedPreferences(this);
 
         // section = localPrefs.getInt("section", 1);
-        trialid = Integer.valueOf(localPrefs.getString("trialid", "1"));
+        trialid = localPrefs.getInt("trialid", 0);
 
         // Create database connection
         mDbHelper = new ScoreDbHelper(this);

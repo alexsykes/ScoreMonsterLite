@@ -166,7 +166,7 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
-          model.saveCurrentValuesToModel(ridingNumber,
+        model.saveCurrentValuesToModel(ridingNumber,
                 score,
                 section,
                 trialid,
@@ -184,8 +184,6 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences.Editor editor = localPrefs.edit();
         editor.putBoolean("canConnect", isOnline());
         editor.apply();
-
-        int[] savedValues = model.readSavedValuesFromModel();
 
         if (!isSingleUser) {
             numberLabel.setText("");
@@ -228,15 +226,23 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         Log.i("Note", "onResume called");
+
+        // Restore values from model
+        int[] savedValues = model.readSavedValuesFromModel();
+        ridingNumber = savedValues[0];
+        score = savedValues[1];
+        if (ridingNumber != 0) {
+            numberLabel.setText(valueOf(ridingNumber));
+        } else {
+            numberLabel.setText("");
+        }
+        scoreLabel.setText(valueOf(score));
         // getPrefs();
 /*
         Log.i("Note","trialHasChanged is: " + trialHasChanged);
         scoreLabel.setText(valueOf(score));
         sectionNumber.setText(valueOf(section));
-                                                                                          if (ridingNumber != 0) {
-            numberLabel.setText(valueOf(ridingNumber));
-        } else {
-            numberLabel.setText("");
+
         }
 
         if(trialHasChanged && isOnline) {
@@ -307,7 +313,9 @@ public class MainActivity extends AppCompatActivity {
                 goSync();
                 return true;
 
-
+            case R.id.reset:
+                reset();
+                return true;
             default:
                 // If we got here, the user's action was not recognized.
                 // Invoke the superclass to handle it.
@@ -721,7 +729,7 @@ public class MainActivity extends AppCompatActivity {
         localPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         observer = localPrefs.getString("observer", "");
         section = Integer.parseInt(localPrefs.getString("sectionText", "1"));
-        trialid = Integer.parseInt(localPrefs.getString("trialid", "-999"));
+        trialid = localPrefs.getInt("trialid", -999);
         numlaps = Integer.parseInt(localPrefs.getString("numlapsText", "1"));
         numsections = Integer.parseInt(localPrefs.getString("numsectionsText", "1"));
         email = localPrefs.getString("email", "");
@@ -1101,6 +1109,15 @@ public class MainActivity extends AppCompatActivity {
         getJSON.execute();
     }
 
+    private void reset() {
+        // Load existing settings and reset trial
+        localPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = localPrefs.edit();
+        editor.putString("theTrialName", "");
+        editor.putString("trialid", "-999");
+        // editor.apply();
+    }
+
     private void setTrialsList(ArrayList<HashMap<String, String>> theTrialList) {
         SharedPreferences localPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         // Need name and id from theTrialList
@@ -1109,7 +1126,7 @@ public class MainActivity extends AppCompatActivity {
         String[] theTrialIds = new String[size];
         for (int index = 0; index < size; index++) {
             theTrialNames[index] = theTrialList.get(index).get("name");
-            theTrialIds[index] =  theTrialList.get(index).get("id");
+            theTrialIds[index] = theTrialList.get(index).get("id");
         }
         String theTrialListNames = join(",", theTrialNames);
         String theTrialListIds = join(",", theTrialIds);

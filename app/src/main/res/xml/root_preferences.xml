@@ -54,11 +54,6 @@
             app:key="numsectionsText"
             app:title="@string/number_of_sections"
             app:useSimpleSummaryProvider="true" />
-
-        <EditTextPreference
-            app:key="trialid"
-            app:title="@string/trial_id"
-            app:useSimpleSummaryProvider="true" />
     </PreferenceCategory>
 
 
