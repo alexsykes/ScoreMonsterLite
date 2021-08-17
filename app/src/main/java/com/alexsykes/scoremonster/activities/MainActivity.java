@@ -228,36 +228,21 @@ public class MainActivity extends AppCompatActivity {
         Log.i("Note", "onResume called");
 
         // Restore values from model
-        int[] savedValues = model.readSavedValuesFromModel();
-        ridingNumber = savedValues[0];
-        score = savedValues[1];
+        //int[] savedValues = model.readSavedValuesFromModel();
+        ridingNumber = model.getRidingNumber();
+        score = model.getScore();
+        section = model.getSection();
+        trialid = model.getTrialid();
+        numlaps = model.getNumlaps();
+        numsections = model.getNumsections();
+
         if (ridingNumber != 0) {
             numberLabel.setText(valueOf(ridingNumber));
         } else {
             numberLabel.setText("");
         }
         scoreLabel.setText(valueOf(score));
-        // getPrefs();
-/*
-        Log.i("Note","trialHasChanged is: " + trialHasChanged);
-        scoreLabel.setText(valueOf(score));
         sectionNumber.setText(valueOf(section));
-
-        }
-
-        if(trialHasChanged && isOnline) {
-            // Get trialList from server
-            String URL = BASE_URL + "getTrialDetailsScoreMonster.php?id=" + trialid;
-            try {
-                getTrialDetails(URL);
-            } catch (NullPointerException e) {
-                Toast.makeText(MainActivity.this, "Empty data", Toast.LENGTH_LONG).show();
-            }
-
-            SharedPreferences.Editor editor = localPrefs.edit();
-            editor.putBoolean("trialHasChanged", false);
-            editor.apply();
-        }*/
     }
 
     @Override
@@ -265,12 +250,12 @@ public class MainActivity extends AppCompatActivity {
         super.onSaveInstanceState(outState);
 
         Log.i("Note", "onSaveInstanceState called");
-        model.saveCurrentValuesToModel(ridingNumber,
-                score,
-                section,
-                trialid,
-                numlaps,
-                numsections);
+        model.setRidingNumber(ridingNumber);
+        model.setScore(score);
+        model.setSection(section);
+        model.setTrialid(trialid);
+        model.setNumLaps(numlaps);
+        model.setNumSections(numsections);
     }
 
     @Override
@@ -728,10 +713,10 @@ public class MainActivity extends AppCompatActivity {
     private void getPrefs() {
         localPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         observer = localPrefs.getString("observer", "");
-        section = Integer.parseInt(localPrefs.getString("sectionText", "1"));
+        section = localPrefs.getInt("section", 1);
         trialid = localPrefs.getInt("trialid", -999);
-        numlaps = Integer.parseInt(localPrefs.getString("numlapsText", "1"));
-        numsections = Integer.parseInt(localPrefs.getString("numsectionsText", "1"));
+        numlaps = localPrefs.getInt("numlaps", 1);
+        numsections = localPrefs.getInt("numsections", 1);
         email = localPrefs.getString("email", "");
         isSingleUser = localPrefs.getBoolean("isSingleUser", false);
         ridingNumber = localPrefs.getInt("ridingNumber", 0);

@@ -85,6 +85,19 @@ public class SettingsActivity extends AppCompatActivity {
             EditTextPreference sectionPref = findPreference("sectionText");
             assert sectionPref != null;
             sectionPref.setOnBindEditTextListener(editText -> editText.setInputType(InputType.TYPE_CLASS_NUMBER));
+            sectionPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                @Override
+                public boolean onPreferenceChange(Preference preference, Object newValue) {
+                    sectionPref.setText(newValue.toString());
+                    SharedPreferences.Editor editor = localPrefs.edit();
+                    int section = Integer.parseInt(newValue.toString());
+                    editor.putInt("section", section);
+                    editor.putString("sectionText", newValue.toString());
+                    editor.apply();
+                    return false;
+                }
+            })
+            ;
 
             EditTextPreference numSectionsPref = findPreference("numsectionsText");
             assert numSectionsPref != null;
@@ -109,7 +122,7 @@ public class SettingsActivity extends AppCompatActivity {
                 public boolean onPreferenceChange(Preference preference, Object newValue) {
                     SharedPreferences.Editor editor = localPrefs.edit();
                     int trialid = Integer.parseInt(newValue.toString());
-                    editor.putString("theTrialIndex", newValue.toString());
+                    editor.putString("theTrialIndex", newValue.toString());  // Check if this is necessary
                     editor.putBoolean("trialHasChanged", true);
                     editor.putInt("trialid",trialid);
                     editor.apply();

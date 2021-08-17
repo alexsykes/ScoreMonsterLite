@@ -21,6 +21,10 @@ public class MainViewModel extends ViewModel {
     private int trialid;
     private int numsections;
     private int numlaps;
+    private int ridingNumber;
+    private int score;
+    private int section;
+
     private boolean isRefreshed;
     private ArrayList<HashMap<String, String>> theTrialData;
     private String[] theTrials, theIDs;
@@ -30,7 +34,6 @@ public class MainViewModel extends ViewModel {
     private final String upLoadServerUri = "http://android.trialmonster.uk/sendMailWithFile.php";
     private final String sendMailURL = "http://android.trialmonster.uk/sendMailWithFile.php";
     private static final String BASE_URL = "https://android.trialmonster.uk/";
-    private int ridingNumber, score, section;
 
     public MainViewModel() {
         String theURL = BASE_URL + "getTrialListScoreMonster.php";
@@ -73,6 +76,31 @@ public class MainViewModel extends ViewModel {
 
     public void setTrialid(int trialid) {
         this.trialid = trialid;
+    }
+
+
+    public int getRidingNumber() {
+        return ridingNumber;
+    }
+
+    public void setRidingNumber(int ridingNumber) {
+        this.ridingNumber = ridingNumber;
+    }
+
+    public int getScore() {
+        return score;
+    }
+
+    public void setScore(int score) {
+        this.score = score;
+    }
+
+    public int getSection() {
+        return section;
+    }
+
+    public void setSection(int section) {
+        this.section = section;
     }
 
     public String getCurrentTrialData() {
@@ -345,11 +373,11 @@ public class MainViewModel extends ViewModel {
                 }
             }
         }
-
         //creating asynctask object and executing it
         GetData getJSON = new GetData();
         getJSON.execute();
     }
+
 
     public void saveCurrentValuesToModel(int ridingNumber, int score, int section, int trialid, int numlaps, int numsections) {
         this.ridingNumber = ridingNumber;
@@ -360,8 +388,4 @@ public class MainViewModel extends ViewModel {
         this.numsections = numsections;
     }
 
-    public int[] readSavedValuesFromModel() {
-        int[] savedValues = {ridingNumber, score, section, trialid, numlaps, numsections};
-        return savedValues;
-    }
 }
