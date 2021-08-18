@@ -6,6 +6,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.text.InputType;
+import android.util.Log;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -152,6 +153,7 @@ public class SettingsActivity extends AppCompatActivity {
                     editor.putBoolean("trialHasChanged", true);
                     editor.putInt("trialid",trialid);
                     editor.apply();
+                    Log.i("Note", "Changed");
                     return true;
                 }
             });

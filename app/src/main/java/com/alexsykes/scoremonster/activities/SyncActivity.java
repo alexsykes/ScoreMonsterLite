@@ -66,9 +66,8 @@ public class SyncActivity extends AppCompatActivity {
         // Get shared preferences for trialid, section
         localPrefs = PreferenceManager.getDefaultSharedPreferences(this);
 
-        // section = localPrefs.getInt("section", 1);
-        trialid = localPrefs.getInt("trialid", 0);
-
+        section = localPrefs.getInt("section", 1);
+        trialid = localPrefs.getInt("trialid", -999);
         // Create database connection
         mDbHelper = new ScoreDbHelper(this);
         populateScoreList();

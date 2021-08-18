@@ -752,6 +752,7 @@ public class MainActivity extends AppCompatActivity {
         }
         sectionNumber.setText(valueOf(section));
         editor.putInt("section", section);
+        editor.putString("sectionText", String.valueOf(section));
         editor.apply();
     }
 
@@ -764,6 +765,7 @@ public class MainActivity extends AppCompatActivity {
         }
         sectionNumber.setText(valueOf(section));
         editor.putInt("section", section);
+        editor.putString("sectionText", String.valueOf(section));
         editor.apply();
     }
 
