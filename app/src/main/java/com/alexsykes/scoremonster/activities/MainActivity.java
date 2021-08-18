@@ -298,9 +298,9 @@ public class MainActivity extends AppCompatActivity {
                 goSync();
                 return true;
 
-            case R.id.reset:
-                reset();
-                return true;
+//            case R.id.reset:
+//                reset();
+//                return true;
             default:
                 // If we got here, the user's action was not recognized.
                 // Invoke the superclass to handle it.

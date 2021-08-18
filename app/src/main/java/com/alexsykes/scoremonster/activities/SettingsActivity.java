@@ -102,10 +102,36 @@ public class SettingsActivity extends AppCompatActivity {
             EditTextPreference numSectionsPref = findPreference("numsectionsText");
             assert numSectionsPref != null;
             numSectionsPref.setOnBindEditTextListener(editText -> editText.setInputType(InputType.TYPE_CLASS_NUMBER));
+            numSectionsPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                @Override
+                public boolean onPreferenceChange(Preference preference, Object newValue) {
+                    numSectionsPref.setText(newValue.toString());
+                    SharedPreferences.Editor editor = localPrefs.edit();
+                    int numsections = Integer.parseInt(newValue.toString());
+                    editor.putInt("numsections", numsections);
+                    editor.putString("numsectionsText", newValue.toString());
+                    editor.apply();
+                    return false;
+                }
+            })
+            ;
 
             EditTextPreference numLapsPref = findPreference("numlapsText");
             assert numLapsPref != null;
             numLapsPref.setOnBindEditTextListener(editText -> editText.setInputType(InputType.TYPE_CLASS_NUMBER));
+            numLapsPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                @Override
+                public boolean onPreferenceChange(Preference preference, Object newValue) {
+                    numLapsPref.setText(newValue.toString());
+                    SharedPreferences.Editor editor = localPrefs.edit();
+                    int numlaps = Integer.parseInt(newValue.toString());
+                    editor.putInt("numlaps", numlaps);
+                    editor.putString("numlapsText", newValue.toString());
+                    editor.apply();
+                    return false;
+                }
+            })
+            ;
 
             EditTextPreference emailPref = findPreference("email");
             assert emailPref != null;

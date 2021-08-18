@@ -18,11 +18,11 @@
         android:icon="@drawable/ic_baseline_email_48"
         android:title="@string/sendmail"
         app:showAsAction="ifRoom" />
-    <item
+    <!-- item
         android:id="@+id/reset"
         android:icon="@drawable/ic_dialog_close_dark"
         android:title="@string/reset_scores"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="ifRoom" /-->
 
     <item
         android:id="@+id/setup"
