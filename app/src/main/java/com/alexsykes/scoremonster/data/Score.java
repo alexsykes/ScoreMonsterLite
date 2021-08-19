@@ -1,17 +1,5 @@
 package com.alexsykes.scoremonster.data;
 
-import android.content.SharedPreferences;
-import android.database.Cursor;
-import android.os.Environment;
-import android.util.Log;
-
-import com.opencsv.CSVWriter;
-
-import java.io.File;
-import java.io.FileWriter;
-import java.io.FileInputStream;
-import java.io.IOException;
-
 public class Score {
     int _id;
     String sync;

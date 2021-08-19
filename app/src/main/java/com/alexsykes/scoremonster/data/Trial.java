@@ -1,0 +1,36 @@
+package com.alexsykes.scoremonster.data;
+
+public class Trial {
+    int _id, numsections, numlaps;
+    String email, date, name;
+
+    public Trial(int _id, int numsections, int numlaps, String email, String date, String name) {
+        this._id = _id;
+        this.numsections = numsections;
+        this.numlaps = numlaps;
+        this.email = email;
+        this.date = date;
+        this.name = name;
+    }
+
+    public void setNumsections(int numsections) {
+        this.numsections = numsections;
+    }
+
+    public int getNumlaps() {
+        return numlaps;
+    }
+
+    public void setNumlaps(int numlaps) {
+        this.numlaps = numlaps;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+}

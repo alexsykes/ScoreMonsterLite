@@ -42,6 +42,8 @@ import com.alexsykes.scoremonster.R;
 import com.alexsykes.scoremonster.TouchFragment;
 import com.alexsykes.scoremonster.data.ScoreContract;
 import com.alexsykes.scoremonster.data.ScoreDbHelper;
+import com.alexsykes.scoremonster.data.TrialContract;
+import com.alexsykes.scoremonster.data.TrialDbHelper;
 import com.opencsv.CSVWriter;
 
 import org.json.JSONArray;
@@ -109,6 +111,7 @@ public class MainActivity extends AppCompatActivity {
 
     // Databases
     private ScoreDbHelper mDbHelper;
+    private TrialDbHelper trialDbHelper;
 
     // URL constants
     private final String upLoadServerUri = "http://android.trialmonster.uk/sendMailWithFile.php";
@@ -355,6 +358,21 @@ public class MainActivity extends AppCompatActivity {
 
         mDbHelper = new ScoreDbHelper(this);
         mDbHelper.getWritableDatabase();
+
+        // Create a String that contains the SQL statement to create the scores table
+        String SQL_CREATE_TRIALS_TABLE = "CREATE TABLE IF NOT EXISTS " + TrialContract.TrialEntry.TABLE_NAME + " ("
+                + TrialContract.TrialEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + TrialContract.TrialEntry.COLUMN_TRIAL_NUMLAPS + " INTEGER NOT NULL, "
+                + TrialContract.TrialEntry.COLUMN_TRIAL_NUMSECTIONS + " INTEGER NOT NULL, "
+                + TrialContract.TrialEntry.COLUMN_TRIAL_NAME + " TEXT , "
+                + TrialContract.TrialEntry.COLUMN_TRIAL_EMAIL + " TEXT , "
+                + TrialContract.TrialEntry.COLUMN_TRIAL_TRIALID + " INTEGER NOT NULL DEFAULT 0 );";
+
+        // Execute the SQL statement
+        db.execSQL(SQL_CREATE_TRIALS_TABLE);
+
+        trialDbHelper = new TrialDbHelper(this);
+        trialDbHelper.getWritableDatabase();
     }
 
     private void goHelp() {
