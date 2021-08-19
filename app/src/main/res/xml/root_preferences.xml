@@ -31,7 +31,9 @@
     </PreferenceCategory>
 
 
-    <PreferenceCategory app:title="@string/trial_header">
+    <PreferenceCategory
+        app:key="trial_details"
+        app:title="@string/trial_header">
 
         <ListPreference
             app:entries="@array/trial_entries"

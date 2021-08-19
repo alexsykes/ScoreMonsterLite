@@ -10,22 +10,27 @@ import android.util.Log;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.preference.EditTextPreference;
 import androidx.preference.ListPreference;
 import androidx.preference.Preference;
+import androidx.preference.PreferenceCategory;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceManager;
 
+import com.alexsykes.scoremonster.MainViewModel;
 import com.alexsykes.scoremonster.R;
 
 public class SettingsActivity extends AppCompatActivity {
     boolean isOnline;
     SharedPreferences localPrefs;
+    MainViewModel model;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        model = new ViewModelProvider(this).get(MainViewModel.class);
         setContentView(R.layout.settings_activity);
         if (savedInstanceState == null) {
             getSupportFragmentManager()
@@ -144,19 +149,50 @@ public class SettingsActivity extends AppCompatActivity {
             observerPref.setOnBindEditTextListener(editText -> editText.setInputType(InputType.TYPE_TEXT_FLAG_CAP_WORDS));
 
             ListPreference lp = findPreference("theTrialIndex");
+            int trialid = Integer.valueOf(lp.getValue());
+
+            if (trialid == 0) {
+                Log.i("Note", "Manual Entry selected");
+                emailPref.setVisible(true);
+                numSectionsPref.setVisible(true);
+                numLapsPref.setVisible(true);
+                // theTrialSettings.setVisible(true);
+            } else {
+                emailPref.setVisible(false);
+                numSectionsPref.setVisible(false);
+                numLapsPref.setVisible(false);
+                //  theTrialSettings.setVisible(false);
+            }
+
+
             lp.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                 @Override
                 public boolean onPreferenceChange(Preference preference, Object newValue) {
+                    PreferenceCategory theTrialSettings = findPreference("trial_details");
                     SharedPreferences.Editor editor = localPrefs.edit();
                     int trialid = Integer.parseInt(newValue.toString());
                     editor.putString("theTrialIndex", newValue.toString());  // Check if this is necessary
                     editor.putBoolean("trialHasChanged", true);
-                    editor.putInt("trialid",trialid);
+                    editor.putInt("trialid", trialid);
                     editor.apply();
-                    Log.i("Note", "Changed");
+                    Log.i("Note", "Trial selection changed");
+
+                    if (trialid == 0) {
+                        Log.i("Note", "Manual Entry selected");
+                        emailPref.setVisible(true);
+                        numSectionsPref.setVisible(true);
+                        numLapsPref.setVisible(true);
+                        // theTrialSettings.setVisible(true);
+                    } else {
+                        emailPref.setVisible(false);
+                        numSectionsPref.setVisible(false);
+                        numLapsPref.setVisible(false);
+                        //  theTrialSettings.setVisible(false);
+                    }
                     return true;
                 }
             });
+
         }
     }
 }

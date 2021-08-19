@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="Encoding" addBOMForNewFiles="with NO BOM" />
+  <component name="Encoding">
+    <file url="file://$USER_HOME$/Library/Caches/Google/AndroidStudio2020.3/device-explorer/samsung-sm_a405fn-R58M72F9H6X/data/data/com.alexsykes.scoremonster/databases/monster.db" charset="US-ASCII" />
+  </component>
 </project>
