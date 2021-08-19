@@ -2,6 +2,9 @@ package com.alexsykes.scoremonster;
 
 import static java.lang.String.join;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 
 import androidx.lifecycle.ViewModel;
@@ -26,6 +29,12 @@ public class MainViewModel extends ViewModel {
     private int section;
 
     private boolean isRefreshed;
+
+    public void setOnline(boolean online) {
+        isOnline = online;
+    }
+
+    private boolean isOnline;
     private ArrayList<HashMap<String, String>> theTrialData;
     private String[] theTrials, theIDs;
     private String theTrialName, data;
@@ -37,7 +46,9 @@ public class MainViewModel extends ViewModel {
 
     public MainViewModel() {
         String trialListURL = BASE_URL + "getTrialListScoreMonster.php";
-        getTrialList(trialListURL);
+        if(isOnline) {
+            getTrialList(trialListURL);
+        }
     }
 
     public void getTrialDetail(int trialid) {

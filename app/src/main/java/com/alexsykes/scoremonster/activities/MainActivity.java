@@ -131,7 +131,7 @@ public class MainActivity extends AppCompatActivity {
         editor.apply();
 
         model = new ViewModelProvider(this).get(MainViewModel.class);
-        String theURL = BASE_URL + "getTrialListScoreMonster.php";
+        // String theURL = BASE_URL + "getTrialListScoreMonster.php";
         model.setRefreshed(false);
         setContentView(R.layout.activity_main);
 
@@ -140,10 +140,10 @@ public class MainActivity extends AppCompatActivity {
         UISetup();
         getPrefs();
 
+        // Check for connectivity
         isOnline = isOnline();
 
         if(!isOnline && trialid==-999) {
-
             Toast.makeText(MainActivity.this, "Offline only", Toast.LENGTH_LONG).show();
             goSetup();
         }
@@ -744,7 +744,7 @@ public class MainActivity extends AppCompatActivity {
         theTrialName = localPrefs.getString("theTrialName", "None selected");
         trialHasChanged = localPrefs.getBoolean("trialHasChanged", true);
 
-
+        // Set up statuts line
         status = theTrialName + " - Observer: " + observer;
         sectionNumber.setText(valueOf(section));
 
@@ -758,6 +758,7 @@ public class MainActivity extends AppCompatActivity {
         ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = cm.getActiveNetworkInfo();
 
+        model.setOnline(netInfo != null && netInfo.isConnectedOrConnecting());
         return netInfo != null && netInfo.isConnectedOrConnecting();
     }
 

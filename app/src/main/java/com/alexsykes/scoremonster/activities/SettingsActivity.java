@@ -49,10 +49,10 @@ public class SettingsActivity extends AppCompatActivity {
     protected void onStart() {
         // Check network connectivity and set Prefs
         localPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-//        SharedPreferences.Editor editor = localPrefs.edit();
-//        isOnline = isOnline();
-//        editor.putBoolean("canConnect", isOnline);
-//        editor.apply();
+        SharedPreferences.Editor editor = localPrefs.edit();
+        isOnline = isOnline();
+       editor.putBoolean("canConnect", isOnline);
+        editor.apply();
         super.onStart();
     }
 
@@ -148,9 +148,11 @@ public class SettingsActivity extends AppCompatActivity {
             assert observerPref != null;
             observerPref.setOnBindEditTextListener(editText -> editText.setInputType(InputType.TYPE_TEXT_FLAG_CAP_WORDS));
 
+            int trialid = 0;
             ListPreference lp = findPreference("theTrialIndex");
-            int trialid = Integer.valueOf(lp.getValue());
-
+            if (lp.getValue() != null) {
+                trialid = Integer.valueOf(lp.getValue());
+            }
             if (trialid == 0) {
                 Log.i("Note", "Manual Entry selected");
                 emailPref.setVisible(true);
