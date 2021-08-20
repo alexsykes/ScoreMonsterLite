@@ -123,6 +123,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         Log.i("Note", "MainActivity::onCreate called");
         super.onCreate(savedInstanceState);
+        model = new ViewModelProvider(this).get(MainViewModel.class);
+
 
         // Load existing settings and check for connectivity
         localPrefs = PreferenceManager.getDefaultSharedPreferences(this);
@@ -130,7 +132,6 @@ public class MainActivity extends AppCompatActivity {
         editor.putBoolean("canConnect", isOnline());
         editor.apply();
 
-        model = new ViewModelProvider(this).get(MainViewModel.class);
         // String theURL = BASE_URL + "getTrialListScoreMonster.php";
         model.setRefreshed(false);
         setContentView(R.layout.activity_main);
@@ -160,6 +161,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
+        ArrayList trials = trialDbHelper.getTrials();
         // Set up button to save scores
         saveButton = findViewById(R.id.saveButton);
         saveButton.setOnLongClickListener(new View.OnLongClickListener() {
@@ -889,8 +891,10 @@ public class MainActivity extends AppCompatActivity {
                     theIDs[index] = id;
                 }
 
+                // Put values of trial name and trialid into prefs
                 setTrialsList(theTrialData);
 
+                saveTrialData(theTrialData);
                 if (trialid == 0) {
                     theTrialName = "Manual Entry";
                 }
@@ -985,16 +989,48 @@ public class MainActivity extends AppCompatActivity {
         getJSON.execute();
     }
 
-    private void getTrialDetails(final String urlWebService) {
-        /*
-         * As fetching the json string is a network operation
-         * And we cannot perform a network operation in main thread
-         * so we need an AsyncTask
-         * The constrains defined here are
-         * Void -> We are not passing anything
-         * Void -> Nothing at progress update as well
-         * String -> After completion it should return a string and it will be the json string
-         * */
+    private void saveTrialData(ArrayList<HashMap<String, String>> theTrialData) {
+        // Database operations - https://www.tutorialspoint.com/android/android_sqlite_database.htm
+        // First, get your database
+        //   final String DATABASE_NAME = "monster.db";
+        //   SQLiteDatabase db = openOrCreateDatabase(DATABASE_NAME, MODE_PRIVATE, null);
+
+        SQLiteDatabase db = mDbHelper.getWritableDatabase();
+        for (int i = 0; i < theTrialData.size(); i++) {
+            HashMap<String, String> theTrial = theTrialData.get(i);
+            String theDate = theTrial.get("date");
+            String theName = theTrial.get("name");
+            String theNumSections = theTrial.get("numsections");
+            String theNumLaps = theTrial.get("numlaps");
+            String theID = theTrial.get("id");
+            String theEmail = theTrial.get("email");
+
+            // Create a ContentValues object where column names are the keys,
+            ContentValues values = new ContentValues();
+            // String dateString = currentTimeStamp;
+            values.put(TrialContract.TrialEntry.COLUMN_TRIAL_NAME, theName);
+            values.put(TrialContract.TrialEntry.COLUMN_TRIAL_DATE, theDate);
+            values.put(TrialContract.TrialEntry.COLUMN_TRIAL_EMAIL, theEmail);
+            values.put(TrialContract.TrialEntry.COLUMN_TRIAL_NUMLAPS, theNumLaps);
+            values.put(TrialContract.TrialEntry.COLUMN_TRIAL_NUMSECTIONS, theNumSections);
+            values.put(TrialContract.TrialEntry.COLUMN_TRIAL_TRIALID, theID);
+            values.put(TrialContract.TrialEntry._ID, theID);
+
+            db.insert(TrialContract.TrialEntry.TABLE_NAME, null, values);
+        }
+
+    }
+
+    /*private void getTrialDetails(final String urlWebService) {
+     *//*
+     * As fetching the json string is a network operation
+     * And we cannot perform a network operation in main thread
+     * so we need an AsyncTask
+     * The constrains defined here are
+     * Void -> We are not passing anything
+     * Void -> Nothing at progress update as well
+     * String -> After completion it should return a string and it will be the json string
+     * *//*
         class GetData extends AsyncTask<Void, Void, String> {
 
             //this method will be called before execution
@@ -1013,10 +1049,10 @@ public class MainActivity extends AppCompatActivity {
             }
 
 
-            /* this method will be called after execution
+            *//* this method will be called after execution
 
                 s contains trial details in JSON string
-             */
+             *//*
 
             @Override
             protected void onPostExecute(String s) {
@@ -1113,7 +1149,7 @@ public class MainActivity extends AppCompatActivity {
         //creating asynctask object and executing it
         GetData getJSON = new GetData();
         getJSON.execute();
-    }
+    }*/
 
     private void reset() {
         // Load existing settings and reset trial
