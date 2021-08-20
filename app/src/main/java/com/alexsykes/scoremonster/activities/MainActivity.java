@@ -125,7 +125,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         model = new ViewModelProvider(this).get(MainViewModel.class);
 
-
         // Load existing settings and check for connectivity
         localPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor editor = localPrefs.edit();
@@ -137,31 +136,34 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         // Create database connection
-        dbInit();
+        mDbHelper = new ScoreDbHelper(this);
+        trialDbHelper = new TrialDbHelper(this);
+
+        // dbInit();
         UISetup();
         getPrefs();
 
         // Check for connectivity
         isOnline = isOnline();
 
-        if(!isOnline && trialid==-999) {
+        if (!isOnline && trialid == -999) {
             Toast.makeText(MainActivity.this, "Offline only", Toast.LENGTH_LONG).show();
             goSetup();
         }
         // if online, loads list of trials
-        if (isOnline) {
+        //if (isOnline) {
 
-            // model.getTrialList(theURL);
-            // Get trialList from server
-            String URL = BASE_URL + "getTrialList.php";
-            try {
-                getTrialList(URL);
-            } catch (NullPointerException e) {
-                Toast.makeText(MainActivity.this, "Empty data", Toast.LENGTH_LONG).show();
-            }
-        }
+        // model.getTrialList(theURL);
+        // Get trialList from server
+//            String URL = BASE_URL + "getTrialList.php";
+//            try {
+//                getTrialList(URL);
+//            } catch (NullPointerException e) {
+//                Toast.makeText(MainActivity.this, "Empty data", Toast.LENGTH_LONG).show();
+//            }
+        // }
 
-        ArrayList trials = trialDbHelper.getTrials();
+        // ArrayList trials = trialDbHelper.getTrials();
         // Set up button to save scores
         saveButton = findViewById(R.id.saveButton);
         saveButton.setOnLongClickListener(new View.OnLongClickListener() {
@@ -199,6 +201,29 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        Log.i("Note", "onResume called");
+
+        // Restore values from model
+        //int[] savedValues = model.readSavedValuesFromModel();
+        ridingNumber = model.getRidingNumber();
+        score = model.getScore();
+        section = model.getSection();
+        trialid = model.getTrialid();
+        numlaps = model.getNumlaps();
+        numsections = model.getNumsections();
+
+        if (ridingNumber != 0) {
+            numberLabel.setText(valueOf(ridingNumber));
+        } else {
+            numberLabel.setText("");
+        }
+        scoreLabel.setText(valueOf(score));
+        sectionNumber.setText(valueOf(section));
+    }
+
+    @Override
     protected void onPause() {
         Log.i("Note", "onPause called");
         super.onPause();
@@ -225,29 +250,6 @@ public class MainActivity extends AppCompatActivity {
         editor.apply();
 
         // Log.i("Note", "Current rider: " + currentRiderText);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        Log.i("Note", "onResume called");
-
-        // Restore values from model
-        //int[] savedValues = model.readSavedValuesFromModel();
-        ridingNumber = model.getRidingNumber();
-        score = model.getScore();
-        section = model.getSection();
-        trialid = model.getTrialid();
-        numlaps = model.getNumlaps();
-        numsections = model.getNumsections();
-
-        if (ridingNumber != 0) {
-            numberLabel.setText(valueOf(ridingNumber));
-        } else {
-            numberLabel.setText("");
-        }
-        scoreLabel.setText(valueOf(score));
-        sectionNumber.setText(valueOf(section));
     }
 
     @Override
@@ -996,6 +998,7 @@ public class MainActivity extends AppCompatActivity {
         //   SQLiteDatabase db = openOrCreateDatabase(DATABASE_NAME, MODE_PRIVATE, null);
 
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
+
         for (int i = 0; i < theTrialData.size(); i++) {
             HashMap<String, String> theTrial = theTrialData.get(i);
             String theDate = theTrial.get("date");
@@ -1014,9 +1017,10 @@ public class MainActivity extends AppCompatActivity {
             values.put(TrialContract.TrialEntry.COLUMN_TRIAL_NUMLAPS, theNumLaps);
             values.put(TrialContract.TrialEntry.COLUMN_TRIAL_NUMSECTIONS, theNumSections);
             values.put(TrialContract.TrialEntry.COLUMN_TRIAL_TRIALID, theID);
-            values.put(TrialContract.TrialEntry._ID, theID);
 
-            db.insert(TrialContract.TrialEntry.TABLE_NAME, null, values);
+            long result = db.insert(TrialContract.TrialEntry.TABLE_NAME, null, values);
+
+            Log.i("Note", "Result: " + result);
         }
 
     }
