@@ -221,6 +221,7 @@ public class MainActivity extends AppCompatActivity {
         }
         scoreLabel.setText(valueOf(score));
         sectionNumber.setText(valueOf(section));
+        Log.i("Note", "MainActivity: Line 225");
     }
 
     @Override

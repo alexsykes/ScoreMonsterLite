@@ -1,10 +1,10 @@
 package com.alexsykes.scoremonster.data;
 
 import android.provider.BaseColumns;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 public class ScoreContract extends AppCompatActivity {
-
     // To prevent someone from accidentally instantiating the contract class,
     // give it an empty constructor.
     private ScoreContract() {}

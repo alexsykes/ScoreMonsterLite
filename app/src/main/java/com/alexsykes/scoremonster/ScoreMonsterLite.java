@@ -3,6 +3,7 @@ package com.alexsykes.scoremonster;
 import static java.lang.String.join;
 
 import android.app.Application;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
@@ -56,7 +57,8 @@ public class ScoreMonsterLite extends Application {
 
         // Create database connection
         dbInit();
-
+        //trialDbHelper.insert("Alex", "alex@alexsykes.net");
+        // trialDbHelper.describe();
         // Check for connectivity
         isOnline = isOnline();
 
@@ -79,7 +81,9 @@ public class ScoreMonsterLite extends Application {
         // Database operations - https://www.tutorialspoint.com/android/android_sqlite_database.htm
         // First, get your database
         final String DATABASE_NAME = "monster.db";
+
         SQLiteDatabase db = openOrCreateDatabase(DATABASE_NAME, MODE_PRIVATE, null);
+
 
         // Create a String that contains the SQL statement to create the scores table
         String SQL_CREATE_SCORES_TABLE = "CREATE TABLE IF NOT EXISTS " + ScoreContract.ScoreEntry.TABLE_NAME + " ("
@@ -104,8 +108,8 @@ public class ScoreMonsterLite extends Application {
         // Create a String that contains the SQL statement to create the scores table
         String SQL_CREATE_TRIALS_TABLE = "CREATE TABLE IF NOT EXISTS " + TrialContract.TrialEntry.TABLE_NAME + " ("
                 + TrialContract.TrialEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-                + TrialContract.TrialEntry.COLUMN_TRIAL_NUMLAPS + " INTEGER NOT NULL, "
-                + TrialContract.TrialEntry.COLUMN_TRIAL_NUMSECTIONS + " INTEGER NOT NULL, "
+                + TrialContract.TrialEntry.COLUMN_TRIAL_NUMLAPS + " INTEGER NOT NULL DEFAULT 0, "
+                + TrialContract.TrialEntry.COLUMN_TRIAL_NUMSECTIONS + " INTEGER NOT NULL DEFAULT 0, "
                 + TrialContract.TrialEntry.COLUMN_TRIAL_NAME + " TEXT , "
                 + TrialContract.TrialEntry.COLUMN_TRIAL_EMAIL + " TEXT , "
                 + TrialContract.TrialEntry.COLUMN_TRIAL_TRIALID + " INTEGER NOT NULL DEFAULT 0 );";
@@ -115,6 +119,8 @@ public class ScoreMonsterLite extends Application {
 
         trialDbHelper = new TrialDbHelper(this);
         trialDbHelper.getWritableDatabase();
+
+        // trialDbHelper.insert("Alex","alex@alexsykes.net");
     }
 
     private void getTrialList(final String urlWebService) {
@@ -140,11 +146,8 @@ public class ScoreMonsterLite extends Application {
             @Override
             protected void onPostExecute(String s) {
                 super.onPostExecute(s);
-                //  dialog.dismiss();
-
                 // Populate ArrayList with JSON data
                 theTrialData = populateResultArrayList(s);
-
 
                 int size = theTrialData.size();
                 theTrials = new String[size];
@@ -161,6 +164,7 @@ public class ScoreMonsterLite extends Application {
                 // Put values of trial name and trialid into prefs
                 setTrialsList(theTrialData);
 
+                // Then save into database
                 saveTrialData(theTrialData);
                 if (trialid == 0) {
                     theTrialName = "Manual Entry";
@@ -249,7 +253,6 @@ public class ScoreMonsterLite extends Application {
                 }
             }
         }
-
         //creating asynctask object and executing it
         GetData getJSON = new GetData();
         getJSON.execute();
@@ -292,31 +295,19 @@ public class ScoreMonsterLite extends Application {
             String theID = theTrial.get("id");
             String theEmail = theTrial.get("email");
 
-            String insertSQL = "INSERT INTO trials (date, name, numsections, numlaps, trialid, email) " +
-                    "VALUES ("
-                    + theDate + ","
-                    + theName + ","
-                    + theNumSections + ","
-                    + theNumLaps + ","
-                    + theID + ","
-                    + theEmail +
-                    ")";
+            // Create a ContentValues object where column names are the keys,
+            ContentValues values = new ContentValues();
+            // String dateString = currentTimeStamp;
+            values.put(TrialContract.TrialEntry.COLUMN_TRIAL_NAME, theName);
+            values.put(TrialContract.TrialEntry.COLUMN_TRIAL_DATE, theDate);
+            values.put(TrialContract.TrialEntry.COLUMN_TRIAL_EMAIL, theEmail);
+            values.put(TrialContract.TrialEntry.COLUMN_TRIAL_NUMLAPS, theNumLaps);
+            values.put(TrialContract.TrialEntry.COLUMN_TRIAL_NUMSECTIONS, theNumSections);
+            values.put(TrialContract.TrialEntry.COLUMN_TRIAL_TRIALID, theID);
 
-            db.execSQL(insertSQL);
+            db.insert(TrialContract.TrialEntry.TABLE_NAME, null, values);
 
-            Log.i("Note", insertSQL);
-//            // Create a ContentValues object where column names are the keys,
-//            ContentValues values = new ContentValues();
-//            // String dateString = currentTimeStamp;
-//            values.put(TrialContract.TrialEntry.COLUMN_TRIAL_NAME, theName);
-//            values.put(TrialContract.TrialEntry.COLUMN_TRIAL_DATE, theDate);
-//            values.put(TrialContract.TrialEntry.COLUMN_TRIAL_EMAIL, theEmail);
-//            values.put(TrialContract.TrialEntry.COLUMN_TRIAL_NUMLAPS, theNumLaps);
-//            values.put(TrialContract.TrialEntry.COLUMN_TRIAL_NUMSECTIONS, theNumSections);
-//            values.put(TrialContract.TrialEntry.COLUMN_TRIAL_TRIALID, theID);
-//
-//            long result = db.insert(TrialContract.TrialEntry.TABLE_NAME, null, values);
-//
+            Log.i("Note", "Result: ");
         }
 
     }
