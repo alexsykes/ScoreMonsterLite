@@ -57,16 +57,12 @@ public class ScoreMonsterLite extends Application {
 
         // Create database connection
         dbInit();
-        //trialDbHelper.insert("Alex", "alex@alexsykes.net");
-        // trialDbHelper.describe();
+
         // Check for connectivity
         isOnline = isOnline();
 
         // if online, loads list of trials
         if (isOnline) {
-
-            // model.getTrialList(theURL);
-            // Get trialList from server
             String URL = BASE_URL + "getTrialList.php";
             try {
                 getTrialList(URL);
@@ -116,13 +112,9 @@ public class ScoreMonsterLite extends Application {
 
         // Execute the SQL statement
         db.execSQL(SQL_CREATE_TRIALS_TABLE);
-
-        trialDbHelper = new TrialDbHelper(this);
-        trialDbHelper.getWritableDatabase();
-
-        // trialDbHelper.insert("Alex","alex@alexsykes.net");
     }
 
+    // Get trial list from server
     private void getTrialList(final String urlWebService) {
         /*
          * As fetching the json string is a network operation

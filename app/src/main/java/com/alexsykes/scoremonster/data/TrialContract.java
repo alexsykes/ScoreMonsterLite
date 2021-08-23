@@ -29,4 +29,6 @@ public class TrialContract extends AppCompatActivity {
         public final static String COLUMN_TRIAL_NUMLAPS = "numlaps";
         public final static String COLUMN_TRIAL_DATE = "date";
     }
+
+
 }

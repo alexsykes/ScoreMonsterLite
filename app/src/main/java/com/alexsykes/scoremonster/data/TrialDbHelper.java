@@ -86,6 +86,7 @@ public class TrialDbHelper extends SQLiteOpenHelper {
         return cursor;
     }
 
+
     public void describe() {
         SQLiteDatabase db = this.getReadableDatabase();
         String query = "SELECT sql FROM monster WHERE name = 'trials'";
@@ -100,5 +101,11 @@ public class TrialDbHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
+    }
+
+    public void clearTrials() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "DELETE FROM trials";
+        db.execSQL(query);
     }
 }

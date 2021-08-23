@@ -1,6 +1,5 @@
 package com.alexsykes.scoremonster.activities;
 
-import static java.lang.String.join;
 import static java.lang.String.valueOf;
 
 import android.app.AlertDialog;
@@ -42,23 +41,16 @@ import com.alexsykes.scoremonster.R;
 import com.alexsykes.scoremonster.TouchFragment;
 import com.alexsykes.scoremonster.data.ScoreContract;
 import com.alexsykes.scoremonster.data.ScoreDbHelper;
-import com.alexsykes.scoremonster.data.TrialContract;
 import com.alexsykes.scoremonster.data.TrialDbHelper;
 import com.opencsv.CSVWriter;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-
-import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
-import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
@@ -150,18 +142,6 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(MainActivity.this, "Offline only", Toast.LENGTH_LONG).show();
             goSetup();
         }
-        // if online, loads list of trials
-        //if (isOnline) {
-
-        // model.getTrialList(theURL);
-        // Get trialList from server
-//            String URL = BASE_URL + "getTrialList.php";
-//            try {
-//                getTrialList(URL);
-//            } catch (NullPointerException e) {
-//                Toast.makeText(MainActivity.this, "Empty data", Toast.LENGTH_LONG).show();
-//            }
-        // }
 
         // ArrayList trials = trialDbHelper.getTrials();
         // Set up button to save scores
@@ -232,9 +212,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void saveCurrentState() {
-
-        //  Log.i("Note", "saveCurrentState called");
-        // localPrefs = getSharedPreferences("monster", MODE_PRIVATE);
+        Log.i("Note", "saveCurrentState called");
         localPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor editor = localPrefs.edit();
         int score = Integer.parseInt(scoreLabel.getText().toString());
@@ -249,8 +227,6 @@ public class MainActivity extends AppCompatActivity {
         editor.putInt("score", score);
         editor.putInt("scoreCount", scoreCount);
         editor.apply();
-
-        // Log.i("Note", "Current rider: " + currentRiderText);
     }
 
     @Override
@@ -306,15 +282,20 @@ public class MainActivity extends AppCompatActivity {
                 goSync();
                 return true;
 
-//            case R.id.reset:
-//                reset();
-//                return true;
+            case R.id.reset:
+                reset();
+                return true;
             default:
                 // If we got here, the user's action was not recognized.
                 // Invoke the superclass to handle it.
                 return super.onOptionsItemSelected(item);
 
         }
+    }
+
+    private void reset() {
+        mDbHelper.clearResults();
+        trialDbHelper.clearTrials();
     }
 
     private void UISetup() {
@@ -335,12 +316,6 @@ public class MainActivity extends AppCompatActivity {
 
         getSupportFragmentManager().beginTransaction().add(R.id.top, numberPadFragment).commit();
         getSupportFragmentManager().beginTransaction().replace(R.id.bottom, touchFragment).commit();
-    }
-
-
-    private void goHelp() {
-        Intent intent = new Intent(this, HelpActivity.class);
-        startActivityForResult(intent, TEXT_REQUEST);
     }
 
     private void sendEmail() {
@@ -559,41 +534,49 @@ public class MainActivity extends AppCompatActivity {
         // getPrefs();
     }
 
+    private void goHelp() {
+        Intent intent = new Intent(this, HelpActivity.class);
+        startActivityForResult(intent, TEXT_REQUEST);
+    }
+
+    private void getPrefs() {
+        localPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        observer = localPrefs.getString("observer", "");
+        section = localPrefs.getInt("section", 1);
+        trialid = localPrefs.getInt("trialid", -999);
+        numlaps = localPrefs.getInt("numlaps", 1);
+        numsections = localPrefs.getInt("numsections", 1);
+        email = localPrefs.getString("email", "");
+        isSingleUser = localPrefs.getBoolean("isSingleUser", false);
+        ridingNumber = localPrefs.getInt("ridingNumber", 0);
+        score = localPrefs.getInt("score", 0);
+        numberInGroup = localPrefs.getInt("numberInGroup", 6);
+        scoreCount = localPrefs.getInt("scoreCount", 0);
+        theTrialName = localPrefs.getString("theTrialName", "None selected");
+        trialHasChanged = localPrefs.getBoolean("trialHasChanged", true);
+
+        // Set up statuts line
+        status = theTrialName + " - Observer: " + observer;
+        sectionNumber.setText(valueOf(section));
+
+        if (isSingleUser) {
+            numberLabel.setText(valueOf(ridingNumber));
+        }
+        statusLine.setText(status);
+    }
+
+    protected boolean isOnline() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+
+        model.setOnline(netInfo != null && netInfo.isConnectedOrConnecting());
+        return netInfo != null && netInfo.isConnectedOrConnecting();
+    }
+
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.toolbar_menu, menu);
         return super.onCreateOptionsMenu(menu);
     }
-
-    public void addDigit(View view) {
-        // Get length of rider riderNumber
-        numberLabel = findViewById(R.id.numberLabel);
-        String riderNumber = numberLabel.getText().toString();
-        int len = riderNumber.length();
-
-        // Get id from clicked button to get clicked digit
-        int intID = view.getId();
-        Button button = view.findViewById(intID);
-        String digit = button.getText().toString();
-
-        // Compare with backspace
-        if (digit.equals("⌫")) {
-            if (len > 0) {
-                riderNumber = riderNumber.substring(0, len - 1);
-            }
-        } else if (digit.equals("C")) {
-            riderNumber = "";
-        } else {
-            riderNumber = riderNumber + digit;
-            if (len > 2)
-                riderNumber = riderNumber.substring(1, 4);
-        }
-
-        if (riderNumber.equals("0")) {
-            riderNumber = "";
-        }
-        numberLabel.setText(riderNumber);
-    }
-
 
     private void save(View.OnLongClickListener view) {
 
@@ -648,12 +631,41 @@ public class MainActivity extends AppCompatActivity {
             db.insert(ScoreContract.ScoreEntry.TABLE_NAME, null, values);
             //   toneGen1.startTone(ToneGenerator.TONE_CDMA_CONFIRM, ToneGenerator.MAX_VOLUME);
 
-
             Log.i("Note", "trialid: " + trialid);
-
+            // Confirm committed with sound
             playSoundFile(R.raw.ting);
             Toast.makeText(this, "Score saved", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    public void addDigit(View view) {
+        // Get length of rider riderNumber
+        numberLabel = findViewById(R.id.numberLabel);
+        String riderNumber = numberLabel.getText().toString();
+        int len = riderNumber.length();
+
+        // Get id from clicked button to get clicked digit
+        int intID = view.getId();
+        Button button = view.findViewById(intID);
+        String digit = button.getText().toString();
+
+        // Compare with backspace
+        if (digit.equals("⌫")) {
+            if (len > 0) {
+                riderNumber = riderNumber.substring(0, len - 1);
+            }
+        } else if (digit.equals("C")) {
+            riderNumber = "";
+        } else {
+            riderNumber = riderNumber + digit;
+            if (len > 2)
+                riderNumber = riderNumber.substring(1, 4);
+        }
+
+        if (riderNumber.equals("0")) {
+            riderNumber = "";
+        }
+        numberLabel.setText(riderNumber);
     }
 
     // Reset the  rider/score values
@@ -679,40 +691,6 @@ public class MainActivity extends AppCompatActivity {
             editor.putInt("section", section);
             editor.apply();
         }
-    }
-
-    private void getPrefs() {
-        localPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-        observer = localPrefs.getString("observer", "");
-        section = localPrefs.getInt("section", 1);
-        trialid = localPrefs.getInt("trialid", -999);
-        numlaps = localPrefs.getInt("numlaps", 1);
-        numsections = localPrefs.getInt("numsections", 1);
-        email = localPrefs.getString("email", "");
-        isSingleUser = localPrefs.getBoolean("isSingleUser", false);
-        ridingNumber = localPrefs.getInt("ridingNumber", 0);
-        score = localPrefs.getInt("score", 0);
-        numberInGroup = localPrefs.getInt("numberInGroup", 6);
-        scoreCount = localPrefs.getInt("scoreCount", 0);
-        theTrialName = localPrefs.getString("theTrialName", "None selected");
-        trialHasChanged = localPrefs.getBoolean("trialHasChanged", true);
-
-        // Set up statuts line
-        status = theTrialName + " - Observer: " + observer;
-        sectionNumber.setText(valueOf(section));
-
-        if (isSingleUser) {
-            numberLabel.setText(valueOf(ridingNumber));
-        }
-        statusLine.setText(status);
-    }
-
-    protected boolean isOnline() {
-        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo netInfo = cm.getActiveNetworkInfo();
-
-        model.setOnline(netInfo != null && netInfo.isConnectedOrConnecting());
-        return netInfo != null && netInfo.isConnectedOrConnecting();
     }
 
     public void increment(View v) {
@@ -785,59 +763,5 @@ public class MainActivity extends AppCompatActivity {
     public void playSoundFile(Integer fileName) {
         mediaPlayer = MediaPlayer.create(this, fileName);
         mediaPlayer.start();
-    }
-
-    private void saveTrialData(ArrayList<HashMap<String, String>> theTrialData) {
-        // Database operations - https://www.tutorialspoint.com/android/android_sqlite_database.htm
-        // First, get your database
-        //   final String DATABASE_NAME = "monster.db";
-        //   SQLiteDatabase db = openOrCreateDatabase(DATABASE_NAME, MODE_PRIVATE, null);
-
-        SQLiteDatabase db = mDbHelper.getWritableDatabase();
-
-        for (int i = 0; i < theTrialData.size(); i++) {
-            HashMap<String, String> theTrial = theTrialData.get(i);
-            String theDate = theTrial.get("date");
-            String theName = theTrial.get("name");
-            String theNumSections = theTrial.get("numsections");
-            String theNumLaps = theTrial.get("numlaps");
-            String theID = theTrial.get("id");
-            String theEmail = theTrial.get("email");
-
-            // Create a ContentValues object where column names are the keys,
-            ContentValues values = new ContentValues();
-            // String dateString = currentTimeStamp;
-            values.put(TrialContract.TrialEntry.COLUMN_TRIAL_NAME, theName);
-            values.put(TrialContract.TrialEntry.COLUMN_TRIAL_DATE, theDate);
-            values.put(TrialContract.TrialEntry.COLUMN_TRIAL_EMAIL, theEmail);
-            values.put(TrialContract.TrialEntry.COLUMN_TRIAL_NUMLAPS, theNumLaps);
-            values.put(TrialContract.TrialEntry.COLUMN_TRIAL_NUMSECTIONS, theNumSections);
-            values.put(TrialContract.TrialEntry.COLUMN_TRIAL_TRIALID, theID);
-
-            long result = db.insert(TrialContract.TrialEntry.TABLE_NAME, null, values);
-
-            Log.i("Note", "Result: " + result);
-        }
-
-    }
-
-    private void setTrialsList(ArrayList<HashMap<String, String>> theTrialList) {
-        SharedPreferences localPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-        // Need name and id from theTrialList
-        int size = theTrialList.size();
-        String[] theTrialNames = new String[size];
-        String[] theTrialIds = new String[size];
-        for (int index = 0; index < size; index++) {
-            theTrialNames[index] = theTrialList.get(index).get("name");
-            theTrialIds[index] = theTrialList.get(index).get("id");
-        }
-        String theTrialListNames = join(",", theTrialNames);
-        String theTrialListIds = join(",", theTrialIds);
-
-        SharedPreferences.Editor editor = localPrefs.edit();
-
-        editor.putString("theNames", theTrialListNames);
-        editor.putString("theIds", theTrialListIds);
-        editor.apply();
     }
 }
