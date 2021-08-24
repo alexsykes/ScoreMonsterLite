@@ -1,36 +1,9 @@
-<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <PreferenceCategory app:title="@string/mode_header">
-
-        <ListPreference
-            app:defaultValue="1"
-            app:entries="@array/mode_entries"
-            app:entryValues="@array/mode_values"
-            app:key="smode"
-            app:title="@string/mode_title"
-            app:useSimpleSummaryProvider="true" />
+    <PreferenceCategory android:title="Preference category">
 
     </PreferenceCategory>
-
-    <PreferenceCategory app:title="@string/observer_details">
-
-        <EditTextPreference
-            app:key="observer"
-            app:title="@string/observer"
-            app:useSimpleSummaryProvider="true" />
-
-        <EditTextPreference
-            app:key="mobile"
-            app:title="@string/contact"
-            app:useSimpleSummaryProvider="true" />
-
-        <EditTextPreference
-            app:key="sectionText"
-            app:title="@string/section_number"
-            app:useSimpleSummaryProvider="true" />
-    </PreferenceCategory>
-
-
     <PreferenceCategory
         app:key="trial_details"
         app:title="@string/trial_header">
@@ -57,8 +30,34 @@
             app:title="@string/number_of_sections"
             app:useSimpleSummaryProvider="true" />
     </PreferenceCategory>
+    <PreferenceCategory app:title="@string/observer_details">
 
+        <EditTextPreference
+            app:key="observer"
+            app:title="@string/observer"
+            app:useSimpleSummaryProvider="true" />
 
+        <EditTextPreference
+            app:key="mobile"
+            app:title="@string/contact"
+            app:useSimpleSummaryProvider="true" />
+
+        <EditTextPreference
+            app:key="sectionText"
+            app:title="@string/section_number"
+            app:useSimpleSummaryProvider="true" />
+    </PreferenceCategory>
+    <PreferenceCategory app:title="@string/mode_header">
+
+        <ListPreference
+            app:defaultValue="1"
+            app:entries="@array/usermode_entries"
+            app:entryValues="@array/usermode_values"
+            app:key="usermode"
+            app:title="@string/mode_title"
+            app:useSimpleSummaryProvider="true" />
+
+    </PreferenceCategory>
 
 
 </PreferenceScreen>
