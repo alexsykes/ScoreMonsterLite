@@ -43,7 +43,7 @@
         >
 
         <Button
-            android:id="@+id/decrement"
+            android:id="@+id/decrementTextView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -67,7 +67,7 @@
             android:textStyle="bold" />
 
         <Button
-            android:id="@+id/increment"
+            android:id="@+id/incrementTextView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"

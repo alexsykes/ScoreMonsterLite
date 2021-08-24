@@ -99,7 +99,7 @@ public class MainActivity extends AppCompatActivity {
     private boolean isSingleUser, trialHasChanged, isOnline;
 
     // Layout variables
-    TextView numberLabel, scoreLabel, statusLine, sectionNumber;
+    TextView numberLabel, scoreLabel, statusLine, sectionNumber, decrementTextView, incrementTextView;
     ConstraintLayout top;
     NumberPadFragment numberPadFragment;
     TouchFragment touchFragment;
@@ -141,6 +141,14 @@ public class MainActivity extends AppCompatActivity {
         // dbInit();
         UISetup();
         getPrefs();
+
+        if (mode == 0) {
+            incrementTextView.setVisibility(View.INVISIBLE);
+            decrementTextView.setVisibility(View.INVISIBLE);
+        } else {
+            incrementTextView.setVisibility(View.VISIBLE);
+            decrementTextView.setVisibility(View.VISIBLE);
+        }
 
         // Check for connectivity
         isOnline = isOnline();
@@ -307,6 +315,8 @@ public class MainActivity extends AppCompatActivity {
         statusLine = findViewById(R.id.statusLine);
         sectionNumber = findViewById(R.id.sectionNumber);
         top = findViewById(R.id.top);
+        incrementTextView = findViewById(R.id.incrementTextView);
+        decrementTextView = findViewById(R.id.decrementTextView);
 
         getSupportFragmentManager().beginTransaction().add(R.id.top, numberPadFragment).commit();
         getSupportFragmentManager().beginTransaction().replace(R.id.bottom, touchFragment).commit();
