@@ -4,26 +4,28 @@ public class Trial {
     int _id;
     int numsections;
     int numlaps;
-    int scoringmode;
+    int mode;
 
-    public Trial(int _id, int numsections, int numlaps, String email, String date, String name, int scoringmode) {
+
+    String email, date, name, club;
+
+    public Trial(int _id, int numsections, int numlaps, int mode, String email, String date, String name, String club) {
         this._id = _id;
         this.numsections = numsections;
         this.numlaps = numlaps;
+        this.mode = mode;
         this.email = email;
         this.date = date;
         this.name = name;
-        this.scoringmode = scoringmode;
+        this.club = club;
     }
 
-    public int getScoringMode() {
-        return scoringmode;
+    public int getMode() {
+        return mode;
     }
 
-    String email, date, name;
-
-    public void setScoringMode(int scoringMode) {
-        this.scoringmode = scoringMode;
+    public void setMode(int mode) {
+        this.mode = mode;
     }
 
     public void setNumsections(int numsections) {

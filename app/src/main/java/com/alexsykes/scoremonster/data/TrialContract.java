@@ -28,7 +28,8 @@ public class TrialContract extends AppCompatActivity {
         public final static String COLUMN_TRIAL_NUMSECTIONS = "numsections";
         public final static String COLUMN_TRIAL_NUMLAPS = "numlaps";
         public final static String COLUMN_TRIAL_DATE = "date";
-        public final static String COLUMN_TRIAL_MODE = "scoringmode";
+        public final static String COLUMN_TRIAL_MODE = "mode";
+        public final static String COLUMN_TRIAL_CLUB = "club";
     }
 
 

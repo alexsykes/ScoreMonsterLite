@@ -73,6 +73,13 @@ import java.util.HashMap;
 
     Method getTrialDetails(int trialid)
 
+    Scoring mode for TrialMonster
+    *   0 - traditional observer scoring
+    *   1 - rider scoring
+    *   2 - electronic scoring
+    *   3 - group
+    *   4 - time and observation
+
  */
 
 public class MainActivity extends AppCompatActivity {
@@ -85,10 +92,10 @@ public class MainActivity extends AppCompatActivity {
 
     MainViewModel model;
 
-    private String message, status, filename, observer, theTrialName, detail, email;
+    private String message, status, filename, observer, theTrialName, detail, email, club;
     String[] theTrials, theIDs;
     ArrayList<HashMap<String, String>> theTrialData;
-    private int score, scoreCount, serverResponseCode = 0, trialid, section, numsections, numlaps, ridingNumber, numberInGroup;
+    private int score, scoreCount, serverResponseCode = 0, trialid, mode, section, numsections, numlaps, ridingNumber, numberInGroup;
     private boolean isSingleUser, trialHasChanged, isOnline;
 
     // Layout variables
@@ -240,19 +247,6 @@ public class MainActivity extends AppCompatActivity {
         model.setTrialid(trialid);
         model.setNumLaps(numlaps);
         model.setNumSections(numsections);
-    }
-
-    @Override
-    protected void onRestoreInstanceState(final Bundle savedInstanceState) {
-
-        Log.i("Note", "onRestoreInstanceState called");
-        // Read the state of item position
-//        numberLabel.setText(savedInstanceState.getString("rider"));
-//        scoreLabel.setText(savedInstanceState.getString("score"));
-//        section = savedInstanceState.getInt("section");
-//        sectionNumber.setText(valueOf(section));
-//        numberInGroup = savedInstanceState.getInt("numberInGroup");
-//        super.onRestoreInstanceState(savedInstanceState);
     }
 
     @Override
@@ -521,6 +515,7 @@ public class MainActivity extends AppCompatActivity {
         scoreLabel.setText(valueOf(score));
     }
 
+    // Menu options
     private void goSync() {
         Intent intent = new Intent(this, SyncActivity.class);
         intent.putExtra(EXTRA_MESSAGE, message);
@@ -552,10 +547,12 @@ public class MainActivity extends AppCompatActivity {
         score = localPrefs.getInt("score", 0);
         numberInGroup = localPrefs.getInt("numberInGroup", 6);
         scoreCount = localPrefs.getInt("scoreCount", 0);
-        theTrialName = localPrefs.getString("theTrialName", "None selected");
-        trialHasChanged = localPrefs.getBoolean("trialHasChanged", true);
+        theTrialName = localPrefs.getString("name", "None selected");
+        club = localPrefs.getString("club", "None selected");
+        trialHasChanged = localPrefs.getBoolean("", true);
+        mode = localPrefs.getInt("mode", 0);
 
-        // Set up statuts line
+        // Set up status line
         status = theTrialName + " - Observer: " + observer;
         sectionNumber.setText(valueOf(section));
 

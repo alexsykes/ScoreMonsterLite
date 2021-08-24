@@ -6,7 +6,7 @@
             app:defaultValue="1"
             app:entries="@array/mode_entries"
             app:entryValues="@array/mode_values"
-            app:key="mode"
+            app:key="smode"
             app:title="@string/mode_title"
             app:useSimpleSummaryProvider="true" />
 

@@ -100,6 +100,7 @@ public class ScoreMonsterLite extends Application {
                 + TrialContract.TrialEntry.COLUMN_TRIAL_NAME + " TEXT , "
                 + TrialContract.TrialEntry.COLUMN_TRIAL_DATE + " TEXT , "
                 + TrialContract.TrialEntry.COLUMN_TRIAL_EMAIL + " TEXT , "
+                + TrialContract.TrialEntry.COLUMN_TRIAL_CLUB + " TEXT , "
                 + TrialContract.TrialEntry.COLUMN_TRIAL_TRIALID + " INTEGER NOT NULL DEFAULT 0 );";
 
         // Execute the SQL statement
@@ -161,7 +162,7 @@ public class ScoreMonsterLite extends Application {
              */
             private ArrayList<HashMap<String, String>> populateResultArrayList(String json) {
                 ArrayList<HashMap<String, String>> theTrialList = new ArrayList<>();
-                String date, name, id, club, numsections, numlaps, starttime, email, scoringmode;
+                String date, name, id, club, numsections, numlaps, starttime, email, mode;
 
                 try {
                     // Parse string data into JSON
@@ -177,7 +178,7 @@ public class ScoreMonsterLite extends Application {
                         numlaps = jsonArray.getJSONObject(index).getString("numlaps");
                         starttime = jsonArray.getJSONObject(index).getString("starttime");
                         email = jsonArray.getJSONObject(index).getString("email");
-                        scoringmode = jsonArray.getJSONObject(index).getString("scoringmode");
+                        mode = jsonArray.getJSONObject(index).getString("scoringmode");
 
                         // trial = club + " - " + name;
                         theTrial.put("id", id);
@@ -188,7 +189,7 @@ public class ScoreMonsterLite extends Application {
                         theTrial.put("numlaps", numlaps);
                         theTrial.put("starttime", starttime);
                         theTrial.put("email", email);
-                        theTrial.put("scoringmode", scoringmode);
+                        theTrial.put("mode", mode);
                         theTrialList.add(theTrial);
                     }
 
@@ -276,6 +277,8 @@ public class ScoreMonsterLite extends Application {
             String theNumLaps = theTrial.get("numlaps");
             String theID = theTrial.get("id");
             String theEmail = theTrial.get("email");
+            String club = theTrial.get("club");
+            String mode = theTrial.get("mode");
 
             // Create a ContentValues object where column names are the keys,
             ContentValues values = new ContentValues();
@@ -286,6 +289,8 @@ public class ScoreMonsterLite extends Application {
             values.put(TrialContract.TrialEntry.COLUMN_TRIAL_NUMLAPS, theNumLaps);
             values.put(TrialContract.TrialEntry.COLUMN_TRIAL_NUMSECTIONS, theNumSections);
             values.put(TrialContract.TrialEntry.COLUMN_TRIAL_TRIALID, theID);
+            values.put(TrialContract.TrialEntry.COLUMN_TRIAL_CLUB, club);
+            values.put(TrialContract.TrialEntry.COLUMN_TRIAL_MODE, mode);
             values.put(TrialContract.TrialEntry._ID, theID);
 
             db.insertWithOnConflict("trials", null, values, SQLiteDatabase.CONFLICT_REPLACE);

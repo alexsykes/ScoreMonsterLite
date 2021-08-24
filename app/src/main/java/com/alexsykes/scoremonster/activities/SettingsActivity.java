@@ -107,7 +107,6 @@ public class SettingsActivity extends AppCompatActivity {
 
             @Override
             protected void onPreExecute() {
-
                 super.onPreExecute();
             }
 
@@ -131,7 +130,7 @@ public class SettingsActivity extends AppCompatActivity {
                     values.put(TrialContract.TrialEntry.COLUMN_TRIAL_NUMSECTIONS, theTrialData.get(i).get("numsections"));
                     values.put(TrialContract.TrialEntry.COLUMN_TRIAL_DATE, theTrialData.get(i).get("date"));
                     values.put(TrialContract.TrialEntry.COLUMN_TRIAL_EMAIL, theTrialData.get(i).get("email"));
-                    values.put(TrialContract.TrialEntry.COLUMN_TRIAL_MODE, theTrialData.get(i).get("scoringmode"));
+                    values.put(TrialContract.TrialEntry.COLUMN_TRIAL_MODE, theTrialData.get(i).get("mode"));
                     values.put(TrialContract.TrialEntry._ID, theTrialData.get(i).get("id"));
                     db.insertWithOnConflict("trials", null, values, SQLiteDatabase.CONFLICT_REPLACE);
                 }
@@ -143,7 +142,7 @@ public class SettingsActivity extends AppCompatActivity {
              */
             private ArrayList<HashMap<String, String>> populateResultArrayList(String json) {
                 ArrayList<HashMap<String, String>> theTrialList = new ArrayList<>();
-                String date, name, id, club, numsections, numlaps, starttime, email, scoringmode;
+                String date, name, id, club, numsections, numlaps, starttime, email, mode;
 
                 try {
                     // Parse string data into JSON
@@ -159,7 +158,7 @@ public class SettingsActivity extends AppCompatActivity {
                         numlaps = jsonArray.getJSONObject(index).getString("numlaps");
                         starttime = jsonArray.getJSONObject(index).getString("starttime");
                         email = jsonArray.getJSONObject(index).getString("email");
-                        scoringmode = jsonArray.getJSONObject(index).getString("scoringmode");
+                        mode = jsonArray.getJSONObject(index).getString("mode");
 
                         // trial = club + " - " + name;
                         theTrial.put("id", id);
@@ -170,7 +169,7 @@ public class SettingsActivity extends AppCompatActivity {
                         theTrial.put("numlaps", numlaps);
                         theTrial.put("starttime", starttime);
                         theTrial.put("email", email);
-                        theTrial.put("scoringmode", scoringmode);
+                        theTrial.put("mode", mode);
                         theTrialList.add(theTrial);
                     }
 
@@ -348,16 +347,22 @@ public class SettingsActivity extends AppCompatActivity {
                     theTrialData = getTrialData(trialid).get(0);
                     int numsections = Integer.valueOf(theTrialData.get("numsections"));
                     int numlaps = Integer.valueOf(theTrialData.get("numlaps"));
+                    int mode = Integer.valueOf(theTrialData.get("mode"));
                     String email = theTrialData.get("email");
                     String date = theTrialData.get("date");
+                    String name = theTrialData.get("name");
+                    String club = theTrialData.get("club");
 
                     editor.putString("theTrialIndex", newValue.toString());  // Check if this is necessary
                     editor.putBoolean("trialHasChanged", true);
                     editor.putInt("trialid", trialid);
                     editor.putInt("numsections", numsections);
                     editor.putInt("numlaps", numlaps);
+                    editor.putInt("mode", mode);
                     editor.putString("date", date);
                     editor.putString("email", email);
+                    editor.putString("name", name);
+                    editor.putString("club", club);
                     editor.apply();
                     Log.i("Note", "Trial selection changed");
 

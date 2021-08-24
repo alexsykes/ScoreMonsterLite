@@ -29,49 +29,6 @@ public class TrialDbHelper extends SQLiteOpenHelper {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
-    public ArrayList<HashMap<String, String>> getTrials() {
-        String _id, numsections, numlaps, email, date, name;
-        SQLiteDatabase db = this.getWritableDatabase();
-        ArrayList<HashMap<String, String>> theTrialList = new ArrayList<>();
-
-        String query = "SELECT * FROM trials ORDER BY _id DESC";
-        Cursor cursor = db.rawQuery(query, null);
-        Trial theTrial;
-
-        while (cursor.moveToNext()) {
-            HashMap<String, String> trials = new HashMap<>();
-            trials.put("id", cursor.getString(cursor.getColumnIndex(TrialContract.TrialEntry._ID)));
-            trials.put("numsections", cursor.getString(cursor.getColumnIndex(TrialContract.TrialEntry.COLUMN_TRIAL_NUMSECTIONS)));
-            trials.put("numlaps", cursor.getString(cursor.getColumnIndex(TrialContract.TrialEntry.COLUMN_TRIAL_NUMLAPS)));
-            trials.put("email", cursor.getString(cursor.getColumnIndex(TrialContract.TrialEntry.COLUMN_TRIAL_EMAIL)));
-            trials.put("name", cursor.getString(cursor.getColumnIndex(TrialContract.TrialEntry.COLUMN_TRIAL_NAME)));
-            trials.put("trialid", cursor.getString(cursor.getColumnIndex(TrialContract.TrialEntry.COLUMN_TRIAL_TRIALID)));
-            trials.put("date", cursor.getString(cursor.getColumnIndex(TrialContract.TrialEntry.COLUMN_TRIAL_DATE)));
-            trials.put("scoringmode", cursor.getString(cursor.getColumnIndex(TrialContract.TrialEntry.COLUMN_TRIAL_MODE)));
-
-            // theTrial = new Trial(Integer.valueOf(_id), Integer.valueOf(numsections), Integer.valueOf(numlaps), email, date, name);
-            theTrialList.add(trials);
-        }
-        cursor.close();
-        return theTrialList;
-    }
-
-
-    public Trial getTrial(int trialid) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        String query = "SELECT * FROM trials WHERE id = " + trialid;
-        Cursor cursor = db.rawQuery(query, null);
-        String name = cursor.getString(cursor.getColumnIndex(TrialContract.TrialEntry.COLUMN_TRIAL_NAME));
-        String email = cursor.getString(cursor.getColumnIndex(TrialContract.TrialEntry.COLUMN_TRIAL_EMAIL));
-        int numlaps = cursor.getInt(cursor.getColumnIndex(TrialContract.TrialEntry.COLUMN_TRIAL_NUMLAPS));
-        int numsections = cursor.getInt(cursor.getColumnIndex(TrialContract.TrialEntry.COLUMN_TRIAL_NUMSECTIONS));
-        int scoringmode = cursor.getInt(cursor.getColumnIndex(TrialContract.TrialEntry.COLUMN_TRIAL_MODE));
-        String date = cursor.getString(cursor.getColumnIndex(TrialContract.TrialEntry.COLUMN_TRIAL_DATE));
-
-        Trial theTrial = new Trial(trialid, numsections, numlaps, email, date, name, scoringmode);
-        return theTrial;
-    }
-
     @Override
     public void onCreate(SQLiteDatabase db) {
 
@@ -120,6 +77,7 @@ public class TrialDbHelper extends SQLiteOpenHelper {
             trial.put("trialid", cursor.getString(cursor.getColumnIndex(TrialContract.TrialEntry.COLUMN_TRIAL_TRIALID)));
             trial.put("mode", cursor.getString(cursor.getColumnIndex(TrialContract.TrialEntry.COLUMN_TRIAL_MODE)));
             trial.put("email", cursor.getString(cursor.getColumnIndex(TrialContract.TrialEntry.COLUMN_TRIAL_EMAIL)));
+            trial.put("club", cursor.getString(cursor.getColumnIndex(TrialContract.TrialEntry.COLUMN_TRIAL_CLUB)));
             trialList.add(trial);
         }
         cursor.close();
@@ -143,6 +101,7 @@ public class TrialDbHelper extends SQLiteOpenHelper {
             trial.put("trialid", cursor.getString(cursor.getColumnIndex(TrialContract.TrialEntry.COLUMN_TRIAL_TRIALID)));
             trial.put("mode", cursor.getString(cursor.getColumnIndex(TrialContract.TrialEntry.COLUMN_TRIAL_MODE)));
             trial.put("email", cursor.getString(cursor.getColumnIndex(TrialContract.TrialEntry.COLUMN_TRIAL_EMAIL)));
+            trial.put("club", cursor.getString(cursor.getColumnIndex(TrialContract.TrialEntry.COLUMN_TRIAL_CLUB)));
             trialData.add(trial);
         }
         cursor.close();
