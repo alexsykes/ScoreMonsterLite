@@ -22,6 +22,7 @@ import androidx.preference.PreferenceManager;
 
 import com.alexsykes.scoremonster.R;
 import com.alexsykes.scoremonster.data.TrialContract;
+import com.alexsykes.scoremonster.data.TrialDbHelper;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -38,6 +39,9 @@ public class SettingsActivity extends AppCompatActivity {
     boolean isOnline;
     SharedPreferences localPrefs;
     ArrayList<HashMap<String, String>> theTrialData;
+    public ArrayList<HashMap<String, String>> theTrialList;
+    ArrayList<HashMap<String, String>> options;
+    TrialDbHelper mDbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +62,23 @@ public class SettingsActivity extends AppCompatActivity {
             String theURL = "http://android.trialmonster.uk/getTrialListScoreMonster.php";
             getTrialsData(theURL);
         }
+
         localPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+
+        // Get saved trial data
+        mDbHelper = new TrialDbHelper(this);
+        populateTrialList();
+    }
+
+    private void populateTrialList() {
+        localPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = localPrefs.edit();
+        theTrialList = mDbHelper.getTrialList();
+        options = mDbHelper.getPrefsOptions();
+
+        editor.putString("theIds", options.get(0).get("ids"));
+        editor.putString("theNames", options.get(0).get("names"));
+        editor.apply();
     }
 
     @Override
@@ -97,27 +117,6 @@ public class SettingsActivity extends AppCompatActivity {
                 // Populate ArrayList with JSON data
                 theTrialData = populateResultArrayList(s);
                 addToDatabase(theTrialData);
-
-//                int size = theTrialData.size();
-//                theTrials = new String[size];
-//                theIDs = new String[size];
-//                String id;
-//
-//                for (int index = 0; index < theTrialData.size(); index++) {
-//                    theTrialName = theTrialData.get(index).get("name");
-//                    id = theTrialData.get(index).get("id");
-//                    theTrials[index] = theTrialName;
-//                    theIDs[index] = id;
-//                }
-//
-//                // Put values of trial name and trialid into prefs
-//                setTrialsList(theTrialData);
-//
-//                // Then save into database
-//                saveTrialData(theTrialData);
-//                if (trialid == 0) {
-//                    theTrialName = "Manual Entry";
-//                }
             }
 
             private void addToDatabase(ArrayList<HashMap<String, String>> theTrialData) {
@@ -130,10 +129,11 @@ public class SettingsActivity extends AppCompatActivity {
                     values.put(TrialContract.TrialEntry.COLUMN_TRIAL_TRIALID, theTrialData.get(i).get("id"));
                     values.put(TrialContract.TrialEntry.COLUMN_TRIAL_NUMLAPS, theTrialData.get(i).get("numlaps"));
                     values.put(TrialContract.TrialEntry.COLUMN_TRIAL_NUMSECTIONS, theTrialData.get(i).get("numsections"));
-                    // values.put(TrialContract.TrialEntry.COLUMN_TRIAL_DATE, theTrialData.get(i).get("date"));
+                    values.put(TrialContract.TrialEntry.COLUMN_TRIAL_DATE, theTrialData.get(i).get("date"));
                     values.put(TrialContract.TrialEntry.COLUMN_TRIAL_EMAIL, theTrialData.get(i).get("email"));
+                    values.put(TrialContract.TrialEntry.COLUMN_TRIAL_MODE, theTrialData.get(i).get("scoringmode"));
                     values.put(TrialContract.TrialEntry._ID, theTrialData.get(i).get("id"));
-                    db.insert("trials", null, values);
+                    db.insertWithOnConflict("trials", null, values, SQLiteDatabase.CONFLICT_REPLACE);
                 }
             }
 
@@ -343,9 +343,21 @@ public class SettingsActivity extends AppCompatActivity {
                     PreferenceCategory theTrialSettings = findPreference("trial_details");
                     SharedPreferences.Editor editor = localPrefs.edit();
                     int trialid = Integer.parseInt(newValue.toString());
+
+                    HashMap<String, String> theTrialData;
+                    theTrialData = getTrialData(trialid).get(0);
+                    int numsections = Integer.valueOf(theTrialData.get("numsections"));
+                    int numlaps = Integer.valueOf(theTrialData.get("numlaps"));
+                    String email = theTrialData.get("email");
+                    String date = theTrialData.get("date");
+
                     editor.putString("theTrialIndex", newValue.toString());  // Check if this is necessary
                     editor.putBoolean("trialHasChanged", true);
                     editor.putInt("trialid", trialid);
+                    editor.putInt("numsections", numsections);
+                    editor.putInt("numlaps", numlaps);
+                    editor.putString("date", date);
+                    editor.putString("email", email);
                     editor.apply();
                     Log.i("Note", "Trial selection changed");
 
@@ -362,6 +374,13 @@ public class SettingsActivity extends AppCompatActivity {
                         //  theTrialSettings.setVisible(false);
                     }
                     return true;
+                }
+
+                private ArrayList<HashMap<String, String>> getTrialData(int trialid) {
+                    ArrayList<HashMap<String, String>> theData;
+                    TrialDbHelper trialDbHelper = new TrialDbHelper(getContext());
+                    theData = trialDbHelper.getTrialData(trialid);
+                    return theData;
                 }
             });
 

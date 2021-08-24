@@ -17,7 +17,6 @@ import androidx.preference.PreferenceManager;
 import com.alexsykes.scoremonster.data.ScoreContract;
 import com.alexsykes.scoremonster.data.ScoreDbHelper;
 import com.alexsykes.scoremonster.data.TrialContract;
-import com.alexsykes.scoremonster.data.TrialDbHelper;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -32,23 +31,13 @@ import java.util.HashMap;
 
 public class ScoreMonsterLite extends Application {
     private static final String BASE_URL = "https://android.trialmonster.uk/";
-    private final int serverResponseCode = 0;
+    private final int trialid = -999;
     String[] theTrials, theIDs;
     ArrayList<HashMap<String, String>> theTrialData;
-    String theURL;
+
     // Databases
     private ScoreDbHelper mDbHelper;
-    private TrialDbHelper trialDbHelper;
-    private String message, status, filename, observer, theTrialName, detail, email;
-    private int score;
-    private int scoreCount;
-    private int trialid;
-    private int section;
-    private int numsections;
-    private int numlaps;
-    private int ridingNumber;
-    private int numberInGroup;
-    private boolean isSingleUser, trialHasChanged, isOnline;
+    private String theTrialName;
 
     @Override
     public void onCreate() {
@@ -59,15 +48,16 @@ public class ScoreMonsterLite extends Application {
         dbInit();
 
         // Check for connectivity
-        isOnline = isOnline();
+        boolean isOnline = isOnline();
 
         // if online, loads list of trials
         if (isOnline) {
             String URL = BASE_URL + "getTrialList.php";
             try {
                 getTrialList(URL);
+                Log.i(null, "Trials data loaded");
             } catch (NullPointerException e) {
-                // Toast.makeText(MainActivity.this, "Empty data", Toast.LENGTH_LONG).show();
+                Log.e(null, "Error loading trials data");
             }
         }
     }
@@ -106,7 +96,9 @@ public class ScoreMonsterLite extends Application {
                 + TrialContract.TrialEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + TrialContract.TrialEntry.COLUMN_TRIAL_NUMLAPS + " INTEGER NOT NULL DEFAULT 0, "
                 + TrialContract.TrialEntry.COLUMN_TRIAL_NUMSECTIONS + " INTEGER NOT NULL DEFAULT 0, "
+                + TrialContract.TrialEntry.COLUMN_TRIAL_MODE + " INTEGER NOT NULL DEFAULT 0, "
                 + TrialContract.TrialEntry.COLUMN_TRIAL_NAME + " TEXT , "
+                + TrialContract.TrialEntry.COLUMN_TRIAL_DATE + " TEXT , "
                 + TrialContract.TrialEntry.COLUMN_TRIAL_EMAIL + " TEXT , "
                 + TrialContract.TrialEntry.COLUMN_TRIAL_TRIALID + " INTEGER NOT NULL DEFAULT 0 );";
 
@@ -273,8 +265,6 @@ public class ScoreMonsterLite extends Application {
     private void saveTrialData(ArrayList<HashMap<String, String>> theTrialData) {
         // Database operations - https://www.tutorialspoint.com/android/android_sqlite_database.htm
         // First, get your database
-        //   final String DATABASE_NAME = "monster.db";
-        //   SQLiteDatabase db = openOrCreateDatabase(DATABASE_NAME, MODE_PRIVATE, null);
 
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
 
@@ -296,8 +286,9 @@ public class ScoreMonsterLite extends Application {
             values.put(TrialContract.TrialEntry.COLUMN_TRIAL_NUMLAPS, theNumLaps);
             values.put(TrialContract.TrialEntry.COLUMN_TRIAL_NUMSECTIONS, theNumSections);
             values.put(TrialContract.TrialEntry.COLUMN_TRIAL_TRIALID, theID);
+            values.put(TrialContract.TrialEntry._ID, theID);
 
-            db.insert(TrialContract.TrialEntry.TABLE_NAME, null, values);
+            db.insertWithOnConflict("trials", null, values, SQLiteDatabase.CONFLICT_REPLACE);
 
             Log.i("Note", "Result: ");
         }
