@@ -16,6 +16,7 @@ import androidx.preference.PreferenceManager;
 
 import com.alexsykes.scoremonster.data.ScoreContract;
 import com.alexsykes.scoremonster.data.ScoreDbHelper;
+import com.alexsykes.scoremonster.data.TimeContract;
 import com.alexsykes.scoremonster.data.TrialContract;
 
 import org.json.JSONArray;
@@ -105,6 +106,17 @@ public class ScoreMonsterLite extends Application {
 
         // Execute the SQL statement
         db.execSQL(SQL_CREATE_TRIALS_TABLE);
+
+        // Create a String that contains the SQL statement to create the scores table
+        String SQL_CREATE_TIMES_TABLE = "CREATE TABLE IF NOT EXISTS " + TimeContract.TimeEntry.TABLE_NAME + " ("
+                + TimeContract.TimeEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + TimeContract.TimeEntry.COLUMN_TIME_NUMBER + " INTEGER NOT NULL DEFAULT 0, "
+                + TimeContract.TimeEntry.COLUMN_TIME_SEQUENCE + " INTEGER NOT NULL DEFAULT 0, "
+                + TimeContract.TimeEntry.COLUMN_TIME_CREATED + " TEXT , "
+                + TimeContract.TimeEntry.COLUMN_TIME_TRIALID + " INTEGER NOT NULL DEFAULT 0 );";
+
+        // Execute the SQL statement
+        db.execSQL(SQL_CREATE_TIMES_TABLE);
     }
 
     // Get trial list from server

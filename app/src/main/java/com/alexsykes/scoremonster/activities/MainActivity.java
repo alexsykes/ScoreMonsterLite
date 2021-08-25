@@ -96,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
     private String message, status, filename, observer, theTrialName, detail, email, club;
     String[] theTrials, theIDs;
     ArrayList<HashMap<String, String>> theTrialData;
-    private int score, scoreCount, serverResponseCode = 0, trialid, mode, section, numsections, numlaps, ridingNumber, numberInGroup;
+    private int score, scoreCount, serverResponseCode = 0, trialid, mode, usermode, section, numsections, numlaps, ridingNumber, numberInGroup;
     private boolean isSingleUser, trialHasChanged, isOnline;
 
     // Layout variables
@@ -144,10 +144,13 @@ public class MainActivity extends AppCompatActivity {
         UISetup();
         getPrefs();
 
+        if (usermode == 3) {
+            goTimer();
+        }
         if (mode == 0) {
             sectionPicker.setVisibility(View.INVISIBLE);
             sectionLabelLayout.setVisibility(View.VISIBLE);
-            sectionDetail.setText("Section: "+section);
+            sectionDetail.setText("Section: " + section);
             // decrementTextView.setVisibility(View.INVISIBLE);
         } else {
             sectionPicker.setVisibility(View.VISIBLE);
@@ -186,7 +189,6 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
         Log.i("Note", "onStart called");
         // Check network connectivity and set Prefs
-        // localPrefs = getSharedPreferences("monster", MODE_PRIVATE);
         localPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor editor = localPrefs.edit();
         editor.putBoolean("canConnect", isOnline());
@@ -552,6 +554,11 @@ public class MainActivity extends AppCompatActivity {
         startActivityForResult(intent, TEXT_REQUEST);
     }
 
+    private void goTimer() {
+        Intent intent = new Intent(this, TimerActivity.class);
+        startActivityForResult(intent, TEXT_REQUEST);
+    }
+
     private void getPrefs() {
         localPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         observer = localPrefs.getString("observer", "");
@@ -569,6 +576,7 @@ public class MainActivity extends AppCompatActivity {
         club = localPrefs.getString("club", "None selected");
         trialHasChanged = localPrefs.getBoolean("", true);
         mode = localPrefs.getInt("mode", 0);
+        usermode = Integer.valueOf(localPrefs.getString("usermode", "0"));
 
         // Set up status line
         status = theTrialName + " - Observer: " + observer;
