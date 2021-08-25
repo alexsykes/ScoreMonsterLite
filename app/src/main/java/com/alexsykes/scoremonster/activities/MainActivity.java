@@ -26,6 +26,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -99,7 +100,8 @@ public class MainActivity extends AppCompatActivity {
     private boolean isSingleUser, trialHasChanged, isOnline;
 
     // Layout variables
-    TextView numberLabel, scoreLabel, statusLine, sectionNumber, decrementTextView, incrementTextView;
+    TextView numberLabel, scoreLabel, statusLine, sectionNumber, decrementTextView, incrementTextView, sectionDetail;
+    LinearLayout sectionPicker, sectionLabelLayout;
     ConstraintLayout top;
     NumberPadFragment numberPadFragment;
     TouchFragment touchFragment;
@@ -143,11 +145,14 @@ public class MainActivity extends AppCompatActivity {
         getPrefs();
 
         if (mode == 0) {
-            incrementTextView.setVisibility(View.INVISIBLE);
-            decrementTextView.setVisibility(View.INVISIBLE);
+            sectionPicker.setVisibility(View.INVISIBLE);
+            sectionLabelLayout.setVisibility(View.VISIBLE);
+            sectionDetail.setText("Section: "+section);
+            // decrementTextView.setVisibility(View.INVISIBLE);
         } else {
-            incrementTextView.setVisibility(View.VISIBLE);
-            decrementTextView.setVisibility(View.VISIBLE);
+            sectionPicker.setVisibility(View.VISIBLE);
+            sectionLabelLayout.setVisibility(View.INVISIBLE);
+            // decrementTextView.setVisibility(View.VISIBLE);
         }
 
         // Check for connectivity
@@ -317,6 +322,9 @@ public class MainActivity extends AppCompatActivity {
         top = findViewById(R.id.top);
         incrementTextView = findViewById(R.id.incrementTextView);
         decrementTextView = findViewById(R.id.decrementTextView);
+        sectionPicker = findViewById(R.id.sectionPicker);
+        sectionDetail = findViewById(R.id.sectionDetail);
+        sectionLabelLayout = findViewById(R.id.sectionLabelLayout);
 
         getSupportFragmentManager().beginTransaction().add(R.id.top, numberPadFragment).commit();
         getSupportFragmentManager().beginTransaction().replace(R.id.bottom, touchFragment).commit();
