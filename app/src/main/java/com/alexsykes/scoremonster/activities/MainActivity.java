@@ -145,7 +145,7 @@ public class MainActivity extends AppCompatActivity {
         getPrefs();
 
         if (usermode == 3) {
-            goTimer();
+           // goTimer();
         }
         if (mode == 0) {
             sectionPicker.setVisibility(View.INVISIBLE);

@@ -16,7 +16,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.EditTextPreference;
 import androidx.preference.ListPreference;
 import androidx.preference.Preference;
-import androidx.preference.PreferenceCategory;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceManager;
 
@@ -106,11 +105,6 @@ public class SettingsActivity extends AppCompatActivity {
             //this method will be called before execution
 
             @Override
-            protected void onPreExecute() {
-                super.onPreExecute();
-            }
-
-            @Override
             protected void onPostExecute(String s) {
                 super.onPostExecute(s);
                 // Populate ArrayList with JSON data
@@ -120,7 +114,7 @@ public class SettingsActivity extends AppCompatActivity {
 
             private void addToDatabase(ArrayList<HashMap<String, String>> theTrialData) {
                 final String DATABASE_NAME = "monster.db";
-                long result = -999;
+
                 SQLiteDatabase db = openOrCreateDatabase(DATABASE_NAME, MODE_PRIVATE, null);
                 ContentValues values = new ContentValues();
                 for (int i = 0; i < theTrialData.size(); i++) {
@@ -248,11 +242,14 @@ public class SettingsActivity extends AppCompatActivity {
             CharSequence[] entries = localPrefs.getString("theNames","Manual Entry").split(",");
             CharSequence[] entryValues = localPrefs.getString("theIds", "0").split(",");
             ListPreference lp = findPreference("theTrialIndex");
+            assert lp != null;
             lp.setEntries(entries);
             lp.setEntryValues(entryValues);
         }
 
         private void setup() {
+
+            // mobile pref
             EditTextPreference mobilePref = findPreference("mobile");
             assert mobilePref != null;
             mobilePref.setOnBindEditTextListener(editText -> editText.setInputType(InputType.TYPE_CLASS_PHONE));
@@ -260,20 +257,9 @@ public class SettingsActivity extends AppCompatActivity {
             EditTextPreference sectionPref = findPreference("sectionText");
             assert sectionPref != null;
             sectionPref.setOnBindEditTextListener(editText -> editText.setInputType(InputType.TYPE_CLASS_NUMBER));
-            sectionPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-                @Override
-                public boolean onPreferenceChange(Preference preference, Object newValue) {
-                    sectionPref.setText(newValue.toString());
-                    SharedPreferences.Editor editor = localPrefs.edit();
-                    int section = Integer.parseInt(newValue.toString());
-                    editor.putInt("section", section);
-                    editor.putString("sectionText", newValue.toString());
-                    editor.apply();
-                    return false;
-                }
-            })
-            ;
 
+
+            // numsections pref
             EditTextPreference numSectionsPref = findPreference("numsectionsText");
             assert numSectionsPref != null;
             numSectionsPref.setOnBindEditTextListener(editText -> editText.setInputType(InputType.TYPE_CLASS_NUMBER));
@@ -291,6 +277,7 @@ public class SettingsActivity extends AppCompatActivity {
             })
             ;
 
+            // numlaps pref
             EditTextPreference numLapsPref = findPreference("numlapsText");
             assert numLapsPref != null;
             numLapsPref.setOnBindEditTextListener(editText -> editText.setInputType(InputType.TYPE_CLASS_NUMBER));
@@ -308,15 +295,18 @@ public class SettingsActivity extends AppCompatActivity {
             })
             ;
 
+            // email pref
             EditTextPreference emailPref = findPreference("email");
             assert emailPref != null;
             emailPref.setOnBindEditTextListener(editText -> editText.setInputType(InputType.TYPE_CLASS_TEXT |
                     InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS));
 
+            // observer pref
             EditTextPreference observerPref = findPreference("observer");
             assert observerPref != null;
             observerPref.setOnBindEditTextListener(editText -> editText.setInputType(InputType.TYPE_TEXT_FLAG_CAP_WORDS));
 
+            // trialid pref
             int trialid = 0;
             ListPreference lp = findPreference("theTrialIndex");
             if (lp.getValue() != null) {
@@ -327,19 +317,15 @@ public class SettingsActivity extends AppCompatActivity {
                 emailPref.setVisible(true);
                 numSectionsPref.setVisible(true);
                 numLapsPref.setVisible(true);
-                // theTrialSettings.setVisible(true);
             } else {
                 emailPref.setVisible(false);
                 numSectionsPref.setVisible(false);
                 numLapsPref.setVisible(false);
-                //  theTrialSettings.setVisible(false);
             }
-
 
             lp.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                 @Override
                 public boolean onPreferenceChange(Preference preference, Object newValue) {
-                    PreferenceCategory theTrialSettings = findPreference("trial_details");
                     SharedPreferences.Editor editor = localPrefs.edit();
                     int trialid = Integer.parseInt(newValue.toString());
 
@@ -388,7 +374,6 @@ public class SettingsActivity extends AppCompatActivity {
                     return theData;
                 }
             });
-
         }
     }
 }
