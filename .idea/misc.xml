@@ -8,6 +8,7 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="app/src/main/res/drawable/ic_warning__48dp.xml" value="0.1" />
         <entry key="app/src/main/res/layout-land-v21/activity_main.xml" value="0.2838541666666667" />
         <entry key="app/src/main/res/layout-land/activity_main.xml" value="0.2838541666666667" />
         <entry key="app/src/main/res/layout-v21/activity_main.xml" value="0.4197916666666667" />

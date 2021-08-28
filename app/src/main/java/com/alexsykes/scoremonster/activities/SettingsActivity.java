@@ -33,6 +33,7 @@ import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Objects;
 
 public class SettingsActivity extends AppCompatActivity {
     boolean isOnline;
@@ -227,6 +228,9 @@ public class SettingsActivity extends AppCompatActivity {
 
     public static class SettingsFragment extends PreferenceFragmentCompat {
         SharedPreferences localPrefs;
+        String sectionPrefText;
+        int sectionPrefInt;
+        int numsections;
 
         @Override
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
@@ -248,6 +252,14 @@ public class SettingsActivity extends AppCompatActivity {
         }
 
         private void setup() {
+            // sectionPrefText = localPrefs.getString("sectionText", "1");
+            sectionPrefInt = localPrefs.getInt("section", 1);
+            numsections = localPrefs.getInt("numsections", 1);
+            sectionPrefText = String.valueOf(sectionPrefInt);
+            SharedPreferences.Editor editor = localPrefs.edit();
+            editor.putInt("section", sectionPrefInt);
+            editor.putString("sectionText", sectionPrefText);
+            editor.apply();
 
             // mobile pref
             EditTextPreference mobilePref = findPreference("mobile");
@@ -256,8 +268,33 @@ public class SettingsActivity extends AppCompatActivity {
 
             EditTextPreference sectionPref = findPreference("sectionText");
             assert sectionPref != null;
+            sectionPref.setText(sectionPrefText);
             sectionPref.setOnBindEditTextListener(editText -> editText.setInputType(InputType.TYPE_CLASS_NUMBER));
 
+            sectionPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                @Override
+                public boolean onPreferenceChange(Preference preference, Object newValue) {
+                    // Add check to empty return
+                    if (newValue.toString().trim().length() == 0) {
+                        Log.i("Note", "Empty");
+                        return false;
+                    }
+                    sectionPrefInt = Integer.parseInt(newValue.toString());
+                    if (0 < sectionPrefInt && sectionPrefInt <= numsections) {
+                        sectionPref.setText(newValue.toString());
+                        editor.putInt("section", sectionPrefInt);
+                        editor.putString("sectionText", String.valueOf(sectionPrefInt));
+                        editor.apply();
+                        sectionPref.setIcon(null);
+                        return false;
+                    } else {
+                        // sectionPref.setIcon();
+                        sectionPref.setText("Invalid choice");
+                        sectionPref.setIcon(R.drawable.ic_warning_red_48dp);
+                        return false;
+                    }
+                }
+            });
 
             // numsections pref
             EditTextPreference numSectionsPref = findPreference("numsectionsText");
@@ -331,9 +368,9 @@ public class SettingsActivity extends AppCompatActivity {
 
                     HashMap<String, String> theTrialData;
                     theTrialData = getTrialData(trialid).get(0);
-                    int numsections = Integer.valueOf(theTrialData.get("numsections"));
-                    int numlaps = Integer.valueOf(theTrialData.get("numlaps"));
-                    int mode = Integer.valueOf(theTrialData.get("mode"));
+                    int numsections = Integer.parseInt(Objects.requireNonNull(theTrialData.get("numsections")));
+                    int numlaps = Integer.parseInt(Objects.requireNonNull(theTrialData.get("numlaps")));
+                    int mode = Integer.parseInt(Objects.requireNonNull(theTrialData.get("mode")));
                     String email = theTrialData.get("email");
                     String date = theTrialData.get("date");
                     String name = theTrialData.get("name");
