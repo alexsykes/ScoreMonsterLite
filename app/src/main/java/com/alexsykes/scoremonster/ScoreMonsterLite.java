@@ -11,6 +11,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.preference.PreferenceManager;
 
@@ -143,28 +144,36 @@ public class ScoreMonsterLite extends Application {
             @Override
             protected void onPostExecute(String s) {
                 super.onPostExecute(s);
-                // Populate ArrayList with JSON data
-                theTrialData = populateResultArrayList(s);
+                // Check for null response
+                if (s == null || s == "") {
+                    Toast.makeText(getApplicationContext(), "Using stored trials list", Toast.LENGTH_LONG).show();
+                } else {
 
-                int size = theTrialData.size();
-                theTrials = new String[size];
-                theIDs = new String[size];
-                String id;
+                    // Toast.makeText(getApplicationContext(), "Trial list synchronised",Toast.LENGTH_LONG).show();
 
-                for (int index = 0; index < theTrialData.size(); index++) {
-                    theTrialName = theTrialData.get(index).get("name");
-                    id = theTrialData.get(index).get("id");
-                    theTrials[index] = theTrialName;
-                    theIDs[index] = id;
-                }
+                    // Populate ArrayList with JSON data
+                    theTrialData = populateResultArrayList(s);
 
-                // Put values of trial name and trialid into prefs
-                setTrialsList(theTrialData);
+                    int size = theTrialData.size();
+                    theTrials = new String[size];
+                    theIDs = new String[size];
+                    String id;
 
-                // Then save into database
-                saveTrialData(theTrialData);
-                if (trialid == 0) {
-                    theTrialName = "Manual Entry";
+                    for (int index = 0; index < theTrialData.size(); index++) {
+                        theTrialName = theTrialData.get(index).get("name");
+                        id = theTrialData.get(index).get("id");
+                        theTrials[index] = theTrialName;
+                        theIDs[index] = id;
+                    }
+
+                    // Put values of trial name and trialid into prefs
+                    setTrialsList(theTrialData);
+
+                    // Then save into database
+                    saveTrialData(theTrialData);
+                    if (trialid == 0) {
+                        theTrialName = "Manual Entry";
+                    }
                 }
             }
 

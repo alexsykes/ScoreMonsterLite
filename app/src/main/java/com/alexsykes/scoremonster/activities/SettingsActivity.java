@@ -58,10 +58,12 @@ public class SettingsActivity extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
         isOnline = isOnline();
-        if (isOnline) {
-            String theURL = "http://android.trialmonster.uk/getTrialListScoreMonster.php";
-            getTrialsData(theURL);
-        }
+        // getTrialsData removed to avoid connectivity issues
+        // Trial List is refreshed on launch
+//        if (isOnline) {
+//            String theURL = "http://android.trialmonster.uk/getTrialListScoreMonster.php";
+//            getTrialsData(theURL);
+//        }
 
         localPrefs = PreferenceManager.getDefaultSharedPreferences(this);
 
