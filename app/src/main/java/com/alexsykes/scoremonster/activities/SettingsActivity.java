@@ -252,7 +252,7 @@ public class SettingsActivity extends AppCompatActivity {
         }
 
         private void setup() {
-            // sectionPrefText = localPrefs.getString("sectionText", "1");
+            // Setup known values
             sectionPrefInt = localPrefs.getInt("section", 1);
             numsections = localPrefs.getInt("numsections", 1);
             sectionPrefText = String.valueOf(sectionPrefInt);
@@ -266,9 +266,13 @@ public class SettingsActivity extends AppCompatActivity {
             assert mobilePref != null;
             mobilePref.setOnBindEditTextListener(editText -> editText.setInputType(InputType.TYPE_CLASS_PHONE));
 
+            // section pref
             EditTextPreference sectionPref = findPreference("sectionText");
             assert sectionPref != null;
+            String sectionsRange = "1 to " + numsections;
+            sectionPref.setDialogMessage(sectionsRange);
             sectionPref.setText(sectionPrefText);
+
             sectionPref.setOnBindEditTextListener(editText -> editText.setInputType(InputType.TYPE_CLASS_NUMBER));
 
             sectionPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
@@ -305,7 +309,9 @@ public class SettingsActivity extends AppCompatActivity {
                 public boolean onPreferenceChange(Preference preference, Object newValue) {
                     numSectionsPref.setText(newValue.toString());
                     SharedPreferences.Editor editor = localPrefs.edit();
-                    int numsections = Integer.parseInt(newValue.toString());
+                    numsections = Integer.parseInt(newValue.toString());
+                    String sectionsRange = "1 to " + numsections;
+                    sectionPref.setDialogMessage(sectionsRange);
                     editor.putInt("numsections", numsections);
                     editor.putString("numsectionsText", newValue.toString());
                     editor.apply();
