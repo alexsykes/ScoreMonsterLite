@@ -115,9 +115,9 @@ public class MainActivity extends AppCompatActivity {
     private TrialDbHelper trialDbHelper;
 
     // URL constants
-    private final String upLoadServerUri = "http://android.trialmonster.uk/sendMailWithFile.php";
-    private final String sendMailURL = "http://android.trialmonster.uk/sendMailWithFile.php";
-    private static final String BASE_URL = "https://android.trialmonster.uk/";
+    // private final String upLoadServerUri = "http://android.trialmonster.uk/UploadToServer.php";
+    // private final String sendMailURL = "http://android.trialmonster.uk/sendMailWithFile.php";
+    // private static final String BASE_URL = "https://android.trialmonster.uk/";
     String theURL;
 
     @Override
@@ -344,8 +344,9 @@ public class MainActivity extends AppCompatActivity {
             long time = date.getTime();
             String ts = valueOf(time);
             filename = "scores_" + ts + ".csv";
-            String sendMailURL = "http://www.trialmonster.uk/android/sendMailWithFile.php?id=" + ts + "&trialid=" + trialid + "&email=" + email;
+            String sendMailURL = "https://www.trialmonster.uk/android/sendMailWithFile.php?id=" + ts + "&trialid=" + trialid + "&email=" + email;
 
+            Log.i("Monitor", sendMailURL);
             processCSV(sendMailURL);
         }
     }
@@ -426,6 +427,7 @@ public class MainActivity extends AppCompatActivity {
 
         } else {
             try {
+                final String upLoadServerUri = "http://android.trialmonster.uk/UploadToServer.php";
                 // open a URL connection to the Servlet
                 FileInputStream fileInputStream = new FileInputStream(sourceFile);
                 URL url = new URL(upLoadServerUri);

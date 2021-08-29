@@ -37,26 +37,23 @@ import java.util.Date;
 import java.util.HashMap;
 
 public class SyncActivity extends AppCompatActivity {
-    public static final int TEXT_REQUEST = 1;
-
     /**********  File Path *************/
     final String uploadFilePath = "mnt/sdcard/Documents/Scoremonster/";
-  //   final String uploadFileName = "scores.csv";
-  // https://androidexample.com/Upload_File_To_Server_-_Android_Example/index.php?view=article_discription&aid=83
+    private final String baseURL = "https://android.trialmonster.uk/addCSVtodb.php?trialid=";
+    //   final String uploadFileName = "scores.csv";
+    // https://androidexample.com/Upload_File_To_Server_-_Android_Example/index.php?view=article_discription&aid=83
     RecyclerView scoreView;
     ArrayList<HashMap<String, String>> theScoreList;
     TextView messageText;
-    Button uploadButton, processButton;
+    Button processButton;
     int serverResponseCode = 0, section, trialid;
     ProgressDialog dialog = null;
-    private final String upLoadServerUri = "http://android.trialmonster.uk/UploadToServer.php";
-    private final String baseURL = "http://android.trialmonster.uk/addCSVtodb.php?trialid=";
-    private String processURL = null;
     File exportDir = new File(Environment.getExternalStoragePublicDirectory("Documents/Scoremonster"), "");
-    private ScoreDbHelper mDbHelper;
-    private String filename;
     boolean isOnline;
     SharedPreferences localPrefs;
+    private String processURL = null;
+    private ScoreDbHelper mDbHelper;
+    private String filename;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -98,7 +95,7 @@ public class SyncActivity extends AppCompatActivity {
 
         isOnline = localPrefs.getBoolean("canConnect", false);
         if(!isOnline) {
-           // processButton.setEnabled(false);
+            processButton.setEnabled(false);
         }
     }
 
@@ -307,8 +304,9 @@ public class SyncActivity extends AppCompatActivity {
 
         final String fileName = sourceFileUri;
 
-        HttpURLConnection conn = null;
-        DataOutputStream dos = null;
+        HttpURLConnection conn;
+        DataOutputStream dos;
+        dos = null;
         String lineEnd = "\r\n";
         String twoHyphens = "--";
         String boundary = "*****";
@@ -337,6 +335,7 @@ public class SyncActivity extends AppCompatActivity {
             try {
                 // open a URL connection to the Servlet
                 FileInputStream fileInputStream = new FileInputStream(sourceFile);
+                String upLoadServerUri = "https://android.trialmonster.uk/UploadToServer.php";
                 URL url = new URL(upLoadServerUri);
 
                 // Open a HTTP  connection to  the URL
