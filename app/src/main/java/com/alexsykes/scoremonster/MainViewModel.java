@@ -40,10 +40,11 @@ public class MainViewModel extends ViewModel {
     private static final String BASE_URL = "https://android.trialmonster.uk/";
 
     public MainViewModel() {
-        String trialListURL = BASE_URL + "getTrialListScoreMonster.php";
-        if(isOnline) {
-            getTrialList(trialListURL);
-        }
+        isRefreshed = false;
+//        String trialListURL = BASE_URL + "getTrialListScoreMonster.php";
+//        if(isOnline) {
+//            getTrialList(trialListURL);
+//        }
     }
 
     public void getTrialDetail(int trialid) {

@@ -47,7 +47,7 @@
     <PreferenceCategory app:title="@string/mode_header">
 
         <ListPreference
-            app:defaultValue="1"
+            app:defaultValue="0"
             app:entries="@array/usermode_entries"
             app:entryValues="@array/usermode_values"
             app:key="usermode"

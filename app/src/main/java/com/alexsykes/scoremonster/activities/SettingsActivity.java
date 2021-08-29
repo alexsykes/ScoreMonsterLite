@@ -1,5 +1,5 @@
 package com.alexsykes.scoremonster.activities;
-
+// TODO - check section validation following read from trialPref
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -270,13 +270,13 @@ public class SettingsActivity extends AppCompatActivity {
 
             // section pref
             EditTextPreference sectionPref = findPreference("sectionText");
+            numsections = localPrefs.getInt("numsections",1);
             assert sectionPref != null;
             String sectionsRange = "1 to " + numsections;
             sectionPref.setDialogMessage(sectionsRange);
             sectionPref.setText(sectionPrefText);
 
             sectionPref.setOnBindEditTextListener(editText -> editText.setInputType(InputType.TYPE_CLASS_NUMBER));
-
             sectionPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                 @Override
                 public boolean onPreferenceChange(Preference preference, Object newValue) {
@@ -294,7 +294,6 @@ public class SettingsActivity extends AppCompatActivity {
                         sectionPref.setIcon(null);
                         return false;
                     } else {
-                        // sectionPref.setIcon();
                         sectionPref.setText("Invalid choice");
                         sectionPref.setIcon(R.drawable.ic_warning_red_48dp);
                         return false;
@@ -353,9 +352,9 @@ public class SettingsActivity extends AppCompatActivity {
 
             // trialid pref
             int trialid = 0;
-            ListPreference lp = findPreference("theTrialIndex");
-            if (lp.getValue() != null) {
-                trialid = Integer.valueOf(lp.getValue());
+            ListPreference trialListPref = findPreference("theTrialIndex");
+            if (trialListPref.getValue() != null) {
+                trialid = Integer.valueOf(trialListPref.getValue());
             }
             if (trialid == 0) {
                 Log.i("Note", "Manual Entry selected");
@@ -368,7 +367,7 @@ public class SettingsActivity extends AppCompatActivity {
                 numLapsPref.setVisible(false);
             }
 
-            lp.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+            trialListPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                 @Override
                 public boolean onPreferenceChange(Preference preference, Object newValue) {
                     SharedPreferences.Editor editor = localPrefs.edit();
@@ -376,7 +375,7 @@ public class SettingsActivity extends AppCompatActivity {
 
                     HashMap<String, String> theTrialData;
                     theTrialData = getTrialData(trialid).get(0);
-                    int numsections = Integer.parseInt(Objects.requireNonNull(theTrialData.get("numsections")));
+                    numsections = Integer.parseInt(Objects.requireNonNull(theTrialData.get("numsections")));
                     int numlaps = Integer.parseInt(Objects.requireNonNull(theTrialData.get("numlaps")));
                     int mode = Integer.parseInt(Objects.requireNonNull(theTrialData.get("mode")));
                     String email = theTrialData.get("email");
@@ -396,6 +395,9 @@ public class SettingsActivity extends AppCompatActivity {
                     editor.putString("club", club);
                     editor.apply();
                     Log.i("Note", "Trial selection changed");
+
+                    String sectionsRange = "1 to " + numsections;
+                    sectionPref.setDialogMessage(sectionsRange);
 
                     if (trialid == 0) {
                         Log.i("Note", "Manual Entry selected");

@@ -132,7 +132,6 @@ public class MainActivity extends AppCompatActivity {
         editor.putBoolean("canConnect", isOnline());
         editor.apply();
 
-        // String theURL = BASE_URL + "getTrialListScoreMonster.php";
         model.setRefreshed(false);
         setContentView(R.layout.activity_main);
 
@@ -206,15 +205,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         Log.i("Note", "onResume called");
-
         // Restore values from model
-        //int[] savedValues = model.readSavedValuesFromModel();
-        ridingNumber = model.getRidingNumber();
-        score = model.getScore();
-        section = model.getSection();
-        trialid = model.getTrialid();
-        numlaps = model.getNumlaps();
-        numsections = model.getNumsections();
+        reloadFromModel();
 
         if (ridingNumber != 0) {
             numberLabel.setText(valueOf(ridingNumber));
@@ -223,13 +215,19 @@ public class MainActivity extends AppCompatActivity {
         }
         scoreLabel.setText(valueOf(score));
         sectionNumber.setText(valueOf(section));
-        Log.i("Note", "MainActivity: Line 225");
     }
 
     @Override
     protected void onPause() {
         Log.i("Note", "onPause called");
         super.onPause();
+        saveCurrentState();
+    }
+
+    @Override
+    protected void onStop(){
+        Log.i("Note", "onStop called");
+        super.onStop();
         saveCurrentState();
     }
 
@@ -254,7 +252,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onSaveInstanceState(final Bundle outState) {
         super.onSaveInstanceState(outState);
-
         Log.i("Note", "onSaveInstanceState called");
         model.setRidingNumber(ridingNumber);
         model.setScore(score);
@@ -262,6 +259,22 @@ public class MainActivity extends AppCompatActivity {
         model.setTrialid(trialid);
         model.setNumLaps(numlaps);
         model.setNumSections(numsections);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        Log.i("Note", "onRestoreInstanceState called");
+        reloadFromModel();
+    }
+
+    private void reloadFromModel() {
+        ridingNumber = model.getRidingNumber();
+        score = model.getScore();
+        section = model.getSection();
+        trialid = model.getTrialid();
+        numlaps = model.getNumlaps();
+        numsections = model.getNumsections();
     }
 
     @Override
@@ -380,7 +393,8 @@ public class MainActivity extends AppCompatActivity {
                 dialog.dismiss();
 
                 if (s.contentEquals("OK")){
-                    runOnUiThread(() -> Toast.makeText(MainActivity.this, "The email has been sent successfully.",
+                    String toastMessage = "The email has been sent successfully to " + email;
+                    runOnUiThread(() -> Toast.makeText(MainActivity.this, toastMessage,
                             Toast.LENGTH_LONG).show());
                 }
             }
@@ -553,19 +567,21 @@ public class MainActivity extends AppCompatActivity {
 
     private void goHelp() {
         Intent intent = new Intent(this, HelpActivity.class);
-        startActivityForResult(intent, TEXT_REQUEST);
+        intent.putExtra(EXTRA_MESSAGE, message);
+        startActivity(intent);
     }
 
     private void goTimer() {
         Intent intent = new Intent(this, TimerActivity.class);
-        startActivityForResult(intent, TEXT_REQUEST);
+        intent.putExtra(EXTRA_MESSAGE, message);
+        startActivity(intent);
     }
 
     private void getPrefs() {
         localPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         observer = localPrefs.getString("observer", "");
         section = localPrefs.getInt("section", 1);
-        trialid = localPrefs.getInt("trialid", -999);
+        trialid = localPrefs.getInt("trialid", 0);
         numlaps = localPrefs.getInt("numlaps", 1);
         numsections = localPrefs.getInt("numsections", 1);
         email = localPrefs.getString("email", "");
