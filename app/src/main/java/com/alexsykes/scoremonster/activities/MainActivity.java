@@ -1,5 +1,5 @@
 package com.alexsykes.scoremonster.activities;
-
+// TODO Check ridingNumber for consistency in all modes
 import static java.lang.String.valueOf;
 
 import android.app.AlertDialog;
@@ -57,8 +57,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
-// TODO Important - move database setup method from ScoreDbHelper
-// TODO Important - add message to setup for no connection
 
 /*
     Method  getTrialList(URL)
@@ -75,10 +73,10 @@ import java.util.HashMap;
     Method getTrialDetails(int trialid)
 
     Scoring mode for TrialMonster
-    *   0 - traditional observer scoring
-    *   1 - rider scoring
-    *   2 - electronic scoring
-    *   3 - group
+    *   0 - traditional observer scoring / manual detail entry
+    *   1 - observer scoring to web
+    *   2 - rider scoring to web
+    *   3 - group scoring to web
     *   4 - time and observation
 
  */
@@ -142,21 +140,6 @@ public class MainActivity extends AppCompatActivity {
         // dbInit();
         UISetup();
         getPrefs();
-
-        if (usermode == 3) {
-           // goTimer();
-        }
-        if (mode == 0) {
-            sectionPicker.setVisibility(View.INVISIBLE);
-            sectionLabelLayout.setVisibility(View.VISIBLE);
-            sectionDetail.setText("Section: " + section);
-            // decrementTextView.setVisibility(View.INVISIBLE);
-        } else {
-            sectionPicker.setVisibility(View.VISIBLE);
-            sectionLabelLayout.setVisibility(View.INVISIBLE);
-            // decrementTextView.setVisibility(View.VISIBLE);
-        }
-
         // Check for connectivity
         isOnline = isOnline();
 
@@ -183,6 +166,52 @@ public class MainActivity extends AppCompatActivity {
                 numsections);
     }
 
+    private void setMode() {
+        mode = localPrefs.getInt("mode", 0);
+        switch (mode) {
+            case 0: // Manual entry
+                sectionPicker.setVisibility(View.INVISIBLE);
+                sectionLabelLayout.setVisibility(View.VISIBLE);
+                sectionDetail.setText("Section: " + section);
+                break;
+            case 1: // Observer with online trial details
+                sectionPicker.setVisibility(View.INVISIBLE);
+                sectionLabelLayout.setVisibility(View.VISIBLE);
+                sectionDetail.setText("Section: " + section);
+                break;
+            case 2: // Single rider - online details
+                sectionPicker.setVisibility(View.VISIBLE);
+                sectionLabelLayout.setVisibility(View.INVISIBLE);
+                //  getSupportFragmentManager().beginTransaction().add(R.id.top, numberPadFragment).commit();
+                getSupportFragmentManager().beginTransaction().remove(numberPadFragment).commit();
+                sectionDetail.setText("Section: " + section);
+                break;
+            case 3: // Riding group online details
+                sectionPicker.setVisibility(View.VISIBLE);
+                sectionLabelLayout.setVisibility(View.INVISIBLE);
+                sectionDetail.setText("Section: " + section);
+                break;
+            case 4: // T&O
+                sectionPicker.setVisibility(View.INVISIBLE);
+                sectionLabelLayout.setVisibility(View.INVISIBLE);
+                sectionDetail.setText("Section: " + section);
+                break;
+        }
+/*        if (usermode == 3) {
+            // goTimer();
+        }
+        if (mode == 0) {
+            sectionPicker.setVisibility(View.INVISIBLE);
+            sectionLabelLayout.setVisibility(View.VISIBLE);
+            sectionDetail.setText("Section: " + section);
+            // decrementTextView.setVisibility(View.INVISIBLE);
+        } else {
+            sectionPicker.setVisibility(View.VISIBLE);
+            sectionLabelLayout.setVisibility(View.INVISIBLE);
+            // decrementTextView.setVisibility(View.VISIBLE);
+        }*/
+    }
+
     @Override
     protected void onStart() {
         super.onStart();
@@ -207,7 +236,7 @@ public class MainActivity extends AppCompatActivity {
         Log.i("Note", "onResume called");
         // Restore values from model
         reloadFromModel();
-
+        setMode();
         if (ridingNumber != 0) {
             numberLabel.setText(valueOf(ridingNumber));
         } else {
@@ -237,12 +266,11 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences.Editor editor = localPrefs.edit();
         int score = Integer.parseInt(scoreLabel.getText().toString());
         String currentRiderText = numberLabel.getText().toString();
+        int rider = 0;
         if (!currentRiderText.equals("")) {
-            int rider = Integer.parseInt(numberLabel.getText().toString());
-            editor.putInt("ridingNumber", rider);
-        } else {
-            editor.putInt("ridingNumber", 0);
+            rider = Integer.parseInt(numberLabel.getText().toString());
         }
+        editor.putInt("ridingNumber", rider);
         editor.putInt("section", section);
         editor.putInt("score", score);
         editor.putInt("scoreCount", scoreCount);
@@ -717,7 +745,7 @@ public class MainActivity extends AppCompatActivity {
         scoreLabel.setText("0");
 
         // Clear rider number if not a single rider
-        if (!isSingleUser) {
+        if (mode != 2) {
             numberLabel.setText("");
         }
         // If a single rider, then increment section

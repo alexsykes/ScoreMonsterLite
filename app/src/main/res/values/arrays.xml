@@ -1,9 +1,10 @@
 <resources>
     <!-- Reply Preference -->
     <string-array name="usermode_entries">
-        <item>Observer</item>
-        <item>Group</item>
-        <item>Rider</item>
+        <item>Observer manual</item>
+        <item>Observer online</item>
+        <item>Rider online</item>
+        <item>Group online</item>
         <item>Timing</item>
     </string-array>
 
@@ -12,6 +13,7 @@
         <item>1</item>
         <item>2</item>
         <item>3</item>
+        <item>4</item>
     </string-array>
 
     <string-array name="trial_values">

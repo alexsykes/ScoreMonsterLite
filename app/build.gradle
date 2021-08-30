@@ -6,7 +6,7 @@ android {
         applicationId "com.alexsykes.scoremonster"
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode 15
+        versionCode 16
         versionName "ariel arrow"
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
         vectorDrawables.useSupportLibrary = true

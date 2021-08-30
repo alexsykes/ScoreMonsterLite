@@ -37,7 +37,7 @@ public class MainViewModel extends ViewModel {
     private String theTrialName, data;
 
     // URL constants
-    private static final String BASE_URL = "https://android.trialmonster.uk/";
+//    private static final String BASE_URL = "https://android.trialmonster.uk/";
 
     public MainViewModel() {
         isRefreshed = false;
@@ -47,10 +47,10 @@ public class MainViewModel extends ViewModel {
 //        }
     }
 
-    public void getTrialDetail(int trialid) {
-        String trialDetailURL = BASE_URL + "getTrialListDetail.php?id=" + trialid;
-        getTrialDetails(trialDetailURL);
-    }
+//    public void getTrialDetail(int trialid) {
+//        String trialDetailURL = BASE_URL + "getTrialListDetail.php?id=" + trialid;
+//        getTrialDetails(trialDetailURL);
+//    }
 
     public void setRefreshed(boolean refreshed) {
         isRefreshed = refreshed;

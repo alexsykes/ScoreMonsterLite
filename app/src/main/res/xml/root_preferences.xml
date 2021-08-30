@@ -43,6 +43,11 @@
             app:key="sectionText"
             app:title="@string/section_number"
             app:useSimpleSummaryProvider="true" />
+
+        <EditTextPreference
+            app:key="riderText"
+            app:title="@string/riding_number"
+            app:useSimpleSummaryProvider="true" />
     </PreferenceCategory>
     <PreferenceCategory app:title="@string/mode_header">
 

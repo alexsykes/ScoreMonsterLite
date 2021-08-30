@@ -233,6 +233,8 @@ public class SettingsActivity extends AppCompatActivity {
         String sectionPrefText;
         int sectionPrefInt;
         int numsections;
+        int mode;
+        int ridingNumber;
 
         @Override
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
@@ -257,6 +259,7 @@ public class SettingsActivity extends AppCompatActivity {
             // Setup known values
             sectionPrefInt = localPrefs.getInt("section", 1);
             numsections = localPrefs.getInt("numsections", 1);
+            ridingNumber = localPrefs.getInt("ridingNumber", 1);
             sectionPrefText = String.valueOf(sectionPrefInt);
             SharedPreferences.Editor editor = localPrefs.edit();
             editor.putInt("section", sectionPrefInt);
@@ -268,9 +271,29 @@ public class SettingsActivity extends AppCompatActivity {
             assert mobilePref != null;
             mobilePref.setOnBindEditTextListener(editText -> editText.setInputType(InputType.TYPE_CLASS_PHONE));
 
+            // ridingNumer pref
+            EditTextPreference ridingNumberPref = findPreference("riderText");
+            assert ridingNumberPref != null;
+            ridingNumberPref.setOnBindEditTextListener(editText -> editText.setInputType(InputType.TYPE_CLASS_NUMBER));
+            ridingNumberPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                @Override
+                public boolean onPreferenceChange(Preference preference, Object newValue) {
+                    int ridingNumber;                    // Add check to empty return
+                    if (newValue.toString().trim().length() == 0) {
+                        Log.i("Note", "Empty");
+                        return false;
+                    }
+                    ridingNumber = Integer.parseInt(newValue.toString());
+                    editor.putInt("ridingNumber", ridingNumber);
+                    editor.apply();
+                    ridingNumberPref.setText(newValue.toString());
+                    return false;
+                }
+            });
+
             // section pref
             EditTextPreference sectionPref = findPreference("sectionText");
-            numsections = localPrefs.getInt("numsections",1);
+            numsections = localPrefs.getInt("numsections", 1);
             assert sectionPref != null;
             String sectionsRange = "1 to " + numsections;
             sectionPref.setDialogMessage(sectionsRange);
