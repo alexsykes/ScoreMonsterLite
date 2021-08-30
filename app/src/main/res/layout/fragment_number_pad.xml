@@ -16,7 +16,6 @@
         android:layout_height="wrap_content"
         android:onClick="addDigit"
         android:text="@string/_1"
-        android:textColor="@color/colorButtonBlue"
         android:textSize="36sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -29,7 +28,6 @@
         android:layout_height="wrap_content"
         android:onClick="addDigit"
         android:text="@string/_2"
-        android:textColor="@color/colorButtonBlue"
         android:textSize="36sp"
         app:layout_constraintStart_toEndOf="@+id/button1"
         app:layout_constraintTop_toTopOf="parent"
@@ -42,7 +40,6 @@
         android:layout_height="wrap_content"
         android:onClick="addDigit"
         android:text="@string/_3"
-        android:textColor="@color/colorButtonBlue"
         android:textSize="36sp"
         app:layout_constraintStart_toEndOf="@+id/button2"
         app:layout_constraintTop_toTopOf="parent"
@@ -56,7 +53,6 @@
         android:layout_height="wrap_content"
         android:onClick="addDigit"
         android:text="@string/_4"
-        android:textColor="@color/colorButtonBlue"
         android:textSize="36sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/button1" />
@@ -68,7 +64,6 @@
         android:layout_height="wrap_content"
         android:onClick="addDigit"
         android:text="@string/_5"
-        android:textColor="@color/colorButtonBlue"
         android:textSize="36sp"
         app:layout_constraintStart_toEndOf="@+id/button4"
         app:layout_constraintTop_toBottomOf="@+id/button2" />
@@ -80,7 +75,6 @@
         android:layout_height="wrap_content"
         android:onClick="addDigit"
         android:text="@string/_6"
-        android:textColor="@color/colorButtonBlue"
         android:textSize="36sp"
         app:layout_constraintStart_toEndOf="@+id/button5"
         app:layout_constraintTop_toBottomOf="@+id/button3" />
@@ -93,7 +87,6 @@
         android:layout_height="wrap_content"
         android:onClick="addDigit"
         android:text="@string/_7"
-        android:textColor="@color/colorButtonBlue"
         android:textSize="36sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/button4" />
@@ -105,7 +98,6 @@
         android:layout_height="wrap_content"
         android:onClick="addDigit"
         android:text="@string/_8"
-        android:textColor="@color/colorButtonBlue"
         android:textSize="36sp"
         app:layout_constraintStart_toEndOf="@+id/button7"
         app:layout_constraintTop_toBottomOf="@+id/button5" />
@@ -117,7 +109,6 @@
         android:layout_height="wrap_content"
         android:onClick="addDigit"
         android:text="@string/_9"
-        android:textColor="@color/colorButtonBlue"
         android:textSize="36sp"
         app:layout_constraintStart_toEndOf="@+id/button8"
         app:layout_constraintTop_toBottomOf="@+id/button6" />
@@ -130,7 +121,6 @@
         android:layout_height="wrap_content"
         android:onClick="addDigit"
         android:text="@string/c"
-        android:textColor="@color/colorButtonBlue"
         android:textSize="36sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/button7" />
@@ -143,7 +133,6 @@
         android:enabled="true"
         android:onClick="addDigit"
         android:text="@string/_0"
-        android:textColor="@color/colorButtonBlue"
         android:textSize="36sp"
         app:layout_constraintStart_toEndOf="@+id/buttonClear"
         app:layout_constraintTop_toBottomOf="@+id/button8" />
@@ -155,7 +144,6 @@
         android:layout_height="wrap_content"
         android:onClick="addDigit"
         android:text="@string/backSpace"
-        android:textColor="@color/colorButtonBlue"
         android:textSize="36sp"
         app:layout_constraintStart_toEndOf="@+id/button0"
         app:layout_constraintTop_toBottomOf="@+id/button9" />

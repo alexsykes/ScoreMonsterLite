@@ -23,7 +23,7 @@
             android:layout_weight="0.33"
             android:onClick="showHelp"
             android:text="@string/helpText"
-            android:textColor="@color/colorButtonBlue" />
+           />
 
         <Button
             android:id="@+id/nonStopButton"
@@ -32,8 +32,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="0.33"
             android:onClick="showNS"
-            android:text="@string/no_stop"
-            android:textColor="@color/colorButtonBlue" />
+            android:text="@string/no_stop" />
 
         <Button
             android:id="@+id/stopPermittedButton"
@@ -42,8 +41,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="0.33"
             android:onClick="showSP"
-            android:text="@string/stop_permitted"
-            android:textColor="@color/colorButtonBlue" />
+            android:text="@string/stop_permitted" />
 
     </LinearLayout>
 
@@ -65,7 +63,6 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="8dp"
                 android:lineSpacingExtra="4sp"
-                android:textColor="@color/colorButtonBlue"
                 android:textSize="16sp" />
         </LinearLayout>
     </ScrollView>
