@@ -1,5 +1,6 @@
 package com.alexsykes.scoremonster.activities;
 // TODO Check ridingNumber for consistency in all modes
+// Starting change of template
 import static java.lang.String.valueOf;
 
 import android.app.AlertDialog;
