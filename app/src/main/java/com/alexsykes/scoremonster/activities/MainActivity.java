@@ -668,6 +668,12 @@ public class MainActivity extends AppCompatActivity {
             int riderNumber = Integer.parseInt(rider);
             int scoreValue = Integer.parseInt(score);
 
+            // Update prefs for single rider
+            SharedPreferences.Editor editor = localPrefs.edit();
+            editor.putInt("ridingNumber", riderNumber);
+            editor.putString("riderText", rider);
+            editor.apply();
+
             insertScore(riderNumber, scoreValue);
             scoreCount++;
             clearScore();

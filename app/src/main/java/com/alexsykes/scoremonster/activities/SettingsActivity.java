@@ -1,5 +1,7 @@
 package com.alexsykes.scoremonster.activities;
 // TODO - check section validation following read from trialPref
+// TODO - check riderNumber on change/lauch in mode 2
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -260,6 +262,7 @@ public class SettingsActivity extends AppCompatActivity {
             sectionPrefInt = localPrefs.getInt("section", 1);
             numsections = localPrefs.getInt("numsections", 1);
             ridingNumber = localPrefs.getInt("ridingNumber", 1);
+            mode = localPrefs.getInt("mode", 0);
             sectionPrefText = String.valueOf(sectionPrefInt);
             SharedPreferences.Editor editor = localPrefs.edit();
             editor.putInt("section", sectionPrefInt);
@@ -285,8 +288,8 @@ public class SettingsActivity extends AppCompatActivity {
                     }
                     ridingNumber = Integer.parseInt(newValue.toString());
                     editor.putInt("ridingNumber", ridingNumber);
-                    editor.apply();
                     ridingNumberPref.setText(newValue.toString());
+                    editor.apply();
                     return false;
                 }
             });
@@ -434,6 +437,10 @@ public class SettingsActivity extends AppCompatActivity {
                         numLapsPref.setVisible(false);
                         //  theTrialSettings.setVisible(false);
                     }
+                    // Setup modes
+                    ridingNumberPref.setVisible(mode == 2);
+                    sectionPref.setVisible(mode != 4);
+
                     return true;
                 }
 
@@ -444,6 +451,12 @@ public class SettingsActivity extends AppCompatActivity {
                     return theData;
                 }
             });
+
+
+            // Setup modes
+            ridingNumberPref.setVisible(mode == 2);
+            sectionPref.setVisible(mode != 4);
+
         }
     }
 }
