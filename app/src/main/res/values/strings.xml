@@ -210,4 +210,5 @@ To change a score, click on the list icon in the toolbar. This will display a li
     <string name="contact">Contact number</string>
     <string name="observer_details">Observer details</string>
     <string name="title_activity_timer">Timer</string>
+    <string name="list_scores">Scorelist</string>
 </resources>

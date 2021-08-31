@@ -9,8 +9,8 @@
 
     <item
         android:id="@+id/upload"
-        android:icon="@drawable/ic_list_white_48dp"
-        android:title="@string/export"
+        android:icon="@drawable/ic_baseline_view_list_48"
+        android:title="@string/list_scores"
         app:showAsAction="ifRoom" />
 
     <item

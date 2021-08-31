@@ -1,6 +1,7 @@
 package com.alexsykes.scoremonster.activities;
 // TODO Check ridingNumber for consistency in all modes
 // Starting change of template
+
 import static java.lang.String.valueOf;
 
 import android.app.AlertDialog;
@@ -11,7 +12,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Color;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.ToneGenerator;
@@ -352,7 +352,7 @@ public class MainActivity extends AppCompatActivity {
     private void UISetup() {
         // Add custom ActionBar
         Toolbar myToolbar = findViewById(R.id.my_toolbar);
-        myToolbar.setTitleTextColor(Color.WHITE);
+        // myToolbar.setTitleTextColor(Color.WHITE);
         setSupportActionBar(myToolbar);
         myToolbar.getMenu();
 

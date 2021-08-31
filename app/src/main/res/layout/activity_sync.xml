@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorBackground"
+
     tools:context=".activities.SyncActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -22,7 +22,6 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:text="@string/rider"
-            android:textColor="@color/colorPrimaryDark"
             android:textSize="18sp"
             app:layout_constraintEnd_toStartOf="@+id/textView2"
             app:layout_constraintHorizontal_bias="0.5"
@@ -35,7 +34,6 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:text="@string/lap"
-            android:textColor="@color/colorPrimaryDark"
             android:textSize="18sp"
             app:layout_constraintEnd_toStartOf="@+id/textView3"
             app:layout_constraintHorizontal_bias="0.5"
@@ -48,7 +46,6 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:text="@string/score"
-            android:textColor="@color/colorPrimaryDark"
             android:textSize="18sp"
             app:layout_constraintEnd_toStartOf="@+id/trialid"
             app:layout_constraintHorizontal_bias="0.5"
@@ -61,7 +58,6 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:text="@string/section_number"
-            android:textColor="@color/colorPrimaryDark"
             android:textSize="18sp"
             app:layout_constraintEnd_toStartOf="@+id/textView4"
             app:layout_constraintHorizontal_bias="0.5"
@@ -76,7 +72,6 @@
             android:layout_marginEnd="8dp"
             android:gravity="end"
             android:text="@string/sync_status"
-            android:textColor="@color/colorPrimaryDark"
             android:textSize="18sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/trialid"

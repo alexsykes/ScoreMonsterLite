@@ -1,13 +1,13 @@
 package com.alexsykes.scoremonster;
 
 import android.content.Context;
-import android.graphics.Color;
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.alexsykes.scoremonster.activities.SyncActivity;
 
@@ -47,14 +47,14 @@ public class ScoreListSyncAdapter extends RecyclerView.Adapter<ScoreListSyncAdap
         // Populate TextViews with data
         theScore = theScores.get(i);
         String syncState;
-        if(theScore.get("sync").equals("-1")){
+        if (theScore.get("sync").equals("-1")) {
             syncState = "Pending";
         } else {
             syncState = "OK";
         }
 
-        int backgroundColor = Color.parseColor("#40bdc0d4");
-        int white = Color.parseColor("#ffffff");
+        // int backgroundColor = R.style.Theme_Design;
+        //int white = R.t
 
         scoreHolder.score.setText(theScore.get("score"));
         scoreHolder.lap.setText(theScore.get("lap"));
@@ -66,9 +66,9 @@ public class ScoreListSyncAdapter extends RecyclerView.Adapter<ScoreListSyncAdap
         scoreHolder.bind(theScore, listener);
 
         if (i % 2 != 0) {
-            scoreHolder.itemView.setBackgroundColor(backgroundColor);
+            // scoreHolder.itemView.setBackgroundColor(backgroundColor);
         } else {
-            scoreHolder.itemView.setBackgroundColor(white);
+            //  scoreHolder.itemView.setBackgroundColor(white);
         }
     }
 
