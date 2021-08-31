@@ -563,13 +563,13 @@ public class MainActivity extends AppCompatActivity {
         String digit = button.getText().toString();
 
         switch (digit) {
-            case "Clean":
+            case "0":
                 score = 0;
                 break;
-            case "Ten":
+            case "10":
                 score = 10;
                 break;
-            case "Five":
+            case "5":
                 score = 5;
                 break;
             case "Dab":

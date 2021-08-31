@@ -10,51 +10,35 @@
 
     <Button
         android:id="@+id/cleanButton"
-        style="@android:style/Widget.Button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/ScoreButton"
         android:onClick="countDabs"
-        android:text="@string/clean"
-        android:textColor="@color/colorButtonBlue"
-        android:textSize="18sp"
+        android:text="0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/dabButton"
-        style="@android:style/Widget.Button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/ScoreButton"
         android:onClick="countDabs"
         android:text="@string/dab"
-        android:textColor="@color/colorButtonBlue"
-        android:textSize="18sp"
         app:layout_constraintStart_toEndOf="@+id/cleanButton"
         app:layout_constraintTop_toTopOf="parent"
         tools:layout_editor_absoluteY="0dp" />
 
     <Button
         android:id="@+id/fiveButton"
-        style="@android:style/Widget.Button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/ScoreButton"
         android:onClick="countDabs"
-        android:text="@string/five"
-        android:textColor="@color/colorButtonBlue"
-        android:textSize="18sp"
+        android:text="5"
         app:layout_constraintStart_toEndOf="@+id/dabButton"
         app:layout_constraintTop_toTopOf="parent"
         tools:layout_editor_absoluteY="0dp" />
 
     <Button
         android:id="@+id/tenButton"
-        style="@android:style/Widget.Button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/ScoreButton"
         android:onClick="countDabs"
-        android:text="@string/ten"
-        android:textColor="@color/colorButtonBlue"
-        android:textSize="18sp"
+        android:text="@string/_10"
         app:layout_constraintStart_toEndOf="@+id/fiveButton"
         app:layout_constraintTop_toTopOf="parent" />
 

@@ -148,13 +148,8 @@
 
     <Button
         android:id="@+id/saveButton"
-        style="@android:style/Widget.Button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/ScoreButton"
         android:text="@string/save"
-        android:textAllCaps="true"
-        android:textColor="@color/colorButtonBlue"
-        android:textSize="18sp"
         android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
