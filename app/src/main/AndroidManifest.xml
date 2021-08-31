@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.alexsykes.scoremonster"
     android:versionCode="2"
-    android:versionName="ariel">
+    android:versionName="ariel arrow">
 
     <uses-permission android:name="android.permission.VIBRATE" />
     <!--uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" /-->

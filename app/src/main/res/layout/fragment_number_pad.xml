@@ -11,7 +11,7 @@
 
     <Button
         android:id="@+id/button1"
-        style="@android:style/Widget.Button"
+        style="@style/CustomButtonStyle"
         android:layout_width="70dp"
         android:layout_height="wrap_content"
         android:onClick="addDigit"
@@ -23,7 +23,7 @@
 
     <Button
         android:id="@+id/button2"
-        style="@android:style/Widget.Button"
+        style="@style/CustomButtonStyle"
         android:layout_width="70dp"
         android:layout_height="wrap_content"
         android:onClick="addDigit"
@@ -35,7 +35,7 @@
 
     <Button
         android:id="@+id/button3"
-        style="@android:style/Widget.Button"
+        style="@style/CustomButtonStyle"
         android:layout_width="70dp"
         android:layout_height="wrap_content"
         android:onClick="addDigit"
@@ -48,7 +48,7 @@
 
     <Button
         android:id="@+id/button4"
-        style="@android:style/Widget.Button"
+        style="@style/CustomButtonStyle"
         android:layout_width="70dp"
         android:layout_height="wrap_content"
         android:onClick="addDigit"
@@ -59,7 +59,7 @@
 
     <Button
         android:id="@+id/button5"
-        style="@android:style/Widget.Button"
+        style="@style/CustomButtonStyle"
         android:layout_width="70dp"
         android:layout_height="wrap_content"
         android:onClick="addDigit"
@@ -70,7 +70,7 @@
 
     <Button
         android:id="@+id/button6"
-        style="@android:style/Widget.Button"
+        style="@style/CustomButtonStyle"
         android:layout_width="70dp"
         android:layout_height="wrap_content"
         android:onClick="addDigit"
@@ -82,7 +82,7 @@
 
     <Button
         android:id="@+id/button7"
-        style="@android:style/Widget.Button"
+        style="@style/CustomButtonStyle"
         android:layout_width="70dp"
         android:layout_height="wrap_content"
         android:onClick="addDigit"
@@ -93,7 +93,7 @@
 
     <Button
         android:id="@+id/button8"
-        style="@android:style/Widget.Button"
+        style="@style/CustomButtonStyle"
         android:layout_width="70dp"
         android:layout_height="wrap_content"
         android:onClick="addDigit"
@@ -104,7 +104,7 @@
 
     <Button
         android:id="@+id/button9"
-        style="@android:style/Widget.Button"
+        style="@style/CustomButtonStyle"
         android:layout_width="70dp"
         android:layout_height="wrap_content"
         android:onClick="addDigit"
@@ -116,7 +116,7 @@
 
     <Button
         android:id="@+id/buttonClear"
-        style="@android:style/Widget.Button"
+        style="@style/CustomButtonStyle"
         android:layout_width="70dp"
         android:layout_height="wrap_content"
         android:onClick="addDigit"
@@ -127,7 +127,7 @@
 
     <Button
         android:id="@+id/button0"
-        style="@android:style/Widget.Button"
+        style="@style/CustomButtonStyle"
         android:layout_width="70dp"
         android:layout_height="wrap_content"
         android:enabled="true"
@@ -139,7 +139,7 @@
 
     <Button
         android:id="@+id/buttonBack"
-        style="@android:style/Widget.Button"
+        style="@style/CustomButtonStyle"
         android:layout_width="70dp"
         android:layout_height="wrap_content"
         android:onClick="addDigit"
