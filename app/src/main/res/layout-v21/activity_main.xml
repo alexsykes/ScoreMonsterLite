@@ -84,7 +84,7 @@
             android:layout_weight="1"
             android:text="@string/_1"
             android:textAlignment="center"
-            android:textColor="@color/colorButtonBlue"
+            android:textColor="?attr/colorPrimaryVariant"
             android:textSize="36sp"
             android:textStyle="bold" />
 

@@ -9,7 +9,7 @@
 
     <item
         android:id="@+id/upload"
-        android:icon="@drawable/ic_baseline_view_list_48_white"
+        android:icon="@drawable/ic_baseline_view_list_48"
         android:title="@string/list_scores"
         app:showAsAction="ifRoom" />
 
