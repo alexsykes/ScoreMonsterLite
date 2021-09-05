@@ -1,6 +1,7 @@
+<!--https://www.youtube.com/watch?v=ApqX9FQA4k0 - Popup-->
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Theme.Theme" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+    <style name="Theme.Theme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/purple_500</item>
         <item name="colorPrimaryVariant">@color/purple_700</item>
@@ -14,7 +15,8 @@
         <!--        <item name="android:titleTextStyle" tools:targetApi="l">?attr/colorOnPrimary</item>-->
         <!-- Customize your theme here. -->
     </style>
-    <style name="Theme.Theme.AppBar" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <item name="android:colorForeground">@color/colorWhite</item>
+    <style name="Theme.PopupTheme" parent="Theme.AppCompat.DayNight">
+        <item name="android:colorBackground">@color/colorWhite</item>
+        <item name="colorPrimary">@color/white</item>
     </style>
 </resources>
