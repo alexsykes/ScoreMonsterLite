@@ -2,9 +2,9 @@
     <!-- Base application theme. -->
     <style name="Theme.Theme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">#EDE7F6</item>
+        <item name="colorPrimary">@color/purple_500</item>
         <item name="colorPrimaryVariant">@color/purple_700</item>
-        <item name="colorOnPrimary">@color/black</item>
+        <item name="colorOnPrimary">@color/white</item>
         <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/teal_200</item>
         <item name="colorSecondaryVariant">@color/teal_200</item>
@@ -14,7 +14,7 @@
         <!-- Customize your theme here. -->
     </style>
     <style name="Theme.PopupTheme" parent="Theme.AppCompat.DayNight">
-        <item name="android:colorBackground">@color/white</item>
+        <item name="android:colorBackground">?attr/colorPrimary</item>
         <item name="colorPrimary">@color/white</item>
     </style>
 </resources>

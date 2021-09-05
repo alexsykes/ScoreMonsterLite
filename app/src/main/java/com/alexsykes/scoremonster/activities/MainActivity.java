@@ -352,7 +352,6 @@ public class MainActivity extends AppCompatActivity {
     private void UISetup() {
         // Add custom ActionBar
         Toolbar myToolbar = findViewById(R.id.my_toolbar);
-        // myToolbar.setTitleTextColor(Color.WHITE);
         setSupportActionBar(myToolbar);
         myToolbar.getMenu();
 

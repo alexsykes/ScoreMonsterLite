@@ -15,8 +15,9 @@
         <!--        <item name="android:titleTextStyle" tools:targetApi="l">?attr/colorOnPrimary</item>-->
         <!-- Customize your theme here. -->
     </style>
-    <style name="Theme.PopupTheme" parent="Theme.AppCompat.DayNight">
-        <item name="android:colorBackground">@color/colorWhite</item>
+
+    <style name="Theme.PopupTheme" parent="Theme.AppCompat.DayNight.NoActionBar">
+        <item name="android:colorBackground">?attr/colorPrimary</item>
         <item name="colorPrimary">@color/white</item>
     </style>
 </resources>

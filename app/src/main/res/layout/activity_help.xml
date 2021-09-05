@@ -6,6 +6,13 @@
     android:orientation="vertical"
     tools:context=".activities.HelpActivity">
 
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        android:minHeight="?attr/actionBarSize" />
+
     <LinearLayout
         android:id="@+id/buttons"
         android:layout_width="match_parent"
