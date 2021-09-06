@@ -49,15 +49,4 @@
             app:title="@string/riding_number"
             app:useSimpleSummaryProvider="true" />
     </PreferenceCategory>
-    <!--    <PreferenceCategory app:title="@string/mode_header">-->
-
-    <!--        <ListPreference-->
-    <!--            app:defaultValue="0"-->
-    <!--            app:entries="@array/usermode_entries"-->
-    <!--            app:entryValues="@array/usermode_values"-->
-    <!--            app:key="usermode"-->
-    <!--            app:title="@string/mode_title"-->
-    <!--            app:useSimpleSummaryProvider="true" />-->
-
-    <!--    </PreferenceCategory>-->
 </PreferenceScreen>

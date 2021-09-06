@@ -50,33 +50,21 @@ public class SettingsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.settings_activity);
-
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         // Get a support ActionBar corresponding to this toolbar
         ActionBar ab = getSupportActionBar();
-
         // Enable the Up button
         ab.setDisplayHomeAsUpEnabled(true);
+
         if (savedInstanceState == null) {
             getSupportFragmentManager()
                     .beginTransaction()
                     .replace(R.id.settings, new SettingsFragment())
                     .commit();
         }
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setDisplayHomeAsUpEnabled(true);
-        }
         isOnline = isOnline();
-        // getTrialsData removed to avoid connectivity issues
-        // Trial List is refreshed on launch
-//        if (isOnline) {
-//            String theURL = "http://android.trialmonster.uk/getTrialListScoreMonster.php";
-//            getTrialsData(theURL);
-//        }
-
         localPrefs = PreferenceManager.getDefaultSharedPreferences(this);
 
         // Get saved trial data
@@ -104,136 +92,6 @@ public class SettingsActivity extends AppCompatActivity {
         editor.apply();
         super.onStart();
     }
-
-    private void getTrialsData(final String urlWebService) {
-        /*
-         * As fetching the json string is a network operation
-         * And we cannot perform a network operation in main thread
-         * so we need an AsyncTask
-         * The constrains defined here are
-         * Void -> We are not passing anything
-         * Void -> Nothing at progress update as well
-         * String -> After completion it should return a string and it will be the json string
-         * */
-        class GetData extends AsyncTask<Void, Void, String> {
-
-            //this method will be called before execution
-
-            @Override
-            protected void onPostExecute(String s) {
-                super.onPostExecute(s);
-                // Populate ArrayList with JSON data
-                theTrialData = populateResultArrayList(s);
-                addToDatabase(theTrialData);
-            }
-
-            private void addToDatabase(ArrayList<HashMap<String, String>> theTrialData) {
-                final String DATABASE_NAME = "monster.db";
-
-                SQLiteDatabase db = openOrCreateDatabase(DATABASE_NAME, MODE_PRIVATE, null);
-                ContentValues values = new ContentValues();
-                for (int i = 0; i < theTrialData.size(); i++) {
-                    values.put(TrialContract.TrialEntry.COLUMN_TRIAL_NAME, theTrialData.get(i).get("name"));
-                    values.put(TrialContract.TrialEntry.COLUMN_TRIAL_TRIALID, theTrialData.get(i).get("id"));
-                    values.put(TrialContract.TrialEntry.COLUMN_TRIAL_NUMLAPS, theTrialData.get(i).get("numlaps"));
-                    values.put(TrialContract.TrialEntry.COLUMN_TRIAL_NUMSECTIONS, theTrialData.get(i).get("numsections"));
-                    values.put(TrialContract.TrialEntry.COLUMN_TRIAL_DATE, theTrialData.get(i).get("date"));
-                    values.put(TrialContract.TrialEntry.COLUMN_TRIAL_EMAIL, theTrialData.get(i).get("email"));
-                    values.put(TrialContract.TrialEntry.COLUMN_TRIAL_MODE, theTrialData.get(i).get("mode"));
-                    values.put(TrialContract.TrialEntry._ID, theTrialData.get(i).get("id"));
-                    db.insertWithOnConflict("trials", null, values, SQLiteDatabase.CONFLICT_REPLACE);
-                }
-            }
-
-            /*
-            @param String json JSON string returned from MySQL
-            @return ArrayList of trials data
-             */
-            private ArrayList<HashMap<String, String>> populateResultArrayList(String json) {
-                ArrayList<HashMap<String, String>> theTrialList = new ArrayList<>();
-                String date, name, id, club, numsections, numlaps, starttime, email, mode;
-
-                try {
-                    // Parse string data into JSON
-                    JSONArray jsonArray = new JSONArray(json);
-
-                    for (int index = 0; index < jsonArray.length(); index++) {
-                        HashMap<String, String> theTrial = new HashMap<>();
-                        id = jsonArray.getJSONObject(index).getString("id");
-                        date = jsonArray.getJSONObject(index).getString("date");
-                        club = jsonArray.getJSONObject(index).getString("club");
-                        name = jsonArray.getJSONObject(index).getString("name");
-                        numsections = jsonArray.getJSONObject(index).getString("numsections");
-                        numlaps = jsonArray.getJSONObject(index).getString("numlaps");
-                        starttime = jsonArray.getJSONObject(index).getString("starttime");
-                        email = jsonArray.getJSONObject(index).getString("email");
-                        mode = jsonArray.getJSONObject(index).getString("mode");
-
-                        // trial = club + " - " + name;
-                        theTrial.put("id", id);
-                        theTrial.put("date", date);
-                        theTrial.put("club", club);
-                        theTrial.put("name", name);
-                        theTrial.put("numsections", numsections);
-                        theTrial.put("numlaps", numlaps);
-                        theTrial.put("starttime", starttime);
-                        theTrial.put("email", email);
-                        theTrial.put("mode", mode);
-                        theTrialList.add(theTrial);
-                    }
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
-                // AT this stage, theTrialList is populated with trial data - now add to database
-                return theTrialList;
-            }
-
-            //in this method we are fetching the json string
-            @Override
-            protected String doInBackground(Void... voids) {
-                int TIMEOUT_VALUE = 1000;
-                try {
-                    //creating a URL
-                    URL url = new URL(urlWebService);
-
-                    //Opening the URL using HttpURLConnection
-                    HttpURLConnection con = (HttpURLConnection) url.openConnection();
-                    con.setConnectTimeout(TIMEOUT_VALUE);
-                    con.setReadTimeout(TIMEOUT_VALUE);
-                    //StringBuilder object to read the string from the service
-                    StringBuilder sb = new StringBuilder();
-
-                    //We will use a buffered reader to read the string from service
-                    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(con.getInputStream()));
-
-                    //A simple string to read values from each line
-                    String json;
-
-                    //reading until we don't find null
-                    while ((json = bufferedReader.readLine()) != null) {
-                        json = json + "\n";
-                        //appending it to string builder
-                        sb.append(json);
-                    }
-
-                    //finally returning the read string
-                    return sb.toString().trim();
-                } catch (SocketTimeoutException e) {
-                    // TODO handle timeout
-                    return null;
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    return null;
-                }
-            }
-        }
-        //creating asynctask object and executing it
-        GetData getJSON = new GetData();
-        getJSON.execute();
-    }
-
     protected boolean isOnline() {
         ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = cm.getActiveNetworkInfo();
@@ -461,7 +319,6 @@ public class SettingsActivity extends AppCompatActivity {
                     return theData;
                 }
             });
-
 
             // Setup modes
             ridingNumberPref.setVisible(mode == 2);
