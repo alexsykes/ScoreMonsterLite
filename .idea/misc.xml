@@ -13,6 +13,7 @@
         <entry key="app/src/main/res/drawable/ic_baseline_help_48.xml" value="0.4675925925925926" />
         <entry key="app/src/main/res/drawable/ic_baseline_help_white_48.xml" value="0.4348717948717949" />
         <entry key="app/src/main/res/drawable/ic_baseline_view_list_48.xml" value="0.4348717948717949" />
+        <entry key="app/src/main/res/drawable/ic_list_white_48dp.xml" value="0.4348717948717949" />
         <entry key="app/src/main/res/drawable/ic_settings_white_24dp.xml" value="0.19907407407407407" />
         <entry key="app/src/main/res/drawable/ic_warning__48dp.xml" value="0.1" />
         <entry key="app/src/main/res/layout-land-v21/activity_main.xml" value="0.2838541666666667" />
@@ -21,7 +22,7 @@
         <entry key="app/src/main/res/layout/activity_help.xml" value="0.18518518518518517" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.4197916666666667" />
         <entry key="app/src/main/res/layout/activity_setup.xml" value="0.5" />
-        <entry key="app/src/main/res/layout/activity_sync.xml" value="0.6869791666666667" />
+        <entry key="app/src/main/res/layout/activity_sync.xml" value="0.4777327935222672" />
         <entry key="app/src/main/res/layout/activity_timer.xml" value="0.42552083333333335" />
         <entry key="app/src/main/res/layout/activity_web_help.xml" value="0.396875" />
         <entry key="app/src/main/res/layout/fragment_number_pad.xml" value="0.1" />
