@@ -22,4 +22,7 @@
         <item name="android:background">@color/purple_500</item> <!-- text colour in Popup -->
         <item name="colorControlNormal">@color/white</item>
     </style>
+    <style name="Theme.ThemeForSettings" parent="Theme.Theme">
+        <item name="android:textColorSecondary">@color/white</item>
+    </style>
 </resources>
