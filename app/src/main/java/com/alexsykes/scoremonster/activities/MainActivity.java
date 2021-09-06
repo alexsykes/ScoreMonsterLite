@@ -171,30 +171,30 @@ public class MainActivity extends AppCompatActivity {
         mode = localPrefs.getInt("mode", 0);
         switch (mode) {
             case 0: // Manual entry
-                sectionPicker.setVisibility(View.INVISIBLE);
-                sectionLabelLayout.setVisibility(View.VISIBLE);
+                sectionPicker.setVisibility(View.GONE);
+                sectionLabelLayout.setVisibility(View.GONE);
                 sectionDetail.setText("Section: " + section);
                 break;
             case 1: // Observer with online trial details
-                sectionPicker.setVisibility(View.INVISIBLE);
-                sectionLabelLayout.setVisibility(View.VISIBLE);
+                sectionPicker.setVisibility(View.GONE);
+                sectionLabelLayout.setVisibility(View.GONE);
                 sectionDetail.setText("Section: " + section);
                 break;
             case 2: // Single rider - online details
                 sectionPicker.setVisibility(View.VISIBLE);
-                sectionLabelLayout.setVisibility(View.INVISIBLE);
+                sectionLabelLayout.setVisibility(View.GONE);
                 //  getSupportFragmentManager().beginTransaction().add(R.id.top, numberPadFragment).commit();
                 getSupportFragmentManager().beginTransaction().remove(numberPadFragment).commit();
                 sectionDetail.setText("Section: " + section);
                 break;
             case 3: // Riding group online details
                 sectionPicker.setVisibility(View.VISIBLE);
-                sectionLabelLayout.setVisibility(View.INVISIBLE);
+                sectionLabelLayout.setVisibility(View.GONE);
                 sectionDetail.setText("Section: " + section);
                 break;
             case 4: // T&O
-                sectionPicker.setVisibility(View.INVISIBLE);
-                sectionLabelLayout.setVisibility(View.INVISIBLE);
+                sectionPicker.setVisibility(View.GONE);
+                sectionLabelLayout.setVisibility(View.GONE);
                 sectionDetail.setText("Section: " + section);
                 break;
         }
