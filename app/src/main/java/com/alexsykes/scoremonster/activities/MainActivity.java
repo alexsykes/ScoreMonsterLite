@@ -333,6 +333,10 @@ public class MainActivity extends AppCompatActivity {
                 goSync();
                 return true;
 
+            case R.id.timer:
+                goTimer();
+                return true;
+
 //            case R.id.reset:
 //                reset();
 //                return true;

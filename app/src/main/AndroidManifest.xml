@@ -38,11 +38,12 @@
         <activity
             android:name=".activities.HelpActivity"
             android:parentActivityName=".activities.MainActivity"
+            android:label="@string/help"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".activities.SyncActivity"
-            android:label="Upload Scores"
+            android:label="Scores"
             android:parentActivityName=".activities.MainActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
@@ -52,7 +53,6 @@
             tools:ignore="LockedOrientationActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
