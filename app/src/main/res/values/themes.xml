@@ -35,4 +35,7 @@
         <item name="colorPrimaryDark">@color/white</item>
         <item name="colorControlNormal">@color/white</item>
     </style>
+    <style name="Theme.ThemeForSettings" parent="Theme.Theme">
+        <item name="android:textColorSecondary">@color/black</item>
+    </style>
 </resources>
