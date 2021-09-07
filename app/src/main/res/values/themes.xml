@@ -1,10 +1,10 @@
 <!--https://www.youtube.com/watch?v=ApqX9FQA4k0 - Popup-->
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
     <!-- Base application theme. -->
     <style name="Theme.Theme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimaryDark">@color/purple_800</item>
-        <item name="colorPrimary">@color/purple_700</item>
+        <item name="colorPrimaryDark">@color/purple_900</item>
+        <item name="colorPrimary">@color/purple_900</item>
         <item name="colorPrimaryVariant">@color/purple_500</item>
         <item name="colorOnPrimary">@color/white</item>
         <item name="android:textColorPrimary">@color/colorWhite</item>
@@ -15,7 +15,11 @@
         <item name="colorSecondaryVariant">@color/teal_700</item>
         <item name="colorOnSecondary">@color/black</item>
         <!-- Status bar color. -->
-        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
+
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+
+        <item name="android:statusBarColor">?attr/colorPrimaryDark</item>
         <item name="android:textColorSecondary">@color/white</item> <!-- Colours overflow icon -->
         <!--        <item name="android:titleTextStyle" tools:targetApi="l">?attr/colorOnPrimary</item>-->
         <!-- Customize your theme here. -->
