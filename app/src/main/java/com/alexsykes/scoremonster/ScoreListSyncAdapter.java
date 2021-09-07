@@ -53,9 +53,6 @@ public class ScoreListSyncAdapter extends RecyclerView.Adapter<ScoreListSyncAdap
             syncState = "OK";
         }
 
-        // int backgroundColor = R.style.Theme_Design;
-        //int white = R.t
-
         scoreHolder.score.setText(theScore.get("score"));
         scoreHolder.lap.setText(theScore.get("lap"));
         scoreHolder.rider.setText(theScore.get("rider"));
@@ -65,11 +62,7 @@ public class ScoreListSyncAdapter extends RecyclerView.Adapter<ScoreListSyncAdap
         scoreHolder.sync.setText(syncState);
         scoreHolder.bind(theScore, listener);
 
-        if (i % 2 != 0) {
-            // scoreHolder.itemView.setBackgroundColor(backgroundColor);
-        } else {
-            //  scoreHolder.itemView.setBackgroundColor(white);
-        }
+        // if (i % 2 != 0) scoreHolder.itemView.setBackgroundColor(R.color.purple_100);
     }
 
     @Override

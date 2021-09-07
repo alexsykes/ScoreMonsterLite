@@ -16,19 +16,25 @@
         <item name="colorOnSecondary">@color/black</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
-        <item name="android:textColorSecondary">@color/black</item> <!-- Colours overflow icon -->
+        <item name="android:textColorSecondary">@color/white</item> <!-- Colours overflow icon -->
         <!--        <item name="android:titleTextStyle" tools:targetApi="l">?attr/colorOnPrimary</item>-->
         <!-- Customize your theme here. -->
     </style>
 
     <style name="Theme.PopupTheme" parent="Theme.AppCompat.DayNight.NoActionBar">
-        <!--        <item name="android:background">@color/white</item> &lt;!&ndash; background colour in Popup &ndash;&gt;-->
-        <!--        <item name="android:colorBackground">@color/colorPureRed</item> &lt;!&ndash; background colour in Popup &ndash;&gt;-->
-        <!--        <item name="android:textColor">@color/purple_700</item> &lt;!&ndash; text colour in Popup &ndash;&gt;-->
-        <!--        <item name="colorControlNormal">@color/white</item>-->
-        <!--        <item name="colorPrimarySurface">@color/white</item>-->
-        <!--        <item name="android:textColorSecondary">#ffffff</item>-->
-        <!--        <item name="android:actionOverflowButtonStyle">@color/white</item>-->
+        <item name="android:background">@color/white</item> <!-- background colour in Popup -->
+        <item name="android:colorBackground">@color/colorPureRed
+        </item> <!-- background colour in Popup -->
+        <item name="android:textColor">@color/purple_700</item> <!-- text colour in Popup -->
+        <item name="colorControlNormal">@color/white</item>
+        <item name="colorPrimarySurface">@color/white</item>
+        <item name="android:textColorSecondary">#ffffff</item>
+        <item name="android:actionOverflowButtonStyle">@color/white</item>
+    </style>
+
+    <style name="Settings" parent="Theme.Theme">
+        <item name="android:textColorSecondary">@color/purple_700</item>
+        <item name="android:editTextColor">@color/purple_700</item>
     </style>
 
     <style name="Widget.ActionMode.ActionBar" parent="@style/ThemeOverlay.AppCompat.DayNight">

@@ -236,6 +236,7 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         Log.i("Note", "onResume called");
         // Restore values from model
+        getPrefs();
         reloadFromModel();
         setMode();
         if (ridingNumber != 0) {
