@@ -218,6 +218,7 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
         Log.i("Note", "onStart called");
         // Check network connectivity and set Prefs
+        getPrefs();
         localPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor editor = localPrefs.edit();
         editor.putBoolean("canConnect", isOnline());
