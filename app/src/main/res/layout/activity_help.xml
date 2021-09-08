@@ -71,7 +71,6 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="8dp"
                 android:lineSpacingExtra="4sp"
-                android:textColor="@color/design_default_color_primary_variant"
                 android:textSize="16sp" />
         </LinearLayout>
     </ScrollView>
