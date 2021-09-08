@@ -115,9 +115,9 @@
 
     <Button
         android:id="@+id/processButton"
-        style="@style/ScoreButton"
-        android:text="@string/upload_data"
+        style="@style/DefaultButton"
         android:layout_marginBottom="8dp"
+        android:text="@string/upload_data"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

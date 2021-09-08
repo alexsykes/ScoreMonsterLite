@@ -28,16 +28,26 @@
         <item name="android:shadowDx">1.2</item>
         <item name="android:shadowDy">1.2</item>1
         <item name="android:shadowColor">?android:attr/colorBackground</item>
-        <item name="android:textColor">@color/design_default_color_on_primary</item>
+        <item name="android:textSize">30sp</item>
         <item name="android:gravity">center</item>
         <item name="android:layout_margin">3dp</item>
+    </style>
 
+    <style name="DefaultButton">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:capitalize">characters</item>
+        <item name="android:shadowDx">1.2</item>
+        <item name="android:shadowDy">1.2</item>1
+        <item name="android:shadowColor">?android:attr/colorBackground</item>
+        <item name="android:gravity">center</item>
+        <item name="android:layout_margin">3dp</item>
     </style>
 
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
-<!--        <item name="android:textColor">#000000</item>-->
+        <!--        <item name="android:textColor">#000000</item>-->
     </style>
 
     <style name="ToolbarColoredBackArrow" parent="AppTheme">

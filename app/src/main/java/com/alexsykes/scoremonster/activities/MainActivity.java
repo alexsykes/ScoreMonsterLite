@@ -568,7 +568,7 @@ public class MainActivity extends AppCompatActivity {
         String digit = button.getText().toString();
 
         switch (digit) {
-            case "0":
+            case "Clean":
                 score = 0;
                 break;
             case "10":
