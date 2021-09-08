@@ -14,6 +14,7 @@
         <entry key="app/src/main/res/drawable/ic_baseline_help_48.xml" value="0.4675925925925926" />
         <entry key="app/src/main/res/drawable/ic_baseline_help_white_48.xml" value="0.4348717948717949" />
         <entry key="app/src/main/res/drawable/ic_baseline_view_list_48.xml" value="0.4348717948717949" />
+        <entry key="app/src/main/res/drawable/ic_launcher_background.xml" value="0.7109375" />
         <entry key="app/src/main/res/drawable/ic_list_white_48dp.xml" value="0.4348717948717949" />
         <entry key="app/src/main/res/drawable/ic_settings_white_24dp.xml" value="0.19907407407407407" />
         <entry key="app/src/main/res/drawable/ic_warning__48dp.xml" value="0.1" />
@@ -30,6 +31,8 @@
         <entry key="app/src/main/res/layout/fragment_touch.xml" value="0.33240740740740743" />
         <entry key="app/src/main/res/layout/settings_activity.xml" value="0.26459143968871596" />
         <entry key="app/src/main/res/menu/toolbar_menu.xml" value="0.6841025641025641" />
+        <entry key="app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.7109375" />
+        <entry key="app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.7109375" />
         <entry key="app/src/main/res/xml/root_preferences.xml" value="0.335" />
       </map>
     </option>
