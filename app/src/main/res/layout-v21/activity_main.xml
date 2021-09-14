@@ -107,8 +107,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="4dp"
         android:gravity="center_horizontal"
-        android:textSize="64sp"
-        android:textStyle="bold"
+        style="@style/bigLabel"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/sectionPicker" />
@@ -127,8 +126,7 @@
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
         android:text="@string/_0"
-        android:textSize="64sp"
-        android:textStyle="bold"
+        style="@style/bigLabel"
         app:layout_constraintTop_toBottomOf="@id/top"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

@@ -212,4 +212,10 @@ To change a score, click on the list icon in the toolbar. This will display a li
     <string name="title_activity_timer">Timer</string>
     <string name="list_scores">Scorelist</string>
     <string name="upload_data">Upload Data</string>
+    <string name="message">Arriving soon on this platform</string>
+    <string name="image_of_timer">Image of timer</string>
+    <string name="timerButtonText">Click me</string>
+    <string name="missing_rider_number">Missing rider number</string>
+    <string name="startTimerButtonText">start timer</string>
+    <string name="finishButtonText">Enter</string>
 </resources>
