@@ -1,8 +1,10 @@
 package com.alexsykes.scoremonster.activities;
 
 import android.app.AlertDialog;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.database.sqlite.SQLiteDatabase;
 import android.media.AudioManager;
 import android.media.ToneGenerator;
 import android.os.Build;
@@ -22,7 +24,10 @@ import androidx.preference.PreferenceManager;
 
 import com.alexsykes.scoremonster.NumberPadFragment;
 import com.alexsykes.scoremonster.R;
+import com.alexsykes.scoremonster.data.TimeContract;
+import com.alexsykes.scoremonster.data.TimeDbHelper;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 public class TimerActivity extends AppCompatActivity {
@@ -33,6 +38,7 @@ public class TimerActivity extends AppCompatActivity {
     Button finishButton, startClockButton;
     long clockStartTime;
     private int ridingNumber, trialid, mode;
+    private TimeDbHelper timeDbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,6 +120,9 @@ public class TimerActivity extends AppCompatActivity {
             startClockButton.setVisibility(View.GONE);
             finishButton.setVisibility(View.VISIBLE);
             statusLine.setText("Clock started at ");
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd:MM:yyyy H:mm:ss");
+            String dateString = dateFormat.format(clockStartTime);
+            statusLine.setText("Start time: " + dateString);
         } else {
             startClockButton.setVisibility(View.VISIBLE);
             finishButton.setVisibility(View.GONE);
@@ -161,14 +170,16 @@ public class TimerActivity extends AppCompatActivity {
     }
 
     private void save(View.OnLongClickListener view) {
+        Log.i("Note", "Saving finish time");
 
         ToneGenerator toneGen1 = new ToneGenerator(AudioManager.STREAM_MUSIC, ToneGenerator.MAX_VOLUME);
         // Get String values for rider and scoreLabel
         String rider = numberLabel.getText().toString();
-//        String score = scoreLabel.getText().toString();
+        // Get value for time
+        Calendar finishTime = Calendar.getInstance();
+        long finishTimeInMillis = finishTime.getTimeInMillis();
 
         // NOTE Do NOT use null
-
         if (rider.equals("")) {
             toneGen1.startTone(ToneGenerator.TONE_PROP_BEEP2, 150);
             Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
@@ -187,9 +198,26 @@ public class TimerActivity extends AppCompatActivity {
             editor.putString("riderText", rider);
             editor.apply();
 
-//            insertScore(riderNumber, scoreValue);
-//            scoreCount++;
-//            clearScore();
+            insertTime(riderNumber, finishTimeInMillis);
+            clearScore();
         }
+    }
+
+    private void insertTime(int riderNumber, long finishTimeInMillis) {
+        timeDbHelper = new TimeDbHelper(this);
+        SQLiteDatabase db = timeDbHelper.getWritableDatabase();
+
+        // Create a ContentValues object where column names are the keys,
+        ContentValues values = new ContentValues();
+        values.put(TimeContract.TimeEntry.COLUMN_TIME_NUMBER, riderNumber);
+        db.insert(TimeContract.TimeEntry.TABLE_NAME, null, values);
+    }
+
+    private void clearScore() {
+        numberLabel.setText("");
+        SharedPreferences.Editor editor = localPrefs.edit();
+        editor.putInt("ridingNumber", 0);
+        editor.apply();
+
     }
 }

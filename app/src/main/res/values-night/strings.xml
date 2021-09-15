@@ -1,6 +1,3 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="list_scores">Scorelist</string>
-    <string name="timing_mode">Timing mode</string>
-    <string name="startTimerButtonText">start timer</string>
 </resources>
