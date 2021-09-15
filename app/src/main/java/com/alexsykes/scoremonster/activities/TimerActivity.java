@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.media.ToneGenerator;
 import android.os.Build;
 import android.os.Bundle;
@@ -16,6 +17,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -39,6 +41,7 @@ public class TimerActivity extends AppCompatActivity {
     long clockStartTime;
     private int ridingNumber, trialid, mode;
     private TimeDbHelper timeDbHelper;
+    MediaPlayer mediaPlayer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -126,7 +129,7 @@ public class TimerActivity extends AppCompatActivity {
         } else {
             startClockButton.setVisibility(View.VISIBLE);
             finishButton.setVisibility(View.GONE);
-            statusLine.setText("Clock not started");
+            numberLabel.setText("Clock not started");
         }
 
         getSupportFragmentManager().beginTransaction().add(R.id.content, numberPadFragment).commit();
@@ -210,7 +213,14 @@ public class TimerActivity extends AppCompatActivity {
         // Create a ContentValues object where column names are the keys,
         ContentValues values = new ContentValues();
         values.put(TimeContract.TimeEntry.COLUMN_TIME_NUMBER, riderNumber);
+        values.put(TimeContract.TimeEntry.COLUMN_TIME_TRIALID, trialid);
+        values.put(TimeContract.TimeEntry.COLUMN_TIME_FINISHTIME, finishTimeInMillis);
         db.insert(TimeContract.TimeEntry.TABLE_NAME, null, values);
+
+
+        // Confirm committed with sound
+        playSoundFile(R.raw.ting);
+        Toast.makeText(this, "Finish time recorded", Toast.LENGTH_SHORT).show();
     }
 
     private void clearScore() {
@@ -219,5 +229,11 @@ public class TimerActivity extends AppCompatActivity {
         editor.putInt("ridingNumber", 0);
         editor.apply();
 
+    }
+
+    //play a soundfile
+    public void playSoundFile(Integer fileName) {
+        mediaPlayer = MediaPlayer.create(this, fileName);
+        mediaPlayer.start();
     }
 }
