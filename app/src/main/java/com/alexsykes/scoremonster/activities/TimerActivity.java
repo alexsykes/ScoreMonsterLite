@@ -3,6 +3,7 @@ package com.alexsykes.scoremonster.activities;
 import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.media.AudioManager;
@@ -13,6 +14,8 @@ import android.os.Bundle;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -40,8 +43,10 @@ public class TimerActivity extends AppCompatActivity {
     Button finishButton, startClockButton;
     long clockStartTime;
     private int ridingNumber, trialid, mode;
+    public static final String EXTRA_MESSAGE = "com.alexsykes.scoremonster.activities.MESSAGE";
     private TimeDbHelper timeDbHelper;
     MediaPlayer mediaPlayer;
+    private String message;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +54,6 @@ public class TimerActivity extends AppCompatActivity {
         setContentView(R.layout.activity_timer);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        //ridingNumber = 1;
 
         // Get a support ActionBar corresponding to this toolbar
         ActionBar ab = getSupportActionBar();
@@ -92,6 +96,48 @@ public class TimerActivity extends AppCompatActivity {
         saveCurrentState();
     }
 
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.timer_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+
+            // Show scores on remote server
+            case R.id.timesheet:
+                goTimesheet();
+                return true;
+
+            // Enter andinitialise section details
+            case R.id.setup:
+                goSetup();
+                return true;
+
+//            case R.id.reset:
+//                reset();
+//                return true;
+            default:
+                // If we got here, the user's action was not recognized.
+                // Invoke the superclass to handle it.
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void goTimesheet() {
+        Intent intent = new Intent(this, TimeListActivity.class);
+        intent.putExtra(EXTRA_MESSAGE, message);
+        startActivity(intent);
+    }
+
+    private void goSetup() {
+        Intent intent = new Intent(this, SettingsActivity.class);
+        intent.putExtra(EXTRA_MESSAGE, message);
+        startActivity(intent);
+        // getPrefs();
+    }
+
     private void saveCurrentState() {
         Log.i("Note", "saveCurrentState called");
         localPrefs = PreferenceManager.getDefaultSharedPreferences(this);
@@ -106,6 +152,11 @@ public class TimerActivity extends AppCompatActivity {
     }
 
     private void UISetup() {
+        // Add custom ActionBar
+        Toolbar myToolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(myToolbar);
+        myToolbar.getMenu();
+
         finishButton = findViewById(R.id.finishButton);
         statusLine = findViewById(R.id.statusLine);
         startClockButton = findViewById(R.id.startClockButton);
@@ -126,13 +177,13 @@ public class TimerActivity extends AppCompatActivity {
             SimpleDateFormat dateFormat = new SimpleDateFormat("dd:MM:yyyy H:mm:ss");
             String dateString = dateFormat.format(clockStartTime);
             statusLine.setText("Start time: " + dateString);
+            getSupportFragmentManager().beginTransaction().add(R.id.content, numberPadFragment).commit();
         } else {
             startClockButton.setVisibility(View.VISIBLE);
             finishButton.setVisibility(View.GONE);
             numberLabel.setText("Clock not started");
         }
 
-        getSupportFragmentManager().beginTransaction().add(R.id.content, numberPadFragment).commit();
     }
 
     private void getPrefs() {
@@ -209,12 +260,14 @@ public class TimerActivity extends AppCompatActivity {
     private void insertTime(int riderNumber, long finishTimeInMillis) {
         timeDbHelper = new TimeDbHelper(this);
         SQLiteDatabase db = timeDbHelper.getWritableDatabase();
+        long elapsedTime = finishTimeInMillis - clockStartTime;
 
         // Create a ContentValues object where column names are the keys,
         ContentValues values = new ContentValues();
         values.put(TimeContract.TimeEntry.COLUMN_TIME_NUMBER, riderNumber);
         values.put(TimeContract.TimeEntry.COLUMN_TIME_TRIALID, trialid);
         values.put(TimeContract.TimeEntry.COLUMN_TIME_FINISHTIME, finishTimeInMillis);
+        values.put(TimeContract.TimeEntry.COLUMN_TIME_ELAPSEDTIME, elapsedTime);
         db.insert(TimeContract.TimeEntry.TABLE_NAME, null, values);
 
 

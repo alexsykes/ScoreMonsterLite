@@ -113,6 +113,7 @@ public class ScoreMonsterLite extends Application {
                 + TimeContract.TimeEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + TimeContract.TimeEntry.COLUMN_TIME_NUMBER + " INTEGER NOT NULL DEFAULT 0, "
                 + TimeContract.TimeEntry.COLUMN_TIME_FINISHTIME + " INTEGER NOT NULL DEFAULT 0, "
+                + TimeContract.TimeEntry.COLUMN_TIME_ELAPSEDTIME + " INTEGER NOT NULL DEFAULT 0, "
                 + TimeContract.TimeEntry.COLUMN_TIME_CREATED + " TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP, "
                 + TimeContract.TimeEntry.COLUMN_TIME_TRIALID + " INTEGER NOT NULL DEFAULT 0 );";
 

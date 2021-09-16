@@ -5,8 +5,7 @@
     android:versionCode="2"
     android:versionName="ariel red hunter">
 
-    <uses-permission android:name="android.permission.VIBRATE" />
-    <!--uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" /-->
+    <uses-permission android:name="android.permission.VIBRATE" /> <!-- uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" / -->
     <uses-permission android:name="android.permission.WRITE_INTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
@@ -21,6 +20,14 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Theme">
+        <activity
+            android:name=".activities.TimeListActivity"
+            android:exported="true"
+            android:label="@string/time_list"
+            android:parentActivityName=".activities.TimerActivity"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
+
         <activity
             android:name=".activities.TimerActivity"
             android:exported="true"
@@ -38,8 +45,8 @@
             tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".activities.HelpActivity"
-            android:parentActivityName=".activities.MainActivity"
             android:label="@string/help"
+            android:parentActivityName=".activities.MainActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity
@@ -54,6 +61,7 @@
             tools:ignore="LockedOrientationActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

@@ -219,4 +219,5 @@ To change a score, click on the list icon in the toolbar. This will display a li
     <string name="startTimerButtonText">start timer</string>
     <string name="finishButtonText">Enter</string>
     <string name="status_line">Status Line</string>
+    <string name="time_list">Time list</string>
 </resources>
