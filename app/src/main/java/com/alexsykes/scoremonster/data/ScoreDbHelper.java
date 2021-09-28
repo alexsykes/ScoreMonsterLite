@@ -32,7 +32,6 @@ public class ScoreDbHelper extends SQLiteOpenHelper {
      * @param context of the app
      */
     public ScoreDbHelper(Context context) {
-
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 

@@ -8,6 +8,7 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="../../../../../layout/custom_preview.xml" value="0.4734375" />
         <entry key="../../../.gradle/caches/transforms-3/912d237a25b428afc626c9aa7f359d78/transformed/preference-1.1.1/res/layout/preference_material.xml" value="0.1" />
         <entry key="app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.20462962962962963" />
         <entry key="app/src/main/res/drawable/ic_baseline_email_48.xml" value="0.20462962962962963" />
@@ -32,7 +33,9 @@
         <entry key="app/src/main/res/layout/activity_web_help.xml" value="0.396875" />
         <entry key="app/src/main/res/layout/fragment_number_pad.xml" value="0.1" />
         <entry key="app/src/main/res/layout/fragment_touch.xml" value="0.33240740740740743" />
+        <entry key="app/src/main/res/layout/score_row.xml" value="0.36822916666666666" />
         <entry key="app/src/main/res/layout/settings_activity.xml" value="0.26459143968871596" />
+        <entry key="app/src/main/res/layout/time_row.xml" value="0.371875" />
         <entry key="app/src/main/res/layout/timer_settings_activity.xml" value="0.3194444444444444" />
         <entry key="app/src/main/res/menu/timer_menu.xml" value="0.35989583333333336" />
         <entry key="app/src/main/res/menu/toolbar_menu.xml" value="0.6841025641025641" />

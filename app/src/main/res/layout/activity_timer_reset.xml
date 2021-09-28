@@ -47,14 +47,14 @@
             app:layout_constraintStart_toStartOf="parent"
             tools:ignore="TextContrastCheck" />
 
-        <androidx.appcompat.widget.AppCompatCheckBox
+<!--        <androidx.appcompat.widget.AppCompatCheckBox
             android:id="@+id/confirmTimeReset"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:button="@drawable/ic_unchecked_checkbox"
             android:paddingStart="8dp"
             android:paddingEnd="4dp"
-            android:text="@string/confirm_start_timer_reset" />
+            android:text="@string/confirm_start_timer_reset" />-->
 
         <com.google.android.material.switchmaterial.SwitchMaterial
             android:id="@+id/deleteTimes"
@@ -64,20 +64,21 @@
             android:minHeight="48dp"
             android:text="@string/delete_saved_times"
             app:layout_constraintStart_toStartOf="parent" />
-
-        <androidx.appcompat.widget.AppCompatCheckBox
-            android:id="@+id/confirmDeleteTimes"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:button="@drawable/ic_unchecked_checkbox"
-            android:paddingStart="8dp"
-            android:paddingEnd="4dp"
-            android:text="@string/confirm_delete_saved_times" />
+        <!--
+                <androidx.appcompat.widget.AppCompatCheckBox
+                    android:id="@+id/confirmDeleteTimes"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:button="@drawable/ic_unchecked_checkbox"
+                    android:paddingStart="8dp"
+                    android:paddingEnd="4dp"
+                    android:text="@string/confirm_delete_saved_times" />-->
 
         <Button
             android:id="@+id/resetButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:onClick="reset"
             android:text="@string/reset" />
     </LinearLayout>
 

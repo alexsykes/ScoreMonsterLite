@@ -63,35 +63,21 @@ public class TimerActivity extends AppCompatActivity {
 
         getPrefs();
         UISetup();
-        finishButton.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                save(this);
-                return false;
-            }
-        });
-        startClockButton.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                startClock(this);
-                return false;
-            }
+    }
 
-            private void startClock(View.OnLongClickListener onLongClickListener) {
-                Calendar startTime = Calendar.getInstance();
-                clockStartTime = startTime.getTimeInMillis();
-
-                // Save start time in prefs
-                SharedPreferences.Editor editor = localPrefs.edit();
-                editor.putLong("clockStartTime", clockStartTime);
-                editor.apply();
-            }
-        });
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.i("Alex", "onResume called");
+        getPrefs();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd:MM:yyyy H:mm:ss");
+        String dateString = dateFormat.format(clockStartTime);
+        statusLine.setText("Start time: " + dateString);
     }
 
     @Override
     protected void onPause() {
-        Log.i("Note", "onPause called");
+        Log.i("Alex", "onPause called");
         super.onPause();
         saveCurrentState();
     }
@@ -104,7 +90,6 @@ public class TimerActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-
             // Show scores on remote server
             case R.id.timesheet:
                 goTimesheet();
@@ -115,9 +100,6 @@ public class TimerActivity extends AppCompatActivity {
                 goSetup();
                 return true;
 
-//            case R.id.reset:
-//                reset();
-//                return true;
             default:
                 // If we got here, the user's action was not recognized.
                 // Invoke the superclass to handle it.
@@ -135,20 +117,21 @@ public class TimerActivity extends AppCompatActivity {
         Intent intent = new Intent(this, TimerResetActivity.class);
         intent.putExtra(EXTRA_MESSAGE, message);
         startActivity(intent);
-        // getPrefs();
     }
 
     private void saveCurrentState() {
         Log.i("Note", "saveCurrentState called");
         localPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor editor = localPrefs.edit();
-        String currentRiderText = numberLabel.getText().toString();
-        int rider = 0;
-        if (!currentRiderText.equals("")) {
-            rider = Integer.parseInt(numberLabel.getText().toString());
+        if (clockStartTime > 0) {
+            String currentRiderText = numberLabel.getText().toString();
+            int rider = 0;
+            if (!currentRiderText.equals("")) {
+                rider = Integer.parseInt(numberLabel.getText().toString());
+            }
+            editor.putInt("ridingNumber", rider);
+            editor.apply();
         }
-        editor.putInt("ridingNumber", rider);
-        editor.apply();
     }
 
     private void UISetup() {
@@ -157,12 +140,36 @@ public class TimerActivity extends AppCompatActivity {
         setSupportActionBar(myToolbar);
         myToolbar.getMenu();
 
-        finishButton = findViewById(R.id.finishButton);
         statusLine = findViewById(R.id.statusLine);
         startClockButton = findViewById(R.id.startClockButton);
+        startClockButton.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                startClock(this);
+                return false;
+            }
+
+            private void startClock(View.OnLongClickListener onLongClickListener) {
+                Calendar startTime = Calendar.getInstance();
+                clockStartTime = startTime.getTimeInMillis();
+
+                // Save start time in prefs
+                SharedPreferences.Editor editor = localPrefs.edit();
+                editor.putLong("clockStartTime", clockStartTime);
+                editor.apply();
+            }
+        });
         numberPadFragment = new NumberPadFragment();
         content = findViewById(R.id.content);
         numberLabel = findViewById(R.id.riderNumberLabel);
+        finishButton = findViewById(R.id.finishButton);
+        finishButton.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                save(this);
+                return false;
+            }
+        });
 
         // Button setup
         if (ridingNumber > 0) {
@@ -173,7 +180,6 @@ public class TimerActivity extends AppCompatActivity {
         if (clockStartTime > 0) {
             startClockButton.setVisibility(View.GONE);
             finishButton.setVisibility(View.VISIBLE);
-            statusLine.setText("Clock started at ");
             SimpleDateFormat dateFormat = new SimpleDateFormat("dd:MM:yyyy H:mm:ss");
             String dateString = dateFormat.format(clockStartTime);
             statusLine.setText("Start time: " + dateString);
@@ -183,7 +189,6 @@ public class TimerActivity extends AppCompatActivity {
             finishButton.setVisibility(View.GONE);
             numberLabel.setText("Clock not started");
         }
-
     }
 
     private void getPrefs() {
