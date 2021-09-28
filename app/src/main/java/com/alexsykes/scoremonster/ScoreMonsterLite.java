@@ -55,7 +55,7 @@ public class ScoreMonsterLite extends Application {
 
         // if online, loads list of trials
         if (isOnline) {
-            String URL = BASE_URL + "getTrialList.php";
+            String URL = BASE_URL + "getTrialListScoreMonster.php";
             try {
                 getTrialList(URL);
                 Log.i(null, "Trials data loaded");
@@ -186,7 +186,7 @@ public class ScoreMonsterLite extends Application {
              */
             private ArrayList<HashMap<String, String>> populateResultArrayList(String json) {
                 ArrayList<HashMap<String, String>> theTrialList = new ArrayList<>();
-                String date, name, id, club, numsections, numlaps, starttime, email, mode;
+                String date, name, id, club, numsections, numlaps, starttime, email, mode, startinterval;
 
                 try {
                     // Parse string data into JSON
@@ -203,6 +203,7 @@ public class ScoreMonsterLite extends Application {
                         starttime = jsonArray.getJSONObject(index).getString("starttime");
                         email = jsonArray.getJSONObject(index).getString("email");
                         mode = jsonArray.getJSONObject(index).getString("scoringmode");
+                        startinterval = jsonArray.getJSONObject(index).getString("startinterval");
 
                         // trial = club + " - " + name;
                         theTrial.put("id", id);
@@ -214,6 +215,7 @@ public class ScoreMonsterLite extends Application {
                         theTrial.put("starttime", starttime);
                         theTrial.put("email", email);
                         theTrial.put("mode", mode);
+                        theTrial.put("startinterval", startinterval);
                         theTrialList.add(theTrial);
                     }
 
@@ -303,7 +305,7 @@ public class ScoreMonsterLite extends Application {
             String theEmail = theTrial.get("email");
             String club = theTrial.get("club");
             String mode = theTrial.get("mode");
-            String startInterval = theTrial.get("startinterval");
+            String startinterval = theTrial.get("startinterval");
 
             // Create a ContentValues object where column names are the keys,
             ContentValues values = new ContentValues();
@@ -316,7 +318,7 @@ public class ScoreMonsterLite extends Application {
             values.put(TrialContract.TrialEntry.COLUMN_TRIAL_TRIALID, theID);
             values.put(TrialContract.TrialEntry.COLUMN_TRIAL_CLUB, club);
             values.put(TrialContract.TrialEntry.COLUMN_TRIAL_MODE, mode);
-            values.put(TrialContract.TrialEntry.COLUMN_TRIAL_INTERVAL, startInterval);
+            values.put(TrialContract.TrialEntry.COLUMN_TRIAL_INTERVAL, startinterval);
             values.put(TrialContract.TrialEntry._ID, theID);
 
             db.insertWithOnConflict("trials", null, values, SQLiteDatabase.CONFLICT_REPLACE);

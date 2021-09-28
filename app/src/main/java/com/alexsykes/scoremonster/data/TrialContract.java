@@ -30,7 +30,7 @@ public class TrialContract extends AppCompatActivity {
         public final static String COLUMN_TRIAL_DATE = "date";
         public final static String COLUMN_TRIAL_MODE = "mode";
         public final static String COLUMN_TRIAL_CLUB = "club";
-        public final static String COLUMN_TRIAL_INTERVAL = "startInterval";
+        public final static String COLUMN_TRIAL_INTERVAL = "startinterval";
     }
 
 

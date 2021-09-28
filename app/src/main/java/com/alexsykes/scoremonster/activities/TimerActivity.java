@@ -31,6 +31,7 @@ import com.alexsykes.scoremonster.NumberPadFragment;
 import com.alexsykes.scoremonster.R;
 import com.alexsykes.scoremonster.data.TimeContract;
 import com.alexsykes.scoremonster.data.TimeDbHelper;
+import com.alexsykes.scoremonster.data.TrialDbHelper;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -45,6 +46,7 @@ public class TimerActivity extends AppCompatActivity {
     private int ridingNumber, trialid, mode;
     public static final String EXTRA_MESSAGE = "com.alexsykes.scoremonster.activities.MESSAGE";
     private TimeDbHelper timeDbHelper;
+    private TrialDbHelper trialDbHelper;
     MediaPlayer mediaPlayer;
     private String message;
 
@@ -70,7 +72,7 @@ public class TimerActivity extends AppCompatActivity {
         super.onResume();
         Log.i("Alex", "onResume called");
         getPrefs();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd:MM:yyyy H:mm:ss");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("h:mm:ss a");
         String dateString = dateFormat.format(clockStartTime);
         statusLine.setText("Start time: " + dateString);
     }
@@ -180,7 +182,7 @@ public class TimerActivity extends AppCompatActivity {
         if (clockStartTime > 0) {
             startClockButton.setVisibility(View.GONE);
             finishButton.setVisibility(View.VISIBLE);
-            SimpleDateFormat dateFormat = new SimpleDateFormat("dd:MM:yyyy H:mm:ss");
+            SimpleDateFormat dateFormat = new SimpleDateFormat("h:mm:ss a");
             String dateString = dateFormat.format(clockStartTime);
             statusLine.setText("Start time: " + dateString);
             getSupportFragmentManager().beginTransaction().replace(R.id.content, numberPadFragment).commit();
@@ -263,19 +265,33 @@ public class TimerActivity extends AppCompatActivity {
     }
 
     private void insertTime(int riderNumber, long finishTimeInMillis) {
-        long elapsedTime;
+        long elapsedTime, timeInterval, deltaTime, riderStartTime;
+        trialDbHelper = new TrialDbHelper(this);
+        startInterval = trialDbHelper.getStartInterval(trialid);
+
+        /*  finishTimeInMillis - real finishtime
+            timeInterval - time delay for each rider
+            Zero for #1
+            deltaTime - real time difference between startTime and riderStartTime
+            riderStartTime - time rider actually started
+            elapsedTime - time on course for rider
+         */
+        timeInterval = (riderNumber - 1) * 1000 * startInterval;
+        riderStartTime = clockStartTime + timeInterval;
+
         timeDbHelper = new TimeDbHelper(this);
         SQLiteDatabase db = timeDbHelper.getWritableDatabase();
-        long deltaTime = finishTimeInMillis - clockStartTime;
+        deltaTime = finishTimeInMillis - riderStartTime;
 
         // Calculate rider's elapsed time using startInterval
+        // startInterval measured in seconds
 
         // Create a ContentValues object where column names are the keys,
         ContentValues values = new ContentValues();
         values.put(TimeContract.TimeEntry.COLUMN_TIME_NUMBER, riderNumber);
         values.put(TimeContract.TimeEntry.COLUMN_TIME_TRIALID, trialid);
         values.put(TimeContract.TimeEntry.COLUMN_TIME_FINISHTIME, finishTimeInMillis);
-        values.put(TimeContract.TimeEntry.COLUMN_TIME_ELAPSEDTIME, elapsedTime);
+        values.put(TimeContract.TimeEntry.COLUMN_TIME_ELAPSEDTIME, deltaTime);
         db.insert(TimeContract.TimeEntry.TABLE_NAME, null, values);
 
 

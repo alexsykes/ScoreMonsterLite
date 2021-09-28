@@ -4,13 +4,13 @@ public class Trial {
     int _id;
     int numsections;
     int numlaps;
-    int startInterval;
+    long startinterval;
     int mode;
 
 
     String email, date, name, club;
 
-    public Trial(int _id, int numsections, int numlaps, int mode, String email, String date, String name, String club, int startInterval) {
+    public Trial(int _id, int numsections, int numlaps, int mode, String email, String date, String name, String club, long startinterval) {
         this._id = _id;
         this.numsections = numsections;
         this.numlaps = numlaps;
@@ -19,7 +19,7 @@ public class Trial {
         this.date = date;
         this.name = name;
         this.club = club;
-        this.startInterval = startInterval;
+        this.startinterval = startinterval;
     }
 
     public int getMode() {

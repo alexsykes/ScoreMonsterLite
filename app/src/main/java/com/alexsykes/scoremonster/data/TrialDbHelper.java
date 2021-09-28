@@ -39,6 +39,17 @@ public class TrialDbHelper extends SQLiteOpenHelper {
 
     }
 
+    public long getStartInterval(int trialid) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "SELECT startInterval FROM trials WHERE trialid = " + trialid;
+        Cursor cursor = db.rawQuery(query, null);
+        cursor.moveToFirst();
+        String value = cursor.getString(0);
+        long startInterval = Long.valueOf(value);
+        cursor.close();
+        return startInterval;
+    }
+
     public void clearTrials() {
         SQLiteDatabase db = this.getWritableDatabase();
         String query = "DELETE FROM trials";
