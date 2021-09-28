@@ -222,4 +222,9 @@ To change a score, click on the list icon in the toolbar. This will display a li
     <string name="time_list">Time list</string>
     <string name="time_reset">Timer Reset</string>
     <string name="warning_text">Caution - Selecting options here will result in data being permanently deleted. </string>
+    <string name="reset_timer">Reset Timer</string>
+    <string name="confirm_start_timer_reset">Confirm start timer reset</string>
+    <string name="delete_saved_times">Delete saved times</string>
+    <string name="confirm_delete_saved_times">Confirm delete saved times</string>
+    <string name="reset">Reset</string>
 </resources>

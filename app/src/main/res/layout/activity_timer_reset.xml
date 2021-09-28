@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    style="@style/Theme.Theme"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activities.TimerResetActivity">
@@ -16,16 +17,69 @@
         android:theme="@style/Theme.Theme"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/textView5"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:drawableStart="@drawable/ic_warning__48dp"
-        android:text="@string/warning_text"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar" />
+        android:layout_margin="4dp"
+        android:orientation="vertical"
+        app:layout_constraintTop_toBottomOf="@id/toolbar">
+
+        <TextView
+            android:id="@+id/warningTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="@string/warning_text"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:drawableStartCompat="@drawable/ic_warning__48dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/toolbar" />
+
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/resetTimer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:minHeight="48dp"
+            android:text="@string/reset_timer"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:ignore="TextContrastCheck" />
+
+        <androidx.appcompat.widget.AppCompatCheckBox
+            android:id="@+id/confirmTimeReset"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:button="@drawable/ic_unchecked_checkbox"
+            android:paddingStart="8dp"
+            android:paddingEnd="4dp"
+            android:text="@string/confirm_start_timer_reset" />
+
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/deleteTimes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:minHeight="48dp"
+            android:text="@string/delete_saved_times"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <androidx.appcompat.widget.AppCompatCheckBox
+            android:id="@+id/confirmDeleteTimes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:button="@drawable/ic_unchecked_checkbox"
+            android:paddingStart="8dp"
+            android:paddingEnd="4dp"
+            android:text="@string/confirm_delete_saved_times" />
+
+        <Button
+            android:id="@+id/resetButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/reset" />
+    </LinearLayout>
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>
