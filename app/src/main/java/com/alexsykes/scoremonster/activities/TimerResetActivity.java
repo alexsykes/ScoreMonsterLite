@@ -19,12 +19,15 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.preference.PreferenceManager;
 
 import com.alexsykes.scoremonster.R;
+import com.alexsykes.scoremonster.data.TimeDbHelper;
 
 public class TimerResetActivity extends AppCompatActivity {
     CheckBox confirmResetTimer, confirmDeleteScores;
     SwitchCompat deleteTimes, resetTimer;
     Button resetButton;
     SharedPreferences localPrefs;
+    TimeDbHelper timeDbHelper;
+    int trialid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +44,7 @@ public class TimerResetActivity extends AppCompatActivity {
 
         // Get prefs
         localPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        trialid = localPrefs.getInt("trialid", 0);
 
         deleteTimes = findViewById(R.id.deleteTimes);
         resetTimer = findViewById(R.id.resetTimer);
@@ -48,6 +52,8 @@ public class TimerResetActivity extends AppCompatActivity {
         deleteTimes.setChecked(false);
         resetTimer.setChecked(false);
         resetButton.setEnabled(false);
+
+        timeDbHelper = new TimeDbHelper(this);
 
 
         resetTimer.setOnCheckedChangeListener(new OnCheckedChangeListener() {
@@ -93,6 +99,8 @@ public class TimerResetActivity extends AppCompatActivity {
 
                 // Reset Times
                 if (deleteTimes.isChecked() == true) {
+                    TimeDbHelper timeDbHelper = new TimeDbHelper(getApplicationContext());
+                    timeDbHelper.lapseTimes(trialid);
                     Log.i("Info", "Delete times");
                 }
 

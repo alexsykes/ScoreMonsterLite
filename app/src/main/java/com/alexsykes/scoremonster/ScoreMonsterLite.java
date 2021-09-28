@@ -1,4 +1,5 @@
 package com.alexsykes.scoremonster;
+// TODO - update elapsedTime to take account of startTime and startInterval
 
 import static java.lang.String.join;
 

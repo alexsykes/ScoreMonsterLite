@@ -45,4 +45,14 @@ public class TimeDbHelper extends SQLiteOpenHelper {
         cursor.close();
         return timeList;
     }
+
+    // Lapse times by setting trialid to negative of original trialid
+    public void lapseTimes(int trialid) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        int newid = -trialid;
+        String query = "UPDATE times SET trialid = " + newid + " WHERE trialid = " + trialid;
+        Log.i("Query", query);
+        // Execute the SQL statement
+        db.execSQL(query);
+    }
 }

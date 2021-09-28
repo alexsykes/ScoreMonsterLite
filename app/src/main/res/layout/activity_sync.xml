@@ -35,6 +35,7 @@
             android:layout_marginTop="8dp"
             android:text="@string/rider"
             android:textSize="18sp"
+            android:textStyle="bold"
             app:layout_constraintEnd_toStartOf="@+id/textView2"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
@@ -47,6 +48,7 @@
             android:layout_marginTop="8dp"
             android:text="@string/lap"
             android:textSize="18sp"
+            android:textStyle="bold"
             app:layout_constraintEnd_toStartOf="@+id/textView3"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/textView"
@@ -59,6 +61,7 @@
             android:layout_marginTop="8dp"
             android:text="@string/score"
             android:textSize="18sp"
+            android:textStyle="bold"
             app:layout_constraintEnd_toStartOf="@+id/trialid"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/textView2"
@@ -71,6 +74,7 @@
             android:layout_marginTop="8dp"
             android:text="@string/section_number"
             android:textSize="18sp"
+            android:textStyle="bold"
             app:layout_constraintEnd_toStartOf="@+id/textView4"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/textView3"
@@ -85,6 +89,7 @@
             android:gravity="end"
             android:text="@string/sync_status"
             android:textSize="18sp"
+            android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/trialid"
             app:layout_constraintTop_toTopOf="parent" />
@@ -98,20 +103,6 @@
         android:layout_marginBottom="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/labels" />
-
-    <!--    <Button-->
-    <!--        android:id="@+id/processButton"-->
-    <!--        android:layout_width="wrap_content"-->
-    <!--        android:layout_height="wrap_content"-->
-    <!--        android:layout_marginStart="8dp"-->
-    <!--        android:layout_marginEnd="8dp"-->
-    <!--        android:layout_marginBottom="8dp"-->
-    <!--        android:text="@string/process_data"-->
-    <!--        app:layout_constraintBottom_toBottomOf="parent"-->
-    <!--        app:layout_constraintEnd_toEndOf="parent"-->
-    <!--        app:layout_constraintStart_toStartOf="parent"-->
-    <!--        android:textColor="@color/colorButtonBlue"-->
-    <!--        style="@android:style/Widget.Button" />-->
 
     <Button
         android:id="@+id/processButton"

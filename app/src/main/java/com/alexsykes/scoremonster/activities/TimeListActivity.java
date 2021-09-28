@@ -2,7 +2,6 @@ package com.alexsykes.scoremonster.activities;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -55,7 +54,6 @@ public class TimeListActivity extends AppCompatActivity {
 
     private void populateTimeList() {
         theTimeList = dbHelper.getTimeList(trialid);
-        Log.i("trialid", "" + trialid);
         timeView = findViewById(R.id.timeView);
         LinearLayoutManager llm = new LinearLayoutManager(this);
         timeView.setLayoutManager(llm);

@@ -227,4 +227,6 @@ To change a score, click on the list icon in the toolbar. This will display a li
     <string name="delete_saved_times">Delete saved times</string>
     <string name="confirm_delete_saved_times">Confirm delete saved times</string>
     <string name="reset">Reset</string>
+    <string name="elapsedTime">Elapsed time</string>
+    <string name="finish_time">Finish time</string>
 </resources>
