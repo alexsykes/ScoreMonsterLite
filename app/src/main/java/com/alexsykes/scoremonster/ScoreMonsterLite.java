@@ -100,6 +100,7 @@ public class ScoreMonsterLite extends Application {
                 + TrialContract.TrialEntry.COLUMN_TRIAL_NUMLAPS + " INTEGER NOT NULL DEFAULT 0, "
                 + TrialContract.TrialEntry.COLUMN_TRIAL_NUMSECTIONS + " INTEGER NOT NULL DEFAULT 0, "
                 + TrialContract.TrialEntry.COLUMN_TRIAL_MODE + " INTEGER NOT NULL DEFAULT 0, "
+                + TrialContract.TrialEntry.COLUMN_TRIAL_INTERVAL + " INTEGER NOT NULL DEFAULT 0, "
                 + TrialContract.TrialEntry.COLUMN_TRIAL_NAME + " TEXT , "
                 + TrialContract.TrialEntry.COLUMN_TRIAL_DATE + " TEXT , "
                 + TrialContract.TrialEntry.COLUMN_TRIAL_EMAIL + " TEXT , "
@@ -302,6 +303,7 @@ public class ScoreMonsterLite extends Application {
             String theEmail = theTrial.get("email");
             String club = theTrial.get("club");
             String mode = theTrial.get("mode");
+            String startInterval = theTrial.get("startinterval");
 
             // Create a ContentValues object where column names are the keys,
             ContentValues values = new ContentValues();
@@ -314,6 +316,7 @@ public class ScoreMonsterLite extends Application {
             values.put(TrialContract.TrialEntry.COLUMN_TRIAL_TRIALID, theID);
             values.put(TrialContract.TrialEntry.COLUMN_TRIAL_CLUB, club);
             values.put(TrialContract.TrialEntry.COLUMN_TRIAL_MODE, mode);
+            values.put(TrialContract.TrialEntry.COLUMN_TRIAL_INTERVAL, startInterval);
             values.put(TrialContract.TrialEntry._ID, theID);
 
             db.insertWithOnConflict("trials", null, values, SQLiteDatabase.CONFLICT_REPLACE);

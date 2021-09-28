@@ -41,7 +41,7 @@ public class TimerActivity extends AppCompatActivity {
     TextView numberLabel, statusLine;
     SharedPreferences localPrefs;
     Button finishButton, startClockButton;
-    long clockStartTime;
+    long clockStartTime, startInterval;
     private int ridingNumber, trialid, mode;
     public static final String EXTRA_MESSAGE = "com.alexsykes.scoremonster.activities.MESSAGE";
     private TimeDbHelper timeDbHelper;
@@ -263,9 +263,12 @@ public class TimerActivity extends AppCompatActivity {
     }
 
     private void insertTime(int riderNumber, long finishTimeInMillis) {
+        long elapsedTime;
         timeDbHelper = new TimeDbHelper(this);
         SQLiteDatabase db = timeDbHelper.getWritableDatabase();
-        long elapsedTime = finishTimeInMillis - clockStartTime;
+        long deltaTime = finishTimeInMillis - clockStartTime;
+
+        // Calculate rider's elapsed time using startInterval
 
         // Create a ContentValues object where column names are the keys,
         ContentValues values = new ContentValues();
