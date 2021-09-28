@@ -132,7 +132,7 @@ public class TimerActivity extends AppCompatActivity {
     }
 
     private void goSetup() {
-        Intent intent = new Intent(this, SettingsActivity.class);
+        Intent intent = new Intent(this, TimerResetActivity.class);
         intent.putExtra(EXTRA_MESSAGE, message);
         startActivity(intent);
         // getPrefs();
@@ -177,7 +177,7 @@ public class TimerActivity extends AppCompatActivity {
             SimpleDateFormat dateFormat = new SimpleDateFormat("dd:MM:yyyy H:mm:ss");
             String dateString = dateFormat.format(clockStartTime);
             statusLine.setText("Start time: " + dateString);
-            getSupportFragmentManager().beginTransaction().add(R.id.content, numberPadFragment).commit();
+            getSupportFragmentManager().beginTransaction().replace(R.id.content, numberPadFragment).commit();
         } else {
             startClockButton.setVisibility(View.VISIBLE);
             finishButton.setVisibility(View.GONE);
