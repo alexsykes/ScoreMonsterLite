@@ -63,23 +63,24 @@ public class TimerActivity extends AppCompatActivity {
         // Enable the Up button
         ab.setDisplayHomeAsUpEnabled(true);
 
+        // Load up preferences for trialid, riderNumber, clockStartTime
         getPrefs();
         UISetup();
+        getSupportFragmentManager().beginTransaction().add(R.id.content, numberPadFragment).commit();
+        if (clockStartTime == 0) {
+            getSupportFragmentManager().beginTransaction().remove(numberPadFragment).commit();
+        }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        Log.i("Alex", "onResume called");
-        getPrefs();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("h:mm:ss a");
-        String dateString = dateFormat.format(clockStartTime);
-        statusLine.setText("Start time: " + dateString);
+        Log.i("Info", "onResume called");
     }
 
     @Override
     protected void onPause() {
-        Log.i("Alex", "onPause called");
+        Log.i("Info", "onPause called");
         super.onPause();
         saveCurrentState();
     }
@@ -122,7 +123,7 @@ public class TimerActivity extends AppCompatActivity {
     }
 
     private void saveCurrentState() {
-        Log.i("Note", "saveCurrentState called");
+        Log.i("Info", "saveCurrentState called");
         localPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor editor = localPrefs.edit();
         if (clockStartTime > 0) {
@@ -159,6 +160,13 @@ public class TimerActivity extends AppCompatActivity {
                 SharedPreferences.Editor editor = localPrefs.edit();
                 editor.putLong("clockStartTime", clockStartTime);
                 editor.apply();
+                statusLine.setText("Clock started");
+                getSupportFragmentManager().beginTransaction().replace(R.id.content, numberPadFragment).commit();
+                startClockButton.setVisibility(View.GONE);
+                numberLabel.setText("");
+                SimpleDateFormat dateFormat = new SimpleDateFormat("h:mm:ss a");
+                String dateString = dateFormat.format(clockStartTime);
+                statusLine.setText("Start time: " + dateString);
             }
         });
         numberPadFragment = new NumberPadFragment();
@@ -185,7 +193,6 @@ public class TimerActivity extends AppCompatActivity {
             SimpleDateFormat dateFormat = new SimpleDateFormat("h:mm:ss a");
             String dateString = dateFormat.format(clockStartTime);
             statusLine.setText("Start time: " + dateString);
-            getSupportFragmentManager().beginTransaction().replace(R.id.content, numberPadFragment).commit();
         } else {
             startClockButton.setVisibility(View.VISIBLE);
             finishButton.setVisibility(View.GONE);
@@ -198,7 +205,7 @@ public class TimerActivity extends AppCompatActivity {
         trialid = localPrefs.getInt("trialid", 0);
         ridingNumber = localPrefs.getInt("ridingNumber", 0);
         clockStartTime = localPrefs.getLong("clockStartTime", 0);
-        mode = localPrefs.getInt("mode", 0);
+        // mode = localPrefs.getInt("mode", 0);
     }
 
     public void addDigit(View view) {
