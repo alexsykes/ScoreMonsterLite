@@ -47,16 +47,17 @@ public class TimeListActivity extends AppCompatActivity {
         // Get shared preferences for trialid, section
         localPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         clockStartTime = localPrefs.getLong("clockStartTime", 0);
-        SimpleDateFormat dateFormat = new SimpleDateFormat("h:mm:ss a");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("h:mm:ss");
         String dateString = dateFormat.format(clockStartTime);
 
         statusLine = findViewById(R.id.statusLine);
-        statusLine.setText("Start time: " + dateString);
 
         // Get data
         trialid = localPrefs.getInt("trialid", -999);
         dbHelper = new TimeDbHelper(this);
         fastestTime = dbHelper.getFastestTime(trialid);
+        String fastestTimeString = dateFormat.format(fastestTime);
+        statusLine.setText("Standard time: " + fastestTimeString);
         populateTimeList();
     }
 
@@ -83,7 +84,7 @@ public class TimeListActivity extends AppCompatActivity {
             riderTextView = itemView.findViewById(R.id.rider);
             finishTimeTextView = itemView.findViewById(R.id.finishTime);
             elapsedTimeTextView = itemView.findViewById(R.id.elapsedTime);
-            // timePenaltyTextView = itemView.findViewById(R.id.marksLost);
+            timePenaltyTextView = itemView.findViewById(R.id.marksLost);
         }
     }
 
@@ -115,15 +116,14 @@ public class TimeListActivity extends AppCompatActivity {
 
             SimpleDateFormat dateFormat = new SimpleDateFormat("h:mm:ss a");
             SimpleDateFormat timeFormat = new SimpleDateFormat("h:mm:ss");
-            String finishTimeString = dateFormat.format(Long.valueOf(theTime.get("finishTime")));
+            String finishTimeString = timeFormat.format(Long.valueOf(theTime.get("finishTime")));
             String elapsedTimeString = timeFormat.format(Long.valueOf(theTime.get("elapsedTime")));
-            // +String elapsedTimeString = theTime.get("elapsedTime");
 
 
             holder.riderTextView.setText(theTime.get("rider"));
             holder.finishTimeTextView.setText(finishTimeString);
             holder.elapsedTimeTextView.setText(elapsedTimeString);
-            // holder.timePenaltyTextView.setText("Marks");
+            holder.timePenaltyTextView.setText("Marks");
         }
 
         @Override
