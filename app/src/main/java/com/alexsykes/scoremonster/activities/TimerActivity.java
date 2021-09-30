@@ -142,13 +142,12 @@ public class TimerActivity extends AppCompatActivity {
             startClockButton.setVisibility(View.GONE);
             finishButton.setVisibility(View.VISIBLE);
             content.setVisibility(View.VISIBLE);
-        }
-
-        // Button setup
-        if (ridingNumber > 0) {
-            riderNumberLabel.setText(String.valueOf(ridingNumber));
-        } else {
-            riderNumberLabel.setText("");
+            // Button setup
+            if (ridingNumber > 0) {
+                riderNumberLabel.setText(String.valueOf(ridingNumber));
+            } else {
+                riderNumberLabel.setText("");
+            }
         }
     }
 
@@ -228,7 +227,12 @@ public class TimerActivity extends AppCompatActivity {
             elapsedTime - time on course for rider
          */
         timeInterval = (riderNumber - 1) * 1000 * startInterval;
+        Log.i("Info", "startInterval: " + startInterval);
+
         riderStartTime = clockStartTime + timeInterval;
+        Log.i("Info", "riderStartTime: " + riderStartTime);
+        Log.i("Info", "clockStartTime: " + clockStartTime);
+        Log.i("Info", "timeInterval: " + timeInterval);
 
         timeDbHelper = new TimeDbHelper(this);
         SQLiteDatabase db = timeDbHelper.getWritableDatabase();
@@ -306,13 +310,7 @@ public class TimerActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         getPrefs();
-        if (clockStartTime == 0) {
-            statusLine.setVisibility(View.INVISIBLE);
-            startClockButton.setVisibility(View.VISIBLE);
-            finishButton.setVisibility(View.GONE);
-            riderNumberLabel.setText("Timer not started");
-            content.setVisibility(View.GONE);
-        }
+
         Log.i("Info", "onResume called");
     }
 

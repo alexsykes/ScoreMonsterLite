@@ -31,8 +31,6 @@ public class TimeDbHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         ArrayList<HashMap<String, String>> timeList = new ArrayList<>();
         String query = "SELECT * FROM times WHERE trialid = " + trialid + " ORDER BY elapsedTime ASC";
-        Log.i("Query", query);
-        //  String query = "SELECT * FROM scores  ORDER BY _id DESC";
         Cursor cursor = db.rawQuery(query, null);
         while (cursor.moveToNext()) {
             HashMap<String, String> times = new HashMap<>();
@@ -44,6 +42,19 @@ public class TimeDbHelper extends SQLiteOpenHelper {
         }
         cursor.close();
         return timeList;
+    }
+
+    public long getFastestTime(int trialid) {
+        long fastestTime = 0;
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "SELECT MIN(elapsedTime) FROM times WHERE trialid = " + trialid;
+        Cursor cursor = db.rawQuery(query, null);
+        cursor.moveToFirst();
+        String value = cursor.getString(0);
+        fastestTime = Long.valueOf(value);
+        cursor.close();
+        Log.i("Info", "FastestTime: " + fastestTime);
+        return fastestTime;
     }
 
     // Lapse times by setting trialid to negative of original trialid
