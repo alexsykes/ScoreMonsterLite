@@ -51,7 +51,9 @@ public class TimeDbHelper extends SQLiteOpenHelper {
         Cursor cursor = db.rawQuery(query, null);
         cursor.moveToFirst();
         String value = cursor.getString(0);
-        fastestTime = Long.valueOf(value);
+        if (value != null) {
+            fastestTime = Long.valueOf(value);
+        }
         cursor.close();
         Log.i("Info", "FastestTime: " + fastestTime);
         return fastestTime;
