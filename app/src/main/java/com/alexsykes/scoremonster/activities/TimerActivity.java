@@ -126,6 +126,7 @@ public class TimerActivity extends AppCompatActivity {
         trialid = localPrefs.getInt("trialid", 0);
         ridingNumber = localPrefs.getInt("ridingNumber", 0);
         clockStartTime = localPrefs.getLong("clockStartTime", 0);
+        startInterval = localPrefs.getLong("startInterval", 60);
 
         if (clockStartTime == 0) {
             statusLine.setVisibility(View.INVISIBLE);
@@ -217,7 +218,7 @@ public class TimerActivity extends AppCompatActivity {
     private void insertTime(int riderNumber, long finishTimeInMillis) {
         long elapsedTime, timeInterval, deltaTime, riderStartTime;
         trialDbHelper = new TrialDbHelper(this);
-        startInterval = trialDbHelper.getStartInterval(trialid);
+        // startInterval = trialDbHelper.getStartInterval(trialid);
 
         /*  finishTimeInMillis - real finishtime
             timeInterval - time delay for each rider

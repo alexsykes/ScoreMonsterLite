@@ -2,13 +2,10 @@ package com.alexsykes.scoremonster.activities;
 // TODO - check section validation following read from trialPref
 // TODO - check riderNumber on change/lauch in mode 2
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.database.sqlite.SQLiteDatabase;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.InputType;
 import android.util.Log;
@@ -23,17 +20,8 @@ import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceManager;
 
 import com.alexsykes.scoremonster.R;
-import com.alexsykes.scoremonster.data.TrialContract;
 import com.alexsykes.scoremonster.data.TrialDbHelper;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.SocketTimeoutException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
@@ -276,6 +264,7 @@ public class SettingsActivity extends AppCompatActivity {
                     String date = theTrialData.get("date");
                     String name = theTrialData.get("name");
                     String club = theTrialData.get("club");
+                    long startInterval = Long.parseLong(theTrialData.get("startInterval"));
 
                     editor.putString("theTrialIndex", newValue.toString());  // Check if this is necessary
                     editor.putBoolean("trialHasChanged", true);
@@ -287,6 +276,7 @@ public class SettingsActivity extends AppCompatActivity {
                     editor.putString("email", email);
                     editor.putString("name", name);
                     editor.putString("club", club);
+                    editor.putLong("startInterval", startInterval);
                     editor.apply();
                     Log.i("Note", "Trial selection changed");
 
