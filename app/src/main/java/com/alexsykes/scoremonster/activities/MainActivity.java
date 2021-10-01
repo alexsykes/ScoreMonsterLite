@@ -832,6 +832,8 @@ public class MainActivity extends AppCompatActivity {
 
                 csvWrite.writeNext(arrStr, false);
             }
+            Log.i("Info", "MainActivity: saveToCSV: 834");
+            curChild.close();
             csvWrite.close();
 
         } catch (IOException e) {

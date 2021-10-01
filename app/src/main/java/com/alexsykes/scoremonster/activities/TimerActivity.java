@@ -53,7 +53,7 @@ public class TimerActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        Log.i("Info", "onCreate called");
+        Log.i("Info", "TimeActivity: onCreate called");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_timer);
 
@@ -228,12 +228,12 @@ public class TimerActivity extends AppCompatActivity {
             elapsedTime - time on course for rider
          */
         timeInterval = (riderNumber - 1) * 1000 * startInterval;
-        Log.i("Info", "startInterval: " + startInterval);
+//        Log.i("Info", "startInterval: " + startInterval);
 
         riderStartTime = clockStartTime + timeInterval;
-        Log.i("Info", "riderStartTime: " + riderStartTime);
-        Log.i("Info", "clockStartTime: " + clockStartTime);
-        Log.i("Info", "timeInterval: " + timeInterval);
+//        Log.i("Info", "riderStartTime: " + riderStartTime);
+//        Log.i("Info", "clockStartTime: " + clockStartTime);
+//        Log.i("Info", "timeInterval: " + timeInterval);
 
         timeDbHelper = new TimeDbHelper(this);
         SQLiteDatabase db = timeDbHelper.getWritableDatabase();
@@ -312,7 +312,7 @@ public class TimerActivity extends AppCompatActivity {
         super.onResume();
         getPrefs();
 
-        Log.i("Info", "onResume called");
+        Log.i("Info", "TimeActivity: onResume called");
     }
 
     @Override

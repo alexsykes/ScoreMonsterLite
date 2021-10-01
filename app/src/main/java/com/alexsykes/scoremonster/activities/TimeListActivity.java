@@ -117,9 +117,13 @@ public class TimeListActivity extends AppCompatActivity {
             SimpleDateFormat dateFormat = new SimpleDateFormat("h:mm:ss a");
             SimpleDateFormat timeFormat = new SimpleDateFormat("h:mm:ss");
             String finishTimeString = timeFormat.format(Long.valueOf(theTime.get("finishTime")));
-            String elapsedTimeString = timeFormat.format(Long.valueOf(theTime.get("elapsedTime")));
+            long elapsedTime = Long.valueOf(theTime.get("elapsedTime")) / 1000;
+            long minutes = elapsedTime / 60;
+            long seconds = elapsedTime % 60;
 
-
+            String secondsString = "00" + seconds;
+            secondsString = secondsString.substring(secondsString.length() - 2);
+            String elapsedTimeString = minutes + ":" + secondsString;
             holder.riderTextView.setText(theTime.get("rider"));
             holder.finishTimeTextView.setText(finishTimeString);
             holder.elapsedTimeTextView.setText(elapsedTimeString);
