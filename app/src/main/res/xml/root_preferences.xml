@@ -12,9 +12,31 @@
             app:key="theTrialIndex"
             app:title="@string/trial_name"
             app:useSimpleSummaryProvider="true" />
+
         <EditTextPreference
             app:key="email"
             app:title="@string/email"
+            app:useSimpleSummaryProvider="true" />
+
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="timeMode"
+            android:title="@string/timing_mode" />
+
+        <EditTextPreference
+            android:defaultValue="60"
+            android:key="startIntervalText"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:title="Start interval"
+            app:useSimpleSummaryProvider="true" />
+
+        <EditTextPreference
+            android:defaultValue="60"
+            android:key="penaltyTariffText"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:title="Penalty tariff"
             app:useSimpleSummaryProvider="true" />
 
         <EditTextPreference
@@ -25,6 +47,7 @@
         <EditTextPreference
             app:key="numsectionsText"
             app:title="@string/number_of_sections"
+            android:selectAllOnFocus="true"
             app:useSimpleSummaryProvider="true" />
     </PreferenceCategory>
     <PreferenceCategory app:title="@string/observer_details">
@@ -32,11 +55,13 @@
         <EditTextPreference
             app:key="observer"
             app:title="@string/observer"
+            android:selectAllOnFocus="true"
             app:useSimpleSummaryProvider="true" />
 
         <EditTextPreference
             app:key="mobile"
             app:title="@string/contact"
+            android:selectAllOnFocus="true"
             app:useSimpleSummaryProvider="true" />
 
         <EditTextPreference
@@ -47,6 +72,7 @@
         <EditTextPreference
             app:key="riderText"
             app:title="@string/riding_number"
+            android:selectAllOnFocus="true"
             app:useSimpleSummaryProvider="true" />
     </PreferenceCategory>
 </PreferenceScreen>

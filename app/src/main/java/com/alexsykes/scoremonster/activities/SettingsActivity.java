@@ -93,6 +93,9 @@ public class SettingsActivity extends AppCompatActivity {
         int numsections;
         int mode;
         int ridingNumber;
+        long startInterval;
+        long penaltyTariff;
+        boolean timingMode;
 
         @Override
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
@@ -118,9 +121,15 @@ public class SettingsActivity extends AppCompatActivity {
             sectionPrefInt = localPrefs.getInt("section", 1);
             numsections = localPrefs.getInt("numsections", 1);
             ridingNumber = localPrefs.getInt("ridingNumber", 1);
+            penaltyTariff = localPrefs.getLong("penaltyTariff", 60);
+            startInterval = localPrefs.getLong("startInterval", 60);
             mode = localPrefs.getInt("mode", 0);
+            timingMode = localPrefs.getBoolean("timingMode", false);
+
             sectionPrefText = String.valueOf(sectionPrefInt);
             SharedPreferences.Editor editor = localPrefs.edit();
+            editor.putLong("startInterval", startInterval);
+            editor.putLong("penaltyTariff", penaltyTariff);
             editor.putInt("section", sectionPrefInt);
             editor.putString("sectionText", sectionPrefText);
             editor.apply();
@@ -129,6 +138,46 @@ public class SettingsActivity extends AppCompatActivity {
             EditTextPreference mobilePref = findPreference("mobile");
             assert mobilePref != null;
             mobilePref.setOnBindEditTextListener(editText -> editText.setInputType(InputType.TYPE_CLASS_PHONE));
+
+            // startInterval pref
+            EditTextPreference startIntervalPref = findPreference("startIntervalText");
+            assert startIntervalPref != null;
+            startIntervalPref.setOnBindEditTextListener(editText -> editText.setInputType(InputType.TYPE_CLASS_NUMBER));
+            startIntervalPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                @Override
+                public boolean onPreferenceChange(Preference preference, Object newValue) {
+                    long startInterval;                    // Add check to empty return
+                    if (newValue.toString().trim().length() == 0) {
+                        Log.i("Note", "Empty");
+                        return false;
+                    }
+                    startInterval = Long.parseLong(newValue.toString());
+                    editor.putLong("startInterval", startInterval);
+                    startIntervalPref.setText(newValue.toString());
+                    editor.apply();
+                    return false;
+                }
+            });
+
+            // penaltyTariff pref
+            EditTextPreference penaltyTariffPref = findPreference("penaltyTariffText");
+            assert penaltyTariffPref != null;
+            penaltyTariffPref.setOnBindEditTextListener(editText -> editText.setInputType(InputType.TYPE_CLASS_NUMBER));
+            penaltyTariffPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                @Override
+                public boolean onPreferenceChange(Preference preference, Object newValue) {
+                    long penaltyTariff;                    // Add check to empty return
+                    if (newValue.toString().trim().length() == 0) {
+                        Log.i("Note", "Empty");
+                        return false;
+                    }
+                    penaltyTariff = Long.parseLong(newValue.toString());
+                    editor.putLong("penaltyTariff", penaltyTariff);
+                    penaltyTariffPref.setText(newValue.toString());
+                    editor.apply();
+                    return false;
+                }
+            });
 
             // ridingNumer pref
             EditTextPreference ridingNumberPref = findPreference("riderText");
