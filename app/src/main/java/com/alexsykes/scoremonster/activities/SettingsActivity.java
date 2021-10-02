@@ -18,6 +18,7 @@ import androidx.preference.ListPreference;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceManager;
+import androidx.preference.SwitchPreference;
 
 import com.alexsykes.scoremonster.R;
 import com.alexsykes.scoremonster.data.TrialDbHelper;
@@ -95,7 +96,7 @@ public class SettingsActivity extends AppCompatActivity {
         int ridingNumber;
         long startInterval;
         long penaltyTariff;
-        boolean timingMode;
+        boolean timeMode;
 
         @Override
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
@@ -124,7 +125,7 @@ public class SettingsActivity extends AppCompatActivity {
             penaltyTariff = localPrefs.getLong("penaltyTariff", 60);
             startInterval = localPrefs.getLong("startInterval", 60);
             mode = localPrefs.getInt("mode", 0);
-            timingMode = localPrefs.getBoolean("timingMode", false);
+            timeMode = localPrefs.getBoolean("timeMode", false);
 
             sectionPrefText = String.valueOf(sectionPrefInt);
             SharedPreferences.Editor editor = localPrefs.edit();
@@ -142,6 +143,7 @@ public class SettingsActivity extends AppCompatActivity {
             // startInterval pref
             EditTextPreference startIntervalPref = findPreference("startIntervalText");
             assert startIntervalPref != null;
+            startIntervalPref.setVisible(timeMode);
             startIntervalPref.setOnBindEditTextListener(editText -> editText.setInputType(InputType.TYPE_CLASS_NUMBER));
             startIntervalPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                 @Override
@@ -162,6 +164,7 @@ public class SettingsActivity extends AppCompatActivity {
             // penaltyTariff pref
             EditTextPreference penaltyTariffPref = findPreference("penaltyTariffText");
             assert penaltyTariffPref != null;
+            penaltyTariffPref.setVisible(timeMode);
             penaltyTariffPref.setOnBindEditTextListener(editText -> editText.setInputType(InputType.TYPE_CLASS_NUMBER));
             penaltyTariffPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                 @Override
@@ -280,6 +283,25 @@ public class SettingsActivity extends AppCompatActivity {
             EditTextPreference observerPref = findPreference("observer");
             assert observerPref != null;
             observerPref.setOnBindEditTextListener(editText -> editText.setInputType(InputType.TYPE_TEXT_FLAG_CAP_WORDS));
+
+
+            // timeMode pref
+            SwitchPreference timeModeSwitchPref = findPreference("timeMode");
+            assert timeModeSwitchPref != null;
+
+            timeModeSwitchPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                @Override
+                public boolean onPreferenceChange(Preference preference, Object newValue) {
+                    Log.i("info", "TimeMode changed: ");
+                    boolean isTimeMode = Boolean.valueOf(newValue.toString());
+                    timeModeSwitchPref.setChecked(isTimeMode);
+                    editor.putBoolean("timeMode", isTimeMode);
+                    editor.apply();
+                    startIntervalPref.setVisible(isTimeMode);
+                    penaltyTariffPref.setVisible(isTimeMode);
+                    return false;
+                }
+            });
 
             // trialid pref
             int trialid = 0;
