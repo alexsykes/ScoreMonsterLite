@@ -90,8 +90,10 @@ public class SettingsActivity extends AppCompatActivity {
     public static class SettingsFragment extends PreferenceFragmentCompat {
         SharedPreferences localPrefs;
         String sectionPrefText;
+        int trialid;
         int sectionPrefInt;
         int numsections;
+        int numlaps;
         int mode;
         int ridingNumber;
         long startInterval;
@@ -121,6 +123,7 @@ public class SettingsActivity extends AppCompatActivity {
             // Setup known values
             sectionPrefInt = localPrefs.getInt("section", 1);
             numsections = localPrefs.getInt("numsections", 1);
+            numlaps = localPrefs.getInt("numlaps", 1);
             ridingNumber = localPrefs.getInt("ridingNumber", 1);
             penaltyTariff = localPrefs.getLong("penaltyTariff", 60);
             startInterval = localPrefs.getLong("startInterval", 60);
@@ -133,6 +136,8 @@ public class SettingsActivity extends AppCompatActivity {
             editor.putLong("penaltyTariff", penaltyTariff);
             editor.putInt("section", sectionPrefInt);
             editor.putString("sectionText", sectionPrefText);
+            editor.remove("startIntervalText");
+            editor.remove("penaltyText");
             editor.apply();
 
             // mobile pref
@@ -144,6 +149,7 @@ public class SettingsActivity extends AppCompatActivity {
             EditTextPreference startIntervalPref = findPreference("startIntervalText");
             assert startIntervalPref != null;
             startIntervalPref.setVisible(timeMode);
+            startIntervalPref.setText(String.valueOf(startInterval));
             startIntervalPref.setOnBindEditTextListener(editText -> editText.setInputType(InputType.TYPE_CLASS_NUMBER));
             startIntervalPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                 @Override
@@ -238,6 +244,9 @@ public class SettingsActivity extends AppCompatActivity {
             // numsections pref
             EditTextPreference numSectionsPref = findPreference("numsectionsText");
             assert numSectionsPref != null;
+            Boolean show = !timeMode;
+            numSectionsPref.setVisible(show);
+            numSectionsPref.setText(String.valueOf(numsections));
             numSectionsPref.setOnBindEditTextListener(editText -> editText.setInputType(InputType.TYPE_CLASS_NUMBER));
             numSectionsPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                 @Override
@@ -248,7 +257,6 @@ public class SettingsActivity extends AppCompatActivity {
                     String sectionsRange = "1 to " + numsections;
                     sectionPref.setDialogMessage(sectionsRange);
                     editor.putInt("numsections", numsections);
-                    editor.putString("numsectionsText", newValue.toString());
                     editor.apply();
                     return false;
                 }
@@ -258,6 +266,9 @@ public class SettingsActivity extends AppCompatActivity {
             // numlaps pref
             EditTextPreference numLapsPref = findPreference("numlapsText");
             assert numLapsPref != null;
+            show = !timeMode;
+            numLapsPref.setVisible(show);
+            numLapsPref.setText(String.valueOf(numlaps));
             numLapsPref.setOnBindEditTextListener(editText -> editText.setInputType(InputType.TYPE_CLASS_NUMBER));
             numLapsPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                 @Override
@@ -266,7 +277,6 @@ public class SettingsActivity extends AppCompatActivity {
                     SharedPreferences.Editor editor = localPrefs.edit();
                     int numlaps = Integer.parseInt(newValue.toString());
                     editor.putInt("numlaps", numlaps);
-                    editor.putString("numlapsText", newValue.toString());
                     editor.apply();
                     return false;
                 }
@@ -299,6 +309,8 @@ public class SettingsActivity extends AppCompatActivity {
                     editor.apply();
                     startIntervalPref.setVisible(isTimeMode);
                     penaltyTariffPref.setVisible(isTimeMode);
+                    numSectionsPref.setVisible(!isTimeMode);
+                    numLapsPref.setVisible(!isTimeMode);
                     return false;
                 }
             });
@@ -329,13 +341,13 @@ public class SettingsActivity extends AppCompatActivity {
                     HashMap<String, String> theTrialData;
                     theTrialData = getTrialData(trialid).get(0);
                     numsections = Integer.parseInt(Objects.requireNonNull(theTrialData.get("numsections")));
-                    int numlaps = Integer.parseInt(Objects.requireNonNull(theTrialData.get("numlaps")));
-                    int mode = Integer.parseInt(Objects.requireNonNull(theTrialData.get("mode")));
+                    numlaps = Integer.parseInt(Objects.requireNonNull(theTrialData.get("numlaps")));
+                    mode = Integer.parseInt(Objects.requireNonNull(theTrialData.get("mode")));
+                    startInterval = Long.parseLong(theTrialData.get("startInterval"));
                     String email = theTrialData.get("email");
                     String date = theTrialData.get("date");
                     String name = theTrialData.get("name");
                     String club = theTrialData.get("club");
-                    long startInterval = Long.parseLong(theTrialData.get("startInterval"));
 
                     editor.putString("theTrialIndex", newValue.toString());  // Check if this is necessary
                     editor.putBoolean("trialHasChanged", true);
@@ -357,14 +369,14 @@ public class SettingsActivity extends AppCompatActivity {
                     if (trialid == 0) {
                         Log.i("Note", "Manual Entry selected");
                         emailPref.setVisible(true);
-                        numSectionsPref.setVisible(true);
-                        numLapsPref.setVisible(true);
+                        // numSectionsPref.setVisible(true);
+                        // numLapsPref.setVisible(true);
                         // theTrialSettings.setVisible(true);
                     } else {
                         emailPref.setVisible(false);
-                        numSectionsPref.setVisible(false);
-                        numLapsPref.setVisible(false);
-                        //  theTrialSettings.setVisible(false);
+                        // numSectionsPref.setVisible(false);
+                        // numLapsPref.setVisible(false);
+                        // theTrialSettings.setVisible(false);
                     }
                     // Setup modes
                     ridingNumberPref.setVisible(mode == 2);
