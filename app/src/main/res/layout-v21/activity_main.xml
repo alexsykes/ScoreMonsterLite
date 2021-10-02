@@ -145,7 +145,7 @@
 
     <Button
         android:id="@+id/saveButton"
-        style="@style/DefaultButton"
+        style="@style/ScoreButton"
         android:layout_marginBottom="4dp"
         android:text="@string/save"
         app:layout_constraintBottom_toBottomOf="parent"
