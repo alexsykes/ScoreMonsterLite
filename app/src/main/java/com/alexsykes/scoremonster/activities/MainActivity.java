@@ -96,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
     String[] theTrials, theIDs;
     ArrayList<HashMap<String, String>> theTrialData;
     private int score, scoreCount, serverResponseCode = 0, trialid, mode, usermode, section, numsections, numlaps, ridingNumber, numberInGroup;
-    private boolean isSingleUser, trialHasChanged, isOnline;
+    private boolean isSingleUser, trialHasChanged, isOnline, timeMode;
 
     // Layout variables
     TextView numberLabel, scoreLabel, statusLine, sectionNumber, decrementTextView, incrementTextView, sectionDetail;
@@ -238,15 +238,19 @@ public class MainActivity extends AppCompatActivity {
         Log.i("Note", "onResume called");
         // Restore values from model
         getPrefs();
-        reloadFromModel();
-        setMode();
-        if (ridingNumber != 0) {
-            numberLabel.setText(valueOf(ridingNumber));
+        if (timeMode) {
+            goTimer();
         } else {
-            numberLabel.setText("");
+            reloadFromModel();
+            setMode();
+            if (ridingNumber != 0) {
+                numberLabel.setText(valueOf(ridingNumber));
+            } else {
+                numberLabel.setText("");
+            }
+            scoreLabel.setText(valueOf(score));
+            sectionNumber.setText(valueOf(section));
         }
-        scoreLabel.setText(valueOf(score));
-        sectionNumber.setText(valueOf(section));
     }
 
     @Override
@@ -331,13 +335,13 @@ public class MainActivity extends AppCompatActivity {
 
             // Sync scores with remote db
             // Shows scores stored on device
-            case R.id.upload:
+            case R.id.scoresheet:
                 goSync();
                 return true;
 
-            case R.id.timer:
+/*            case R.id.timer:
                 goTimer();
-                return true;
+                return true;*/
 
 //            case R.id.reset:
 //                reset();
@@ -628,6 +632,7 @@ public class MainActivity extends AppCompatActivity {
         trialHasChanged = localPrefs.getBoolean("", true);
         mode = localPrefs.getInt("mode", 0);
         usermode = Integer.valueOf(localPrefs.getString("usermode", "0"));
+        timeMode = localPrefs.getBoolean("timeMode", false);
 
         // Set up status line
         status = theTrialName + " - Observer: " + observer;

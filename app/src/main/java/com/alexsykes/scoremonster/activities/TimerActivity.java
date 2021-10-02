@@ -66,7 +66,7 @@ public class TimerActivity extends AppCompatActivity {
         ActionBar ab = getSupportActionBar();
 
         // Enable the Up button
-        ab.setDisplayHomeAsUpEnabled(true);
+        ab.setDisplayHomeAsUpEnabled(false);
         numberPadFragment = new NumberPadFragment();
         getSupportFragmentManager().beginTransaction().add(R.id.content, numberPadFragment).commit();
 
@@ -271,15 +271,21 @@ public class TimerActivity extends AppCompatActivity {
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.timer_menu, menu);
+        getMenuInflater().inflate(R.menu.toolbar_menu, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+
             // Show scores on remote server
-            case R.id.timesheet:
+            case R.id.help:
+                goHelp();
+                return true;
+
+            // Show scores on remote server
+            case R.id.scoresheet:
                 goTimesheet();
                 return true;
 
@@ -301,8 +307,14 @@ public class TimerActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    private void goHelp() {
+        Intent intent = new Intent(this, HelpActivity.class);
+        intent.putExtra(EXTRA_MESSAGE, message);
+        startActivity(intent);
+    }
+
     private void goSetup() {
-        Intent intent = new Intent(this, TimerResetActivity.class);
+        Intent intent = new Intent(this, SettingsActivity.class);
         intent.putExtra(EXTRA_MESSAGE, message);
         startActivity(intent);
     }

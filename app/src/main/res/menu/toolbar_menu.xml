@@ -8,7 +8,7 @@
         app:showAsAction="always" />
 
     <item
-        android:id="@+id/upload"
+        android:id="@+id/scoresheet"
         android:icon="@drawable/ic_list_white_48dp"
         android:title="@string/list_scores"
         app:showAsAction="always" />
@@ -18,12 +18,12 @@
         android:icon="@drawable/ic_baseline_email_48"
         android:title="@string/sendmail"
         app:showAsAction="ifRoom" />
-
-    <item
-        android:id="@+id/timer"
-        android:icon="@drawable/ic_timer_white_48dp"
-        android:title="@string/timing_mode"
-        app:showAsAction="ifRoom" />
+    <!--
+        <item
+            android:id="@+id/timer"
+            android:icon="@drawable/ic_timer_white_48dp"
+            android:title="@string/timing_mode"
+            app:showAsAction="ifRoom" />-->
 <!--    <item
         android:id="@+id/reset"
         android:icon="@drawable/ic_dialog_close_dark"
