@@ -1,5 +1,7 @@
 package com.alexsykes.scoremonster.activities;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -115,7 +117,8 @@ public class TimeListActivity extends AppCompatActivity {
                 // below line is to remove item from our array list.
                 theTimeList.remove(viewHolder.getAdapterPosition());
                 dbHelper.remove(timeID, trialid);
-
+                adapter.notifyItemRangeRemoved(position, 1);
+                adapter.notifyDataSetChanged();
             }
             // at last we are adding this
             // to our recycler view.
