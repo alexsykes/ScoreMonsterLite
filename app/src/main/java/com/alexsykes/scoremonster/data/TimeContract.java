@@ -19,6 +19,7 @@ public class TimeContract extends AppCompatActivity {
         public final static String COLUMN_TIME_NUMBER = "number";
         public final static String COLUMN_TIME_FINISHTIME = "finishTime";
         public final static String COLUMN_TIME_ELAPSEDTIME = "elapsedTime";
+        public final static String COLUMN_TIME_PENALTY = "penalty";
         public final static String COLUMN_TIME_CREATED = "created";
         public final static String COLUMN_TIME_TRIALID = "trialid";
     }

@@ -30,7 +30,8 @@ public class TimeListActivity extends AppCompatActivity {
     private TimeDbHelper dbHelper;
     private int trialid;
     TextView statusLine;
-    private long fastestTime, clockStartTime, baseTime;
+    private long clockStartTime, penaltyTariff, startInterval;
+    private long baseTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +48,9 @@ public class TimeListActivity extends AppCompatActivity {
         // Get shared preferences for trialid, section
         localPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         clockStartTime = localPrefs.getLong("clockStartTime", 0);
+        penaltyTariff = localPrefs.getLong("penaltyTariff", 60);
+        startInterval = localPrefs.getLong("startInterval", 60);
+
         SimpleDateFormat dateFormat = new SimpleDateFormat("h:mm:ss");
         String dateString = dateFormat.format(clockStartTime);
 
@@ -55,7 +59,8 @@ public class TimeListActivity extends AppCompatActivity {
         // Get data
         trialid = localPrefs.getInt("trialid", -999);
         dbHelper = new TimeDbHelper(this);
-        fastestTime = dbHelper.getFastestTime(trialid);
+        dbHelper.updateTrial(trialid, startInterval, penaltyTariff);
+        long fastestTime = dbHelper.getFastestTime(trialid);
         baseTime = (fastestTime / 1000) + 1;
 
         long elapsedTime = fastestTime / 1000;
@@ -120,7 +125,7 @@ public class TimeListActivity extends AppCompatActivity {
 
         @Override
         public void onBindViewHolder(@NonNull TimeHolder holder, int position) {
-            long deltaTime, penalties;
+            // long deltaTime, penalties;
             theTime = theTimeList.get(position);
 
             SimpleDateFormat dateFormat = new SimpleDateFormat("h:mm:ss a");
@@ -135,12 +140,12 @@ public class TimeListActivity extends AppCompatActivity {
             String elapsedTimeString = minutes + ":" + secondsString;
 
             // Calculate lost marks
-            deltaTime = elapsedTime - baseTime;
-            penalties = deltaTime/60;
+            // deltaTime = elapsedTime - baseTime;
+            // penalties = deltaTime/penaltyTariff;
             holder.riderTextView.setText(theTime.get("rider"));
             holder.finishTimeTextView.setText(finishTimeString);
             holder.elapsedTimeTextView.setText(elapsedTimeString);
-            holder.timePenaltyTextView.setText(String.valueOf(penalties));
+            holder.timePenaltyTextView.setText(theTime.get("penalty"));
         }
 
         @Override

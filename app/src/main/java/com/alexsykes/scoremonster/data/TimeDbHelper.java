@@ -37,6 +37,7 @@ public class TimeDbHelper extends SQLiteOpenHelper {
             times.put("id", cursor.getString(cursor.getColumnIndex(TimeContract.TimeEntry._ID)));
             times.put("rider", cursor.getString(cursor.getColumnIndex(TimeContract.TimeEntry.COLUMN_TIME_NUMBER)));
             times.put("elapsedTime", cursor.getString(cursor.getColumnIndex(TimeContract.TimeEntry.COLUMN_TIME_ELAPSEDTIME)));
+            times.put("penalty", cursor.getString(cursor.getColumnIndex(TimeContract.TimeEntry.COLUMN_TIME_PENALTY)));
             times.put("finishTime", cursor.getString(cursor.getColumnIndex(TimeContract.TimeEntry.COLUMN_TIME_FINISHTIME)));
             timeList.add(times);
         }
@@ -67,5 +68,17 @@ public class TimeDbHelper extends SQLiteOpenHelper {
         Log.i("Query", query);
         // Execute the SQL statement
         db.execSQL(query);
+        db.close();
+    }
+
+    public void updateTrial(int trialid, long startInterval, long penaltyTariff) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Log.i("Info", "updateTrial: " + trialid);
+        long fastestTime = getFastestTime(trialid);
+
+        String query;
+        query = "UPDATE times SET penalty = (elapsedTime - " + fastestTime + ")/(1000 * " + penaltyTariff + ") WHERE trialid = " + trialid;
+        db.execSQL(query);
+        db.close();
     }
 }

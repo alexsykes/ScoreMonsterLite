@@ -1,6 +1,7 @@
 package com.alexsykes.scoremonster.activities;
 // TODO - check section validation following read from trialPref
 // TODO - check riderNumber on change/lauch in mode 2
+// TODO - update numsections and numlaps filed on initial load of trial
 
 import android.content.Context;
 import android.content.SharedPreferences;

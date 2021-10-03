@@ -42,7 +42,7 @@ public class TimerActivity extends AppCompatActivity {
     TextView riderNumberLabel, statusLine;
     SharedPreferences localPrefs;
     Button finishButton, startClockButton;
-    long clockStartTime, startInterval;
+    long clockStartTime, startInterval, penaltyTariff;
     private int ridingNumber, trialid, mode;
     public static final String EXTRA_MESSAGE = "com.alexsykes.scoremonster.activities.MESSAGE";
     private TimeDbHelper timeDbHelper;
@@ -127,6 +127,7 @@ public class TimerActivity extends AppCompatActivity {
         ridingNumber = localPrefs.getInt("ridingNumber", 0);
         clockStartTime = localPrefs.getLong("clockStartTime", 0);
         startInterval = localPrefs.getLong("startInterval", 60);
+        penaltyTariff = localPrefs.getLong("penaltyTariff", 60);
 
         if (clockStartTime == 0) {
             statusLine.setVisibility(View.INVISIBLE);
@@ -251,6 +252,7 @@ public class TimerActivity extends AppCompatActivity {
         db.insert(TimeContract.TimeEntry.TABLE_NAME, null, values);
 
 
+        // timeDbHelper.updateTrial(trialid, startInterval, penaltyTariff);
         // Confirm committed with sound
         playSoundFile(R.raw.ting);
         Toast.makeText(this, "Finish time recorded", Toast.LENGTH_SHORT).show();
