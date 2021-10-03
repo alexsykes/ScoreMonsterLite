@@ -12,6 +12,7 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.preference.PreferenceManager;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -87,6 +88,42 @@ public class TimeListActivity extends AppCompatActivity {
         TimeListAdapter adapter = new TimeListAdapter(theTimeList);
         timeView.setAdapter(adapter);
 
+        // Start
+        // on below line we are creating a method to create item touch helper
+        // method for adding swipe to delete functionality.
+        // in this we are specifying drag direction and position to right
+        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
+            @Override
+            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+                // this method is called
+                // when the item is moved.
+
+                return false;
+            }
+
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                // this method is called when we swipe our item to right direction.
+                // on below line we are getting the item at a particular position.
+                // RecyclerData deletedCourse = theTimeList.get(viewHolder.getAdapterPosition());
+
+                // below line is to get the position
+                // of the item at that position.
+                int position = viewHolder.getAdapterPosition();
+                String timeID = theTimeList.get(position).get("id");
+                // this method is called when item is swiped.
+                // below line is to remove item from our array list.
+                theTimeList.remove(viewHolder.getAdapterPosition());
+                dbHelper.remove(timeID, trialid);
+
+            }
+            // at last we are adding this
+            // to our recycler view.
+        }).attachToRecyclerView(timeView);
+
+
+        // End
+
     }
 
     public static class TimeHolder extends RecyclerView.ViewHolder {
@@ -127,6 +164,7 @@ public class TimeListActivity extends AppCompatActivity {
         public void onBindViewHolder(@NonNull TimeHolder holder, int position) {
             // long deltaTime, penalties;
             theTime = theTimeList.get(position);
+            String timeID = theTime.get("id");
 
             SimpleDateFormat dateFormat = new SimpleDateFormat("h:mm:ss a");
             SimpleDateFormat timeFormat = new SimpleDateFormat("h:mm:ss");

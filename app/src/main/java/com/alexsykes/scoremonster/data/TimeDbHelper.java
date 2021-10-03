@@ -30,7 +30,7 @@ public class TimeDbHelper extends SQLiteOpenHelper {
     public ArrayList<HashMap<String, String>> getTimeList(int trialid) {
         SQLiteDatabase db = this.getWritableDatabase();
         ArrayList<HashMap<String, String>> timeList = new ArrayList<>();
-        String query = "SELECT * FROM times WHERE trialid = " + trialid + " ORDER BY elapsedTime ASC";
+        String query = "SELECT * FROM times WHERE trialid = " + trialid + " AND elapsedTime > 0 ORDER BY elapsedTime ASC";
         Cursor cursor = db.rawQuery(query, null);
         while (cursor.moveToNext()) {
             HashMap<String, String> times = new HashMap<>();
@@ -48,7 +48,7 @@ public class TimeDbHelper extends SQLiteOpenHelper {
     public long getFastestTime(int trialid) {
         long fastestTime = 0;
         SQLiteDatabase db = this.getWritableDatabase();
-        String query = "SELECT MIN(elapsedTime) FROM times WHERE trialid = " + trialid;
+        String query = "SELECT MIN(elapsedTime) FROM times WHERE trialid = " + trialid + " AND elapsedTime > 0";
         Cursor cursor = db.rawQuery(query, null);
         cursor.moveToFirst();
         String value = cursor.getString(0);
@@ -78,6 +78,16 @@ public class TimeDbHelper extends SQLiteOpenHelper {
 
         String query;
         query = "UPDATE times SET penalty = (elapsedTime - " + fastestTime + ")/(1000 * " + penaltyTariff + ") WHERE trialid = " + trialid;
+        db.execSQL(query);
+        db.close();
+    }
+
+    public void remove(String timeID, int trialid) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        int newid = -trialid;
+        String query = "UPDATE times SET trialid = " + newid + " WHERE _id = " + timeID;
+        Log.i("Query", query);
+        // Execute the SQL statement
         db.execSQL(query);
         db.close();
     }
