@@ -24,6 +24,8 @@ import androidx.preference.PreferenceManager;
 import androidx.preference.SwitchPreference;
 
 import com.alexsykes.scoremonster.R;
+import com.alexsykes.scoremonster.data.ScoreDbHelper;
+import com.alexsykes.scoremonster.data.TimeDbHelper;
 import com.alexsykes.scoremonster.data.TrialDbHelper;
 
 import java.util.ArrayList;
@@ -132,6 +134,7 @@ public class SettingsActivity extends AppCompatActivity {
             startInterval = localPrefs.getLong("startInterval", 60);
             mode = localPrefs.getInt("mode", 0);
             timeMode = localPrefs.getBoolean("timeMode", false);
+            trialid = localPrefs.getInt("trialid",0);
 
             sectionPrefText = String.valueOf(sectionPrefInt);
             SharedPreferences.Editor editor = localPrefs.edit();
@@ -324,8 +327,10 @@ public class SettingsActivity extends AppCompatActivity {
                     alert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-
-
+                            // Clock restart
+                            SharedPreferences.Editor editor = localPrefs.edit();
+                            editor.putLong("clockStartTime", 0);
+                            editor.apply();
                         }
                     });
                     alert.show();
@@ -358,8 +363,10 @@ public class SettingsActivity extends AppCompatActivity {
                     alert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-
-
+                            ScoreDbHelper scoreDbHelper = new ScoreDbHelper(getContext());
+                            scoreDbHelper.lapseScores(trialid);
+                            Log.i("Info", "Delete scores - trialid: " + trialid);
+                            dialog.dismiss();
                         }
                     });
                     alert.show();
@@ -392,8 +399,10 @@ public class SettingsActivity extends AppCompatActivity {
                     alert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-
-
+                            TimeDbHelper timeDbHelper = new TimeDbHelper(getContext());
+                            timeDbHelper.lapseTimes(trialid);
+                            Log.i("Info", "Delete times - trialid: " + trialid);
+                            dialog.dismiss();
                         }
                     });
                     alert.show();
@@ -409,6 +418,7 @@ public class SettingsActivity extends AppCompatActivity {
             // Advanced mode
             SwitchPreference advancedSwitchPref = findPreference("show_advanced");
             assert advancedSwitchPref != null;
+            advancedSwitchPref.setChecked(false);
 
             advancedSwitchPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                 @Override

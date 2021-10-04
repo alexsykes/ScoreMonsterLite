@@ -160,6 +160,18 @@ public class ScoreDbHelper extends SQLiteOpenHelper {
         // db.close();
     }
 
+
+    // Lapse times by setting trialid to negative of original trialid
+    public void lapseScores(int trialid) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        int newid = -trialid;
+        String query = "UPDATE scores SET trialid = " + newid + " WHERE trialid = " + trialid;
+        Log.i("Query", query);
+        // Execute the SQL statement
+        db.execSQL(query);
+        db.close();
+    }
+
     @Override
     public void onCreate(SQLiteDatabase db) {
 
