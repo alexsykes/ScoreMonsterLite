@@ -230,7 +230,7 @@ To change a score, click on the list icon in the toolbar. This will display a li
     <string name="elapsedTime">Elapsed</string>
     <string name="finish_time">Finish</string>
     <string name="TimePenalties">Penalty</string>
-    <string name="restart_clock">Restart clock</string>
+    <string name="restart_clock">Reset clock</string>
     <string name="confirm_reset">Confirm reset</string>
     <string name="reset_times">Reset times</string>
     <string name="advanced_settings">Advanced settings</string>

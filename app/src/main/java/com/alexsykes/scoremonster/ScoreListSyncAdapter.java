@@ -9,7 +9,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.alexsykes.scoremonster.activities.SyncActivity;
+import com.alexsykes.scoremonster.activities.ScoreListActivity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -120,7 +120,7 @@ public class ScoreListSyncAdapter extends RecyclerView.Adapter<ScoreListSyncAdap
                     }
 
                     Context context = v.getContext();
-                    ((SyncActivity) context).onClickCalled(id, scoreIndex);
+                    ((ScoreListActivity) context).onClickCalled(id, scoreIndex);
                 }
             });
         }

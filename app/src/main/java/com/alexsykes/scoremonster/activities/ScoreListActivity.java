@@ -38,7 +38,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
-public class SyncActivity extends AppCompatActivity {
+public class ScoreListActivity extends AppCompatActivity {
     /**********  File Path *************/
     final String uploadFilePath = "mnt/sdcard/Documents/Scoremonster/";
     private final String baseURL = "https://android.trialmonster.uk/addCSVtodb.php?trialid=";
@@ -89,7 +89,7 @@ public class SyncActivity extends AppCompatActivity {
                 isOnline = localPrefs.getBoolean("canConnect", false);
                 if(!isOnline) {
                     // processButton.setEnabled(false);
-                    Toast.makeText(SyncActivity.this, "Scores cannot be sent at this time - no Internet connection.", Toast.LENGTH_LONG).show();
+                    Toast.makeText(ScoreListActivity.this, "Scores cannot be sent at this time - no Internet connection.", Toast.LENGTH_LONG).show();
                 } else {
                     // Get timestamp and add to filename
                     Date date = new Date();
@@ -118,7 +118,7 @@ public class SyncActivity extends AppCompatActivity {
     // Method to update scores for display
     // Responds to click on score line
     public void amendScore(final String scoreid, final int score) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(SyncActivity.this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(ScoreListActivity.this);
 
         // Set the dialog title
         builder.setTitle("Change score to:")
@@ -262,7 +262,7 @@ public class SyncActivity extends AppCompatActivity {
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
-                dialog = ProgressDialog.show(SyncActivity.this, "Scoremonster",
+                dialog = ProgressDialog.show(ScoreListActivity.this, "Scoremonster",
                         "Processing scores… this make take some time!", true);
                 // Prepare CSV file
                 saveToCSV();
@@ -278,7 +278,7 @@ public class SyncActivity extends AppCompatActivity {
                     populateScoreList();
                     runOnUiThread(new Runnable() {
                         public void run() {
-                            Toast.makeText(SyncActivity.this, "Score Update Complete",
+                            Toast.makeText(ScoreListActivity.this, "Score Update Complete",
                                     Toast.LENGTH_LONG).show();
                         }
                     });
@@ -401,7 +401,7 @@ public class SyncActivity extends AppCompatActivity {
 
                     runOnUiThread(new Runnable() {
                         public void run() {
-                            Toast.makeText(SyncActivity.this, "Error processing data",
+                            Toast.makeText(ScoreListActivity.this, "Error processing data",
                                     Toast.LENGTH_LONG).show();
                         }
                     });
@@ -420,7 +420,7 @@ public class SyncActivity extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     public void run() {
                         messageText.setText("MalformedURLException Exception : check script url.");
-                        Toast.makeText(SyncActivity.this, "MalformedURLException",
+                        Toast.makeText(ScoreListActivity.this, "MalformedURLException",
                                 Toast.LENGTH_SHORT).show();
                     }
                 });
@@ -434,7 +434,7 @@ public class SyncActivity extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     public void run() {
                         messageText.setText("Got Exception : see logcat ");
-                        Toast.makeText(SyncActivity.this, "Got Exception : see logcat ",
+                        Toast.makeText(ScoreListActivity.this, "Got Exception : see logcat ",
                                 Toast.LENGTH_SHORT).show();
                     }
                 });

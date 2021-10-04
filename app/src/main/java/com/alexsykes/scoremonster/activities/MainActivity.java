@@ -1,6 +1,6 @@
 package com.alexsykes.scoremonster.activities;
 // TODO Check ridingNumber for consistency in all modes
-// Starting change of template
+// TODO Upload / email of time data
 
 import static java.lang.String.valueOf;
 
@@ -127,6 +127,10 @@ public class MainActivity extends AppCompatActivity {
 
         // Load existing settings and check for connectivity
         localPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        timeMode = localPrefs.getBoolean("timeMode", false);
+        if (timeMode) {
+            // goTimer();
+        }
         SharedPreferences.Editor editor = localPrefs.edit();
         editor.putBoolean("canConnect", isOnline());
         editor.apply();
@@ -590,7 +594,7 @@ public class MainActivity extends AppCompatActivity {
 
     // Menu options
     private void goSync() {
-        Intent intent = new Intent(this, SyncActivity.class);
+        Intent intent = new Intent(this, ScoreListActivity.class);
         intent.putExtra(EXTRA_MESSAGE, message);
         startActivity(intent);
     }

@@ -1,7 +1,5 @@
 package com.alexsykes.scoremonster.activities;
 
-import android.app.Activity;
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -33,7 +31,7 @@ public class TimeListActivity extends AppCompatActivity {
     private TimeDbHelper dbHelper;
     private int trialid;
     TextView statusLine;
-    private long clockStartTime, penaltyTariff, startInterval;
+    private long clockStartTime, penaltyTariff, startInterval, fastestTime;
     private long baseTime;
 
     @Override
@@ -62,8 +60,8 @@ public class TimeListActivity extends AppCompatActivity {
         // Get data
         trialid = localPrefs.getInt("trialid", -999);
         dbHelper = new TimeDbHelper(this);
-        dbHelper.updateTrial(trialid, startInterval, penaltyTariff);
-        long fastestTime = dbHelper.getFastestTime(trialid);
+        dbHelper.updateTimes(trialid, startInterval, penaltyTariff);
+        fastestTime = dbHelper.getFastestTime(trialid);
         baseTime = (fastestTime / 1000) + 1;
 
         long elapsedTime = fastestTime / 1000;
@@ -165,13 +163,15 @@ public class TimeListActivity extends AppCompatActivity {
 
         @Override
         public void onBindViewHolder(@NonNull TimeHolder holder, int position) {
-            // long deltaTime, penalties;
+            long deltaTime;
+            double fastestTimeInSeconds = fastestTime / 1000;
             theTime = theTimeList.get(position);
             String timeID = theTime.get("id");
 
             SimpleDateFormat dateFormat = new SimpleDateFormat("h:mm:ss a");
             SimpleDateFormat timeFormat = new SimpleDateFormat("h:mm:ss");
             String finishTimeString = timeFormat.format(Long.valueOf(theTime.get("finishTime")));
+            // Get elapsedTime, then convert to seconds and minutes
             long elapsedTime = Long.valueOf(theTime.get("elapsedTime")) / 1000;
             long minutes = elapsedTime / 60;
             long seconds = elapsedTime % 60;
@@ -180,13 +180,14 @@ public class TimeListActivity extends AppCompatActivity {
             secondsString = secondsString.substring(secondsString.length() - 2);
             String elapsedTimeString = minutes + ":" + secondsString;
 
+            deltaTime = (long) Math.ceil((elapsedTime - fastestTimeInSeconds) / 60);
             // Calculate lost marks
             // deltaTime = elapsedTime - baseTime;
             // penalties = deltaTime/penaltyTariff;
             holder.riderTextView.setText(theTime.get("rider"));
             holder.finishTimeTextView.setText(finishTimeString);
             holder.elapsedTimeTextView.setText(elapsedTimeString);
-            holder.timePenaltyTextView.setText(theTime.get("penalty"));
+            holder.timePenaltyTextView.setText(String.valueOf(deltaTime));
         }
 
         @Override

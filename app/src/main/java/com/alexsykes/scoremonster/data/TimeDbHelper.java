@@ -71,7 +71,7 @@ public class TimeDbHelper extends SQLiteOpenHelper {
         db.close();
     }
 
-    public void updateTrial(int trialid, long startInterval, long penaltyTariff) {
+    public void updateTimes(int trialid, long startInterval, long penaltyTariff) {
         SQLiteDatabase db = this.getWritableDatabase();
         Log.i("Info", "updateTrial: " + trialid);
         long fastestTime = getFastestTime(trialid);
