@@ -4,6 +4,7 @@ package com.alexsykes.scoremonster.activities;
 // TODO - update numsections and numlaps filed on initial load of trial
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -12,6 +13,7 @@ import android.text.InputType;
 import android.util.Log;
 
 import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.preference.EditTextPreference;
@@ -189,7 +191,7 @@ public class SettingsActivity extends AppCompatActivity {
                 }
             });
 
-            // ridingNumer pref
+            // ridingNumber pref
             EditTextPreference ridingNumberPref = findPreference("riderText");
             assert ridingNumberPref != null;
             ridingNumberPref.setOnBindEditTextListener(editText -> editText.setInputType(InputType.TYPE_CLASS_NUMBER));
@@ -296,10 +298,131 @@ public class SettingsActivity extends AppCompatActivity {
             observerPref.setOnBindEditTextListener(editText -> editText.setInputType(InputType.TYPE_TEXT_FLAG_CAP_WORDS));
 
 
+
+            // Timer reset pref
+            SwitchPreference restartClockSwitchPref = findPreference("restart_clock_preference");
+            assert restartClockSwitchPref != null;
+            restartClockSwitchPref.setVisible(false);
+
+            restartClockSwitchPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                @Override
+                public boolean onPreferenceChange(Preference preference, Object newValue) {
+                    Log.i("info", "Time reset changed: ");
+                    AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
+
+                    alert.setTitle("Warning");
+                    alert.setMessage("Data will be destroyed");
+                    alert.setIcon(R.drawable.ic_warning_red_48dp);
+
+                    alert.setCancelable(true);
+                    alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int i) {
+                            dialog.cancel();
+                        }
+                    });
+                    alert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+
+                        }
+                    });
+                    alert.show();
+                    return false;
+                }
+            });
+
+            // Score reset pref
+            SwitchPreference resetScoresSwitchPref = findPreference("reset_scores_preference");
+            assert resetScoresSwitchPref != null;
+            resetScoresSwitchPref.setVisible(false);
+
+            resetScoresSwitchPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                @Override
+                public boolean onPreferenceChange(Preference preference, Object newValue) {
+                    Log.i("info", "Time reset changed: ");
+                    AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
+
+                    alert.setTitle("Warning");
+                    alert.setMessage("Data will be destroyed");
+                    alert.setIcon(R.drawable.ic_warning_red_48dp);
+
+                    alert.setCancelable(true);
+                    alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int i) {
+                            dialog.cancel();
+                        }
+                    });
+                    alert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+
+                        }
+                    });
+                    alert.show();
+                    return false;
+                }
+            });
+            
+            // Time reset pref
+            SwitchPreference resetTimesSwitchPref = findPreference("reset_times_preference");
+            assert resetTimesSwitchPref != null;
+            resetTimesSwitchPref.setVisible(false);
+
+            resetTimesSwitchPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                @Override
+                public boolean onPreferenceChange(Preference preference, Object newValue) {
+                    Log.i("info", "Time reset changed: ");
+                    AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
+
+                    alert.setTitle("Warning");
+                    alert.setMessage("Data will be destroyed");
+                    alert.setIcon(R.drawable.ic_warning_red_48dp);
+
+                    alert.setCancelable(true);
+                    alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int i) {
+                            dialog.cancel();
+                        }
+                    });
+                    alert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+
+                        }
+                    });
+                    alert.show();
+                    return false;
+                }
+            });
+
             // timeMode pref
             SwitchPreference timeModeSwitchPref = findPreference("timeMode");
             assert timeModeSwitchPref != null;
 
+
+            // Advanced mode
+            SwitchPreference advancedSwitchPref = findPreference("show_advanced");
+            assert advancedSwitchPref != null;
+
+            advancedSwitchPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                @Override
+                public boolean onPreferenceChange(Preference preference, Object newValue) {
+                    boolean goAhead = Boolean.valueOf(newValue.toString());
+                    restartClockSwitchPref.setVisible(goAhead);
+                    resetScoresSwitchPref.setVisible(goAhead);
+                    resetTimesSwitchPref.setVisible(goAhead);
+                    advancedSwitchPref.setChecked(goAhead);
+                    return false;
+                }
+            });
+
+            // timeMode pref
             timeModeSwitchPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                 @Override
                 public boolean onPreferenceChange(Preference preference, Object newValue) {

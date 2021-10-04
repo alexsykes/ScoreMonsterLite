@@ -136,7 +136,7 @@ A failure is considered to have occurred if:
     <string name="invalid_username">Not a valid username</string>
     <string name="invalid_password">Password must be >5 characters</string>
     <string name="login_failed">"Login failed"</string>
-    <string name="reset_scores">Reset</string>
+    <string name="reset_scores">Reset scores</string>
     <string name="trialid">TrialID</string>
     <string name="timing_mode">Timing mode</string>
     <string name="finish">Finish</string>
@@ -222,7 +222,7 @@ To change a score, click on the list icon in the toolbar. This will display a li
     <string name="time_list">Time list</string>
     <string name="time_reset">Timer Reset</string>
     <string name="warning_text">Caution - Selecting options here will result in data being permanently deleted. </string>
-    <string name="reset_timer">Reset Timer</string>
+    <string name="reset_timer">Reset timer</string>
     <string name="confirm_start_timer_reset">Confirm start timer reset</string>
     <string name="delete_saved_times">Delete saved times</string>
     <string name="confirm_delete_saved_times">Confirm delete saved times</string>
@@ -230,4 +230,8 @@ To change a score, click on the list icon in the toolbar. This will display a li
     <string name="elapsedTime">Elapsed</string>
     <string name="finish_time">Finish</string>
     <string name="TimePenalties">Penalty</string>
+    <string name="restart_clock">Restart clock</string>
+    <string name="confirm_reset">Confirm reset</string>
+    <string name="reset_times">Reset times</string>
+    <string name="advanced_settings">Advanced settings</string>
 </resources>
