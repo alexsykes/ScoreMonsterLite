@@ -1,8 +1,6 @@
 package com.alexsykes.scoremonster;
 // TODO - update elapsedTime to take account of startTime and startInterval
 
-import static java.lang.String.join;
-
 import android.app.Application;
 import android.content.ContentValues;
 import android.content.Context;
@@ -11,6 +9,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
+import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -280,9 +279,9 @@ public class ScoreMonsterLite extends Application {
             theTrialNames[index] = theTrialList.get(index).get("name");
             theTrialIds[index] = theTrialList.get(index).get("id");
         }
-        String theTrialListNames = join(",", theTrialNames);
-        String theTrialListIds = join(",", theTrialIds);
 
+        String theTrialListNames = TextUtils.join(",", theTrialNames);
+        String theTrialListIds = TextUtils.join(",", theTrialIds);
         SharedPreferences.Editor editor = localPrefs.edit();
 
         editor.putString("theNames", theTrialListNames);

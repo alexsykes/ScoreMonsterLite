@@ -6,7 +6,7 @@ android {
         applicationId "com.alexsykes.scoremonster"
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode 19
+        versionCode 21
         versionName "ariel red hunter"
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
         vectorDrawables.useSupportLibrary = true
@@ -30,7 +30,7 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'androidx.appcompat:appcompat:1.3.1'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.1'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'com.google.android.material:material:1.4.0'
     implementation 'androidx.annotation:annotation:1.2.0'
@@ -43,5 +43,6 @@ dependencies {
     implementation files('libs/opencsv-4.6.jar')
 
     implementation "android.arch.lifecycle:extensions:1.1.1"
+    //noinspection LifecycleAnnotationProcessorWithJava8
     annotationProcessor "android.arch.lifecycle:compiler:1.1.1"
 }
