@@ -229,12 +229,7 @@ public class TimerActivity extends AppCompatActivity {
             elapsedTime - time on course for rider
          */
         timeInterval = (riderNumber - 1) * 1000 * startInterval;
-//        Log.i("Info", "startInterval: " + startInterval);
-
         riderStartTime = clockStartTime + timeInterval;
-//        Log.i("Info", "riderStartTime: " + riderStartTime);
-//        Log.i("Info", "clockStartTime: " + clockStartTime);
-//        Log.i("Info", "timeInterval: " + timeInterval);
 
         timeDbHelper = new TimeDbHelper(this);
         SQLiteDatabase db = timeDbHelper.getWritableDatabase();

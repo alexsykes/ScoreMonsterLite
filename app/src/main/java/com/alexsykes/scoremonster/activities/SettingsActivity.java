@@ -438,6 +438,7 @@ public class SettingsActivity extends AppCompatActivity {
                 public boolean onPreferenceChange(Preference preference, Object newValue) {
                     Log.i("info", "TimeMode changed: ");
                     boolean isTimeMode = Boolean.valueOf(newValue.toString());
+
                     timeModeSwitchPref.setChecked(isTimeMode);
                     editor.putBoolean("timeMode", isTimeMode);
                     editor.apply();

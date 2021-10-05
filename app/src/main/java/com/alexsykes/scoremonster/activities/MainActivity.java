@@ -113,15 +113,11 @@ public class MainActivity extends AppCompatActivity {
     private ScoreDbHelper mDbHelper;
     private TrialDbHelper trialDbHelper;
 
-    // URL constants
-    // private final String upLoadServerUri = "http://android.trialmonster.uk/UploadToServer.php";
-    // private final String sendMailURL = "http://android.trialmonster.uk/sendMailWithFile.php";
-    // private static final String BASE_URL = "https://android.trialmonster.uk/";
     String theURL;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.i("Note", "MainActivity::onCreate called");
+        Log.i("Info", "MainActivity::onCreate called");
         super.onCreate(savedInstanceState);
         model = new ViewModelProvider(this).get(MainViewModel.class);
 
@@ -129,7 +125,7 @@ public class MainActivity extends AppCompatActivity {
         localPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         timeMode = localPrefs.getBoolean("timeMode", false);
         if (timeMode) {
-            // goTimer();
+            goTimer();
         }
         SharedPreferences.Editor editor = localPrefs.edit();
         editor.putBoolean("canConnect", isOnline());
@@ -145,6 +141,7 @@ public class MainActivity extends AppCompatActivity {
         // dbInit();
         UISetup();
         getPrefs();
+        setMode();
         // Check for connectivity
         isOnline = isOnline();
 
@@ -201,6 +198,17 @@ public class MainActivity extends AppCompatActivity {
                 sectionLabelLayout.setVisibility(View.GONE);
                 sectionDetail.setText("Section: " + section);
                 break;
+//            case 5: // Time mode
+//                sectionPicker.setVisibility(View.GONE);
+//                sectionLabelLayout.setVisibility(View.GONE);
+//                scoreLabel.setVisibility(View.GONE);
+//                getSupportFragmentManager().beginTransaction().remove(touchFragment).commit();
+//                break;
+            default:
+                sectionPicker.setVisibility(View.GONE);
+                sectionLabelLayout.setVisibility(View.GONE);
+                sectionDetail.setText("Section: " + section);
+                break;
         }
 /*        if (usermode == 3) {
             // goTimer();
@@ -220,7 +228,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        Log.i("Note", "onStart called");
+        Log.i("Info", "MainActivity::onStart called");
         // Check network connectivity and set Prefs
         getPrefs();
         localPrefs = PreferenceManager.getDefaultSharedPreferences(this);
@@ -239,7 +247,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        Log.i("Note", "onResume called");
+        Log.i("Info", "MainActivity: onResume called");
         // Restore values from model
         getPrefs();
         if (timeMode) {
@@ -291,7 +299,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onSaveInstanceState(final Bundle outState) {
         super.onSaveInstanceState(outState);
-        Log.i("Note", "onSaveInstanceState called");
+        Log.i("Info", "onSaveInstanceState called");
         model.setRidingNumber(ridingNumber);
         model.setScore(score);
         model.setSection(section);
@@ -303,7 +311,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        Log.i("Note", "onRestoreInstanceState called");
+        Log.i("Info", "onRestoreInstanceState called");
         reloadFromModel();
     }
 
@@ -613,9 +621,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void goTimer() {
-        Intent intent = new Intent(this, TimerActivity.class);
-        intent.putExtra(EXTRA_MESSAGE, message);
-        startActivity(intent);
+//        Intent intent = new Intent(this, TimerActivity.class);
+//        intent.putExtra(EXTRA_MESSAGE, message);
+//        startActivity(intent);
+
+        Log.i("Info", "goTimer() called");
     }
 
     private void getPrefs() {

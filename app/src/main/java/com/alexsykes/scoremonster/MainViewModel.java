@@ -1,8 +1,7 @@
 package com.alexsykes.scoremonster;
 
-import static java.lang.String.join;
-
 import android.os.AsyncTask;
+import android.text.TextUtils;
 
 import androidx.lifecycle.ViewModel;
 
@@ -36,30 +35,12 @@ public class MainViewModel extends ViewModel {
     private String[] theTrials, theIDs;
     private String theTrialName, data;
 
-    // URL constants
-//    private static final String BASE_URL = "https://android.trialmonster.uk/";
-
     public MainViewModel() {
         isRefreshed = false;
-//        String trialListURL = BASE_URL + "getTrialListScoreMonster.php";
-//        if(isOnline) {
-//            getTrialList(trialListURL);
-//        }
     }
-
-//    public void getTrialDetail(int trialid) {
-//        String trialDetailURL = BASE_URL + "getTrialListDetail.php?id=" + trialid;
-//        getTrialDetails(trialDetailURL);
-//    }
 
     public void setRefreshed(boolean refreshed) {
         isRefreshed = refreshed;
-    }
-
-    public MainViewModel(int trialid, int numsections, int numlaps) {
-        this.trialid = trialid;
-        this.numsections = numsections;
-        this.numlaps = numlaps;
     }
 
     public void setNumLaps(int numlaps) {
@@ -218,8 +199,8 @@ public class MainViewModel extends ViewModel {
             theTrialNames[index] = theTrialList.get(index).get("name");
             theTrialIds[index] = theTrialList.get(index).get("id");
         }
-        String theTrialListNames = join(",", theTrialNames);
-        String theTrialListIds = join(",", theTrialIds);
+        String theTrialListNames = TextUtils.join(",", theTrialNames);
+        String theTrialListIds = TextUtils.join(",", theTrialIds);
         String theData = theTrialListIds + ":" + theTrialListNames;
         return theData;
     }
