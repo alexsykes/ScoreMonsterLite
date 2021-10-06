@@ -501,6 +501,9 @@ public class SettingsActivity extends AppCompatActivity {
                     String sectionsRange = "1 to " + numsections;
                     sectionPref.setDialogMessage(sectionsRange);
 
+                    numLapsPref.setText(String.valueOf(numlaps));
+                    numSectionsPref.setText(String.valueOf(numsections));
+
                     if (trialid == 0) {
                         Log.i("Note", "Manual Entry selected");
                         emailPref.setVisible(true);

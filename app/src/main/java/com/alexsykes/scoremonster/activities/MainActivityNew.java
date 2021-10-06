@@ -63,15 +63,16 @@ public class MainActivityNew extends AppCompatActivity {
     public static final int TEXT_REQUEST = 1;
     public static final int NOT_SYNCED = -1;
     final String uploadFilePath = "mnt/sdcard/Documents/Scoremonster/";
-    // UI Components
-    TouchFragment touchFragment;
-    NumberPadFragment numberPadFragment;
-    Button saveButton;
     SharedPreferences localPrefs;
     MainViewModel model;
     String[] theTrials, theIDs;
     ArrayList<HashMap<String, String>> theTrialData;
-    long clockStartTime, startInterval, penaltyTariff;
+
+    // UI Components
+    TouchFragment touchFragment;
+    NumberPadFragment numberPadFragment;
+    Button saveButton;
+
     // Layout variables
     TextView numberLabel, scoreLabel, sectionNumberTextView, decrementTextView,
             incrementTextView, sectionDetail, riderNumberLabel, statusLine;
@@ -84,7 +85,9 @@ public class MainActivityNew extends AppCompatActivity {
     private ScoreDbHelper scoreDbHelper;
     private TimeDbHelper timeDbHelper;
     private TrialDbHelper trialDbHelper;
+
     // Variables
+    long clockStartTime, startInterval, penaltyTariff;
     private String status, filename, observer, theTrialName, detail, email, club, message;
     private int score, scoreCount, serverResponseCode = 0, usermode, section, numsections, numlaps, numberInGroup;
     private boolean isSingleUser, trialHasChanged, isOnline, timeMode;
@@ -126,11 +129,52 @@ public class MainActivityNew extends AppCompatActivity {
                 trialid,
                 numlaps,
                 numsections);
-
-        // getPrefs();
-        // initialUISetup();
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+
+            // Show scores on remote server
+            case R.id.help:
+                goHelp();
+                return true;
+
+            // Enter andinitialise section details
+            case R.id.setup:
+                goSetup();
+                return true;
+
+            // Show scores on remote server
+            case R.id.email:
+                // goShowScoresFromServer();
+                // goShowSummaryScores();
+                sendEmail();
+                return true;
+
+            // Sync scores with remote db
+            // Shows scores stored on device
+            case R.id.scoresheet:
+                if (timeMode) {
+                    goTimeList();
+                } else {
+                    goScoreList();
+                }
+                return true;
+
+/*            case R.id.timer:
+                goTimer();
+                return true;*/
+
+//            case R.id.reset:
+//                reset();
+//                return true;
+            default:
+                // If we got here, the user's action was not recognized.
+                // Invoke the superclass to handle it.
+                return super.onOptionsItemSelected(item);
+        }
+    }
 
     @Override
     protected void onStart() {
@@ -147,6 +191,9 @@ public class MainActivityNew extends AppCompatActivity {
 
     private void getPrefs() {
         localPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        clockStartTime = localPrefs.getLong("clockStartTime", 0);
+        startInterval = localPrefs.getLong("startInterval", 60);
+        penaltyTariff = localPrefs.getLong("penaltyTariff", 60);
         observer = localPrefs.getString("observer", "");
         section = localPrefs.getInt("section", 1);
         trialid = localPrefs.getInt("trialid", 0);
@@ -184,7 +231,13 @@ public class MainActivityNew extends AppCompatActivity {
         if (timeMode) {
             statusLine.setText("Time mode");
             sectionLabelLayout.setVisibility(View.GONE);
-            saveButton.setText("Enter");
+            if (clockStartTime > 0) {
+                saveButton.setText("Enter");
+            } else {
+
+                saveButton.setText("Start clock");
+            }
+
         } else {
             statusLine.setText("Scoring mode");
             saveButton.setText("Save");
@@ -234,7 +287,7 @@ public class MainActivityNew extends AppCompatActivity {
         editor.apply();
     }
 
-    // Score utility
+    // Score utility methods
     private void saveScore(View.OnLongClickListener view) {
 
         ToneGenerator toneGen1 = new ToneGenerator(AudioManager.STREAM_MUSIC, ToneGenerator.MAX_VOLUME);
@@ -374,7 +427,7 @@ public class MainActivityNew extends AppCompatActivity {
         }
     }
 
-    // Time utility
+    // Time utility methods
     private void saveTime(View.OnLongClickListener view) {
         Log.i("Note", "Saving finish time");
 
@@ -408,7 +461,6 @@ public class MainActivityNew extends AppCompatActivity {
             clearScore();
         }
     }
-
     private void insertTime(int riderNumber, long finishTimeInMillis) {
         long elapsedTime, timeInterval, deltaTime, riderStartTime;
         trialDbHelper = new TrialDbHelper(this);
@@ -454,50 +506,16 @@ public class MainActivityNew extends AppCompatActivity {
         return netInfo != null && netInfo.isConnectedOrConnecting();
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-
-            // Show scores on remote server
-            case R.id.help:
-                goHelp();
-                return true;
-
-            // Enter andinitialise section details
-            case R.id.setup:
-                goSetup();
-                return true;
-
-            // Show scores on remote server
-            case R.id.email:
-                // goShowScoresFromServer();
-                // goShowSummaryScores();
-                sendEmail();
-                return true;
-
-            // Sync scores with remote db
-            // Shows scores stored on device
-            case R.id.scoresheet:
-                goSync();
-                return true;
-
-/*            case R.id.timer:
-                goTimer();
-                return true;*/
-
-//            case R.id.reset:
-//                reset();
-//                return true;
-            default:
-                // If we got here, the user's action was not recognized.
-                // Invoke the superclass to handle it.
-                return super.onOptionsItemSelected(item);
-        }
-    }
 
     // Menu options
-    private void goSync() {
+    private void goScoreList() {
         Intent intent = new Intent(this, ScoreListActivity.class);
+        intent.putExtra(EXTRA_MESSAGE, message);
+        startActivity(intent);
+    }
+
+    private void goTimeList() {
+        Intent intent = new Intent(this, TimeListActivity.class);
         intent.putExtra(EXTRA_MESSAGE, message);
         startActivity(intent);
     }

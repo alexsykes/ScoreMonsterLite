@@ -1,6 +1,6 @@
 package com.alexsykes.scoremonster;
 // TODO - update elapsedTime to take account of startTime and startInterval
-// TODO - SettingsActivity - update trial data on chamge of trial
+// TODO - SettingsActivity - update trial data on chamge of trial - done
 
 import android.app.Application;
 import android.content.ContentValues;
