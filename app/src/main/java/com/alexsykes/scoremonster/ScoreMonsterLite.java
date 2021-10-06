@@ -1,5 +1,6 @@
 package com.alexsykes.scoremonster;
 // TODO - update elapsedTime to take account of startTime and startInterval
+// TODO - SettingsActivity - update trial data on chamge of trial
 
 import android.app.Application;
 import android.content.ContentValues;
@@ -57,9 +58,9 @@ public class ScoreMonsterLite extends Application {
             String URL = BASE_URL + "getTrialListScoreMonster.php";
             try {
                 getTrialList(URL);
-                Log.i(null, "Trials data loaded");
+                Log.i("Info", "Trials data loaded");
             } catch (NullPointerException e) {
-                Log.e(null, "Error loading trials data");
+                Log.e("Info", "Error loading trials data");
             }
         }
     }

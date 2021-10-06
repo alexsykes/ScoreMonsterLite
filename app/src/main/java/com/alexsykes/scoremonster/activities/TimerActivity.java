@@ -88,7 +88,7 @@ public class TimerActivity extends AppCompatActivity {
         finishButton.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                save(this);
+                saveTime(this);
                 return false;
             }
         });
@@ -182,7 +182,7 @@ public class TimerActivity extends AppCompatActivity {
         riderNumberLabel.setText(riderNumber);
     }
 
-    private void save(View.OnLongClickListener view) {
+    private void saveTime(View.OnLongClickListener view) {
         Log.i("Note", "Saving finish time");
 
         ToneGenerator toneGen1 = new ToneGenerator(AudioManager.STREAM_MUSIC, ToneGenerator.MAX_VOLUME);

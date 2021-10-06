@@ -40,6 +40,7 @@ import com.alexsykes.scoremonster.R;
 import com.alexsykes.scoremonster.TouchFragment;
 import com.alexsykes.scoremonster.data.ScoreContract;
 import com.alexsykes.scoremonster.data.ScoreDbHelper;
+import com.alexsykes.scoremonster.data.TimeContract;
 import com.alexsykes.scoremonster.data.TimeDbHelper;
 import com.alexsykes.scoremonster.data.TrialDbHelper;
 import com.opencsv.CSVWriter;
@@ -53,6 +54,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 
@@ -110,7 +112,11 @@ public class MainActivityNew extends AppCompatActivity {
         saveButton.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                saveScore(this);
+                if (timeMode) {
+                    saveTime(this);
+                } else {
+                    saveScore(this);
+                }
                 return false;
             }
         });
@@ -165,6 +171,7 @@ public class MainActivityNew extends AppCompatActivity {
         numberLabel = findViewById(R.id.numberLabel);
         scoreLabel = findViewById(R.id.scoreLabel);
         statusLine = findViewById(R.id.statusLine);
+        sectionLabelLayout = findViewById(R.id.sectionLabelLayout);
         sectionNumberTextView = findViewById(R.id.sectionNumber);
         sectionNumberTextView.setText(valueOf(section));
         top = findViewById(R.id.top);
@@ -176,8 +183,11 @@ public class MainActivityNew extends AppCompatActivity {
         // Set initial values
         if (timeMode) {
             statusLine.setText("Time mode");
+            sectionLabelLayout.setVisibility(View.GONE);
+            saveButton.setText("Enter");
         } else {
             statusLine.setText("Scoring mode");
+            saveButton.setText("Save");
         }
 
         if (numberPadFragment == null) {
@@ -211,7 +221,6 @@ public class MainActivityNew extends AppCompatActivity {
         editor.putString("sectionText", String.valueOf(section));
         editor.apply();
     }
-
     public void decrement(View v) {
         SharedPreferences.Editor editor = localPrefs.edit();
         if (section > 1) {
@@ -258,30 +267,6 @@ public class MainActivityNew extends AppCompatActivity {
             clearScore();
         }
     }
-
-    private void clearScore() {
-        // Clear score label
-        score = 0;
-        scoreLabel.setText("0");
-
-        // Clear rider number if not a single rider
-        if (mode != 2) {
-            numberLabel.setText("");
-        }
-        // If a single rider, then increment section
-        else {
-            SharedPreferences.Editor editor = localPrefs.edit();
-            if (section < numsections) {
-                section++;
-            } else if (section == numsections) {
-                section = 1;
-            }
-            sectionNumberTextView.setText(valueOf(section));
-            editor.putInt("section", section);
-            editor.apply();
-        }
-    }
-
     private void insertScore(int rider, int score) {
         ToneGenerator toneGen1 = new ToneGenerator(AudioManager.STREAM_MUSIC, ToneGenerator.MAX_VOLUME);
         // Check for numberof completed laps
@@ -314,7 +299,6 @@ public class MainActivityNew extends AppCompatActivity {
             Toast.makeText(this, "Score saved", Toast.LENGTH_SHORT).show();
         }
     }
-
     public void addDigit(View view) {
         // Get length of rider riderNumber
         numberLabel = findViewById(R.id.numberLabel);
@@ -344,7 +328,6 @@ public class MainActivityNew extends AppCompatActivity {
         }
         numberLabel.setText(riderNumber);
     }
-
     public void countDabs(View view) {
         int intID = view.getId();
         Button button = view.findViewById(intID);
@@ -366,6 +349,101 @@ public class MainActivityNew extends AppCompatActivity {
                 break;
         }
         scoreLabel.setText(valueOf(score));
+    }
+
+    private void clearScore() {
+        // Clear score label
+        score = 0;
+        scoreLabel.setText("0");
+
+        // Clear rider number if not a single rider
+        if (mode != 2) {
+            numberLabel.setText("");
+        }
+        // If a single rider, then increment section
+        else {
+            SharedPreferences.Editor editor = localPrefs.edit();
+            if (section < numsections) {
+                section++;
+            } else if (section == numsections) {
+                section = 1;
+            }
+            sectionNumberTextView.setText(valueOf(section));
+            editor.putInt("section", section);
+            editor.apply();
+        }
+    }
+
+    // Time utility
+    private void saveTime(View.OnLongClickListener view) {
+        Log.i("Note", "Saving finish time");
+
+        ToneGenerator toneGen1 = new ToneGenerator(AudioManager.STREAM_MUSIC, ToneGenerator.MAX_VOLUME);
+        // Get String values for rider and scoreLabel
+        String rider = numberLabel.getText().toString();
+        // Get value for time
+        Calendar finishTime = Calendar.getInstance();
+        long finishTimeInMillis = finishTime.getTimeInMillis();
+
+        // NOTE Do NOT use null
+        if (rider.equals("")) {
+            toneGen1.startTone(ToneGenerator.TONE_PROP_BEEP2, 150);
+            Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                vibrator.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE));
+            } else vibrator.vibrate(500);
+            new AlertDialog.Builder(this).setTitle("Warning").setMessage(R.string.missing_rider_number).setNeutralButton("Close", null).show();
+        } else {
+            // Otherwise enter scores
+            int riderNumber = Integer.parseInt(rider);
+//            int scoreValue = Integer.parseInt(score);
+
+            // Update prefs for single rider
+            SharedPreferences.Editor editor = localPrefs.edit();
+            editor.putInt("ridingNumber", riderNumber);
+            editor.putString("riderText", rider);
+            editor.apply();
+
+            insertTime(riderNumber, finishTimeInMillis);
+            clearScore();
+        }
+    }
+
+    private void insertTime(int riderNumber, long finishTimeInMillis) {
+        long elapsedTime, timeInterval, deltaTime, riderStartTime;
+        trialDbHelper = new TrialDbHelper(this);
+        // startInterval = trialDbHelper.getStartInterval(trialid);
+
+        /*  finishTimeInMillis - real finishtime
+            timeInterval - time delay for each rider
+            Zero for #1
+            deltaTime - real time difference between startTime and riderStartTime
+            riderStartTime - time rider actually started
+            elapsedTime - time on course for rider
+         */
+        timeInterval = (riderNumber - 1) * 1000 * startInterval;
+        riderStartTime = clockStartTime + timeInterval;
+
+        timeDbHelper = new TimeDbHelper(this);
+        SQLiteDatabase db = timeDbHelper.getWritableDatabase();
+        deltaTime = finishTimeInMillis - riderStartTime;
+
+        // Calculate rider's elapsed time using startInterval
+        // startInterval measured in seconds
+
+        // Create a ContentValues object where column names are the keys,
+        ContentValues values = new ContentValues();
+        values.put(TimeContract.TimeEntry.COLUMN_TIME_NUMBER, riderNumber);
+        values.put(TimeContract.TimeEntry.COLUMN_TIME_TRIALID, trialid);
+        values.put(TimeContract.TimeEntry.COLUMN_TIME_FINISHTIME, finishTimeInMillis);
+        values.put(TimeContract.TimeEntry.COLUMN_TIME_ELAPSEDTIME, deltaTime);
+        db.insert(TimeContract.TimeEntry.TABLE_NAME, null, values);
+
+
+        // timeDbHelper.updateTrial(trialid, startInterval, penaltyTariff);
+        // Confirm committed with sound
+        playSoundFile(R.raw.ting);
+        Toast.makeText(this, "Finish time recorded", Toast.LENGTH_SHORT).show();
     }
 
     protected boolean isOnline() {
@@ -438,7 +516,7 @@ public class MainActivityNew extends AppCompatActivity {
     }
 
     private void sendEmail() {
-        boolean isOnline = isOnline();
+        isOnline = isOnline();
         if (!isOnline) {
             Toast.makeText(MainActivityNew.this, "Email cannot be sent at this time - no Internet connection.",
                     Toast.LENGTH_LONG).show();
@@ -497,7 +575,6 @@ public class MainActivityNew extends AppCompatActivity {
             //  Log.e("Child", e.getMessage(), e);
         }
     }
-
     private void processCSV(final String sendMailURL) {
         /*
          * Processing the CSV done online
@@ -555,7 +632,6 @@ public class MainActivityNew extends AppCompatActivity {
         ProcessCSV processCSV = new ProcessCSV();
         processCSV.execute();
     }
-
     public void uploadFile(String sourceFileUri) {
         File directory = getFilesDir();
         File sourceFile = new File(directory, filename);
