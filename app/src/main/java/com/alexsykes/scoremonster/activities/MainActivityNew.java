@@ -71,7 +71,7 @@ public class MainActivityNew extends AppCompatActivity {
     ArrayList<HashMap<String, String>> theTrialData;
     long clockStartTime, startInterval, penaltyTariff;
     // Layout variables
-    TextView numberLabel, scoreLabel, sectionNumber, decrementTextView,
+    TextView numberLabel, scoreLabel, sectionNumberTextView, decrementTextView,
             incrementTextView, sectionDetail, riderNumberLabel, statusLine;
     LinearLayout sectionPicker, sectionLabelLayout;
     ConstraintLayout top, bottom;
@@ -140,8 +140,23 @@ public class MainActivityNew extends AppCompatActivity {
     }
 
     private void getPrefs() {
-        // Load existing settings and check for connectivity
         localPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        observer = localPrefs.getString("observer", "");
+        section = localPrefs.getInt("section", 1);
+        trialid = localPrefs.getInt("trialid", 0);
+        numlaps = localPrefs.getInt("numlaps", 1);
+        numsections = localPrefs.getInt("numsections", 1);
+        email = localPrefs.getString("email", "");
+        isSingleUser = localPrefs.getBoolean("isSingleUser", false);
+        ridingNumber = localPrefs.getInt("ridingNumber", 0);
+        score = localPrefs.getInt("score", 0);
+        numberInGroup = localPrefs.getInt("numberInGroup", 6);
+        scoreCount = localPrefs.getInt("scoreCount", 0);
+        theTrialName = localPrefs.getString("name", "None selected");
+        club = localPrefs.getString("club", "None selected");
+        trialHasChanged = localPrefs.getBoolean("", true);
+        mode = localPrefs.getInt("mode", 0);
+        usermode = Integer.valueOf(localPrefs.getString("usermode", "0"));
         timeMode = localPrefs.getBoolean("timeMode", false);
     }
 
@@ -150,7 +165,8 @@ public class MainActivityNew extends AppCompatActivity {
         numberLabel = findViewById(R.id.numberLabel);
         scoreLabel = findViewById(R.id.scoreLabel);
         statusLine = findViewById(R.id.statusLine);
-        sectionNumber = findViewById(R.id.sectionNumber);
+        sectionNumberTextView = findViewById(R.id.sectionNumber);
+        sectionNumberTextView.setText(valueOf(section));
         top = findViewById(R.id.top);
         incrementTextView = findViewById(R.id.incrementTextView);
         decrementTextView = findViewById(R.id.decrementTextView);
@@ -190,7 +206,7 @@ public class MainActivityNew extends AppCompatActivity {
         } else if (section == numsections) {
             section = 1;
         }
-        sectionNumber.setText(valueOf(section));
+        sectionNumberTextView.setText(valueOf(section));
         editor.putInt("section", section);
         editor.putString("sectionText", String.valueOf(section));
         editor.apply();
@@ -203,7 +219,7 @@ public class MainActivityNew extends AppCompatActivity {
         } else if (section == 1) {
             section = numsections;
         }
-        sectionNumber.setText(valueOf(section));
+        sectionNumberTextView.setText(valueOf(section));
         editor.putInt("section", section);
         editor.putString("sectionText", String.valueOf(section));
         editor.apply();
@@ -260,7 +276,7 @@ public class MainActivityNew extends AppCompatActivity {
             } else if (section == numsections) {
                 section = 1;
             }
-            sectionNumber.setText(valueOf(section));
+            sectionNumberTextView.setText(valueOf(section));
             editor.putInt("section", section);
             editor.apply();
         }
