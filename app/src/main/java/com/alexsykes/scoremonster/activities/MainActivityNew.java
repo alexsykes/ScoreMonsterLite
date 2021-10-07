@@ -53,6 +53,7 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -75,7 +76,7 @@ public class MainActivityNew extends AppCompatActivity {
 
     // Layout variables
     TextView numberLabel, scoreLabel, sectionNumberTextView, decrementTextView,
-            incrementTextView, sectionDetail, riderNumberLabel, statusLine;
+            incrementTextView, sectionDetail, statusLine;
     LinearLayout sectionPicker, sectionLabelLayout;
     ConstraintLayout top, bottom;
     // Utility
@@ -231,26 +232,63 @@ public class MainActivityNew extends AppCompatActivity {
         if (timeMode) {
             statusLine.setText("Time mode");
             sectionLabelLayout.setVisibility(View.GONE);
+            scoreLabel.setVisibility(View.INVISIBLE);
             if (clockStartTime > 0) {
                 saveButton.setText("Enter");
+                saveButton.setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View v) {
+                        saveTime(this);
+                        return false;
+                    }
+                });
             } else {
-
                 saveButton.setText("Start clock");
+                saveButton.setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View v) {
+                        startClock(this);
+                        return false;
+                    }
+
+                    // called when button pressed
+                    private void startClock(View.OnLongClickListener onLongClickListener) {
+                        Calendar startTime = Calendar.getInstance();
+                        clockStartTime = startTime.getTimeInMillis();
+
+                        // Save start time in prefs
+                        SharedPreferences.Editor editor = localPrefs.edit();
+                        editor.putLong("clockStartTime", clockStartTime);
+                        editor.apply();
+                        SimpleDateFormat dateFormat = new SimpleDateFormat("h:mm:ss a");
+                        String dateString = dateFormat.format(clockStartTime);
+                        statusLine.setText("Clock started at " + dateString);
+                        saveButton.setText("Enter");
+                        numberLabel.setText("");
+                    }
+                });
             }
 
         } else {
+            sectionLabelLayout.setVisibility(View.GONE);
             statusLine.setText("Scoring mode");
             saveButton.setText("Save");
+            scoreLabel.setVisibility(View.VISIBLE);
+
+            if (touchFragment == null && !timeMode) {
+                touchFragment = new TouchFragment();
+            }
+            getSupportFragmentManager().beginTransaction().add(R.id.bottom, touchFragment).commit();
         }
 
         if (numberPadFragment == null) {
             numberPadFragment = new NumberPadFragment();
             getSupportFragmentManager().beginTransaction().add(R.id.top, numberPadFragment).commit();
         }
-        if (touchFragment == null && !timeMode) {
-            touchFragment = new TouchFragment();
-            getSupportFragmentManager().beginTransaction().add(R.id.bottom, touchFragment).commit();
-        }
+//        if (touchFragment == null && !timeMode) {
+//            touchFragment = new TouchFragment();
+//            getSupportFragmentManager().beginTransaction().add(R.id.bottom, touchFragment).commit();
+//        }
         if (touchFragment != null && timeMode) {
             getSupportFragmentManager().beginTransaction().remove(touchFragment).commit();
         }
