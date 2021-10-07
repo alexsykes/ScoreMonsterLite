@@ -1,12 +1,17 @@
 package com.alexsykes.scoremonster.activities;
 
+import android.content.Context;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
@@ -34,6 +39,7 @@ public class TimeListActivity extends AppCompatActivity {
     TextView statusLine;
     private long clockStartTime, penaltyTariff, startInterval, fastestTime;
     private long baseTime;
+    private boolean isOnline;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,6 +85,50 @@ public class TimeListActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.list_menu, menu);
         return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+
+            case R.id.email:
+                emailTimes();
+                return true;
+
+            case R.id.upload:
+                uploadTimes();
+                return true;
+            default:
+                // If we got here, the user's action was not recognized.
+                // Invoke the superclass to handle it.
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void uploadTimes() {
+        isOnline = isOnline();
+        if (!isOnline) {
+            Toast.makeText(TimeListActivity.this, "No Internet connection. Please try again later",
+                    Toast.LENGTH_LONG).show();
+        } else {
+
+        }
+    }
+
+    private void emailTimes() {
+        isOnline = localPrefs.getBoolean("canConnect", false);
+        if (!isOnline) {
+            Toast.makeText(TimeListActivity.this, "No Internet connection. Please try again later",
+                    Toast.LENGTH_LONG).show();
+        } else {
+
+        }
+    }
+
+    protected boolean isOnline() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        return netInfo != null && netInfo.isConnectedOrConnecting();
     }
 
     private void populateTimeList(long baseTime) {
