@@ -13,11 +13,11 @@
         android:title="@string/list_scores"
         app:showAsAction="always" />
 
-    <item
+    <!-- item
         android:id="@+id/email"
         android:icon="@drawable/ic_baseline_email_48"
         android:title="@string/sendmail"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="ifRoom" /-->
     <!--
         <item
             android:id="@+id/timer"

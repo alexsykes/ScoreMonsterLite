@@ -1,4 +1,4 @@
-package com.alexsykes.scoremonster.activities;
+package com.alexsykes.scoremonster.redundant;
 
 import android.app.AlertDialog;
 import android.content.ContentValues;
@@ -29,6 +29,9 @@ import androidx.preference.PreferenceManager;
 
 import com.alexsykes.scoremonster.NumberPadFragment;
 import com.alexsykes.scoremonster.R;
+import com.alexsykes.scoremonster.activities.HelpActivity;
+import com.alexsykes.scoremonster.activities.SettingsActivity;
+import com.alexsykes.scoremonster.activities.TimeListActivity;
 import com.alexsykes.scoremonster.data.TimeContract;
 import com.alexsykes.scoremonster.data.TimeDbHelper;
 import com.alexsykes.scoremonster.data.TrialDbHelper;

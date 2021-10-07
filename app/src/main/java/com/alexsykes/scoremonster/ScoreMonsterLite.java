@@ -37,6 +37,7 @@ public class ScoreMonsterLite extends Application {
     private final int trialid = -999;
     String[] theTrials, theIDs;
     ArrayList<HashMap<String, String>> theTrialData;
+    boolean isOnline;
 
     // Databases
     private ScoreDbHelper mDbHelper;
@@ -51,7 +52,7 @@ public class ScoreMonsterLite extends Application {
         dbInit();
 
         // Check for connectivity
-        boolean isOnline = isOnline();
+        isOnline = isOnline();
 
         // if online, loads list of trials
         if (isOnline) {

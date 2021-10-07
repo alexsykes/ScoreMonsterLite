@@ -94,11 +94,12 @@ A failure is considered to have occurred if:
     <string name="item2">Item 2</string>
     <string name="switch_item">Switch</string>
     <string name="section_number">Section number</string>
+    <string name="section">Section</string>
     <string name="observer">Observer name</string>
     <string name="trial_id">Trial ID</string>
     <string name="export">Upload scores</string>
-    <string name="upload_scores">Upload Scores</string>
-    <string name="process_data">Upload Data</string>
+    <string name="upload_scores">Upload scores</string>
+    <string name="process_data">Upload data</string>
     <string name="sync_status">Status</string>
     <string name="lap">Lap</string>
     <string name="total">Total</string>
@@ -234,4 +235,5 @@ To change a score, click on the list icon in the toolbar. This will display a li
     <string name="confirm_reset">Confirm reset</string>
     <string name="reset_times">Reset times</string>
     <string name="advanced_settings">Advanced settings</string>
+    <string name="email_data">Email data</string>
 </resources>

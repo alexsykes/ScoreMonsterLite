@@ -1,4 +1,6 @@
-package com.alexsykes.scoremonster.activities;
+package com.alexsykes.scoremonster.redundant;
+// TODO Check ridingNumber for consistency in all modes
+// TODO Upload / email of time data
 
 import static java.lang.String.valueOf;
 
@@ -32,15 +34,18 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.preference.PreferenceManager;
 
 import com.alexsykes.scoremonster.MainViewModel;
 import com.alexsykes.scoremonster.NumberPadFragment;
 import com.alexsykes.scoremonster.R;
 import com.alexsykes.scoremonster.TouchFragment;
+import com.alexsykes.scoremonster.activities.HelpActivity;
+import com.alexsykes.scoremonster.activities.ScoreListActivity;
+import com.alexsykes.scoremonster.activities.SettingsActivity;
 import com.alexsykes.scoremonster.data.ScoreContract;
 import com.alexsykes.scoremonster.data.ScoreDbHelper;
-import com.alexsykes.scoremonster.data.TimeContract;
 import com.alexsykes.scoremonster.data.TimeDbHelper;
 import com.alexsykes.scoremonster.data.TrialDbHelper;
 import com.opencsv.CSVWriter;
@@ -53,74 +58,106 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 
-public class MainActivityNew extends AppCompatActivity {
+/*
+    Method  getTrialList(URL)
+
+    * called - onCreate()
+    * returns
+
+    @ post
+    theNames - CSV String of trial names
+    theIds - - CSV String of trial ids
+    saved in prefs
+
+
+    Method getTrialDetails(int trialid)
+
+    Scoring mode for TrialMonster
+    *   0 - traditional observer scoring / manual detail entry
+    *   1 - observer scoring to web
+    *   2 - rider scoring to web
+    *   3 - group scoring to web
+    *   4 - time and observation
+
+ */
+
+public class MainActivity extends AppCompatActivity {
     public static final String EXTRA_MESSAGE = "com.alexsykes.scoremonster.activities.MESSAGE";
+    NumberPadFragment numberPadFragment;
+    LinearLayout content;
+    TextView riderNumberLabel, statusLine;
+    SharedPreferences localPrefs;
+    Button finishButton, startClockButton;
+    long clockStartTime, startInterval, penaltyTariff;
+    MediaPlayer mediaPlayer;
+    // Layout variables
+    TextView numberLabel, scoreLabel, sectionNumber, decrementTextView, incrementTextView, sectionDetail;
+    LinearLayout sectionPicker, sectionLabelLayout;
+    ConstraintLayout top;
+    String theURL;
+    private int ridingNumber, trialid, mode;
+
     public static final int TEXT_REQUEST = 1;
     public static final int NOT_SYNCED = -1;
     final String uploadFilePath = "mnt/sdcard/Documents/Scoremonster/";
-    SharedPreferences localPrefs;
+
     MainViewModel model;
+    // Databases
+    private ScoreDbHelper mDbHelper;
     String[] theTrials, theIDs;
     ArrayList<HashMap<String, String>> theTrialData;
-
-    // UI Components
-    TouchFragment touchFragment;
-    NumberPadFragment numberPadFragment;
-    Button saveButton;
-
-    // Layout variables
-    TextView numberLabel, scoreLabel, sectionNumberTextView, decrementTextView,
-            incrementTextView, sectionDetail, statusLine;
-    LinearLayout sectionPicker, sectionLabelLayout;
-    ConstraintLayout top, bottom;
-    // Utility
-    ProgressDialog dialog = null;
-    MediaPlayer mediaPlayer;
-    // Databases
-    private ScoreDbHelper scoreDbHelper;
     private TimeDbHelper timeDbHelper;
     private TrialDbHelper trialDbHelper;
-
-    // Variables
-    long clockStartTime, startInterval, penaltyTariff;
-    private String status, filename, observer, theTrialName, detail, email, club, message;
-    private int score, scoreCount, serverResponseCode = 0, usermode, section, numsections, numlaps, numberInGroup;
+    private String message;
+    private String status, filename, observer, theTrialName, detail, email, club;
     private boolean isSingleUser, trialHasChanged, isOnline, timeMode;
-    private int ridingNumber, trialid, mode;
+    TouchFragment touchFragment;
+    Button saveButton;
+    ProgressDialog dialog = null;
+    private int score, scoreCount, serverResponseCode = 0, usermode, section, numsections, numlaps, numberInGroup;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.i("Info", "MainActivity: onCreate called");
         super.onCreate(savedInstanceState);
-        Log.i("Info", "MainACtivityNew onCreate: called");
-        setContentView(R.layout.activity_main_new);
+        model = new ViewModelProvider(this).get(MainViewModel.class);
 
-        // Add custom ActionBar
-        Toolbar myToolbar = findViewById(R.id.top_toolbar);
-        setSupportActionBar(myToolbar);
-        myToolbar.getMenu();
-        model = new MainViewModel();
+        // Load existing settings and check for connectivity
+        localPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        timeMode = localPrefs.getBoolean("timeMode", false);
+        SharedPreferences.Editor editor = localPrefs.edit();
+        editor.putBoolean("canConnect", isOnline());
+        editor.apply();
+
+        model.setRefreshed(false);
+        setContentView(R.layout.activity_main);
 
         // Create database connection
-        scoreDbHelper = new ScoreDbHelper(this);
+        mDbHelper = new ScoreDbHelper(this);
         trialDbHelper = new TrialDbHelper(this);
-        timeDbHelper = new TimeDbHelper(this);
 
-        // TODO - add routine to check for timeMode
+        UISetup();
+        getPrefs();
+        setMode();
+        // Check for connectivity
+        isOnline = isOnline();
+
+        if (!isOnline && trialid == -999) {
+            Toast.makeText(MainActivity.this, "Offline only", Toast.LENGTH_LONG).show();
+            goSetup();
+        }
+
+        // ArrayList trials = trialDbHelper.getTrials();
+        // Set up button to save scores
         saveButton = findViewById(R.id.saveButton);
         saveButton.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                if (timeMode) {
-                    saveTime(this);
-                } else {
-                    saveScore(this);
-                }
+                save(this);
                 return false;
             }
         });
@@ -130,6 +167,162 @@ public class MainActivityNew extends AppCompatActivity {
                 trialid,
                 numlaps,
                 numsections);
+    }
+
+    private void setMode() {
+        mode = localPrefs.getInt("mode", 0);
+        switch (mode) {
+            case 0: // Manual entry
+                sectionPicker.setVisibility(View.GONE);
+                sectionLabelLayout.setVisibility(View.GONE);
+                sectionDetail.setText("Section: " + section);
+                break;
+            case 1: // Observer with online trial details
+                sectionPicker.setVisibility(View.GONE);
+                sectionLabelLayout.setVisibility(View.GONE);
+                sectionDetail.setText("Section: " + section);
+                break;
+            case 2: // Single rider - online details
+                sectionPicker.setVisibility(View.VISIBLE);
+                sectionLabelLayout.setVisibility(View.GONE);
+                //  getSupportFragmentManager().beginTransaction().add(R.id.top, numberPadFragment).commit();
+                getSupportFragmentManager().beginTransaction().remove(numberPadFragment).commit();
+                sectionDetail.setText("Section: " + section);
+                break;
+            case 3: // Riding group online details
+                sectionPicker.setVisibility(View.VISIBLE);
+                sectionLabelLayout.setVisibility(View.GONE);
+                sectionDetail.setText("Section: " + section);
+                break;
+            case 4: // T&O
+                sectionPicker.setVisibility(View.GONE);
+                sectionLabelLayout.setVisibility(View.GONE);
+                sectionDetail.setText("Section: " + section);
+                break;
+//            case 5: // Time mode
+//                sectionPicker.setVisibility(View.GONE);
+//                sectionLabelLayout.setVisibility(View.GONE);
+//                scoreLabel.setVisibility(View.GONE);
+//                getSupportFragmentManager().beginTransaction().remove(touchFragment).commit();
+//                break;
+            default:
+                sectionPicker.setVisibility(View.GONE);
+                sectionLabelLayout.setVisibility(View.GONE);
+                sectionDetail.setText("Section: " + section);
+                break;
+        }
+/*        if (usermode == 3) {
+            // goTimer();
+        }
+        if (mode == 0) {
+            sectionPicker.setVisibility(View.INVISIBLE);
+            sectionLabelLayout.setVisibility(View.VISIBLE);
+            sectionDetail.setText("Section: " + section);
+            // decrementTextView.setVisibility(View.INVISIBLE);
+        } else {
+            sectionPicker.setVisibility(View.VISIBLE);
+            sectionLabelLayout.setVisibility(View.INVISIBLE);
+            // decrementTextView.setVisibility(View.VISIBLE);
+        }*/
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Log.i("Info", "MainActivity::onStart called");
+        // Check network connectivity and set Prefs
+        getPrefs();
+        localPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = localPrefs.edit();
+        editor.putBoolean("canConnect", isOnline());
+        editor.apply();
+
+        if (!isSingleUser) {
+            numberLabel.setText("");
+            top.setVisibility(View.VISIBLE);
+        } else {
+            top.setVisibility(View.INVISIBLE);
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.i("Info", "MainActivity: onResume called");
+        // Restore values from model
+        getPrefs();
+        if (timeMode) {
+            goTimer();
+        } else {
+            reloadFromModel();
+            setMode();
+            if (ridingNumber != 0) {
+                numberLabel.setText(valueOf(ridingNumber));
+            } else {
+                numberLabel.setText("");
+            }
+            scoreLabel.setText(valueOf(score));
+            sectionNumber.setText(valueOf(section));
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        Log.i("Note", "onPause called");
+        super.onPause();
+        saveCurrentState();
+    }
+
+    @Override
+    protected void onStop() {
+        Log.i("Note", "onStop called");
+        super.onStop();
+        saveCurrentState();
+    }
+
+    private void saveCurrentState() {
+        Log.i("Note", "saveCurrentState called");
+        localPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = localPrefs.edit();
+        int score = Integer.parseInt(scoreLabel.getText().toString());
+        String currentRiderText = numberLabel.getText().toString();
+        int rider = 0;
+        if (!currentRiderText.equals("")) {
+            rider = Integer.parseInt(numberLabel.getText().toString());
+        }
+        editor.putInt("ridingNumber", rider);
+        editor.putInt("section", section);
+        editor.putInt("score", score);
+        editor.putInt("scoreCount", scoreCount);
+        editor.apply();
+    }
+
+    @Override
+    protected void onSaveInstanceState(final Bundle outState) {
+        super.onSaveInstanceState(outState);
+        Log.i("Info", "onSaveInstanceState called");
+        model.setRidingNumber(ridingNumber);
+        model.setScore(score);
+        model.setSection(section);
+        model.setTrialid(trialid);
+        model.setNumLaps(numlaps);
+        model.setNumSections(numsections);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        Log.i("Info", "onRestoreInstanceState called");
+        reloadFromModel();
+    }
+
+    private void reloadFromModel() {
+        ridingNumber = model.getRidingNumber();
+        score = model.getScore();
+        section = model.getSection();
+        trialid = model.getTrialid();
+        numlaps = model.getNumlaps();
+        numsections = model.getNumsections();
     }
 
     @Override
@@ -147,20 +340,16 @@ public class MainActivityNew extends AppCompatActivity {
                 return true;
 
             // Show scores on remote server
-            case R.id.email:
-                // goShowScoresFromServer();
-                // goShowSummaryScores();
-                sendEmail();
-                return true;
+//            case R.id.email:
+//                // goShowScoresFromServer();
+//                // goShowSummaryScores();
+//                sendEmail();
+//                return true;
 
             // Sync scores with remote db
             // Shows scores stored on device
             case R.id.scoresheet:
-                if (timeMode) {
-                    goTimeList();
-                } else {
-                    goScoreList();
-                }
+                goSync();
                 return true;
 
 /*            case R.id.timer:
@@ -177,24 +366,133 @@ public class MainActivityNew extends AppCompatActivity {
         }
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        Log.i("Info", "MainActivityNew:onStart called");
-        getPrefs();
-        initialUISetup();
+    private void reset() {
+        mDbHelper.clearResults();
+        trialDbHelper.clearTrials();
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
+    private void UISetup() {
+        // Add custom ActionBar
+        Toolbar myToolbar = findViewById(R.id.my_toolbar);
+        setSupportActionBar(myToolbar);
+        myToolbar.getMenu();
+
+        // Add score and numberPad fragemnts
+        numberPadFragment = new NumberPadFragment();
+        touchFragment = new TouchFragment();
+        numberLabel = findViewById(R.id.numberLabel);
+        scoreLabel = findViewById(R.id.scoreLabel);
+        statusLine = findViewById(R.id.statusLine);
+        sectionNumber = findViewById(R.id.sectionNumber);
+        top = findViewById(R.id.top);
+        incrementTextView = findViewById(R.id.incrementTextView);
+        decrementTextView = findViewById(R.id.decrementTextView);
+        sectionPicker = findViewById(R.id.sectionPicker);
+        sectionDetail = findViewById(R.id.sectionDetail);
+        sectionLabelLayout = findViewById(R.id.sectionLabelLayout);
+
+        getSupportFragmentManager().beginTransaction().add(R.id.top, numberPadFragment).commit();
+        getSupportFragmentManager().beginTransaction().replace(R.id.bottom, touchFragment).commit();
+    }
+    /*private void UISetupForTimer() {
+        statusLine = findViewById(R.id.statusLine);
+        saveButton.setText(R.string.startTimerButtonText);
+       // top = findViewById(R.id.content);
+       // riderNumberLabel = findViewById(R.id.riderNumberLabel);
+        saveButton = findViewById(R.id.finishButton);
+
+        // Set listeners
+        saveButton.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                save(this);
+                return false;
+            }
+        });
+
+        saveButton.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                startClock(this);
+                return false;
+            }
+
+            // called when button pressed
+            private void startClock(View.OnLongClickListener onLongClickListener) {
+                Calendar startTime = Calendar.getInstance();
+                //clockStartTime = startTime.getTimeInMillis();
+
+                // Save start time in prefs
+                SharedPreferences.Editor editor = localPrefs.edit();
+             //   editor.putLong("clockStartTime", clockStartTime);
+                editor.apply();
+                SimpleDateFormat dateFormat = new SimpleDateFormat("h:mm:ss a");
+              //  String dateString = dateFormat.format(clockStartTime);
+                statusLine.setText("Clock started at " + "dateString");
+                top.setVisibility(View.VISIBLE);
+               // startClockButton.setVisibility(View.GONE);
+                statusLine.setVisibility(View.VISIBLE);
+               // finishButton.setVisibility(View.VISIBLE);
+                numberLabel.setText("");
+            }
+        });
+    }*/
+
+
+    public void countDabs(View view) {
+        int intID = view.getId();
+        Button button = view.findViewById(intID);
+        String digit = button.getText().toString();
+
+        switch (digit) {
+            case "Clean":
+                score = 0;
+                break;
+            case "10":
+                score = 10;
+                break;
+            case "5":
+                score = 5;
+                break;
+            case "Dab":
+                if (score < 3)
+                    score++;
+                break;
+        }
+        scoreLabel.setText(valueOf(score));
+    }
+
+    // Menu options
+    private void goSync() {
+        Intent intent = new Intent(this, ScoreListActivity.class);
+        intent.putExtra(EXTRA_MESSAGE, message);
+        startActivity(intent);
+    }
+
+    private void goSetup() {
+        Intent intent = new Intent(this, SettingsActivity.class);
+        intent.putExtra(EXTRA_MESSAGE, message);
+        startActivity(intent);
+        // getPrefs();
+    }
+
+    private void goHelp() {
+        Intent intent = new Intent(this, HelpActivity.class);
+        intent.putExtra(EXTRA_MESSAGE, message);
+        startActivity(intent);
+    }
+
+    private void goTimer() {
+//        Intent intent = new Intent(this, TimerActivity.class);
+//        intent.putExtra(EXTRA_MESSAGE, message);
+//        startActivity(intent);
+
+        Log.i("Info", "goTimer() called");
+        //UISetupForTimer();
     }
 
     private void getPrefs() {
         localPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-        clockStartTime = localPrefs.getLong("clockStartTime", 0);
-        startInterval = localPrefs.getLong("startInterval", 60);
-        penaltyTariff = localPrefs.getLong("penaltyTariff", 60);
         observer = localPrefs.getString("observer", "");
         section = localPrefs.getInt("section", 1);
         trialid = localPrefs.getInt("trialid", 0);
@@ -212,86 +510,24 @@ public class MainActivityNew extends AppCompatActivity {
         mode = localPrefs.getInt("mode", 0);
         usermode = Integer.valueOf(localPrefs.getString("usermode", "0"));
         timeMode = localPrefs.getBoolean("timeMode", false);
+        // isOnline = localPrefs.getBoolean("isOnline", false);
+
+        // Set up status line
+        status = theTrialName + " - Observer: " + observer;
+        sectionNumber.setText(valueOf(section));
+
+        if (isSingleUser) {
+            numberLabel.setText(valueOf(ridingNumber));
+        }
+        statusLine.setText(status);
     }
 
-    void initialUISetup() {
-        // Initialise UI fields
-        numberLabel = findViewById(R.id.numberLabel);
-        scoreLabel = findViewById(R.id.scoreLabel);
-        statusLine = findViewById(R.id.statusLine);
-        sectionLabelLayout = findViewById(R.id.sectionLabelLayout);
-        sectionNumberTextView = findViewById(R.id.sectionNumber);
-        sectionNumberTextView.setText(valueOf(section));
-        top = findViewById(R.id.top);
-        incrementTextView = findViewById(R.id.incrementTextView);
-        decrementTextView = findViewById(R.id.decrementTextView);
-        sectionDetail = findViewById(R.id.sectionDetail);
-        saveButton = findViewById(R.id.saveButton);
+    protected boolean isOnline() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
 
-        // Set initial values
-        if (timeMode) {
-            statusLine.setText("Time mode");
-            sectionLabelLayout.setVisibility(View.GONE);
-            scoreLabel.setVisibility(View.INVISIBLE);
-            if (clockStartTime > 0) {
-                saveButton.setText("Enter");
-                saveButton.setOnLongClickListener(new View.OnLongClickListener() {
-                    @Override
-                    public boolean onLongClick(View v) {
-                        saveTime(this);
-                        return false;
-                    }
-                });
-            } else {
-                saveButton.setText("Start clock");
-                saveButton.setOnLongClickListener(new View.OnLongClickListener() {
-                    @Override
-                    public boolean onLongClick(View v) {
-                        startClock(this);
-                        return false;
-                    }
-
-                    // called when button pressed
-                    private void startClock(View.OnLongClickListener onLongClickListener) {
-                        Calendar startTime = Calendar.getInstance();
-                        clockStartTime = startTime.getTimeInMillis();
-
-                        // Save start time in prefs
-                        SharedPreferences.Editor editor = localPrefs.edit();
-                        editor.putLong("clockStartTime", clockStartTime);
-                        editor.apply();
-                        SimpleDateFormat dateFormat = new SimpleDateFormat("h:mm:ss a");
-                        String dateString = dateFormat.format(clockStartTime);
-                        statusLine.setText("Clock started at " + dateString);
-                        saveButton.setText("Enter");
-                        numberLabel.setText("");
-                    }
-                });
-            }
-
-        } else {
-            sectionLabelLayout.setVisibility(View.GONE);
-            statusLine.setText("Scoring mode");
-            saveButton.setText("Save");
-            scoreLabel.setVisibility(View.VISIBLE);
-
-            if (touchFragment == null && !timeMode) {
-                touchFragment = new TouchFragment();
-            }
-            getSupportFragmentManager().beginTransaction().add(R.id.bottom, touchFragment).commit();
-        }
-
-        if (numberPadFragment == null) {
-            numberPadFragment = new NumberPadFragment();
-            getSupportFragmentManager().beginTransaction().add(R.id.top, numberPadFragment).commit();
-        }
-//        if (touchFragment == null && !timeMode) {
-//            touchFragment = new TouchFragment();
-//            getSupportFragmentManager().beginTransaction().add(R.id.bottom, touchFragment).commit();
-//        }
-        if (touchFragment != null && timeMode) {
-            getSupportFragmentManager().beginTransaction().remove(touchFragment).commit();
-        }
+        model.setOnline(netInfo != null && netInfo.isConnectedOrConnecting());
+        return netInfo != null && netInfo.isConnectedOrConnecting();
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -299,34 +535,7 @@ public class MainActivityNew extends AppCompatActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
-    // Section button methods
-    public void increment(View v) {
-        SharedPreferences.Editor editor = localPrefs.edit();
-        if (section < numsections) {
-            section++;
-        } else if (section == numsections) {
-            section = 1;
-        }
-        sectionNumberTextView.setText(valueOf(section));
-        editor.putInt("section", section);
-        editor.putString("sectionText", String.valueOf(section));
-        editor.apply();
-    }
-    public void decrement(View v) {
-        SharedPreferences.Editor editor = localPrefs.edit();
-        if (section > 1) {
-            section--;
-        } else if (section == 1) {
-            section = numsections;
-        }
-        sectionNumberTextView.setText(valueOf(section));
-        editor.putInt("section", section);
-        editor.putString("sectionText", String.valueOf(section));
-        editor.apply();
-    }
-
-    // Score utility methods
-    private void saveScore(View.OnLongClickListener view) {
+    private void save(View.OnLongClickListener view) {
 
         ToneGenerator toneGen1 = new ToneGenerator(AudioManager.STREAM_MUSIC, ToneGenerator.MAX_VOLUME);
         // Get String values for rider and scoreLabel
@@ -358,12 +567,13 @@ public class MainActivityNew extends AppCompatActivity {
             clearScore();
         }
     }
+
     private void insertScore(int rider, int score) {
         ToneGenerator toneGen1 = new ToneGenerator(AudioManager.STREAM_MUSIC, ToneGenerator.MAX_VOLUME);
         // Check for numberof completed laps
         // Gets the database in write mode
-        SQLiteDatabase db = scoreDbHelper.getWritableDatabase();
-        int lap = 1 + scoreDbHelper.getRiderLap(rider, section, trialid);
+        SQLiteDatabase db = mDbHelper.getWritableDatabase();
+        int lap = 1 + mDbHelper.getRiderLap(rider, section, trialid);
 
         if (lap > numlaps) {
             toneGen1.startTone(ToneGenerator.TONE_CDMA_ALERT_CALL_GUARD, 150);
@@ -390,6 +600,7 @@ public class MainActivityNew extends AppCompatActivity {
             Toast.makeText(this, "Score saved", Toast.LENGTH_SHORT).show();
         }
     }
+
     public void addDigit(View view) {
         // Get length of rider riderNumber
         numberLabel = findViewById(R.id.numberLabel);
@@ -419,29 +630,9 @@ public class MainActivityNew extends AppCompatActivity {
         }
         numberLabel.setText(riderNumber);
     }
-    public void countDabs(View view) {
-        int intID = view.getId();
-        Button button = view.findViewById(intID);
-        String digit = button.getText().toString();
 
-        switch (digit) {
-            case "Clean":
-                score = 0;
-                break;
-            case "10":
-                score = 10;
-                break;
-            case "5":
-                score = 5;
-                break;
-            case "Dab":
-                if (score < 3)
-                    score++;
-                break;
-        }
-        scoreLabel.setText(valueOf(score));
-    }
-
+    // Reset the  rider/score values
+    // Patched for singleUserMode
     private void clearScore() {
         // Clear score label
         score = 0;
@@ -459,135 +650,36 @@ public class MainActivityNew extends AppCompatActivity {
             } else if (section == numsections) {
                 section = 1;
             }
-            sectionNumberTextView.setText(valueOf(section));
+            sectionNumber.setText(valueOf(section));
             editor.putInt("section", section);
             editor.apply();
         }
     }
 
-    // Time utility methods
-    private void saveTime(View.OnLongClickListener view) {
-        Log.i("Note", "Saving finish time");
-
-        ToneGenerator toneGen1 = new ToneGenerator(AudioManager.STREAM_MUSIC, ToneGenerator.MAX_VOLUME);
-        // Get String values for rider and scoreLabel
-        String rider = numberLabel.getText().toString();
-        // Get value for time
-        Calendar finishTime = Calendar.getInstance();
-        long finishTimeInMillis = finishTime.getTimeInMillis();
-
-        // NOTE Do NOT use null
-        if (rider.equals("")) {
-            toneGen1.startTone(ToneGenerator.TONE_PROP_BEEP2, 150);
-            Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                vibrator.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE));
-            } else vibrator.vibrate(500);
-            new AlertDialog.Builder(this).setTitle("Warning").setMessage(R.string.missing_rider_number).setNeutralButton("Close", null).show();
-        } else {
-            // Otherwise enter scores
-            int riderNumber = Integer.parseInt(rider);
-//            int scoreValue = Integer.parseInt(score);
-
-            // Update prefs for single rider
-            SharedPreferences.Editor editor = localPrefs.edit();
-            editor.putInt("ridingNumber", riderNumber);
-            editor.putString("riderText", rider);
-            editor.apply();
-
-            insertTime(riderNumber, finishTimeInMillis);
-            clearScore();
+    public void increment(View v) {
+        SharedPreferences.Editor editor = localPrefs.edit();
+        if (section < numsections) {
+            section++;
+        } else if (section == numsections) {
+            section = 1;
         }
-    }
-    private void insertTime(int riderNumber, long finishTimeInMillis) {
-        long elapsedTime, timeInterval, deltaTime, riderStartTime;
-        trialDbHelper = new TrialDbHelper(this);
-        // startInterval = trialDbHelper.getStartInterval(trialid);
-
-        /*  finishTimeInMillis - real finishtime
-            timeInterval - time delay for each rider
-            Zero for #1
-            deltaTime - real time difference between startTime and riderStartTime
-            riderStartTime - time rider actually started
-            elapsedTime - time on course for rider
-         */
-        timeInterval = (riderNumber - 1) * 1000 * startInterval;
-        riderStartTime = clockStartTime + timeInterval;
-
-        timeDbHelper = new TimeDbHelper(this);
-        SQLiteDatabase db = timeDbHelper.getWritableDatabase();
-        deltaTime = finishTimeInMillis - riderStartTime;
-
-        // Calculate rider's elapsed time using startInterval
-        // startInterval measured in seconds
-
-        // Create a ContentValues object where column names are the keys,
-        ContentValues values = new ContentValues();
-        values.put(TimeContract.TimeEntry.COLUMN_TIME_NUMBER, riderNumber);
-        values.put(TimeContract.TimeEntry.COLUMN_TIME_TRIALID, trialid);
-        values.put(TimeContract.TimeEntry.COLUMN_TIME_FINISHTIME, finishTimeInMillis);
-        values.put(TimeContract.TimeEntry.COLUMN_TIME_ELAPSEDTIME, deltaTime);
-        db.insert(TimeContract.TimeEntry.TABLE_NAME, null, values);
-
-
-        // timeDbHelper.updateTrial(trialid, startInterval, penaltyTariff);
-        // Confirm committed with sound
-        playSoundFile(R.raw.ting);
-        Toast.makeText(this, "Finish time recorded", Toast.LENGTH_SHORT).show();
+        sectionNumber.setText(valueOf(section));
+        editor.putInt("section", section);
+        editor.putString("sectionText", String.valueOf(section));
+        editor.apply();
     }
 
-    protected boolean isOnline() {
-        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo netInfo = cm.getActiveNetworkInfo();
-
-        model.setOnline(netInfo != null && netInfo.isConnectedOrConnecting());
-        return netInfo != null && netInfo.isConnectedOrConnecting();
-    }
-
-
-    // Menu options
-    private void goScoreList() {
-        Intent intent = new Intent(this, ScoreListActivity.class);
-        intent.putExtra(EXTRA_MESSAGE, message);
-        startActivity(intent);
-    }
-
-    private void goTimeList() {
-        Intent intent = new Intent(this, TimeListActivity.class);
-        intent.putExtra(EXTRA_MESSAGE, message);
-        startActivity(intent);
-    }
-
-    private void goSetup() {
-        Intent intent = new Intent(this, SettingsActivity.class);
-        intent.putExtra(EXTRA_MESSAGE, message);
-        startActivity(intent);
-        // getPrefs();
-    }
-
-    private void goHelp() {
-        Intent intent = new Intent(this, HelpActivity.class);
-        intent.putExtra(EXTRA_MESSAGE, message);
-        startActivity(intent);
-    }
-
-    private void sendEmail() {
-        isOnline = isOnline();
-        if (!isOnline) {
-            Toast.makeText(MainActivityNew.this, "Email cannot be sent at this time - no Internet connection.",
-                    Toast.LENGTH_LONG).show();
-        } else {
-            // Get timestamp and add to filename
-            Date date = new Date();
-            // getTime() returns current time in milliseconds
-            long time = date.getTime();
-            String ts = valueOf(time);
-            filename = "scores_" + ts + ".csv";
-            String sendMailURL = "https://www.trialmonster.uk/android/sendMailWithFile.php?id=" + ts + "&trialid=" + trialid + "&email=" + email;
-
-            Log.i("Monitor", sendMailURL);
-            // processCSV(sendMailURL);
+    public void decrement(View v) {
+        SharedPreferences.Editor editor = localPrefs.edit();
+        if (section > 1) {
+            section--;
+        } else if (section == 1) {
+            section = numsections;
         }
+        sectionNumber.setText(valueOf(section));
+        editor.putInt("section", section);
+        editor.putString("sectionText", String.valueOf(section));
+        editor.apply();
     }
 
     private void saveToCSV() {
@@ -604,7 +696,7 @@ public class MainActivityNew extends AppCompatActivity {
 
             // Get current data
 
-            Cursor curChild = scoreDbHelper.getAll(trialid);
+            Cursor curChild = mDbHelper.getAll(trialid);
             while (curChild.moveToNext()) {
                 id = curChild.getString(0);
                 observer = curChild.getString(1);
@@ -631,6 +723,26 @@ public class MainActivityNew extends AppCompatActivity {
             //  Log.e("Child", e.getMessage(), e);
         }
     }
+
+    private void sendEmail() {
+        boolean isOnline = isOnline();
+        if (!isOnline) {
+            Toast.makeText(MainActivity.this, "Email cannot be sent at this time - no Internet connection.",
+                    Toast.LENGTH_LONG).show();
+        } else {
+            // Get timestamp and add to filename
+            Date date = new Date();
+            // getTime() returns current time in milliseconds
+            long time = date.getTime();
+            String ts = valueOf(time);
+            filename = "scores_" + ts + ".csv";
+            String sendMailURL = "https://www.trialmonster.uk/android/sendMailWithFile.php?id=" + ts + "&trialid=" + trialid + "&email=" + email;
+
+            Log.i("Monitor", sendMailURL);
+            processCSV(sendMailURL);
+        }
+    }
+
     private void processCSV(final String sendMailURL) {
         /*
          * Processing the CSV done online
@@ -649,7 +761,7 @@ public class MainActivityNew extends AppCompatActivity {
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
-                dialog = ProgressDialog.show(MainActivityNew.this, "Scoremonster",
+                dialog = ProgressDialog.show(MainActivity.this, "Scoremonster",
                         "Processing scores… this make take some time!", true);
                 // Prepare CSV file
                 saveToCSV();
@@ -661,7 +773,7 @@ public class MainActivityNew extends AppCompatActivity {
 
                 if (s.contentEquals("OK")) {
                     String toastMessage = "The email has been sent successfully to " + email;
-                    runOnUiThread(() -> Toast.makeText(MainActivityNew.this, toastMessage,
+                    runOnUiThread(() -> Toast.makeText(MainActivity.this, toastMessage,
                             Toast.LENGTH_LONG).show());
                 }
             }
@@ -688,6 +800,7 @@ public class MainActivityNew extends AppCompatActivity {
         ProcessCSV processCSV = new ProcessCSV();
         processCSV.execute();
     }
+
     public void uploadFile(String sourceFileUri) {
         File directory = getFilesDir();
         File sourceFile = new File(directory, filename);
@@ -757,7 +870,7 @@ public class MainActivityNew extends AppCompatActivity {
                 serverResponseCode = conn.getResponseCode();
                 if (serverResponseCode != 200) {
 
-                    runOnUiThread(() -> Toast.makeText(MainActivityNew.this, "Error processing data",
+                    runOnUiThread(() -> Toast.makeText(MainActivity.this, "Error processing data",
                             Toast.LENGTH_LONG).show());
                 }
 
@@ -773,7 +886,7 @@ public class MainActivityNew extends AppCompatActivity {
 
                 runOnUiThread(() -> {
                     // messageText.setText("MalformedURLException Exception : check script url.");
-                    Toast.makeText(MainActivityNew.this, "MalformedURLException",
+                    Toast.makeText(MainActivity.this, "MalformedURLException",
                             Toast.LENGTH_SHORT).show();
                 });
 
@@ -785,7 +898,7 @@ public class MainActivityNew extends AppCompatActivity {
 
                 runOnUiThread(() -> {
                     // messageText.setText("Got Exception : see logcat ");
-                    Toast.makeText(MainActivityNew.this, "Got Exception : see logcat ",
+                    Toast.makeText(MainActivity.this, "Got Exception : see logcat ",
                             Toast.LENGTH_SHORT).show();
                 });
                 //   Log.e("Upload file Exception", "Exception : " + e.getMessage(), e);

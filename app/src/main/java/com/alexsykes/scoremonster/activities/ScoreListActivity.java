@@ -1,15 +1,18 @@
 package com.alexsykes.scoremonster.activities;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
-import android.view.View;
-import android.widget.Button;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,7 +38,6 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 
 public class ScoreListActivity extends AppCompatActivity {
@@ -47,20 +49,20 @@ public class ScoreListActivity extends AppCompatActivity {
     RecyclerView scoreView;
     ArrayList<HashMap<String, String>> theScoreList;
     TextView messageText;
-    Button processButton;
-    int serverResponseCode = 0, section, trialid;
+    private final String processURL = null;
     ProgressDialog dialog = null;
     File exportDir = new File(Environment.getExternalStoragePublicDirectory("Documents/Scoremonster"), "");
     boolean isOnline;
     SharedPreferences localPrefs;
-    private String processURL = null;
+    // Button processButton;
+    int serverResponseCode = 0, section, trialid;
     private ScoreDbHelper mDbHelper;
     private String filename;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_sync);
+        setContentView(R.layout.activity_score_list);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -81,9 +83,9 @@ public class ScoreListActivity extends AppCompatActivity {
         populateScoreList();
 
         // uploadButton = findViewById(R.id.uploadButton);
-        processButton = findViewById(R.id.processButton);
+        // processButton = findViewById(R.id.processButton);
 
-        processButton.setOnClickListener(new View.OnClickListener() {
+       /* processButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 isOnline = localPrefs.getBoolean("canConnect", false);
@@ -102,17 +104,80 @@ public class ScoreListActivity extends AppCompatActivity {
                     processCSV(processURL);
                 }
             }
-        });
-
+        });*/
         isOnline = localPrefs.getBoolean("canConnect", false);
-        if(!isOnline) {
-            processButton.setEnabled(false);
+        if (!isOnline) {
+            // processButton.setEnabled(false);
         }
     }
 
+    public boolean onCreateOptionsMenu(Menu menu) {
+        //      isOnline =  localPrefs.getBoolean("canConnect", false) ;
+        getMenuInflater().inflate(R.menu.list_menu, menu);
+
+//        MenuItem email = menu.findItem(R.id.email);
+//        MenuItem upload = menu.findItem(R.id.upload);
+//        upload.setEnabled(isOnline);
+//        email.setEnabled(isOnline);
+
+        return super.onCreateOptionsMenu(menu);
+    }
 
     public void onClickCalled(String scoreid, int score) {
         amendScore(scoreid, score);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+
+            case R.id.email:
+                emailScores();
+                return true;
+
+            case R.id.upload:
+                uploadScores();
+                return true;
+
+
+/*            case R.id.timer:
+                goTimer();
+                return true;*/
+
+//            case R.id.reset:
+//                reset();
+//                return true;
+            default:
+                // If we got here, the user's action was not recognized.
+                // Invoke the superclass to handle it.
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void uploadScores() {
+        isOnline = isOnline();
+        if (!isOnline) {
+            Toast.makeText(ScoreListActivity.this, "No Internet connection. Please try again later",
+                    Toast.LENGTH_LONG).show();
+        } else {
+
+        }
+    }
+
+    private void emailScores() {
+        isOnline = localPrefs.getBoolean("canConnect", false);
+        if (!isOnline) {
+            Toast.makeText(ScoreListActivity.this, "No Internet connection. Please try again later",
+                    Toast.LENGTH_LONG).show();
+        } else {
+
+        }
+    }
+
+    protected boolean isOnline() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        return netInfo != null && netInfo.isConnectedOrConnecting();
     }
 
     // Method to update scores for display

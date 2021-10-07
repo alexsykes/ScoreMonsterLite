@@ -1,4 +1,4 @@
-package com.alexsykes.scoremonster.activities;
+package com.alexsykes.scoremonster.redundant;
 
 import android.content.DialogInterface;
 import android.content.SharedPreferences;

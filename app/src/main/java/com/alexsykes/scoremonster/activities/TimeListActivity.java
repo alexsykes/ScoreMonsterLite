@@ -3,6 +3,7 @@ package com.alexsykes.scoremonster.activities;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -75,6 +76,11 @@ public class TimeListActivity extends AppCompatActivity {
         populateTimeList(baseTime);
     }
 
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.list_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
     private void populateTimeList(long baseTime) {
         theTimeList = dbHelper.getTimeList(trialid);
         timeView = findViewById(R.id.timeView);
@@ -113,7 +119,10 @@ public class TimeListActivity extends AppCompatActivity {
                 String timeID = theTimeList.get(position).get("id");
                 // this method is called when item is swiped.
                 // below line is to remove item from our array list.
+
                 theTimeList.remove(viewHolder.getAdapterPosition());
+
+                // Remove method flips trialid -> -trialid
                 dbHelper.remove(timeID, trialid);
                 adapter.notifyItemRangeRemoved(position, 1);
                 adapter.notifyDataSetChanged();
