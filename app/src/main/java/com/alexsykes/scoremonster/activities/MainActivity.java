@@ -90,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
     private TrialDbHelper trialDbHelper;
     private String status, filename, observer, theTrialName, detail, email, club, message;
     private int score, scoreCount, serverResponseCode = 0, usermode, section, numsections, numlaps, numberInGroup;
-    private boolean isSingleUser, trialHasChanged, isOnline, timeMode;
+    private boolean isSingleUser, trialHasChanged, canConnect, timeMode;
     private int ridingNumber, trialid, mode;
 
     @Override
@@ -229,7 +229,9 @@ public class MainActivity extends AppCompatActivity {
 
         // Set initial values
         if (timeMode) {
-            statusLine.setText("Time mode");
+            SimpleDateFormat dateFormat = new SimpleDateFormat("h:mm:ss a");
+            String dateString = dateFormat.format(clockStartTime);
+            statusLine.setText("Clock started at " + dateString);
             sectionLabelLayout.setVisibility(View.GONE);
             scoreLabel.setVisibility(View.INVISIBLE);
             if (clockStartTime > 0) {
@@ -270,7 +272,8 @@ public class MainActivity extends AppCompatActivity {
 
         } else {
             sectionLabelLayout.setVisibility(View.GONE);
-            statusLine.setText("Scoring mode");
+            status = theTrialName + " - Observer: " + observer;
+            statusLine.setText(status);
             saveButton.setText("Save");
             scoreLabel.setVisibility(View.VISIBLE);
 
@@ -311,7 +314,6 @@ public class MainActivity extends AppCompatActivity {
         editor.putString("sectionText", String.valueOf(section));
         editor.apply();
     }
-
     public void decrement(View v) {
         SharedPreferences.Editor editor = localPrefs.edit();
         if (section > 1) {
@@ -538,7 +540,7 @@ public class MainActivity extends AppCompatActivity {
         Toast.makeText(this, "Finish time recorded", Toast.LENGTH_SHORT).show();
     }
 
-    protected boolean isOnline() {
+    protected boolean canConnect() {
         ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = cm.getActiveNetworkInfo();
 
@@ -574,8 +576,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void sendEmail() {
-        isOnline = isOnline();
-        if (!isOnline) {
+        canConnect = canConnect();
+        if (!canConnect) {
             Toast.makeText(MainActivity.this, "Email cannot be sent at this time - no Internet connection.",
                     Toast.LENGTH_LONG).show();
         } else {

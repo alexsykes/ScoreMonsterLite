@@ -38,12 +38,15 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 
 public class ScoreListActivity extends AppCompatActivity {
     /**********  File Path *************/
     final String uploadFilePath = "mnt/sdcard/Documents/Scoremonster/";
     private final String baseURL = "https://android.trialmonster.uk/addCSVtodb.php?trialid=";
+    File exportDir = new File(Environment.getExternalStoragePublicDirectory("Documents/Scoremonster"), "");
+
     //   final String uploadFileName = "scores.csv";
     // https://androidexample.com/Upload_File_To_Server_-_Android_Example/index.php?view=article_discription&aid=83
     RecyclerView scoreView;
@@ -51,13 +54,12 @@ public class ScoreListActivity extends AppCompatActivity {
     TextView messageText;
     private final String processURL = null;
     ProgressDialog dialog = null;
-    File exportDir = new File(Environment.getExternalStoragePublicDirectory("Documents/Scoremonster"), "");
-    boolean isOnline;
+    boolean canConnect;
     SharedPreferences localPrefs;
     // Button processButton;
     int serverResponseCode = 0, section, trialid;
     private ScoreDbHelper mDbHelper;
-    private String filename;
+    private String filename, email;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -105,8 +107,8 @@ public class ScoreListActivity extends AppCompatActivity {
                 }
             }
         });*/
-        isOnline = localPrefs.getBoolean("canConnect", false);
-        if (!isOnline) {
+        canConnect = localPrefs.getBoolean("canConnect", false);
+        if (!canConnect) {
             // processButton.setEnabled(false);
         }
     }
@@ -155,26 +157,43 @@ public class ScoreListActivity extends AppCompatActivity {
     }
 
     private void uploadScores() {
-        isOnline = isOnline();
-        if (!isOnline) {
+        canConnect = canConnect();
+        if (!canConnect) {
             Toast.makeText(ScoreListActivity.this, "No Internet connection. Please try again later",
                     Toast.LENGTH_LONG).show();
         } else {
-
+            // Get timestamp and add to filename
+            Date date = new Date();
+            // getTime() returns current time in milliseconds
+            long time = date.getTime();
+            String ts = String.valueOf(time);
+            filename = "data_" + ts + ".csv";
+            String processURL = baseURL + trialid + "&id=" + ts;
+            // Log.i("URL",processURL);
+            processCSV(processURL);
         }
     }
 
     private void emailScores() {
-        isOnline = localPrefs.getBoolean("canConnect", false);
-        if (!isOnline) {
+        canConnect = localPrefs.getBoolean("canConnect", false);
+        if (!canConnect) {
             Toast.makeText(ScoreListActivity.this, "No Internet connection. Please try again later",
                     Toast.LENGTH_LONG).show();
         } else {
+            email = localPrefs.getString("email", "blackhole@alexsykes.net");
+            Date date = new Date();
+            // getTime() returns current time in milliseconds
+            long time = date.getTime();
+            String ts = String.valueOf(time);
+            filename = "data_" + ts + ".csv";
+            String sendMailURL = "https://www.trialmonster.uk/android/sendMailWithFile.php?id=" + ts + "&trialid=" + trialid + "&email=" + email;
 
+            Log.i("Monitor", sendMailURL);
+            processCSV(sendMailURL);
         }
     }
 
-    protected boolean isOnline() {
+    protected boolean canConnect() {
         ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = cm.getActiveNetworkInfo();
         return netInfo != null && netInfo.isConnectedOrConnecting();
@@ -343,8 +362,7 @@ public class ScoreListActivity extends AppCompatActivity {
                     populateScoreList();
                     runOnUiThread(new Runnable() {
                         public void run() {
-                            Toast.makeText(ScoreListActivity.this, "Score Update Complete",
-                                    Toast.LENGTH_LONG).show();
+                            Toast.makeText(ScoreListActivity.this, "Email sent to " + email, Toast.LENGTH_LONG).show();
                         }
                     });
                 }

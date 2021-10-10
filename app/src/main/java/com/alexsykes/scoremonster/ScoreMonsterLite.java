@@ -37,7 +37,7 @@ public class ScoreMonsterLite extends Application {
     private final int trialid = -999;
     String[] theTrials, theIDs;
     ArrayList<HashMap<String, String>> theTrialData;
-    boolean isOnline;
+    boolean canConnect;
 
     // Databases
     private ScoreDbHelper mDbHelper;
@@ -52,10 +52,10 @@ public class ScoreMonsterLite extends Application {
         dbInit();
 
         // Check for connectivity
-        isOnline = isOnline();
+        canConnect = canConnect();
 
         // if online, loads list of trials
-        if (isOnline) {
+        if (canConnect) {
             String URL = BASE_URL + "getTrialListScoreMonster.php";
             try {
                 getTrialList(URL);
@@ -330,7 +330,7 @@ public class ScoreMonsterLite extends Application {
 
     }
 
-    protected boolean isOnline() {
+    protected boolean canConnect() {
         ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = cm.getActiveNetworkInfo();
         return netInfo != null && netInfo.isConnectedOrConnecting();

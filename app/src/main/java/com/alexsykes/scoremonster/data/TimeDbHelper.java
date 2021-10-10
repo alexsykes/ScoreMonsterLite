@@ -71,6 +71,15 @@ public class TimeDbHelper extends SQLiteOpenHelper {
         db.close();
     }
 
+
+    public Cursor getAll(int id) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT  * FROM times WHERE  trialid=" + id, new String[]{});
+        // db.close();
+        return cursor;
+
+    }
+
     public void updateTimes(int trialid, long startInterval, long penaltyTariff) {
         SQLiteDatabase db = this.getWritableDatabase();
         Log.i("Info", "updateTrial: " + trialid);
