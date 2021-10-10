@@ -74,7 +74,7 @@ public class TimeDbHelper extends SQLiteOpenHelper {
 
     public Cursor getAll(int id) {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT  * FROM times WHERE  trialid=" + id, new String[]{});
+        Cursor cursor = db.rawQuery("SELECT  * FROM times WHERE  trialid=" + id + " ORDER BY elapsedTime ASC", new String[]{});
         // db.close();
         return cursor;
 

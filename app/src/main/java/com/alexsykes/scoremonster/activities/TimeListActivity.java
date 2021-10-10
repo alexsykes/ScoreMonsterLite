@@ -47,7 +47,7 @@ import java.util.HashMap;
 public class TimeListActivity extends AppCompatActivity {
     /**********  File Path *************/
     final String uploadFilePath = "mnt/sdcard/Documents/Scoremonster/";
-    private final String baseURL = "https://android.trialmonster.uk/addCSVtodb.php?trialid=";
+    private final String baseURL = "https://android.trialmonster.uk/processTimeUpload.php?trialid=";
     File exportDir = new File(Environment.getExternalStoragePublicDirectory("Documents/Scoremonster"), "");
     RecyclerView timeView;
     ArrayList<HashMap<String, String>> theTimeList;
@@ -133,7 +133,15 @@ public class TimeListActivity extends AppCompatActivity {
             Toast.makeText(TimeListActivity.this, "No Internet connection. Please try again later",
                     Toast.LENGTH_LONG).show();
         } else {
-
+            // Get timestamp and add to filename
+            Date date = new Date();
+            // getTime() returns current time in milliseconds
+            long time = date.getTime();
+            String ts = String.valueOf(time);
+            filename = "data_" + ts + ".csv";
+            String processURL = baseURL + trialid + "&id=" + ts;
+            // Log.i("URL",processURL);
+            processCSV(processURL);
         }
     }
 
@@ -241,7 +249,7 @@ public class TimeListActivity extends AppCompatActivity {
                 finishTime = curChild.getString(2);
                 elapsedTime = curChild.getString(3);
                 created = curChild.getString(5);
-                trialID = curChild.getString(5);
+                trialID = curChild.getString(6);
 
                 String[] arrStr = {id, number, finishTime, elapsedTime, created, trialID
                 };
@@ -304,9 +312,11 @@ public class TimeListActivity extends AppCompatActivity {
 
                 // First upload the file
                 int response = uploadFile(uploadFilePath + filename);
+                Log.i("Info", "filename: " + filename);
                 try {
                     //creating a URL
                     URL url = new URL(urlWebService);
+                    Log.i("Info", "urlWebService: " + urlWebService);
 
                     //Opening the URL using HttpURLConnection
                     HttpURLConnection con = (HttpURLConnection) url.openConnection();
