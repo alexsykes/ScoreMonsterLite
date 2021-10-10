@@ -140,7 +140,7 @@ public class TimeListActivity extends AppCompatActivity {
             String ts = String.valueOf(time);
             filename = "data_" + ts + ".csv";
             String processURL = baseURL + trialid + "&id=" + ts;
-            // Log.i("URL",processURL);
+             Log.i("URL",processURL);
             processCSV(processURL);
         }
     }
