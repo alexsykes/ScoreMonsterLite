@@ -295,17 +295,14 @@ public class TimeListActivity extends AppCompatActivity {
                 dialog.dismiss();
 
                 if (s.contentEquals("OK")) {
-                    //timeDbHelper.markAsDone(trialid);
-                    // populateScoreList();
                     runOnUiThread(new Runnable() {
                         public void run() {
-                            Toast.makeText(TimeListActivity.this, "Email sent to " + email,
+                            Toast.makeText(TimeListActivity.this, "Times uploaded successfully",
                                     Toast.LENGTH_LONG).show();
                         }
                     });
                 }
             }
-
 
             @Override
             protected String doInBackground(Void... voids) {
