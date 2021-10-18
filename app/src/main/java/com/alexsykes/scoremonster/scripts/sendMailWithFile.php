@@ -11,8 +11,9 @@
 
 $trialid = $_GET['trialid'];
 $ts = $_GET['id'];
-$filename = "./uploads/scores_".$ts.".csv"; 
-// echo $filename;
+$emailFromURL = $_GET['email'];
+$filename = "./uploads/data_".$ts.".csv"; 
+// echo $email;
 
 // Get trial details
 require("conf.php");
@@ -61,11 +62,11 @@ while($stmt->fetch()){
 }
 $club = $trial['club'];
 $venue = $trial['venue'];
-$eventname = $trial['eventname'];
+$eventname = $trial['eventname']; 
 $email = $trial['email'];
 $contact = $trial['contact'];
 
-$message = "Scores from $club $eventname held at $venue on $date attached";
+$message = "Data from $club $eventname held at $venue on $date attached";
 
 // echo $message;
 
@@ -101,7 +102,12 @@ try {
 
     //Recipients
     $mail->setFrom($smtpAddress, 'TrialMonster Admin');
-    $mail->addAddress($email, $contact);               // Name is optional
+
+	if($trialid == 0){
+    $mail->addAddress($emailFromURL, $contact);  
+    } else {
+    	$mail->addAddress($email, $contact);  
+    }
     $mail->addReplyTo($smtpAddress, 'TrialMonster Admin');
 
     // Attachments
@@ -110,12 +116,13 @@ try {
 
     // Content
     $mail->isHTML(true);                                  // Set email format to HTML
-    $mail->Subject = "Scores - $eventname";
+    $mail->Subject = "Data - $eventname";
     $mail->Body    = $message;
 //    $mail->AltBody = 'See attachment';
 
 	 $mail->send();
     echo 'Message has been sent';
+    // unlink($filename);
 } catch (Exception $e) {
     echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
 } 

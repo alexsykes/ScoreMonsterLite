@@ -230,13 +230,18 @@ public class TimeListActivity extends AppCompatActivity {
         String id, number, finishTime, elapsedTime, created, trialID;
 
         try {
+            // Get fastest time
+            long fastestTime = timeDbHelper.getFastestTime(trialid);
+            String fastestTimeString = String.valueOf(fastestTime);
+
+
             exportDir = new File(getFilesDir(), filename);
 
             exportDir.createNewFile();
             CSVWriter csvWrite = new CSVWriter(new FileWriter(exportDir));
 
             String[] header = {"id", "number", "finishTime",
-                    "elapsedTime", "created", "trialid",};
+                    "elapsedTime", "created", "trialid", fastestTimeString};
 
             csvWrite.writeNext(header, false);
 
