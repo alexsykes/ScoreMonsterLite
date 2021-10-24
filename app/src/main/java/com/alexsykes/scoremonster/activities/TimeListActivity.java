@@ -472,8 +472,6 @@ public class TimeListActivity extends AppCompatActivity {
 
     public static class TimeHolder extends RecyclerView.ViewHolder {
         TextView riderTextView, finishTimeTextView, elapsedTimeTextView, timePenaltyTextView;
-
-
         public TimeHolder(@NonNull View itemView) {
             super(itemView);
             riderTextView = itemView.findViewById(R.id.rider);
