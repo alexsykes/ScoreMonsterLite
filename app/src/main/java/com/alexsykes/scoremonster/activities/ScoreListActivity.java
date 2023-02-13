@@ -175,7 +175,7 @@ public class ScoreListActivity extends AppCompatActivity {
     }
 
     private void emailScores() {
-        canConnect = localPrefs.getBoolean("canConnect", false);
+        canConnect = canConnect();
         if (!canConnect) {
             Toast.makeText(ScoreListActivity.this, "No Internet connection. Please try again later",
                     Toast.LENGTH_LONG).show();
