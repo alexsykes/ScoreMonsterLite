@@ -14,16 +14,17 @@ import com.alexsykes.scoremonster.activities.ScoreListActivity;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class ScoreListSyncAdapter extends RecyclerView.Adapter<ScoreListSyncAdapter.ScoreHolder> {
+public class ScoreListAdapter extends RecyclerView.Adapter<ScoreListAdapter.ScoreHolder> {
     ArrayList<HashMap<String, String>> theScores;
     HashMap<String, String> theScore;
     OnItemClickListener listener;
 
-    public ScoreListSyncAdapter(ArrayList<HashMap<String, String>> theScores) {
+
+    public ScoreListAdapter(ArrayList<HashMap<String, String>> theScores) {
         this.theScores = theScores;
     }
 
-    public ScoreListSyncAdapter(ArrayList<HashMap<String, String>> theScores, OnItemClickListener listener) {
+    public ScoreListAdapter(ArrayList<HashMap<String, String>> theScores, OnItemClickListener listener) {
         this.theScores = theScores;
         this.listener = listener;
     }

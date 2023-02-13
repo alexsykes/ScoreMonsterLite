@@ -25,7 +25,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.alexsykes.scoremonster.R;
-import com.alexsykes.scoremonster.ScoreListSyncAdapter;
+import com.alexsykes.scoremonster.ScoreListAdapter;
 import com.alexsykes.scoremonster.data.ScoreDbHelper;
 import com.opencsv.CSVWriter;
 
@@ -280,7 +280,7 @@ public class ScoreListActivity extends AppCompatActivity {
     }
 
     private void initializeAdapter() {
-        ScoreListSyncAdapter adapter = new ScoreListSyncAdapter(theScoreList);
+        ScoreListAdapter adapter = new ScoreListAdapter(theScoreList);
         scoreView.setAdapter(adapter);
     }
 
