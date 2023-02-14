@@ -3,6 +3,7 @@ package com.alexsykes.scoremonster;
 // TODO - SettingsActivity - update trial data on chamge of trial - done
 
 import android.app.Application;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
@@ -151,6 +152,7 @@ public class ScoreMonsterLite extends Application {
         queue.add(stringRequest);
     }
 
+
     private void addTrialsToDb(String response) {
         // Convert response to arraylist
         try {
@@ -159,6 +161,42 @@ public class ScoreMonsterLite extends Application {
             e.printStackTrace();
         }
         //
+// Start here
+
+        SQLiteDatabase db = mDbHelper.getWritableDatabase();
+
+        for (int i = 0; i < theTrialList.size(); i++) {
+            HashMap<String, String> theTrial = theTrialList.get(i);
+            String theDate = theTrial.get("date");
+            String theName = theTrial.get("name");
+            String theNumSections = theTrial.get("numsections");
+            String theNumLaps = theTrial.get("numlaps");
+            String _id = theTrial.get("trialid");
+            String theEmail = theTrial.get("email");
+            String club = theTrial.get("club");
+            String mode = theTrial.get("mode");
+            String startinterval = theTrial.get("startinterval");
+
+            // Create a ContentValues object where column names are the keys,
+            ContentValues values = new ContentValues();
+            // String dateString = currentTimeStamp;
+            values.put(TrialContract.TrialEntry.COLUMN_TRIAL_NAME, theName);
+            values.put(TrialContract.TrialEntry.COLUMN_TRIAL_DATE, theDate);
+            values.put(TrialContract.TrialEntry.COLUMN_TRIAL_EMAIL, theEmail);
+            values.put(TrialContract.TrialEntry.COLUMN_TRIAL_NUMLAPS, theNumLaps);
+            values.put(TrialContract.TrialEntry.COLUMN_TRIAL_NUMSECTIONS, theNumSections);
+            values.put(TrialContract.TrialEntry.COLUMN_TRIAL_TRIALID, _id);
+            values.put(TrialContract.TrialEntry.COLUMN_TRIAL_CLUB, club);
+            values.put(TrialContract.TrialEntry.COLUMN_TRIAL_MODE, mode);
+            values.put(TrialContract.TrialEntry.COLUMN_TRIAL_INTERVAL, startinterval);
+            values.put(TrialContract.TrialEntry._ID, _id);
+
+            db.insertWithOnConflict("trials", null, values, SQLiteDatabase.CONFLICT_REPLACE);
+
+            Log.i("Note", "Result: ");
+        }
+
+        // End here
 
     }
 
