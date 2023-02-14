@@ -50,7 +50,6 @@ public class ScoreListActivity extends AppCompatActivity {
     MenuItem emailMenuItem;
     MenuItem uploadMenuItem;
 
-
     // https://androidexample.com/Upload_File_To_Server_-_Android_Example/index.php?view=article_discription&aid=83
     RecyclerView scoreView;
     ArrayList<HashMap<String, String>> theScoreList;
@@ -99,10 +98,6 @@ public class ScoreListActivity extends AppCompatActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
-    public void onClickCalled(String scoreid, int score) {
-        amendScore(scoreid, score);
-    }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -141,41 +136,8 @@ public class ScoreListActivity extends AppCompatActivity {
         }
     }
 
-    private void uploadScores() {
-        canConnect = canConnect();
-        if (!canConnect) {
-            Toast.makeText(ScoreListActivity.this, "No Internet connection. Please try again later",
-                    Toast.LENGTH_LONG).show();
-        } else {
-            // Get timestamp and add to filename
-            Date date = new Date();
-            // getTime() returns current time in milliseconds
-            long time = date.getTime();
-            String ts = String.valueOf(time);
-            filename = "data_" + ts + ".csv";
-            String processURL = baseURL + trialid + "&id=" + ts;
-            // Log.i("URL",processURL);
-            processCSV(processURL);
-        }
-    }
-
-    private void emailScores() {
-        canConnect = canConnect();
-        if (!canConnect) {
-            Toast.makeText(ScoreListActivity.this, "No Internet connection. Please try again later",
-                    Toast.LENGTH_LONG).show();
-        } else {
-            email = localPrefs.getString("email", "blackhole@alexsykes.net");
-            Date date = new Date();
-            // getTime() returns current time in milliseconds
-            long time = date.getTime();
-            String ts = String.valueOf(time);
-            filename = "data_" + ts + ".csv";
-            String sendMailURL = "https://www.trialmonster.uk/android/sendMailWithFile.php?id=" + ts + "&trialid=" + trialid + "&email=" + email;
-
-            Log.i("Monitor", sendMailURL);
-            processCSV(sendMailURL);
-        }
+    public void onClickCalled(String scoreid, int score) {
+        amendScore(scoreid, score);
     }
 
     protected boolean canConnect() {
@@ -191,17 +153,14 @@ public class ScoreListActivity extends AppCompatActivity {
 
         // Set the dialog title
         builder.setTitle("Change score to:")
-
                 // specify the list array, the items to be selected by default (null for none),
                 // and the listener through which to receive call backs when items are selected
                 // again, R.array.choices were set in the resources res/values/strings.xml
                 .setSingleChoiceItems(R.array.scores, score, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface arg0, int arg1) {
-                        //  showToast("Some actions maybe? Selected index: " + arg1);
                         //  Toast.makeText(SyncActivity.this, "Some actions maybe? Selected index ", Toast.LENGTH_LONG).show();
                     }
-
                 })
 
                 // Set the action buttons
@@ -269,50 +228,6 @@ public class ScoreListActivity extends AppCompatActivity {
         scoreView.setAdapter(adapter);
     }
 
-    private boolean saveToCSV() {
-        String id, observer, section, rider, lap, created, updated, edited, sync, score, thetrialid;
-
-        try {
-            exportDir = new File(getFilesDir(), filename);
-
-            exportDir.createNewFile();
-            CSVWriter csvWrite = new CSVWriter(new FileWriter(exportDir));
-
-            String[] header = {"id", "rider", "section",
-                    "lap", "score", "observer", "created", "updated", "edited", "trialid", "sync"};
-
-            csvWrite.writeNext(header, false);
-
-            // Get current data
-
-            Cursor curChild = mDbHelper.getAll(trialid);
-            while (curChild.moveToNext()) {
-                id = curChild.getString(0);
-                observer = curChild.getString(1);
-                section = curChild.getString(2);
-                rider = curChild.getString(3);
-                lap = curChild.getString(4);
-                created = curChild.getString(5);
-                updated = curChild.getString(6);
-                edited = curChild.getString(7);
-                thetrialid = curChild.getString(8);
-                sync = curChild.getString(9);
-                score = curChild.getString(10);
-
-                String[] arrStr = {id, rider, section, lap, score, observer, created, updated, edited, thetrialid, sync
-                };
-
-                csvWrite.writeNext(arrStr, false);
-            }
-            csvWrite.close();
-            return true;
-
-        } catch (IOException e) {
-            Log.e("Child", e.getMessage(), e);
-            return false;
-        }
-    }
-
     private void processCSV(final String urlWebService) {
         /*
          * Processing the CSV done online
@@ -374,6 +289,50 @@ public class ScoreListActivity extends AppCompatActivity {
         }
         ProcessCSV processCSV = new ProcessCSV();
         processCSV.execute();
+    }
+
+    private boolean saveToCSV() {
+        String id, observer, section, rider, lap, created, updated, edited, sync, score, thetrialid;
+
+        try {
+            exportDir = new File(getFilesDir(), filename);
+
+            exportDir.createNewFile();
+            CSVWriter csvWrite = new CSVWriter(new FileWriter(exportDir));
+
+            String[] header = {"id", "rider", "section",
+                    "lap", "score", "observer", "created", "updated", "edited", "trialid", "sync"};
+
+            csvWrite.writeNext(header, false);
+
+            // Get current data
+
+            Cursor curChild = mDbHelper.getAll(trialid);
+            while (curChild.moveToNext()) {
+                id = curChild.getString(0);
+                observer = curChild.getString(1);
+                section = curChild.getString(2);
+                rider = curChild.getString(3);
+                lap = curChild.getString(4);
+                created = curChild.getString(5);
+                updated = curChild.getString(6);
+                edited = curChild.getString(7);
+                thetrialid = curChild.getString(8);
+                sync = curChild.getString(9);
+                score = curChild.getString(10);
+
+                String[] arrStr = {id, rider, section, lap, score, observer, created, updated, edited, thetrialid, sync
+                };
+
+                csvWrite.writeNext(arrStr, false);
+            }
+            csvWrite.close();
+            return true;
+
+        } catch (IOException e) {
+            Log.e("Child", e.getMessage(), e);
+            return false;
+        }
     }
 
     public int uploadFile(String sourceFileUri) {
@@ -511,6 +470,43 @@ public class ScoreListActivity extends AppCompatActivity {
             }
             dialog.dismiss();
             return serverResponseCode;
+        }
+    }
+
+    private void uploadScores() {
+        canConnect = canConnect();
+        if (!canConnect) {
+            Toast.makeText(ScoreListActivity.this, "No Internet connection. Please try again later",
+                    Toast.LENGTH_LONG).show();
+        } else {
+            // Get timestamp and add to filename
+            Date date = new Date();
+            // getTime() returns current time in milliseconds
+            long time = date.getTime();
+            String ts = String.valueOf(time);
+            filename = "data_" + ts + ".csv";
+            String processURL = baseURL + trialid + "&id=" + ts;
+            // Log.i("URL",processURL);
+            processCSV(processURL);
+        }
+    }
+
+    private void emailScores() {
+        canConnect = canConnect();
+        if (!canConnect) {
+            Toast.makeText(ScoreListActivity.this, "No Internet connection. Please try again later",
+                    Toast.LENGTH_LONG).show();
+        } else {
+            email = localPrefs.getString("email", "blackhole@alexsykes.net");
+            Date date = new Date();
+            // getTime() returns current time in milliseconds
+            long time = date.getTime();
+            String ts = String.valueOf(time);
+            filename = "data_" + ts + ".csv";
+            String sendMailURL = "https://www.trialmonster.uk/android/sendMailWithFile.php?id=" + ts + "&trialid=" + trialid + "&email=" + email;
+
+            Log.i("Monitor", sendMailURL);
+            processCSV(sendMailURL);
         }
     }
 }
