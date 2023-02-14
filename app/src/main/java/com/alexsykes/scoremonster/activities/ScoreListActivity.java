@@ -47,7 +47,10 @@ public class ScoreListActivity extends AppCompatActivity {
     private final String baseURL = "https://android.trialmonster.uk/addCSVtodb.php?trialid=";
     File exportDir = new File(Environment.getExternalStoragePublicDirectory("Documents/Scoremonster"), "");
 
-    //   final String uploadFileName = "scores.csv";
+    MenuItem emailMenuItem;
+    MenuItem uploadMenuItem;
+
+
     // https://androidexample.com/Upload_File_To_Server_-_Android_Example/index.php?view=article_discription&aid=83
     RecyclerView scoreView;
     ArrayList<HashMap<String, String>> theScoreList;
@@ -74,53 +77,24 @@ public class ScoreListActivity extends AppCompatActivity {
         // Enable the Up button
         ab.setDisplayHomeAsUpEnabled(true);
 
-
+        canConnect = canConnect();
         // Get shared preferences for trialid, section
         localPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-
         section = localPrefs.getInt("section", 1);
         trialid = localPrefs.getInt("trialid", -999);
+
         // Create database connection
         mDbHelper = new ScoreDbHelper(this);
         populateScoreList();
-
-        // uploadButton = findViewById(R.id.uploadButton);
-        // processButton = findViewById(R.id.processButton);
-
-       /* processButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                isOnline = localPrefs.getBoolean("canConnect", false);
-                if(!isOnline) {
-                    // processButton.setEnabled(false);
-                    Toast.makeText(ScoreListActivity.this, "Scores cannot be sent at this time - no Internet connection.", Toast.LENGTH_LONG).show();
-                } else {
-                    // Get timestamp and add to filename
-                    Date date = new Date();
-                    // getTime() returns current time in milliseconds
-                    long time = date.getTime();
-                    String ts = String.valueOf(time);
-                    filename = "scores_" + ts + ".csv";
-                    processURL =  baseURL + trialid + "&id=" + ts;
-                   // Log.i("URL",processURL);
-                    processCSV(processURL);
-                }
-            }
-        });*/
-        canConnect = localPrefs.getBoolean("canConnect", false);
-        if (!canConnect) {
-            // processButton.setEnabled(false);
-        }
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {
-        //      isOnline =  localPrefs.getBoolean("canConnect", false) ;
         getMenuInflater().inflate(R.menu.list_menu, menu);
 
-//        MenuItem email = menu.findItem(R.id.email);
-//        MenuItem upload = menu.findItem(R.id.upload);
-//        upload.setEnabled(isOnline);
-//        email.setEnabled(isOnline);
+        emailMenuItem = menu.findItem(R.id.email);
+        uploadMenuItem = menu.findItem(R.id.upload);
+//        uploadMenuItem.setEnabled(canConnect);
+//        emailMenuItem.setEnabled(canConnect);
 
         return super.onCreateOptionsMenu(menu);
     }
@@ -134,11 +108,22 @@ public class ScoreListActivity extends AppCompatActivity {
         switch (item.getItemId()) {
 
             case R.id.email:
-                emailScores();
+                if (canConnect()) {
+                    emailScores();
+                } else {
+                    Toast.makeText(ScoreListActivity.this, "No Internet connection. Please try again later",
+                            Toast.LENGTH_LONG).show();
+                }
+
                 return true;
 
             case R.id.upload:
-                uploadScores();
+                if (canConnect()) {
+                    uploadScores();
+                } else {
+                    Toast.makeText(ScoreListActivity.this, "No Internet connection. Please try again later",
+                            Toast.LENGTH_LONG).show();
+                }
                 return true;
 
 

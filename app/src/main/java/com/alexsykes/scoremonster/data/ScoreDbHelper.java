@@ -12,9 +12,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class ScoreDbHelper extends SQLiteOpenHelper {
-
-
-
     private static final int SYNCED = 0;
     private static final int NOT_SYNCED = -1;
     /**

@@ -35,13 +35,11 @@ public class ScoreMonsterLite extends Application {
     private static final String BASE_URL = "https://android.trialmonster.uk/";
     private final int trialid = -999;
     String[] theTrials, theIDs;
-    ArrayList<HashMap<String, String>> theTrialData;
     ArrayList<HashMap<String, String>> theTrialList;
     boolean canConnect;
 
     // Databases
     private ScoreDbHelper mDbHelper;
-    private String theTrialName;
 
     @Override
     public void onCreate() {
@@ -139,7 +137,7 @@ public class ScoreMonsterLite extends Application {
                         String text = "Response is: " + response.substring(0, 500);
                         Log.i("Info", text);
 
-                        addTrialsToDb(response);
+                        updateTrialsDB(response);
                     }
                 }, new Response.ErrorListener() {
             @Override
@@ -153,16 +151,13 @@ public class ScoreMonsterLite extends Application {
     }
 
 
-    private void addTrialsToDb(String response) {
+    private void updateTrialsDB(String response) {
         // Convert response to arraylist
         try {
             theTrialList = getTrialListFromServer(response);
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        //
-// Start here
-
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
 
         for (int i = 0; i < theTrialList.size(); i++) {
@@ -195,9 +190,6 @@ public class ScoreMonsterLite extends Application {
 
             Log.i("Note", "Result: ");
         }
-
-        // End here
-
     }
 
     private void setTrialsList(ArrayList<HashMap<String, String>> theTrialList) {

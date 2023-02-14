@@ -8,14 +8,10 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.ToneGenerator;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.VibrationEffect;
@@ -43,20 +39,10 @@ import com.alexsykes.scoremonster.data.ScoreDbHelper;
 import com.alexsykes.scoremonster.data.TimeContract;
 import com.alexsykes.scoremonster.data.TimeDbHelper;
 import com.alexsykes.scoremonster.data.TrialDbHelper;
-import com.opencsv.CSVWriter;
 
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity {
@@ -89,7 +75,14 @@ public class MainActivity extends AppCompatActivity {
     private TimeDbHelper timeDbHelper;
     private TrialDbHelper trialDbHelper;
     private String status, filename, observer, theTrialName, detail, email, club, message;
-    private int score, scoreCount, serverResponseCode = 0, usermode, section, numsections, numlaps, numberInGroup;
+    private final int serverResponseCode = 0;
+    private int score;
+    private int scoreCount;
+    private int usermode;
+    private int section;
+    private int numsections;
+    private int numlaps;
+    private int numberInGroup;
     private boolean isSingleUser, trialHasChanged, canConnect, timeMode;
     private int ridingNumber, trialid, mode;
 
@@ -540,13 +533,13 @@ public class MainActivity extends AppCompatActivity {
         Toast.makeText(this, "Finish time recorded", Toast.LENGTH_SHORT).show();
     }
 
-    protected boolean canConnect() {
-        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo netInfo = cm.getActiveNetworkInfo();
-
-        model.setOnline(netInfo != null && netInfo.isConnectedOrConnecting());
-        return netInfo != null && netInfo.isConnectedOrConnecting();
-    }
+//    protected boolean canConnect() {
+//        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+//        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+//
+//        model.setOnline(netInfo != null && netInfo.isConnectedOrConnecting());
+//        return netInfo != null && netInfo.isConnectedOrConnecting();
+//    }
 
 
     // Menu options
@@ -575,228 +568,228 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    private void sendEmail() {
-        canConnect = canConnect();
-        if (!canConnect) {
-            Toast.makeText(MainActivity.this, "Email cannot be sent at this time - no Internet connection.",
-                    Toast.LENGTH_LONG).show();
-        } else {
-            // Get timestamp and add to filename
-            Date date = new Date();
-            // getTime() returns current time in milliseconds
-            long time = date.getTime();
-            String ts = valueOf(time);
-            filename = "scores_" + ts + ".csv";
-            String sendMailURL = "https://www.trialmonster.uk/android/sendMailWithFile.php?id=" + ts + "&trialid=" + trialid + "&email=" + email;
+//    private void sendEmail() {
+//        canConnect = canConnect();
+//        if (!canConnect) {
+//            Toast.makeText(MainActivity.this, "Email cannot be sent at this time - no Internet connection.",
+//                    Toast.LENGTH_LONG).show();
+//        } else {
+//            // Get timestamp and add to filename
+//            Date date = new Date();
+//            // getTime() returns current time in milliseconds
+//            long time = date.getTime();
+//            String ts = valueOf(time);
+//            filename = "scores_" + ts + ".csv";
+//            String sendMailURL = "https://www.trialmonster.uk/android/sendMailWithFile.php?id=" + ts + "&trialid=" + trialid + "&email=" + email;
+//
+//            Log.i("Monitor", sendMailURL);
+//            // processCSV(sendMailURL);
+//        }
+//    }
 
-            Log.i("Monitor", sendMailURL);
-            // processCSV(sendMailURL);
-        }
-    }
-
-    private void saveToCSV() {
-        String id, observer, section, rider, lap, created, updated, edited, sync, score, thetrialid;
-
-        try {
-            File exportDir = new File(getFilesDir(), filename);
-            CSVWriter csvWrite = new CSVWriter(new FileWriter(exportDir));
-
-            String[] header = {"id", "rider", "section",
-                    "lap", "score", "observer", "created", "updated", "edited", "trialid", "sync", email};
-
-            csvWrite.writeNext(header, false);
-
-            // Get current data
-
-            Cursor curChild = scoreDbHelper.getAll(trialid);
-            while (curChild.moveToNext()) {
-                id = curChild.getString(0);
-                observer = curChild.getString(1);
-                section = curChild.getString(2);
-                rider = curChild.getString(3);
-                lap = curChild.getString(4);
-                created = curChild.getString(5);
-                updated = curChild.getString(6);
-                edited = curChild.getString(7);
-                thetrialid = curChild.getString(8);
-                sync = curChild.getString(9);
-                score = curChild.getString(10);
-
-                String[] arrStr = {id, rider, section, lap, score, observer, created, updated, edited, thetrialid, sync
-                };
-
-                csvWrite.writeNext(arrStr, false);
-            }
-            Log.i("Info", "MainActivity: saveToCSV: 834");
-            curChild.close();
-            csvWrite.close();
-
-        } catch (IOException e) {
-            //  Log.e("Child", e.getMessage(), e);
-        }
-    }
-    private void processCSV(final String sendMailURL) {
-        /*
-         * Processing the CSV done online
-         * so we need an AsyncTask
-         * The constrains defined here are
-         * Void -> We are not passing anything
-         * Void -> Nothing at progress update as well
-         * String -> After completion it should return a string and it will be the json string
-         * */
-        class ProcessCSV extends AsyncTask<Void, Void, String> {
-
-            //this method will be called before execution
-            //you can display a progress bar or something
-            //so that user can understand that he should wait
-            //as network operation may take some time
-            @Override
-            protected void onPreExecute() {
-                super.onPreExecute();
-                dialog = ProgressDialog.show(MainActivity.this, "Scoremonster",
-                        "Processing scores… this make take some time!", true);
-                // Prepare CSV file
-                saveToCSV();
-            }
-
-            protected void onPostExecute(String s) {
-                super.onPostExecute(s);
-                dialog.dismiss();
-
-                if (s.contentEquals("OK")) {
-                    String toastMessage = "The email has been sent successfully to " + email;
-                    runOnUiThread(() -> Toast.makeText(MainActivity.this, toastMessage,
-                            Toast.LENGTH_LONG).show());
-                }
-            }
-
-            //in this method we are fetching the json string
-            @Override
-            protected String doInBackground(Void... voids) {
-
-                uploadFile(uploadFilePath + filename);
-                try {
-                    //creating a URL
-                    URL url = new URL(sendMailURL);
-
-                    //Opening the URL using HttpURLConnection
-                    HttpURLConnection con = (HttpURLConnection) url.openConnection();
-                    message = con.getResponseMessage();
-                    return message;
-
-                } catch (Exception e) {
-                    return null;
-                }
-            }
-        }
-        ProcessCSV processCSV = new ProcessCSV();
-        processCSV.execute();
-    }
-    public void uploadFile(String sourceFileUri) {
-        File directory = getFilesDir();
-        File sourceFile = new File(directory, filename);
-        HttpURLConnection conn;
-        DataOutputStream dos;
-        String lineEnd = "\r\n";
-        String twoHyphens = "--";
-        String boundary = "*****";
-        int bytesRead, bytesAvailable, bufferSize;
-        byte[] buffer;
-        int maxBufferSize = 1024 * 1024;
-
-        if (!sourceFile.isFile()) {
-            dialog.dismiss();
-            runOnUiThread(() -> {
-            });
-
-        } else {
-            try {
-                final String upLoadServerUri = "http://android.trialmonster.uk/UploadToServer.php";
-                // open a URL connection to the Servlet
-                FileInputStream fileInputStream = new FileInputStream(sourceFile);
-                URL url = new URL(upLoadServerUri);
-
-                // Open a HTTP  connection to  the URL
-                conn = (HttpURLConnection) url.openConnection();
-                conn.setDoInput(true); // Allow Inputs
-                conn.setDoOutput(true); // Allow Outputs
-                conn.setUseCaches(false); // Don't use a Cached Copy
-                conn.setRequestMethod("POST");
-                conn.setRequestProperty("Connection", "Keep-Alive");
-                conn.setRequestProperty("ENCTYPE", "multipart/form-data");
-                conn.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + boundary);
-                conn.setRequestProperty("uploaded_file", sourceFileUri);
-
-                dos = new DataOutputStream(conn.getOutputStream());
-
-                dos.writeBytes(twoHyphens + boundary + lineEnd);
-                dos.writeBytes("Content-Disposition: form-data; name=\"uploaded_file\";filename=\""
-                        + sourceFileUri + "\"" + lineEnd);
-
-                dos.writeBytes(lineEnd);
-
-                // create a buffer of  maximum size
-                bytesAvailable = fileInputStream.available();
-
-                bufferSize = Math.min(bytesAvailable, maxBufferSize);
-                buffer = new byte[bufferSize];
-
-                // read file and write it into form...
-                bytesRead = fileInputStream.read(buffer, 0, bufferSize);
-
-                while (bytesRead > 0) {
-
-                    dos.write(buffer, 0, bufferSize);
-                    bytesAvailable = fileInputStream.available();
-                    bufferSize = Math.min(bytesAvailable, maxBufferSize);
-                    bytesRead = fileInputStream.read(buffer, 0, bufferSize);
-
-                }
-
-                // send multipart form data necessary after file data...
-                dos.writeBytes(lineEnd);
-                dos.writeBytes(twoHyphens + boundary + twoHyphens + lineEnd);
-
-                // Responses from the server (code and message)
-                serverResponseCode = conn.getResponseCode();
-                if (serverResponseCode != 200) {
-
-                    runOnUiThread(() -> Toast.makeText(MainActivity.this, "Error processing data",
-                            Toast.LENGTH_LONG).show());
-                }
-
-                //close the streams //
-                fileInputStream.close();
-                dos.flush();
-                dos.close();
-
-            } catch (MalformedURLException ex) {
-
-                dialog.dismiss();
-                ex.printStackTrace();
-
-                runOnUiThread(() -> {
-                    // messageText.setText("MalformedURLException Exception : check script url.");
-                    Toast.makeText(MainActivity.this, "MalformedURLException",
-                            Toast.LENGTH_SHORT).show();
-                });
-
-                //   Log.e("Upload file to server", "error: " + ex.getMessage(), ex);
-            } catch (Exception e) {
-
-                dialog.dismiss();
-                e.printStackTrace();
-
-                runOnUiThread(() -> {
-                    // messageText.setText("Got Exception : see logcat ");
-                    Toast.makeText(MainActivity.this, "Got Exception : see logcat ",
-                            Toast.LENGTH_SHORT).show();
-                });
-                //   Log.e("Upload file Exception", "Exception : " + e.getMessage(), e);
-            }
-            dialog.dismiss();
-        }
-    }
+//    private void saveToCSV() {
+//        String id, observer, section, rider, lap, created, updated, edited, sync, score, thetrialid;
+//
+//        try {
+//            File exportDir = new File(getFilesDir(), filename);
+//            CSVWriter csvWrite = new CSVWriter(new FileWriter(exportDir));
+//
+//            String[] header = {"id", "rider", "section",
+//                    "lap", "score", "observer", "created", "updated", "edited", "trialid", "sync", email};
+//
+//            csvWrite.writeNext(header, false);
+//
+//            // Get current data
+//
+//            Cursor curChild = scoreDbHelper.getAll(trialid);
+//            while (curChild.moveToNext()) {
+//                id = curChild.getString(0);
+//                observer = curChild.getString(1);
+//                section = curChild.getString(2);
+//                rider = curChild.getString(3);
+//                lap = curChild.getString(4);
+//                created = curChild.getString(5);
+//                updated = curChild.getString(6);
+//                edited = curChild.getString(7);
+//                thetrialid = curChild.getString(8);
+//                sync = curChild.getString(9);
+//                score = curChild.getString(10);
+//
+//                String[] arrStr = {id, rider, section, lap, score, observer, created, updated, edited, thetrialid, sync
+//                };
+//
+//                csvWrite.writeNext(arrStr, false);
+//            }
+//            Log.i("Info", "MainActivity: saveToCSV: 834");
+//            curChild.close();
+//            csvWrite.close();
+//
+//        } catch (IOException e) {
+//            //  Log.e("Child", e.getMessage(), e);
+//        }
+//    }
+//    private void processCSV(final String sendMailURL) {
+//        /*
+//         * Processing the CSV done online
+//         * so we need an AsyncTask
+//         * The constrains defined here are
+//         * Void -> We are not passing anything
+//         * Void -> Nothing at progress update as well
+//         * String -> After completion it should return a string and it will be the json string
+//         * */
+//        class ProcessCSV extends AsyncTask<Void, Void, String> {
+//
+//            //this method will be called before execution
+//            //you can display a progress bar or something
+//            //so that user can understand that he should wait
+//            //as network operation may take some time
+//            @Override
+//            protected void onPreExecute() {
+//                super.onPreExecute();
+//                dialog = ProgressDialog.show(MainActivity.this, "Scoremonster",
+//                        "Processing scores… this make take some time!", true);
+//                // Prepare CSV file
+//                saveToCSV();
+//            }
+//
+//            protected void onPostExecute(String s) {
+//                super.onPostExecute(s);
+//                dialog.dismiss();
+//
+//                if (s.contentEquals("OK")) {
+//                    String toastMessage = "The email has been sent successfully to " + email;
+//                    runOnUiThread(() -> Toast.makeText(MainActivity.this, toastMessage,
+//                            Toast.LENGTH_LONG).show());
+//                }
+//            }
+//
+//            //in this method we are fetching the json string
+//            @Override
+//            protected String doInBackground(Void... voids) {
+//
+//                uploadFile(uploadFilePath + filename);
+//                try {
+//                    //creating a URL
+//                    URL url = new URL(sendMailURL);
+//
+//                    //Opening the URL using HttpURLConnection
+//                    HttpURLConnection con = (HttpURLConnection) url.openConnection();
+//                    message = con.getResponseMessage();
+//                    return message;
+//
+//                } catch (Exception e) {
+//                    return null;
+//                }
+//            }
+//        }
+//        ProcessCSV processCSV = new ProcessCSV();
+//        processCSV.execute();
+//    }
+//    public void uploadFile(String sourceFileUri) {
+//        File directory = getFilesDir();
+//        File sourceFile = new File(directory, filename);
+//        HttpURLConnection conn;
+//        DataOutputStream dos;
+//        String lineEnd = "\r\n";
+//        String twoHyphens = "--";
+//        String boundary = "*****";
+//        int bytesRead, bytesAvailable, bufferSize;
+//        byte[] buffer;
+//        int maxBufferSize = 1024 * 1024;
+//
+//        if (!sourceFile.isFile()) {
+//            dialog.dismiss();
+//            runOnUiThread(() -> {
+//            });
+//
+//        } else {
+//            try {
+//                final String upLoadServerUri = "http://android.trialmonster.uk/UploadToServer.php";
+//                // open a URL connection to the Servlet
+//                FileInputStream fileInputStream = new FileInputStream(sourceFile);
+//                URL url = new URL(upLoadServerUri);
+//
+//                // Open a HTTP  connection to  the URL
+//                conn = (HttpURLConnection) url.openConnection();
+//                conn.setDoInput(true); // Allow Inputs
+//                conn.setDoOutput(true); // Allow Outputs
+//                conn.setUseCaches(false); // Don't use a Cached Copy
+//                conn.setRequestMethod("POST");
+//                conn.setRequestProperty("Connection", "Keep-Alive");
+//                conn.setRequestProperty("ENCTYPE", "multipart/form-data");
+//                conn.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + boundary);
+//                conn.setRequestProperty("uploaded_file", sourceFileUri);
+//
+//                dos = new DataOutputStream(conn.getOutputStream());
+//
+//                dos.writeBytes(twoHyphens + boundary + lineEnd);
+//                dos.writeBytes("Content-Disposition: form-data; name=\"uploaded_file\";filename=\""
+//                        + sourceFileUri + "\"" + lineEnd);
+//
+//                dos.writeBytes(lineEnd);
+//
+//                // create a buffer of  maximum size
+//                bytesAvailable = fileInputStream.available();
+//
+//                bufferSize = Math.min(bytesAvailable, maxBufferSize);
+//                buffer = new byte[bufferSize];
+//
+//                // read file and write it into form...
+//                bytesRead = fileInputStream.read(buffer, 0, bufferSize);
+//
+//                while (bytesRead > 0) {
+//
+//                    dos.write(buffer, 0, bufferSize);
+//                    bytesAvailable = fileInputStream.available();
+//                    bufferSize = Math.min(bytesAvailable, maxBufferSize);
+//                    bytesRead = fileInputStream.read(buffer, 0, bufferSize);
+//
+//                }
+//
+//                // send multipart form data necessary after file data...
+//                dos.writeBytes(lineEnd);
+//                dos.writeBytes(twoHyphens + boundary + twoHyphens + lineEnd);
+//
+//                // Responses from the server (code and message)
+//                serverResponseCode = conn.getResponseCode();
+//                if (serverResponseCode != 200) {
+//
+//                    runOnUiThread(() -> Toast.makeText(MainActivity.this, "Error processing data",
+//                            Toast.LENGTH_LONG).show());
+//                }
+//
+//                //close the streams //
+//                fileInputStream.close();
+//                dos.flush();
+//                dos.close();
+//
+//            } catch (MalformedURLException ex) {
+//
+//                dialog.dismiss();
+//                ex.printStackTrace();
+//
+//                runOnUiThread(() -> {
+//                    // messageText.setText("MalformedURLException Exception : check script url.");
+//                    Toast.makeText(MainActivity.this, "MalformedURLException",
+//                            Toast.LENGTH_SHORT).show();
+//                });
+//
+//                //   Log.e("Upload file to server", "error: " + ex.getMessage(), ex);
+//            } catch (Exception e) {
+//
+//                dialog.dismiss();
+//                e.printStackTrace();
+//
+//                runOnUiThread(() -> {
+//                    // messageText.setText("Got Exception : see logcat ");
+//                    Toast.makeText(MainActivity.this, "Got Exception : see logcat ",
+//                            Toast.LENGTH_SHORT).show();
+//                });
+//                //   Log.e("Upload file Exception", "Exception : " + e.getMessage(), e);
+//            }
+//            dialog.dismiss();
+//        }
+//    }
 
     //play a soundfile
     public void playSoundFile(Integer fileName) {
