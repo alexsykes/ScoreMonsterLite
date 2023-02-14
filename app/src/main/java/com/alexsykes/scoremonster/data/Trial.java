@@ -1,13 +1,8 @@
 package com.alexsykes.scoremonster.data;
 
 public class Trial {
-    int _id;
-    int numsections;
-    int numlaps;
+    int _id, numsections, numlaps, mode;
     long startinterval;
-    int mode;
-
-
     String email, date, name, club;
 
     public Trial(int _id, int numsections, int numlaps, int mode, String email, String date, String name, String club, long startinterval) {
