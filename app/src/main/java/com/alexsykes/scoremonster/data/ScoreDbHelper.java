@@ -178,4 +178,32 @@ public class ScoreDbHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
     }
+
+    public ArrayList<HashMap<String, String>> getScoreListForUpload(int trialid) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ArrayList<HashMap<String, String>> scoreList = new ArrayList<>();
+        String query = "SELECT * FROM scores WHERE trialid = " + trialid + " ORDER BY _id DESC";
+        Log.i("Query", query);
+        //  String query = "SELECT * FROM scores  ORDER BY _id DESC";
+        Cursor cursor = db.rawQuery(query, null);
+        while (cursor.moveToNext()) {
+            HashMap<String, String> scores = new HashMap<>();
+            scores.put("id", cursor.getString(cursor.getColumnIndex(ScoreEntry._ID)));
+            scores.put("rider", cursor.getString(cursor.getColumnIndex(ScoreEntry.COLUMN_SCORE_RIDER)));
+            scores.put("lap", cursor.getString(cursor.getColumnIndex(ScoreEntry.COLUMN_SCORE_LAP)));
+            scores.put("score", cursor.getString(cursor.getColumnIndex(ScoreEntry.COLUMN_SCORE_SCORE)));
+            scores.put("section", cursor.getString(cursor.getColumnIndex(ScoreEntry.COLUMN_SCORE_SECTION)));
+            scores.put("trialid", cursor.getString(cursor.getColumnIndex(ScoreEntry.COLUMN_SCORE_TRIALID)));
+            scores.put("sync", cursor.getString(cursor.getColumnIndex(ScoreEntry.COLUMN_SCORE_SYNC)));
+            scores.put("edited", cursor.getString(cursor.getColumnIndex(ScoreEntry.COLUMN_SCORE_EDITED)));
+            scores.put("created",
+                    cursor.getString(cursor.getColumnIndex(ScoreEntry.COLUMN_SCORE_CREATED)));
+            scores.put("updated",
+                    cursor.getString(cursor.getColumnIndex(ScoreEntry.COLUMN_SCORE_UPDATED)));
+            scoreList.add(scores);
+        }
+        cursor.close();
+        db.close();
+        return scoreList;
+    }
 }

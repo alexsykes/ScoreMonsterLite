@@ -135,14 +135,14 @@ public class ScoreMonsterLite extends Application {
                     public void onResponse(String response) {
 
                         String text = "Response is: " + response.substring(0, 500);
-                        Log.i("Info", text);
+                      //  Log.i("Info", text);
 
                         updateTrialsDB(response);
                     }
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.i("Info", "That didn't work!");
+                // Log.i("Info", "That didn't work!");
 
             }
         });
@@ -188,7 +188,7 @@ public class ScoreMonsterLite extends Application {
 
             db.insertWithOnConflict("trials", null, values, SQLiteDatabase.CONFLICT_REPLACE);
 
-            Log.i("Note", "Result: ");
+            //   Log.i("Note", "Result: ");
         }
     }
 

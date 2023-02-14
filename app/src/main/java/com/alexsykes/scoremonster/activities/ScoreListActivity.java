@@ -29,6 +29,8 @@ import com.alexsykes.scoremonster.ScoreListAdapter;
 import com.alexsykes.scoremonster.data.ScoreDbHelper;
 import com.opencsv.CSVWriter;
 
+import org.json.JSONArray;
+
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -62,6 +64,7 @@ public class ScoreListActivity extends AppCompatActivity {
     int serverResponseCode = 0, section, trialid;
     private ScoreDbHelper mDbHelper;
     private String filename, email;
+    private ArrayList<HashMap<String, String>> dataToUpload;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -243,21 +246,21 @@ public class ScoreListActivity extends AppCompatActivity {
             //you can display a progress bar or something
             //so that user can understand that he should wait
             //as network operation may take some time
-            @Override
-            protected void onPreExecute() {
-                super.onPreExecute();
-                dialog = ProgressDialog.show(ScoreListActivity.this, "Scoremonster",
-                        "Processing scores… this make take some time!", true);
-                // Prepare CSV file
-                saveToCSV();
-                // CSV file is now saved on local storage
-            }
+//            @Override
+//            protected void onPreExecute() {
+//                super.onPreExecute();
+////                dialog = ProgressDialog.show(ScoreListActivity.this, "Scoremonster",
+////                        "Processing scores… this make take some time!", true);
+//                // Prepare CSV file
+//                // saveToCSV();
+//                // CSV file is now saved on local storage
+//            }
 
             protected void onPostExecute(String s) {
                 super.onPostExecute(s);
-                dialog.dismiss();
+//                dialog.dismiss();
 
-                if (s.contentEquals("OK")){
+                if (s.contentEquals("OK")) {
                     mDbHelper.markAsDone(trialid);
                     populateScoreList();
                     runOnUiThread(new Runnable() {
@@ -267,7 +270,6 @@ public class ScoreListActivity extends AppCompatActivity {
                     });
                 }
             }
-
 
             @Override
             protected String doInBackground(Void... voids) {
@@ -355,7 +357,7 @@ public class ScoreListActivity extends AppCompatActivity {
 
         if (!sourceFile.isFile()) {
 
-            dialog.dismiss();
+//            dialog.dismiss();
 
             Log.e("uploadFile", "Source File not exist :"
                     + uploadFilePath + "" + fileName);
@@ -441,7 +443,7 @@ public class ScoreListActivity extends AppCompatActivity {
 
             } catch (MalformedURLException ex) {
 
-                dialog.dismiss();
+//                dialog.dismiss();
                 ex.printStackTrace();
 
                 runOnUiThread(new Runnable() {
@@ -455,7 +457,7 @@ public class ScoreListActivity extends AppCompatActivity {
                 Log.e("Upload file to server", "error: " + ex.getMessage(), ex);
             } catch (Exception e) {
 
-                dialog.dismiss();
+//                dialog.dismiss();
                 e.printStackTrace();
 
                 runOnUiThread(new Runnable() {
@@ -468,7 +470,7 @@ public class ScoreListActivity extends AppCompatActivity {
                 Log.e("Upload file Exception", "Exception : "
                         + e.getMessage(), e);
             }
-            dialog.dismiss();
+//            dialog.dismiss();
             return serverResponseCode;
         }
     }
@@ -487,7 +489,9 @@ public class ScoreListActivity extends AppCompatActivity {
             filename = "data_" + ts + ".csv";
             String processURL = baseURL + trialid + "&id=" + ts;
             // Log.i("URL",processURL);
-            processCSV(processURL);
+            JSONArray uploadData = getUploadData();
+//            saveToCSV();
+//            processCSV(processURL);
         }
     }
 
@@ -506,7 +510,31 @@ public class ScoreListActivity extends AppCompatActivity {
             String sendMailURL = "https://www.trialmonster.uk/android/sendMailWithFile.php?id=" + ts + "&trialid=" + trialid + "&email=" + email;
 
             Log.i("Monitor", sendMailURL);
+            saveToCSV();
             processCSV(sendMailURL);
         }
+    }
+
+    private JSONArray getUploadData() {
+        dataToUpload = mDbHelper.getScoreListForUpload(trialid);
+        JSONArray scores = new JSONArray();
+
+        for (int i = 0; i < dataToUpload.size(); i++) {
+            JSONArray score = new JSONArray();
+            HashMap<String, String> scoreItem = dataToUpload.get(i);
+            score.put(scoreItem.get("id"));
+            score.put(scoreItem.get("rider"));
+            score.put(scoreItem.get("lap"));
+            score.put(scoreItem.get("score"));
+            score.put(scoreItem.get("section"));
+            score.put(scoreItem.get("trialid"));
+            score.put(scoreItem.get("sync"));
+            score.put(scoreItem.get("edited"));
+            score.put(scoreItem.get("created"));
+            score.put(scoreItem.get("updated"));
+
+            scores.put(score);
+        }
+        return scores;
     }
 }

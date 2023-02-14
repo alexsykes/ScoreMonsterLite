@@ -89,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.i("Info", "MainACtivityNew onCreate: called");
+//        Log.i("Info", "MainACtivityNew onCreate: called");
         setContentView(R.layout.activity_main_new);
 
         // Add custom ActionBar
@@ -172,7 +172,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        Log.i("Info", "MainActivityNew:onStart called");
+//        Log.i("Info", "MainActivityNew:onStart called");
         getPrefs();
         initialUISetup();
     }
