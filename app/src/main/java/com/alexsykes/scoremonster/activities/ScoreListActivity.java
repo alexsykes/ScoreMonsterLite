@@ -517,6 +517,7 @@ public class ScoreListActivity extends AppCompatActivity {
 
     private JSONArray getUploadData() {
         dataToUpload = mDbHelper.getScoreListForUpload(trialid);
+        JSONArray trialdata = mDbHelper.getTrialData(trialid);
         JSONArray scores = new JSONArray();
 
         for (int i = 0; i < dataToUpload.size(); i++) {

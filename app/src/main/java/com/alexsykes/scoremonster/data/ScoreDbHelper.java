@@ -8,6 +8,8 @@ import android.util.Log;
 
 import com.alexsykes.scoremonster.data.ScoreContract.ScoreEntry;
 
+import org.json.JSONArray;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -205,5 +207,20 @@ public class ScoreDbHelper extends SQLiteOpenHelper {
         cursor.close();
         db.close();
         return scoreList;
+    }
+
+    public JSONArray getTrialData(int trialid) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        JSONArray trialDetail = new JSONArray();
+        String query = "SELECT * FROM trials WHERE trialid = " + trialid ;
+        Cursor cursor = db.rawQuery(query, null);
+        int colindex = Integer.parseInt(TrialContract.TrialEntry._ID);
+        String id = cursor.getString(cursor.getColumnIndex(TrialContract.TrialEntry._ID));
+        String name = cursor.getString(cursor.getColumnIndex(TrialContract.TrialEntry.COLUMN_TRIAL_NAME));
+//        trialDetail.add(cursor.getString(cursor.getColumnIndex(ScoreEntry._ID));
+        trialDetail.put(id);
+        trialDetail.put(name);
+
+        return trialDetail;
     }
 }
