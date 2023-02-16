@@ -27,6 +27,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.alexsykes.scoremonster.R;
 import com.alexsykes.scoremonster.ScoreListAdapter;
 import com.alexsykes.scoremonster.data.ScoreDbHelper;
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.opencsv.CSVWriter;
 
 import org.json.JSONArray;
@@ -39,11 +46,14 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Map;
 
 public class ScoreListActivity extends AppCompatActivity {
+    String TAG = "Info";
     /**********  File Path *************/
     final String uploadFilePath = "mnt/sdcard/Documents/Scoremonster/";
     private final String baseURL = "https://android.trialmonster.uk/addCSVtodb.php?trialid=";
@@ -489,7 +499,10 @@ public class ScoreListActivity extends AppCompatActivity {
             filename = "data_" + ts + ".csv";
             String processURL = baseURL + trialid + "&id=" + ts;
             // Log.i("URL",processURL);
-            JSONArray uploadData = getUploadData();
+
+            saveToCSV();
+            //   JSONArray uploadData = getUploadData();
+            //  volleyUpload(uploadData);
 //            saveToCSV();
 //            processCSV(processURL);
         }
@@ -517,7 +530,7 @@ public class ScoreListActivity extends AppCompatActivity {
 
     private JSONArray getUploadData() {
         dataToUpload = mDbHelper.getScoreListForUpload(trialid);
-        JSONArray trialdata = mDbHelper.getTrialData(trialid);
+        //   JSONArray trialdata = mDbHelper.getTrialData(trialid);
         JSONArray scores = new JSONArray();
 
         for (int i = 0; i < dataToUpload.size(); i++) {
@@ -537,5 +550,49 @@ public class ScoreListActivity extends AppCompatActivity {
             scores.put(score);
         }
         return scores;
+    }
+
+    private void volleyUpload(JSONArray uploadData) {
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        String URL = "https://android.trialmonster.uk/uploadVolleyJSONArray.php";
+
+        JSONArray data = uploadData;
+
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, URL, new Response.Listener<String>() {
+
+            @Override
+            public void onResponse(String response) {
+                Log.d("Volley", "Response: " + response);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d("VOLLEY", error.toString());
+            }
+        }) {
+            @Override
+            public String getBodyContentType() {
+                return "application/json; charset=utf-8";
+            }
+
+            @Override
+            public byte[] getBody() throws AuthFailureError {
+                // request body goes here
+                String requestBody = data.toString();
+                return requestBody.getBytes(StandardCharsets.UTF_8);
+            }
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("Content-Type", "application/json");
+                return params;
+            }
+        };
+
+        Log.d("string", stringRequest.toString());
+        requestQueue.add(stringRequest);
+
+
     }
 }
