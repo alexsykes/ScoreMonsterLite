@@ -4,7 +4,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -60,7 +59,7 @@ public class TrialDbHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         ArrayList<HashMap<String, String>> optionList = new ArrayList<>();
         String query = "SELECT group_concat(_id, ','),group_concat(name, ',')  FROM trials ORDER BY date ASC";
-        Log.i("Query", query);
+//        Log.i("Query", query);
         Cursor cursor = db.rawQuery(query, null);
         while (cursor.moveToNext()) {
             HashMap<String, String> option = new HashMap<>();
@@ -76,7 +75,7 @@ public class TrialDbHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         ArrayList<HashMap<String, String>> trialList = new ArrayList<>();
         String query = "SELECT * FROM trials ORDER BY date ASC";
-        Log.i("Query", query);
+//        Log.i("Query", query);
         Cursor cursor = db.rawQuery(query, null);
         while (cursor.moveToNext()) {
             HashMap<String, String> trial = new HashMap<>();
@@ -100,7 +99,7 @@ public class TrialDbHelper extends SQLiteOpenHelper {
         ArrayList<HashMap<String, String>> trialData = new ArrayList<>();
         String query = "SELECT * FROM trials WHERE _id = " + trialid;
         // String query = "SELECT * FROM trials ORDER BY date ASC";
-        Log.i("Query", query);
+//        Log.i("Query", query);
         Cursor cursor = db.rawQuery(query, null);
         while (cursor.moveToNext()) {
             HashMap<String, String> trial = new HashMap<>();

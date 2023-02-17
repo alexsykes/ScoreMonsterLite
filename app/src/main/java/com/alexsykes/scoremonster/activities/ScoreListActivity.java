@@ -96,7 +96,7 @@ public class ScoreListActivity extends AppCompatActivity {
         trialid = localPrefs.getInt("trialid", -999);
 
         // Create database connection
-        mDbHelper = new ScoreDbHelper(this);
+//        mDbHelper = new ScoreDbHelper(this);
         populateScoreList();
     }
 
@@ -127,7 +127,7 @@ public class ScoreListActivity extends AppCompatActivity {
 
             case R.id.upload:
                 if (canConnect()) {
-//                    uploadScores();
+                    uploadScores();
                 } else {
                     Toast.makeText(ScoreListActivity.this, "No Internet connection. Please try again later",
                             Toast.LENGTH_LONG).show();
@@ -227,9 +227,10 @@ public class ScoreListActivity extends AppCompatActivity {
     }
 
     private void populateScoreList() {
+        mDbHelper = new ScoreDbHelper(this);
         theScoreList = mDbHelper.getScoreList(trialid);
         mDbHelper.close();
-        Log.i("trialid", "" + trialid);
+//        Log.i("trialid", "" + trialid);
         scoreView = findViewById(R.id.scoreView);
         LinearLayoutManager llm = new LinearLayoutManager(this);
         scoreView.setLayoutManager(llm);
@@ -272,7 +273,8 @@ public class ScoreListActivity extends AppCompatActivity {
 //                dialog.dismiss();
 
                 if (s.contentEquals("OK")) {
-                    mDbHelper.markAsDone(trialid);
+//                    mDbHelper.markAsDone(trialid);
+                    //   markAsDone(trialid);
                     populateScoreList();
                     runOnUiThread(new Runnable() {
                         public void run() {
@@ -302,6 +304,12 @@ public class ScoreListActivity extends AppCompatActivity {
         }
         ProcessCSV processCSV = new ProcessCSV();
         processCSV.execute();
+    }
+
+    private void markAsDone(int trialid) {
+        mDbHelper = new ScoreDbHelper(this);
+        mDbHelper.markAsDone(trialid);
+        mDbHelper.close();
     }
 
     private boolean saveToCSV() {
@@ -493,6 +501,7 @@ public class ScoreListActivity extends AppCompatActivity {
                     Toast.LENGTH_LONG).show();
         } else {
             volleyUpload();
+            markAsDone(trialid);
         }
     }
 
@@ -510,7 +519,7 @@ public class ScoreListActivity extends AppCompatActivity {
             filename = "data_" + ts + ".csv";
             String sendMailURL = "https://www.trialmonster.uk/android/sendMailWithFile.php?id=" + ts + "&trialid=" + trialid + "&email=" + email;
 
-            Log.i("Monitor", sendMailURL);
+//            Log.i("Monitor", sendMailURL);
             saveToCSV();
             processCSV(sendMailURL);
         }
