@@ -127,7 +127,7 @@ public class ScoreListActivity extends AppCompatActivity {
 
             case R.id.upload:
                 if (canConnect()) {
-                    uploadScores();
+//                    uploadScores();
                 } else {
                     Toast.makeText(ScoreListActivity.this, "No Internet connection. Please try again later",
                             Toast.LENGTH_LONG).show();
@@ -228,6 +228,7 @@ public class ScoreListActivity extends AppCompatActivity {
 
     private void populateScoreList() {
         theScoreList = mDbHelper.getScoreList(trialid);
+        mDbHelper.close();
         Log.i("trialid", "" + trialid);
         scoreView = findViewById(R.id.scoreView);
         LinearLayoutManager llm = new LinearLayoutManager(this);
@@ -491,20 +492,7 @@ public class ScoreListActivity extends AppCompatActivity {
             Toast.makeText(ScoreListActivity.this, "No Internet connection. Please try again later",
                     Toast.LENGTH_LONG).show();
         } else {
-            // Get timestamp and add to filename
-            Date date = new Date();
-            // getTime() returns current time in milliseconds
-            long time = date.getTime();
-            String ts = String.valueOf(time);
-            filename = "data_" + ts + ".csv";
-            String processURL = baseURL + trialid + "&id=" + ts;
-            // Log.i("URL",processURL);
-
-            saveToCSV();
-            //   JSONArray uploadData = getUploadData();
-            //  volleyUpload(uploadData);
-//            saveToCSV();
-//            processCSV(processURL);
+            volleyUpload();
         }
     }
 
@@ -528,10 +516,11 @@ public class ScoreListActivity extends AppCompatActivity {
         }
     }
 
-    private JSONArray getUploadData() {
+    private JSONArray getDataForUpload() {
         dataToUpload = mDbHelper.getScoreListForUpload(trialid);
         //   JSONArray trialdata = mDbHelper.getTrialData(trialid);
-        JSONArray scores = new JSONArray();
+        JSONArray scoresJSONArray
+                = new JSONArray();
 
         for (int i = 0; i < dataToUpload.size(); i++) {
             JSONArray score = new JSONArray();
@@ -547,17 +536,17 @@ public class ScoreListActivity extends AppCompatActivity {
             score.put(scoreItem.get("created"));
             score.put(scoreItem.get("updated"));
 
-            scores.put(score);
+            scoresJSONArray.put(score);
         }
-        return scores;
+        return scoresJSONArray;
     }
 
-    private void volleyUpload(JSONArray uploadData) {
+    private void volleyUpload() {
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         String URL = "https://android.trialmonster.uk/uploadVolleyJSONArray.php";
 
-        JSONArray data = uploadData;
-
+        JSONArray data = getDataForUpload();
+        String requestBody = data.toString();
         StringRequest stringRequest = new StringRequest(Request.Method.POST, URL, new Response.Listener<String>() {
 
             @Override
@@ -578,7 +567,7 @@ public class ScoreListActivity extends AppCompatActivity {
             @Override
             public byte[] getBody() throws AuthFailureError {
                 // request body goes here
-                String requestBody = data.toString();
+//                String requestBody = data.toString();
                 return requestBody.getBytes(StandardCharsets.UTF_8);
             }
 
@@ -592,7 +581,5 @@ public class ScoreListActivity extends AppCompatActivity {
 
         Log.d("string", stringRequest.toString());
         requestQueue.add(stringRequest);
-
-
     }
 }

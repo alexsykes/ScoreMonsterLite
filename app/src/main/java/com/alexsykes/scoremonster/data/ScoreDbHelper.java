@@ -4,7 +4,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
 import com.alexsykes.scoremonster.data.ScoreContract.ScoreEntry;
 
@@ -39,8 +38,8 @@ public class ScoreDbHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         ArrayList<HashMap<String, String>> scoreList = new ArrayList<>();
        String query = "SELECT * FROM scores WHERE trialid = " + trialid + " ORDER BY _id DESC";
-       Log.i("Query", query);
-      //  String query = "SELECT * FROM scores  ORDER BY _id DESC";
+//       Log.i("Query", query);
+        //  String query = "SELECT * FROM scores  ORDER BY _id DESC";
         Cursor cursor = db.rawQuery(query, null);
         while (cursor.moveToNext()) {
             HashMap<String, String> scores = new HashMap<>();
@@ -165,7 +164,7 @@ public class ScoreDbHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         int newid = -trialid;
         String query = "UPDATE scores SET trialid = " + newid + " WHERE trialid = " + trialid;
-        Log.i("Query", query);
+//        Log.i("Query", query);
         // Execute the SQL statement
         db.execSQL(query);
         db.close();
@@ -185,7 +184,7 @@ public class ScoreDbHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         ArrayList<HashMap<String, String>> scoreList = new ArrayList<>();
         String query = "SELECT * FROM scores WHERE trialid = " + trialid + " ORDER BY _id DESC";
-        Log.i("Query", query);
+//        Log.i("Query", query);
         //  String query = "SELECT * FROM scores  ORDER BY _id DESC";
         Cursor cursor = db.rawQuery(query, null);
         while (cursor.moveToNext()) {
