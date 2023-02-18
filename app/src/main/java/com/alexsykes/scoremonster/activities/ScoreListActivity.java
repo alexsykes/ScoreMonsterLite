@@ -80,6 +80,12 @@ public class ScoreListActivity extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_score_list);
+
+        // Add this:
+//        StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder(StrictMode.getVmPolicy())
+//                .detectLeakedClosableObjects()
+//                .build());
+
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -212,9 +218,10 @@ public class ScoreListActivity extends AppCompatActivity {
 
                                 break;
                         }
+                        mDbHelper = new ScoreDbHelper(ScoreListActivity.this);
                         mDbHelper.update(scoreid, score);
+                        mDbHelper.close();
                         populateScoreList();
-
                     }
                 })
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {

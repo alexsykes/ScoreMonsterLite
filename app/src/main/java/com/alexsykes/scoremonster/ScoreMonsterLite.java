@@ -121,6 +121,7 @@ public class ScoreMonsterLite extends Application {
 
         // Execute the SQL statement
         db.execSQL(SQL_CREATE_TIMES_TABLE);
+        db.close();
     }
 
     private void getTrialListFromServer() {
@@ -190,6 +191,7 @@ public class ScoreMonsterLite extends Application {
 
             //   Log.i("Note", "Result: ");
         }
+        db.close();
     }
 
     private void setTrialsList(ArrayList<HashMap<String, String>> theTrialList) {
