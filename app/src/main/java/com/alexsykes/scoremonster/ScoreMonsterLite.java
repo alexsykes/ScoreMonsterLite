@@ -16,6 +16,7 @@ import androidx.preference.PreferenceManager;
 
 import com.alexsykes.scoremonster.data.ScoreContract;
 import com.alexsykes.scoremonster.data.ScoreDbHelper;
+import com.alexsykes.scoremonster.data.ScoreRoomDatabase;
 import com.alexsykes.scoremonster.data.TimeContract;
 import com.alexsykes.scoremonster.data.TrialContract;
 import com.android.volley.Request;
@@ -44,24 +45,27 @@ public class ScoreMonsterLite extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        Log.i("Note", "OnAppStart");
-
-        // Create database connection
-        dbInit();
-
-        // Check for connectivity
-        canConnect = canConnect();
-
-        // if online, loads list of trials
-        if (canConnect) {
-            String URL = BASE_URL + "getTrialListScoreMonster.php";
-            try {
-                getTrialListFromServer();
-                Log.i("Info", "Trials data loaded");
-            } catch (NullPointerException e) {
-                Log.e("Info", "Error loading trials data");
-            }
-        }
+        Log.i("Info", "onCreateLaunch: ");
+        ScoreRoomDatabase db = ScoreRoomDatabase.getDatabase(getApplicationContext());
+        Log.i("Info", "onCreateLaunch: done ");
+//        Log.i("Note", "OnAppStart");
+//
+//        // Create database connection
+//        dbInit();
+//
+//        // Check for connectivity
+//        canConnect = canConnect();
+//
+//        // if online, loads list of trials
+//        if (canConnect) {
+//            String URL = BASE_URL + "getTrialListScoreMonster.php";
+//            try {
+//                getTrialListFromServer();
+//                Log.i("Info", "Trials data loaded");
+//            } catch (NullPointerException e) {
+//                Log.e("Info", "Error loading trials data");
+//            }
+//        }
     }
 
     // Databaise initialisation

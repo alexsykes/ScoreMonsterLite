@@ -1,5 +1,6 @@
 package com.alexsykes.scoremonster.data;
 
+import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
@@ -16,8 +17,8 @@ public interface ScoreDao {
     void deleteAll();
 
     @Query("SELECT * FROM scores ORDER BY _id DESC")
-    List<Score> getAllScores();
+    LiveData<List<Score>> getAllScores();
 
     @Query("SELECT * FROM scores WHERE rider = :rider AND trialid = :trialid ORDER BY lap ASC")
-    List<Score> getCurrentRiderScores(int rider, int trialid);
+    LiveData<List<Score>> getCurrentRiderScores(int rider, int trialid);
 }

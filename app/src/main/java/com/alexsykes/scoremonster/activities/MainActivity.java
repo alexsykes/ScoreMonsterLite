@@ -4,11 +4,9 @@ import static java.lang.String.valueOf;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.sqlite.SQLiteDatabase;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.ToneGenerator;
@@ -23,22 +21,18 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.preference.PreferenceManager;
 
 import com.alexsykes.scoremonster.MainViewModel;
 import com.alexsykes.scoremonster.NumberPadFragment;
 import com.alexsykes.scoremonster.R;
 import com.alexsykes.scoremonster.TouchFragment;
-import com.alexsykes.scoremonster.data.ScoreContract;
-import com.alexsykes.scoremonster.data.ScoreDbHelper;
-import com.alexsykes.scoremonster.data.TimeContract;
-import com.alexsykes.scoremonster.data.TimeDbHelper;
-import com.alexsykes.scoremonster.data.TrialDbHelper;
+import com.alexsykes.scoremonster.data.ScoreMonsterViewModel;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -71,9 +65,6 @@ public class MainActivity extends AppCompatActivity {
     // Variables
     long clockStartTime, startInterval, penaltyTariff;
     // Databases
-    private ScoreDbHelper scoreDbHelper;
-    private TimeDbHelper timeDbHelper;
-    private TrialDbHelper trialDbHelper;
     private String status, filename, observer, theTrialName, detail, email, club, message;
     private final int serverResponseCode = 0;
     private int score;
@@ -86,6 +77,8 @@ public class MainActivity extends AppCompatActivity {
     private boolean isSingleUser, trialHasChanged, canConnect, timeMode;
     private int ridingNumber, trialid, mode;
 
+    private ScoreMonsterViewModel scoreMonsterViewModel;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -96,12 +89,11 @@ public class MainActivity extends AppCompatActivity {
         Toolbar myToolbar = findViewById(R.id.top_toolbar);
         setSupportActionBar(myToolbar);
         myToolbar.getMenu();
-        model = new MainViewModel();
+//        model = new MainViewModel();
 
-        // Create database connection
-        scoreDbHelper = new ScoreDbHelper(this);
-        trialDbHelper = new TrialDbHelper(this);
-        timeDbHelper = new TimeDbHelper(this);
+
+        scoreMonsterViewModel = new ViewModelProvider(this).get(ScoreMonsterViewModel.class);
+
 
         // TODO - add routine to check for timeMode
         saveButton = findViewById(R.id.saveButton);
@@ -116,12 +108,6 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
-        model.saveCurrentValuesToModel(ridingNumber,
-                score,
-                section,
-                trialid,
-                numlaps,
-                numsections);
     }
 
     @Override
@@ -350,42 +336,48 @@ public class MainActivity extends AppCompatActivity {
 
             insertScore(riderNumber, scoreValue);
             scoreCount++;
-            clearScore();
+//            clearScore();
         }
     }
+
+    // Method replaces one below
     private void insertScore(int rider, int score) {
-        ToneGenerator toneGen1 = new ToneGenerator(AudioManager.STREAM_MUSIC, ToneGenerator.MAX_VOLUME);
-        // Check for numberof completed laps
-        // Gets the database in write mode
-        SQLiteDatabase db = scoreDbHelper.getWritableDatabase();
-        int lap = 1 + scoreDbHelper.getRiderLap(rider, section, trialid);
-        if (lap > numlaps) {
-            toneGen1.startTone(ToneGenerator.TONE_CDMA_ALERT_CALL_GUARD, 150);
-            Toast.makeText(this, "Already completed " + numlaps + " laps", Toast.LENGTH_LONG).show();
-        } else {
 
-            // Create a ContentValues object where column names are the keys,
-            ContentValues values = new ContentValues();
-            // String dateString = currentTimeStamp;
-            values.put(ScoreContract.ScoreEntry.COLUMN_SCORE_OBSERVER, observer);
-            values.put(ScoreContract.ScoreEntry.COLUMN_SCORE_RIDER, rider);
-            values.put(ScoreContract.ScoreEntry.COLUMN_SCORE_SCORE, score);
-            values.put(ScoreContract.ScoreEntry.COLUMN_SCORE_SECTION, section);
-            values.put(ScoreContract.ScoreEntry.COLUMN_SCORE_LAP, lap);
-            values.put(ScoreContract.ScoreEntry.COLUMN_SCORE_TRIALID, trialid);
-            values.put(ScoreContract.ScoreEntry.COLUMN_SCORE_SYNC, NOT_SYNCED);
-
-            db.insert(ScoreContract.ScoreEntry.TABLE_NAME, null, values);
-            //   toneGen1.startTone(ToneGenerator.TONE_CDMA_CONFIRM, ToneGenerator.MAX_VOLUME);
-
-            Log.i("Note", "trialid: " + trialid);
-            // Confirm committed with sound
-            playSoundFile(R.raw.ting);
-            Toast.makeText(this, "Score saved", Toast.LENGTH_SHORT).show();
-        }
-
-        scoreDbHelper.close();
     }
+
+    //    private void insertScore(int rider, int score) {
+//        ToneGenerator toneGen1 = new ToneGenerator(AudioManager.STREAM_MUSIC, ToneGenerator.MAX_VOLUME);
+//        // Check for numberof completed laps
+//        // Gets the database in write mode
+//        SQLiteDatabase db = scoreDbHelper.getWritableDatabase();
+//        int lap = 1 + scoreDbHelper.getRiderLap(rider, section, trialid);
+//        if (lap > numlaps) {
+//            toneGen1.startTone(ToneGenerator.TONE_CDMA_ALERT_CALL_GUARD, 150);
+//            Toast.makeText(this, "Already completed " + numlaps + " laps", Toast.LENGTH_LONG).show();
+//        } else {
+//
+//            // Create a ContentValues object where column names are the keys,
+//            ContentValues values = new ContentValues();
+//            // String dateString = currentTimeStamp;
+//            values.put(ScoreContract.ScoreEntry.COLUMN_SCORE_OBSERVER, observer);
+//            values.put(ScoreContract.ScoreEntry.COLUMN_SCORE_RIDER, rider);
+//            values.put(ScoreContract.ScoreEntry.COLUMN_SCORE_SCORE, score);
+//            values.put(ScoreContract.ScoreEntry.COLUMN_SCORE_SECTION, section);
+//            values.put(ScoreContract.ScoreEntry.COLUMN_SCORE_LAP, lap);
+//            values.put(ScoreContract.ScoreEntry.COLUMN_SCORE_TRIALID, trialid);
+//            values.put(ScoreContract.ScoreEntry.COLUMN_SCORE_SYNC, NOT_SYNCED);
+//
+//            db.insert(ScoreContract.ScoreEntry.TABLE_NAME, null, values);
+//            //   toneGen1.startTone(ToneGenerator.TONE_CDMA_CONFIRM, ToneGenerator.MAX_VOLUME);
+//
+//            Log.i("Note", "trialid: " + trialid);
+//            // Confirm committed with sound
+//            playSoundFile(R.raw.ting);
+//            Toast.makeText(this, "Score saved", Toast.LENGTH_SHORT).show();
+//        }
+//
+//        scoreDbHelper.close();
+//    }
     public void addDigit(View view) {
         // Get length of rider riderNumber
         numberLabel = findViewById(R.id.numberLabel);
@@ -492,47 +484,47 @@ public class MainActivity extends AppCompatActivity {
             editor.putString("riderText", rider);
             editor.apply();
 
-            insertTime(riderNumber, finishTimeInMillis);
+//            insertTime(riderNumber, finishTimeInMillis);
             clearScore();
         }
     }
 
-    private void insertTime(int riderNumber, long finishTimeInMillis) {
-        long elapsedTime, timeInterval, deltaTime, riderStartTime;
-        trialDbHelper = new TrialDbHelper(this);
-        // startInterval = trialDbHelper.getStartInterval(trialid);
-
-        /*  finishTimeInMillis - real finishtime
-            timeInterval - time delay for each rider
-            Zero for #1
-            deltaTime - real time difference between startTime and riderStartTime
-            riderStartTime - time rider actually started
-            elapsedTime - time on course for rider
-         */
-        timeInterval = (riderNumber - 1) * 1000 * startInterval;
-        riderStartTime = clockStartTime + timeInterval;
-
-        timeDbHelper = new TimeDbHelper(this);
-        SQLiteDatabase db = timeDbHelper.getWritableDatabase();
-        deltaTime = finishTimeInMillis - riderStartTime;
-
-        // Calculate rider's elapsed time using startInterval
-        // startInterval measured in seconds
-
-        // Create a ContentValues object where column names are the keys,
-        ContentValues values = new ContentValues();
-        values.put(TimeContract.TimeEntry.COLUMN_TIME_NUMBER, riderNumber);
-        values.put(TimeContract.TimeEntry.COLUMN_TIME_TRIALID, trialid);
-        values.put(TimeContract.TimeEntry.COLUMN_TIME_FINISHTIME, finishTimeInMillis);
-        values.put(TimeContract.TimeEntry.COLUMN_TIME_ELAPSEDTIME, deltaTime);
-        db.insert(TimeContract.TimeEntry.TABLE_NAME, null, values);
-
-
-        // timeDbHelper.updateTrial(trialid, startInterval, penaltyTariff);
-        // Confirm committed with sound
-        playSoundFile(R.raw.ting);
-        Toast.makeText(this, "Finish time recorded", Toast.LENGTH_SHORT).show();
-    }
+//    private void insertTime(int riderNumber, long finishTimeInMillis) {
+//        long elapsedTime, timeInterval, deltaTime, riderStartTime;
+//        trialDbHelper = new TrialDbHelper(this);
+//        // startInterval = trialDbHelper.getStartInterval(trialid);
+//
+//        /*  finishTimeInMillis - real finishtime
+//            timeInterval - time delay for each rider
+//            Zero for #1
+//            deltaTime - real time difference between startTime and riderStartTime
+//            riderStartTime - time rider actually started
+//            elapsedTime - time on course for rider
+//         */
+//        timeInterval = (riderNumber - 1) * 1000 * startInterval;
+//        riderStartTime = clockStartTime + timeInterval;
+//
+//        timeDbHelper = new TimeDbHelper(this);
+//        SQLiteDatabase db = timeDbHelper.getWritableDatabase();
+//        deltaTime = finishTimeInMillis - riderStartTime;
+//
+//        // Calculate rider's elapsed time using startInterval
+//        // startInterval measured in seconds
+//
+//        // Create a ContentValues object where column names are the keys,
+//        ContentValues values = new ContentValues();
+//        values.put(TimeContract.TimeEntry.COLUMN_TIME_NUMBER, riderNumber);
+//        values.put(TimeContract.TimeEntry.COLUMN_TIME_TRIALID, trialid);
+//        values.put(TimeContract.TimeEntry.COLUMN_TIME_FINISHTIME, finishTimeInMillis);
+//        values.put(TimeContract.TimeEntry.COLUMN_TIME_ELAPSEDTIME, deltaTime);
+//        db.insert(TimeContract.TimeEntry.TABLE_NAME, null, values);
+//
+//
+//        // timeDbHelper.updateTrial(trialid, startInterval, penaltyTariff);
+//        // Confirm committed with sound
+//        playSoundFile(R.raw.ting);
+//        Toast.makeText(this, "Finish time recorded", Toast.LENGTH_SHORT).show();
+//    }
 
 //    protected boolean canConnect() {
 //        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
