@@ -1,6 +1,14 @@
 package com.alexsykes.scoremonster.data;
 
+import androidx.annotation.NonNull;
+import androidx.room.Entity;
+import androidx.room.Ignore;
+import androidx.room.PrimaryKey;
+
+@Entity(tableName = "score_table")
 public class Score {
+    @PrimaryKey(autoGenerate = true)
+    @NonNull
     int _id;
     String sync;
     String section;
@@ -15,7 +23,7 @@ public class Score {
     String edited;
     String scoredata;
 
-    public Score(String section, String score,  String rider, String lap, String trialid, String count, String observer, String created, String updated, String edited, String scoredata) {
+    public Score(String section, String score, String rider, String lap, String trialid, String count, String observer, String created, String updated, String edited, String scoredata) {
         this.section = section;
         this.score = score;
         this.rider = rider;
@@ -30,6 +38,7 @@ public class Score {
         this.sync = "-1";
     }
 
+    @Ignore
     public Score(String section, String score,  String rider, String lap, String trialid, String count, String observer, String created, String updated, String edited, String scoredata, String sync) {
         this.section = section;
         this.score = score;
@@ -45,6 +54,7 @@ public class Score {
         this.sync = sync;
     }
 
+    @Ignore
     public Score(String section, String score, String rider, String lap, int _id, String observer) {
         this.section = section;
         this.score = score;
@@ -54,6 +64,7 @@ public class Score {
         this._id = _id;
     }
 
+    @Ignore
     public Score(String section, String score, String rider, String lap, int _id, String observer, String sync) {
         this.section = section;
         this.score = score;
@@ -63,6 +74,7 @@ public class Score {
         this._id = _id;
     }
 
+    @Ignore
     public Score(String section, String score, String rider, String lap, int parseInt, String observer, String created, String sync) {
         this.section = section;
         this.score = score;

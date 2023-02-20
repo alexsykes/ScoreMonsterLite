@@ -354,7 +354,7 @@ public class ScoreListActivity extends AppCompatActivity {
 
                 csvWrite.writeNext(arrStr, false);
             }
-            csvWrite.close();
+//            csvWrite.close();
             return true;
 
         } catch (IOException e) {
