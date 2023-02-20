@@ -10,6 +10,7 @@ import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.StrictMode;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -82,9 +83,9 @@ public class ScoreListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_score_list);
 
         // Add this:
-//        StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder(StrictMode.getVmPolicy())
-//                .detectLeakedClosableObjects()
-//                .build());
+        StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder(StrictMode.getVmPolicy())
+                .detectLeakedClosableObjects()
+                .build());
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -104,6 +105,12 @@ public class ScoreListActivity extends AppCompatActivity {
         // Create database connection
 //        mDbHelper = new ScoreDbHelper(this);
         populateScoreList();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        theScoreList.clear();
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -236,13 +243,13 @@ public class ScoreListActivity extends AppCompatActivity {
     private void populateScoreList() {
         mDbHelper = new ScoreDbHelper(this);
         theScoreList = mDbHelper.getScoreList(trialid);
-        mDbHelper.close();
 //        Log.i("trialid", "" + trialid);
         scoreView = findViewById(R.id.scoreView);
         LinearLayoutManager llm = new LinearLayoutManager(this);
         scoreView.setLayoutManager(llm);
         scoreView.setHasFixedSize(true);
         initializeAdapter();
+        mDbHelper.close();
     }
 
     private void initializeAdapter() {
@@ -319,22 +326,23 @@ public class ScoreListActivity extends AppCompatActivity {
         mDbHelper.close();
     }
 
+    // Save current scores to CSV
     private boolean saveToCSV() {
         String id, observer, section, rider, lap, created, updated, edited, sync, score, thetrialid;
 
         try {
             exportDir = new File(getFilesDir(), filename);
 
+            // Create new CSV file in storage
             exportDir.createNewFile();
             CSVWriter csvWrite = new CSVWriter(new FileWriter(exportDir));
 
-            String[] header = {"id", "rider", "section",
-                    "lap", "score", "observer", "created", "updated", "edited", "trialid", "sync"};
-
+//            Prepare and write filednames as header
+            String[] header = {"id", "Rider", "Section",
+                    "Lap", "Score", "Observer", "Timestamp - GMT"};
             csvWrite.writeNext(header, false);
 
-            // Get current data
-
+            // Get score data for current trial
             Cursor curChild = mDbHelper.getAll(trialid);
             while (curChild.moveToNext()) {
                 id = curChild.getString(0);
@@ -343,17 +351,19 @@ public class ScoreListActivity extends AppCompatActivity {
                 rider = curChild.getString(3);
                 lap = curChild.getString(4);
                 created = curChild.getString(5);
-                updated = curChild.getString(6);
-                edited = curChild.getString(7);
-                thetrialid = curChild.getString(8);
-                sync = curChild.getString(9);
+//                updated = curChild.getString(6);
+//                edited = curChild.getString(7);
+//                thetrialid = curChild.getString(8);
+//                sync = curChild.getString(9);
                 score = curChild.getString(10);
 
-                String[] arrStr = {id, rider, section, lap, score, observer, created, updated, edited, thetrialid, sync
+                String[] arrStr = {id, rider, section, lap, score, observer, created
                 };
 
                 csvWrite.writeNext(arrStr, false);
             }
+            // Close filewriter
+            curChild.close();
             csvWrite.close();
             return true;
 
@@ -366,8 +376,6 @@ public class ScoreListActivity extends AppCompatActivity {
     public int uploadFile(String sourceFileUri) {
         File directory = getFilesDir();
         File sourceFile = new File(directory, filename);
-
-
         final String fileName = sourceFileUri;
 
         HttpURLConnection conn;
@@ -453,7 +461,6 @@ public class ScoreListActivity extends AppCompatActivity {
                         + serverResponseMessage + ": " + serverResponseCode);
 
                 if (serverResponseCode != 200) {
-
                     runOnUiThread(new Runnable() {
                         public void run() {
                             Toast.makeText(ScoreListActivity.this, "Error processing data",
@@ -507,26 +514,28 @@ public class ScoreListActivity extends AppCompatActivity {
             Toast.makeText(ScoreListActivity.this, "No Internet connection. Please try again later",
                     Toast.LENGTH_LONG).show();
         } else {
-            volleyUpload();
+            volleyScoreUpload();
             markAsDone(trialid);
         }
     }
 
     private void emailScores() {
+        // Check for connection
         canConnect = canConnect();
         if (!canConnect) {
             Toast.makeText(ScoreListActivity.this, "No Internet connection. Please try again later",
                     Toast.LENGTH_LONG).show();
         } else {
+            // Get email from prefs - if no saved value, then send to blackhole
             email = localPrefs.getString("email", "blackhole@alexsykes.net");
             Date date = new Date();
-            // getTime() returns current time in milliseconds
+            // getTime() returns current time in milliseconds -
+            // gives
             long time = date.getTime();
             String ts = String.valueOf(time);
             filename = "data_" + ts + ".csv";
             String sendMailURL = "https://www.trialmonster.uk/android/sendMailWithFile.php?id=" + ts + "&trialid=" + trialid + "&email=" + email;
 
-//            Log.i("Monitor", sendMailURL);
             saveToCSV();
             processCSV(sendMailURL);
         }
@@ -557,7 +566,7 @@ public class ScoreListActivity extends AppCompatActivity {
         return scoresJSONArray;
     }
 
-    private void volleyUpload() {
+    private void volleyScoreUpload() {
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         String URL = "https://android.trialmonster.uk/uploadVolleyJSONArray.php";
 
