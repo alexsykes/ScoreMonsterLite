@@ -4,14 +4,18 @@ import android.app.Application;
 
 import java.util.List;
 
-public class ScoreRepository {
+public class ScoreMonsterRepository {
     private final ScoreDao scoreDao;
+    private final TimeDao timeDao;
+    private final TrialDao trialDao;
     private final List<Score> allScores;
     private List<Score> currentRiderScores;
 
-    public ScoreRepository(Application application) {
+    public ScoreMonsterRepository(Application application) {
         ScoreRoomDatabase db = ScoreRoomDatabase.getDatabase(application);
         scoreDao = db.scoreDao();
+        trialDao = db.trialDao();
+        timeDao = db.timeDao();
         allScores = scoreDao.getAllScores();
     }
 

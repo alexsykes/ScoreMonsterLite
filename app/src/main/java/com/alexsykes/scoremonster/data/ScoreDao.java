@@ -12,12 +12,12 @@ public interface ScoreDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(Score score);
 
-    @Query("Delete FROM score_table")
+    @Query("Delete FROM scores")
     void deleteAll();
 
-    @Query("SELECT * FROM score_table ORDER BY _id DESC")
+    @Query("SELECT * FROM scores ORDER BY _id DESC")
     List<Score> getAllScores();
 
-    @Query("SELECT * FROM score_table WHERE rider = :rider AND trialid = :trialid ORDER BY lap ASC")
+    @Query("SELECT * FROM scores WHERE rider = :rider AND trialid = :trialid ORDER BY lap ASC")
     List<Score> getCurrentRiderScores(int rider, int trialid);
 }

@@ -11,12 +11,13 @@ import androidx.sqlite.db.SupportSQLiteDatabase;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-@Database(entities = {Score.class}, version = 1, exportSchema = false)
+@Database(entities = {Score.class, Trial.class, Time.class}, version = 1, exportSchema = false)
 public abstract class ScoreRoomDatabase extends RoomDatabase {
     public static final int NUMBER_OF_THREADS = 4;
     static final ExecutorService databaseWriteExecutor =
             Executors.newFixedThreadPool(NUMBER_OF_THREADS);
     private static volatile ScoreRoomDatabase INSTANCE;
+
     private static final RoomDatabase.Callback sScoreDatabaseCallback =
             new RoomDatabase.Callback() {
 
@@ -24,14 +25,21 @@ public abstract class ScoreRoomDatabase extends RoomDatabase {
                 public void onCreate(@NonNull SupportSQLiteDatabase db) {
                     super.onCreate(db);
 
-
                     databaseWriteExecutor.execute(() -> {
                         ScoreDao scoreDao = INSTANCE.scoreDao();
+                        TrialDao trialDao = INSTANCE.trialDao();
+                        TimeDao timeDao = INSTANCE.timeDao();
                         scoreDao.deleteAll();
                     });
 
                 }
             };
+
+    abstract ScoreDao scoreDao();
+
+    abstract TrialDao trialDao();
+
+    abstract TimeDao timeDao();
 
     static ScoreRoomDatabase getDatabase(final Context context) {
         if (INSTANCE == null) {
@@ -47,6 +55,4 @@ public abstract class ScoreRoomDatabase extends RoomDatabase {
         }
         return INSTANCE;
     }
-
-    abstract ScoreDao scoreDao();
 }

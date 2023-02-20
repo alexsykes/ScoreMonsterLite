@@ -1,14 +1,22 @@
 package com.alexsykes.scoremonster.data;
 
+import androidx.annotation.NonNull;
+import androidx.room.Entity;
+import androidx.room.Ignore;
+import androidx.room.PrimaryKey;
+
+@Entity(tableName = "times")
 public class Time {
-    String _id,
-            number,
+    @PrimaryKey(autoGenerate = true)
+    @NonNull
+    int _id;
+    String number,
             sequence,
             created;
-
     int trialid;
 
-    public Time(String _id, String number, String sequence, String created, int trialid) {
+    @Ignore
+    public Time(Integer _id, String number, String sequence, String created, int trialid) {
         this._id = _id;
         this.number = number;
         this.sequence = sequence;
@@ -30,11 +38,11 @@ public class Time {
         this.trialid = trialid;
     }
 
-    public String get_id() {
+    public Integer get_id() {
         return _id;
     }
 
-    public void set_id(String _id) {
+    public void set_id(Integer _id) {
         this._id = _id;
     }
 

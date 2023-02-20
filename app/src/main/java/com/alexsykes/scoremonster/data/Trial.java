@@ -1,7 +1,15 @@
 package com.alexsykes.scoremonster.data;
 
+import androidx.annotation.NonNull;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
+@Entity(tableName = "trials")
 public class Trial {
-    int _id, numsections, numlaps, mode;
+    @PrimaryKey(autoGenerate = true)
+    @NonNull
+    int _id;
+    int numsections, numlaps, mode;
     long startinterval;
     String email, date, name, club;
 
