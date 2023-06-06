@@ -1,6 +1,5 @@
 package com.alexsykes.scoremonster.activities;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
@@ -54,10 +53,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ScoreListActivity extends AppCompatActivity {
-    String TAG = "Info";
+//    String TAG = "Info";
     /**********  File Path *************/
     final String uploadFilePath = "mnt/sdcard/Documents/Scoremonster/";
-    private final String baseURL = "https://android.trialmonster.uk/addCSVtodb.php?trialid=";
+    //    private final String baseURL = "https://android.trialmonster.uk/addCSVtodb.php?trialid=";
     File exportDir = new File(Environment.getExternalStoragePublicDirectory("Documents/Scoremonster"), "");
 
     MenuItem emailMenuItem;
@@ -67,15 +66,14 @@ public class ScoreListActivity extends AppCompatActivity {
     RecyclerView scoreView;
     ArrayList<HashMap<String, String>> theScoreList;
     TextView messageText;
-    private final String processURL = null;
-    ProgressDialog dialog = null;
+    //    private final String processURL = null;
+//    ProgressDialog dialog = null;
     boolean canConnect;
     SharedPreferences localPrefs;
     // Button processButton;
     int serverResponseCode = 0, section, trialid;
     private ScoreDbHelper mDbHelper;
     private String filename, email;
-    private ArrayList<HashMap<String, String>> dataToUpload;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -190,52 +188,46 @@ public class ScoreListActivity extends AppCompatActivity {
                 })
 
                 // Set the action buttons
-                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int id) {
-                        // user clicked OK, so save the mSelectedItems results somewhere
-                        // or return them to the component that opened the dialog
+                .setPositiveButton("OK", (dialog, id) -> {
+                    // user clicked OK, so save the mSelectedItems results somewhere
+                    // or return them to the component that opened the dialog
 
-                        int selectedPosition = ((AlertDialog) dialog).getListView().getCheckedItemPosition();
-                        String score = null;
+                    int selectedPosition = ((AlertDialog) dialog).getListView().getCheckedItemPosition();
+                    String score1 = null;
 
-                        switch (selectedPosition) {
-                            case 0:
-                                score = "0";
+                    switch (selectedPosition) {
+                        case 0:
+                            score1 = "0";
 
-                                break;
-                            case 1:
-                                score = "1";
+                            break;
+                        case 1:
+                            score1 = "1";
 
-                                break;
-                            case 2:
-                                score = "2";
+                            break;
+                        case 2:
+                            score1 = "2";
 
-                                break;
-                            case 3:
-                                score = "3";
+                            break;
+                        case 3:
+                            score1 = "3";
 
-                                break;
-                            case 4:
-                                score = "5";
+                            break;
+                        case 4:
+                            score1 = "5";
 
-                                break;
-                            case 5:
-                                score = "10";
+                            break;
+                        case 5:
+                            score1 = "10";
 
-                                break;
-                        }
-                        mDbHelper = new ScoreDbHelper(ScoreListActivity.this);
-                        mDbHelper.update(scoreid, score);
-                        mDbHelper.close();
-                        populateScoreList();
+                            break;
                     }
+                    mDbHelper = new ScoreDbHelper(ScoreListActivity.this);
+                    mDbHelper.update(scoreid, score1);
+                    mDbHelper.close();
+                    populateScoreList();
                 })
-                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int id) {
-                        // removes the dialog from the screen
-                    }
+                .setNegativeButton("Cancel", (dialog, id) -> {
+                    // removes the dialog from the screen
                 })
                 .show();
     }
@@ -373,6 +365,8 @@ public class ScoreListActivity extends AppCompatActivity {
         }
     }
 
+
+    // From https://stackoverflow.com/questions/32262829/how-to-upload-file-using-volley-library-in-android
     public int uploadFile(String sourceFileUri) {
         File directory = getFilesDir();
         File sourceFile = new File(directory, filename);
@@ -542,7 +536,7 @@ public class ScoreListActivity extends AppCompatActivity {
     }
 
     private JSONArray getDataForUpload() {
-        dataToUpload = mDbHelper.getScoreListForUpload(trialid);
+        ArrayList<HashMap<String, String>> dataToUpload = mDbHelper.getScoreListForUpload(trialid);
         //   JSONArray trialdata = mDbHelper.getTrialData(trialid);
         JSONArray scoresJSONArray
                 = new JSONArray();

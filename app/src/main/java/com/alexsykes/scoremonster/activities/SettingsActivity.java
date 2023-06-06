@@ -94,7 +94,7 @@ public class SettingsActivity extends AppCompatActivity {
 
     public static class SettingsFragment extends PreferenceFragmentCompat {
         SharedPreferences localPrefs;
-        String sectionPrefText;
+        String sectionPrefText, email;
         int trialid;
         int sectionPrefInt;
         int numsections;
@@ -134,7 +134,8 @@ public class SettingsActivity extends AppCompatActivity {
             startInterval = localPrefs.getLong("startInterval", 60);
             mode = localPrefs.getInt("mode", 0);
             timeMode = localPrefs.getBoolean("timeMode", false);
-            trialid = localPrefs.getInt("trialid",0);
+            trialid = localPrefs.getInt("trialid", 0);
+            email = localPrefs.getString("email", "");
 
             sectionPrefText = String.valueOf(sectionPrefInt);
             SharedPreferences.Editor editor = localPrefs.edit();

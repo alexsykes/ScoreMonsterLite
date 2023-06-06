@@ -135,8 +135,8 @@ public class ScoreMonsterLite extends Application {
                     @Override
                     public void onResponse(String response) {
 
-                        String text = "Response is: " + response.substring(0, 500);
-                      //  Log.i("Info", text);
+//                        String returned = response.substring(0, 500);
+//                        Log.i("Info", text);
 
                         updateTrialsDB(response);
                     }
