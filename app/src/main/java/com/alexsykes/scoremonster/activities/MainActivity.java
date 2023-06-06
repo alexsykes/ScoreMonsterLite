@@ -180,6 +180,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        getPrefs();
+        numberLabel.setText(String.valueOf(ridingNumber));
+        scoreLabel.setText(String.valueOf(score));
     }
 
     private void getPrefs() {
@@ -414,6 +417,10 @@ public class MainActivity extends AppCompatActivity {
             riderNumber = "";
         }
         numberLabel.setText(riderNumber);
+        SharedPreferences.Editor editor = localPrefs.edit();
+        ridingNumber = Integer.parseInt(riderNumber);
+        editor.putInt("ridingNumber", ridingNumber);
+        editor.apply();
     }
 
     public void countDabs(View view) {
@@ -437,6 +444,9 @@ public class MainActivity extends AppCompatActivity {
                 break;
         }
         scoreLabel.setText(valueOf(score));
+        SharedPreferences.Editor editor = localPrefs.edit();
+        editor.putInt("score", score);
+        editor.apply();
     }
 
     private void clearScore() {
@@ -444,13 +454,17 @@ public class MainActivity extends AppCompatActivity {
         score = 0;
         scoreLabel.setText("0");
 
+        SharedPreferences.Editor editor = localPrefs.edit();
+        editor.putInt("ridingNumber", 0);
+        editor.putInt("score", 0);
+        editor.apply();
+
         // Clear rider number if not a single rider
         if (mode != 2) {
             numberLabel.setText("");
         }
         // If a single rider, then increment section
         else {
-            SharedPreferences.Editor editor = localPrefs.edit();
             if (section < numsections) {
                 section++;
             } else if (section == numsections) {

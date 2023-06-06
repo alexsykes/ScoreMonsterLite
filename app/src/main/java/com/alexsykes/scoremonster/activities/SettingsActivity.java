@@ -96,7 +96,7 @@ public class SettingsActivity extends AppCompatActivity {
         SharedPreferences localPrefs;
         String sectionPrefText, email;
         int trialid;
-        int sectionPrefInt;
+        int section;
         int numsections;
         int numlaps;
         int mode;
@@ -126,7 +126,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         private void setup() {
             // Setup known values
-            sectionPrefInt = localPrefs.getInt("section", 1);
+            section = localPrefs.getInt("section", 1);
             numsections = localPrefs.getInt("numsections", 1);
             numlaps = localPrefs.getInt("numlaps", 1);
             ridingNumber = localPrefs.getInt("ridingNumber", 1);
@@ -137,12 +137,10 @@ public class SettingsActivity extends AppCompatActivity {
             trialid = localPrefs.getInt("trialid", 0);
             email = localPrefs.getString("email", "");
 
-            sectionPrefText = String.valueOf(sectionPrefInt);
             SharedPreferences.Editor editor = localPrefs.edit();
             editor.putLong("startInterval", startInterval);
             editor.putLong("penaltyTariff", penaltyTariff);
-            editor.putInt("section", sectionPrefInt);
-            editor.putString("sectionText", sectionPrefText);
+            editor.putInt("section", section);
             editor.remove("startIntervalText");
             editor.remove("penaltyText");
             editor.apply();
@@ -221,7 +219,7 @@ public class SettingsActivity extends AppCompatActivity {
             assert sectionPref != null;
             String sectionsRange = "1 to " + numsections;
             sectionPref.setDialogMessage(sectionsRange);
-            sectionPref.setText(sectionPrefText);
+            sectionPref.setText(String.valueOf(section));
 
             sectionPref.setOnBindEditTextListener(editText -> editText.setInputType(InputType.TYPE_CLASS_NUMBER));
             sectionPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
@@ -232,11 +230,11 @@ public class SettingsActivity extends AppCompatActivity {
                         Log.i("Note", "Empty");
                         return false;
                     }
-                    sectionPrefInt = Integer.parseInt(newValue.toString());
-                    if (0 < sectionPrefInt && sectionPrefInt <= numsections) {
+                    section = Integer.parseInt(newValue.toString());
+                    if (0 < section && section <= numsections) {
                         sectionPref.setText(newValue.toString());
-                        editor.putInt("section", sectionPrefInt);
-                        editor.putString("sectionText", String.valueOf(sectionPrefInt));
+                        editor.putInt("section", section);
+//                        editor.putString("sectionText", String.valueOf(section));
                         editor.apply();
                         sectionPref.setIcon(null);
                         return false;

@@ -72,7 +72,7 @@ public class ScoreListActivity extends AppCompatActivity {
     SharedPreferences localPrefs;
     // Button processButton;
     int serverResponseCode = 0, section, trialid;
-    private ScoreDbHelper mDbHelper;
+    private ScoreDbHelper scoreDbHelper;
     private String filename, email;
 
     @Override
@@ -221,9 +221,9 @@ public class ScoreListActivity extends AppCompatActivity {
 
                             break;
                     }
-                    mDbHelper = new ScoreDbHelper(ScoreListActivity.this);
-                    mDbHelper.update(scoreid, score1);
-                    mDbHelper.close();
+                    scoreDbHelper = new ScoreDbHelper(ScoreListActivity.this);
+                    scoreDbHelper.update(scoreid, score1);
+                    scoreDbHelper.close();
                     populateScoreList();
                 })
                 .setNegativeButton("Cancel", (dialog, id) -> {
@@ -233,15 +233,15 @@ public class ScoreListActivity extends AppCompatActivity {
     }
 
     private void populateScoreList() {
-        mDbHelper = new ScoreDbHelper(this);
-        theScoreList = mDbHelper.getScoreList(trialid);
+        scoreDbHelper = new ScoreDbHelper(this);
+        theScoreList = scoreDbHelper.getScoreList(trialid);
 //        Log.i("trialid", "" + trialid);
         scoreView = findViewById(R.id.scoreView);
         LinearLayoutManager llm = new LinearLayoutManager(this);
         scoreView.setLayoutManager(llm);
         scoreView.setHasFixedSize(true);
         initializeAdapter();
-        mDbHelper.close();
+        scoreDbHelper.close();
     }
 
     private void initializeAdapter() {
@@ -313,9 +313,10 @@ public class ScoreListActivity extends AppCompatActivity {
     }
 
     private void markAsDone(int trialid) {
-        mDbHelper = new ScoreDbHelper(this);
-        mDbHelper.markAsDone(trialid);
-        mDbHelper.close();
+        scoreDbHelper = new ScoreDbHelper(this);
+        scoreDbHelper.markAsDone(trialid);
+        scoreDbHelper.close();
+        populateScoreList();
     }
 
     // Save current scores to CSV
@@ -335,7 +336,7 @@ public class ScoreListActivity extends AppCompatActivity {
             csvWrite.writeNext(header, false);
 
             // Get score data for current trial
-            Cursor curChild = mDbHelper.getAll(trialid);
+            Cursor curChild = scoreDbHelper.getAll(trialid);
             while (curChild.moveToNext()) {
                 id = curChild.getString(0);
                 observer = curChild.getString(1);
@@ -536,7 +537,7 @@ public class ScoreListActivity extends AppCompatActivity {
     }
 
     private JSONArray getDataForUpload() {
-        ArrayList<HashMap<String, String>> dataToUpload = mDbHelper.getScoreListForUpload(trialid);
+        ArrayList<HashMap<String, String>> dataToUpload = scoreDbHelper.getScoreListForUpload(trialid);
         //   JSONArray trialdata = mDbHelper.getTrialData(trialid);
         JSONArray scoresJSONArray
                 = new JSONArray();

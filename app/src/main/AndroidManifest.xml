@@ -5,7 +5,6 @@
     android:versionName="ariel red hunter">
 
     <uses-permission android:name="android.permission.VIBRATE" /> <!-- uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" / -->
-    <uses-permission android:name="android.permission.WRITE_INTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
@@ -19,6 +18,7 @@
         android:networkSecurityConfig="@xml/network_security_config"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
+        android:enableOnBackInvokedCallback="true"
         android:theme="@style/Theme.Theme">
         <activity
             android:exported="true"

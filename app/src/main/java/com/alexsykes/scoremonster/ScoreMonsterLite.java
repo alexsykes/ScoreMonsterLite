@@ -134,9 +134,8 @@ public class ScoreMonsterLite extends Application {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-
-//                        String returned = response.substring(0, 500);
-//                        Log.i("Info", text);
+//                        Log.i("Info", "getTrialListFromServer:onResponse called");
+//                        Log.i("Info", response);
 
                         updateTrialsDB(response);
                     }
