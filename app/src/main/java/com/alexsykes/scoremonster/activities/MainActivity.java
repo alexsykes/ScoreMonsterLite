@@ -181,7 +181,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         getPrefs();
-        numberLabel.setText(String.valueOf(ridingNumber));
+        if (ridingNumber > 0) {
+            numberLabel.setText(String.valueOf(ridingNumber));
+        }
         scoreLabel.setText(String.valueOf(score));
     }
 
@@ -389,6 +391,7 @@ public class MainActivity extends AppCompatActivity {
 
         scoreDbHelper.close();
     }
+
     public void addDigit(View view) {
         // Get length of rider riderNumber
         numberLabel = findViewById(R.id.numberLabel);
@@ -404,13 +407,19 @@ public class MainActivity extends AppCompatActivity {
         if (digit.equals("⌫")) {
             if (len > 0) {
                 riderNumber = riderNumber.substring(0, len - 1);
+            } else {
+                riderNumber = "0";
+                ridingNumber = 0;
             }
         } else if (digit.equals("C")) {
             riderNumber = "";
+            ridingNumber = 0;
         } else {
             riderNumber = riderNumber + digit;
+            ridingNumber = Integer.parseInt(riderNumber);
             if (len > 2)
                 riderNumber = riderNumber.substring(1, 4);
+            ridingNumber = Integer.parseInt(riderNumber);
         }
 
         if (riderNumber.equals("0")) {
@@ -418,7 +427,6 @@ public class MainActivity extends AppCompatActivity {
         }
         numberLabel.setText(riderNumber);
         SharedPreferences.Editor editor = localPrefs.edit();
-        ridingNumber = Integer.parseInt(riderNumber);
         editor.putInt("ridingNumber", ridingNumber);
         editor.apply();
     }

@@ -75,6 +75,7 @@ public class SettingsActivity extends AppCompatActivity {
         editor.putString("theIds", options.get(0).get("ids"));
         editor.putString("theNames", options.get(0).get("names"));
         editor.apply();
+        mDbHelper.close();
     }
 
     @Override

@@ -144,7 +144,7 @@ public class ScoreDbHelper extends SQLiteOpenHelper {
     public Cursor getAll(int id) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT  * FROM scores WHERE  trialid=" + id, new String[]{});
-        // db.close();
+//         db.close();
         return cursor;
 
     }

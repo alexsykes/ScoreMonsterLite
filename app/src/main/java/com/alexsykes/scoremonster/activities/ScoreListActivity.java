@@ -332,7 +332,7 @@ public class ScoreListActivity extends AppCompatActivity {
 
 //            Prepare and write filednames as header
             String[] header = {"id", "Rider", "Section",
-                    "Lap", "Score", "Observer", "Timestamp - GMT"};
+                    "Lap", "Score", "Observer", "Timestamp - GMT", "Updated - GMT"};
             csvWrite.writeNext(header, false);
 
             // Get score data for current trial
@@ -344,13 +344,13 @@ public class ScoreListActivity extends AppCompatActivity {
                 rider = curChild.getString(3);
                 lap = curChild.getString(4);
                 created = curChild.getString(5);
-//                updated = curChild.getString(6);
+                updated = curChild.getString(6);
 //                edited = curChild.getString(7);
 //                thetrialid = curChild.getString(8);
 //                sync = curChild.getString(9);
                 score = curChild.getString(10);
 
-                String[] arrStr = {id, rider, section, lap, score, observer, created
+                String[] arrStr = {id, rider, section, lap, score, observer, created, updated
                 };
 
                 csvWrite.writeNext(arrStr, false);
@@ -358,6 +358,7 @@ public class ScoreListActivity extends AppCompatActivity {
             // Close filewriter
             curChild.close();
             csvWrite.close();
+            scoreDbHelper.close();
             return true;
 
         } catch (IOException e) {
