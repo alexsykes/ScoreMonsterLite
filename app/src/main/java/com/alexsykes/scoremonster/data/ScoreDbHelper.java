@@ -143,9 +143,8 @@ public class ScoreDbHelper extends SQLiteOpenHelper {
 
     public Cursor getAll(int id) {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT  * FROM scores WHERE  trialid=" + id, new String[]{});
-//         db.close();
-        return cursor;
+        //         db.close();
+        return db.rawQuery("SELECT  * FROM scores WHERE  trialid=" + id, new String[]{});
 
     }
 
@@ -183,7 +182,8 @@ public class ScoreDbHelper extends SQLiteOpenHelper {
     public ArrayList<HashMap<String, String>> getScoreListForUpload(int trialid) {
         SQLiteDatabase db = this.getWritableDatabase();
         ArrayList<HashMap<String, String>> scoreList = new ArrayList<>();
-        String query = "SELECT * FROM scores WHERE trialid = " + trialid + " ORDER BY _id DESC";
+        String query = "SELECT * FROM scores WHERE trialid = " + trialid + " AND sync = -1 ORDER " +
+                "BY _id DESC";
 //        Log.i("Query", query);
         //  String query = "SELECT * FROM scores  ORDER BY _id DESC";
         Cursor cursor = db.rawQuery(query, null);
@@ -204,7 +204,7 @@ public class ScoreDbHelper extends SQLiteOpenHelper {
             scoreList.add(scores);
         }
         cursor.close();
-        db.close();
+//        db.close();
         return scoreList;
     }
 
@@ -220,6 +220,7 @@ public class ScoreDbHelper extends SQLiteOpenHelper {
         trialDetail.put(id);
         trialDetail.put(name);
 
+        cursor.close();
         return trialDetail;
     }
 }

@@ -28,6 +28,7 @@ import com.alexsykes.scoremonster.R;
 import com.alexsykes.scoremonster.ScoreListAdapter;
 import com.alexsykes.scoremonster.data.ScoreDbHelper;
 import com.android.volley.AuthFailureError;
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -332,7 +333,7 @@ public class ScoreListActivity extends AppCompatActivity {
 
 //            Prepare and write filednames as header
             String[] header = {"id", "Rider", "Section",
-                    "Lap", "Score", "Observer", "Timestamp - GMT", "Updated - GMT"};
+                    "Lap", "Score", "Observer", "trialID", "Timestamp - GMT", "Updated - GMT"};
             csvWrite.writeNext(header, false);
 
             // Get score data for current trial
@@ -346,11 +347,12 @@ public class ScoreListActivity extends AppCompatActivity {
                 created = curChild.getString(5);
                 updated = curChild.getString(6);
 //                edited = curChild.getString(7);
-//                thetrialid = curChild.getString(8);
+                thetrialid = curChild.getString(8);
 //                sync = curChild.getString(9);
                 score = curChild.getString(10);
 
-                String[] arrStr = {id, rider, section, lap, score, observer, created, updated
+                String[] arrStr = {id, rider, section, lap, score, observer, thetrialid, created,
+                        updated
                 };
 
                 csvWrite.writeNext(arrStr, false);
@@ -366,7 +368,6 @@ public class ScoreListActivity extends AppCompatActivity {
             return false;
         }
     }
-
 
     // From https://stackoverflow.com/questions/32262829/how-to-upload-file-using-volley-library-in-android
     public int uploadFile(String sourceFileUri) {
@@ -390,12 +391,12 @@ public class ScoreListActivity extends AppCompatActivity {
 //            dialog.dismiss();
 
             Log.e("uploadFile", "Source File not exist :"
-                    + uploadFilePath + "" + fileName);
+                    + uploadFilePath + fileName);
 
             runOnUiThread(new Runnable() {
                 public void run() {
                     messageText.setText("Source File not exist :"
-                            + uploadFilePath + "" + fileName);
+                            + uploadFilePath + fileName);
                 }
             });
 
@@ -511,7 +512,7 @@ public class ScoreListActivity extends AppCompatActivity {
                     Toast.LENGTH_LONG).show();
         } else {
             volleyScoreUpload();
-            markAsDone(trialid);
+//            markAsDone(trialid);
         }
     }
 
@@ -549,7 +550,12 @@ public class ScoreListActivity extends AppCompatActivity {
             score.put(scoreItem.get("id"));
             score.put(scoreItem.get("rider"));
             score.put(scoreItem.get("lap"));
-            score.put(scoreItem.get("score"));
+            String sc = scoreItem.get("score");
+            if (sc.equals("10")) {
+                score.put("x");
+            } else {
+                score.put(scoreItem.get("score"));
+            }
             score.put(scoreItem.get("section"));
             score.put(scoreItem.get("trialid"));
             score.put(scoreItem.get("sync"));
@@ -601,6 +607,12 @@ public class ScoreListActivity extends AppCompatActivity {
         };
 
         Log.d("string", stringRequest.toString());
+        int MY_SOCKET_TIMEOUT_MS = 5000;
+
+        stringRequest.setRetryPolicy(new DefaultRetryPolicy(
+                MY_SOCKET_TIMEOUT_MS,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         requestQueue.add(stringRequest);
     }
 }
