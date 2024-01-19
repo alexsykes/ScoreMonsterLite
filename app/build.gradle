@@ -3,10 +3,10 @@ apply plugin: 'com.android.application'
 android {
     compileSdk 34
     defaultConfig {
-        applicationId "com.alexsykes.scoremonster"
+        applicationId "uk.trialmonster.observer"
         minSdk 24
-        versionCode 21
-        versionName "ariel red hunter"
+        versionCode 1
+        versionName "ariel arrow"
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
         vectorDrawables.useSupportLibrary = true
     }

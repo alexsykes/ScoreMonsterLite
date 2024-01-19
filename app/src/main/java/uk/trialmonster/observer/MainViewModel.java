@@ -1,0 +1,307 @@
+package uk.trialmonster.observer;
+
+import android.os.AsyncTask;
+import android.text.TextUtils;
+
+import androidx.lifecycle.ViewModel;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.SocketTimeoutException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashMap;
+
+public class MainViewModel extends ViewModel {
+    private int trialid;
+    private int numsections;
+    private int numlaps;
+    private int ridingNumber;
+    private int score;
+    private int section;
+
+    private boolean isRefreshed;
+
+    public void setOnline(boolean online) {
+        isOnline = online;
+    }
+
+    private boolean isOnline;
+    private ArrayList<HashMap<String, String>> theTrialData;
+    private String[] theTrials, theIDs;
+    private String theTrialName, data;
+
+    public MainViewModel() {
+        isRefreshed = false;
+    }
+
+    public void setRefreshed(boolean refreshed) {
+        isRefreshed = refreshed;
+    }
+
+    public void setNumLaps(int numlaps) {
+        this.numlaps = numlaps;
+    }
+
+    public void setNumSections(int numsections) {
+        this.numsections = numsections;
+    }
+
+    public int getTrialid() {
+        return trialid;
+    }
+
+    public int getNumsections() {
+        return numsections;
+    }
+
+    public int getNumlaps() {
+        return numlaps;
+    }
+
+    public void setTrialid(int trialid) {
+        this.trialid = trialid;
+    }
+
+
+    public int getRidingNumber() {
+        return ridingNumber;
+    }
+
+    public void setRidingNumber(int ridingNumber) {
+        this.ridingNumber = ridingNumber;
+    }
+
+    public int getScore() {
+        return score;
+    }
+
+    public void setScore(int score) {
+        this.score = score;
+    }
+
+    public int getSection() {
+        return section;
+    }
+
+    public void setSection(int section) {
+        this.section = section;
+    }
+
+    public void getTrialList(final String urlWebService) {
+        class GetData extends AsyncTask<Void, Void, String> {
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+            }
+
+            @Override
+            protected void onPostExecute(String s) {
+                super.onPostExecute(s);
+                // Populate ArrayList with JSON data
+                theTrialData = populateResultArrayList(s);
+
+                int size = theTrialData.size();
+                theTrials = new String[size];
+                theIDs = new String[size];
+                String id;
+
+                for (int index = 0; index < theTrialData.size(); index++) {
+                    theTrialName = theTrialData.get(index).get("name");
+                    id = theTrialData.get(index).get("id");
+                    theTrials[index] = theTrialName;
+                    theIDs[index] = id;
+                }
+
+                data = setTrialsList(theTrialData);
+                isRefreshed = true;
+
+                if (trialid == 0) {
+                    theTrialName = "Manual Entry";
+                }
+            }
+
+            private ArrayList<HashMap<String, String>> populateResultArrayList(String json) {
+                ArrayList<HashMap<String, String>> theTrialList = new ArrayList<>();
+                String date, name, id, club, numsections, numlaps, starttime, email, scoringmode;
+
+                try {
+                    JSONArray jsonArray = new JSONArray(json);
+
+                    for (int index = 0; index < jsonArray.length(); index++) {
+                        HashMap<String, String> theTrial = new HashMap<>();
+                        id = jsonArray.getJSONObject(index).getString("id");
+                        date = jsonArray.getJSONObject(index).getString("date");
+                        club = jsonArray.getJSONObject(index).getString("club");
+                        name = jsonArray.getJSONObject(index).getString("name");
+
+                        theTrial.put("id", id);
+                        theTrial.put("date", date);
+                        theTrial.put("club", club);
+                        theTrial.put("name", name);
+                        theTrialList.add(theTrial);
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                return theTrialList;
+            }
+
+            //in this method we are fetching the json string
+            @Override
+            protected String doInBackground(Void... voids) {
+                int TIMEOUT_VALUE = 1000;
+                try {
+                    //creating a URL
+                    URL url = new URL(urlWebService);
+
+                    //Opening the URL using HttpURLConnection
+                    HttpURLConnection con = (HttpURLConnection) url.openConnection();
+                    con.setConnectTimeout(TIMEOUT_VALUE);
+                    con.setReadTimeout(TIMEOUT_VALUE);
+                    StringBuilder sb = new StringBuilder();
+
+                    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(con.getInputStream()));
+                    String json;
+
+                    while ((json = bufferedReader.readLine()) != null) {
+                        json = json + "\n";
+                        //appending it to string builder
+                        sb.append(json);
+                    }
+
+                    return sb.toString().trim();
+                } catch (SocketTimeoutException e) {
+                    e.printStackTrace();
+                    return null;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return null;
+                }
+            }
+        }
+
+        //creating asynctask object and executing it
+        GetData getJSON = new GetData();
+        getJSON.execute();
+    }
+
+    private String setTrialsList(ArrayList<HashMap<String, String>> theTrialList) {
+        int size = theTrialList.size();
+        String[] theTrialNames = new String[size];
+        String[] theTrialIds = new String[size];
+        for (int index = 0; index < size; index++) {
+            theTrialNames[index] = theTrialList.get(index).get("name");
+            theTrialIds[index] = theTrialList.get(index).get("id");
+        }
+        String theTrialListNames = TextUtils.join(",", theTrialNames);
+        String theTrialListIds = TextUtils.join(",", theTrialIds);
+        String theData = theTrialListIds + ":" + theTrialListNames;
+        return theData;
+    }
+    private void getTrialDetails(final String urlWebService) {
+        class GetData extends AsyncTask<Void, Void, String> {
+
+            //this method will be called before execution
+
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+            }
+            @Override
+            protected void onPostExecute(String s) {
+                super.onPostExecute(s);
+                //  dialog.dismiss();
+
+                // Populate ArrayList with JSON data
+                theTrialData = readTrialData(s);
+
+
+                theTrialName = theTrialData.get(0).get("name");
+                trialid = Integer.parseInt(theTrialData.get(0).get("id"));
+                numlaps = Integer.valueOf(theTrialData.get(0).get("numlaps"));
+                numsections  = Integer.valueOf(theTrialData.get(0).get("numsections"));
+
+                if (trialid == 0) {
+                    theTrialName = "Manual Entry";
+                }
+            }
+
+            private ArrayList<HashMap<String, String>> readTrialData(String json) {
+
+                ArrayList<HashMap<String, String>> theTrialData = new ArrayList<>();
+                String id, numsections, numlaps, name;
+
+                try {
+                    // Parse string data into JSON
+                    JSONArray jsonArray = new JSONArray(json);
+
+                    for (int index = 0; index < jsonArray.length(); index++) {
+                        HashMap<String, String> theTrial = new HashMap<>();
+                        id = jsonArray.getJSONObject(index).getString("id");
+                        numsections = jsonArray.getJSONObject(index).getString("numsections");
+                        numlaps = jsonArray.getJSONObject(index).getString("numlaps");
+                        name = jsonArray.getJSONObject(index).getString("name");
+
+                        theTrial.put("id", id);
+                        theTrial.put("numsections", numsections);
+                        theTrial.put("numlaps", numlaps);
+                        theTrial.put("name", name);
+                        theTrialData.add(theTrial);
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                return theTrialData;
+            }
+
+            @Override
+            protected String doInBackground(Void... voids) {
+                int TIMEOUT_VALUE = 1000;
+                try {
+                    //creating a URL
+                    URL url = new URL(urlWebService);
+                    HttpURLConnection con = (HttpURLConnection) url.openConnection();
+                    con.setConnectTimeout(TIMEOUT_VALUE);
+                    con.setReadTimeout(TIMEOUT_VALUE);
+                    StringBuilder sb = new StringBuilder();
+
+                    //We will use a buffered reader to read the string from service
+                    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(con.getInputStream()));
+
+                    //A simple string to read values from each line
+                    String json;
+                    while ((json = bufferedReader.readLine()) != null) {
+                        json = json + "\n";
+                        sb.append(json);
+                    }
+                    return sb.toString().trim();
+                } catch (SocketTimeoutException e) {
+                    e.printStackTrace();
+                    return null;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return null;
+                }
+            }
+        }
+        //creating asynctask object and executing it
+        GetData getJSON = new GetData();
+        getJSON.execute();
+    }
+
+    public void saveCurrentValuesToModel(int ridingNumber, int score, int section, int trialid, int numlaps, int numsections) {
+        this.ridingNumber = ridingNumber;
+        this.score = score;
+        this.section = section;
+        this.trialid = trialid;
+        this.numlaps = numlaps;
+        this.numsections = numsections;
+    }
+}

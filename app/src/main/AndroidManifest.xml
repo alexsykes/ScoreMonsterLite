@@ -11,7 +11,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
-        android:name=".ScoreMonsterLite"
+        android:name="uk.trialmonster.observer.Observer"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -22,7 +22,7 @@
         android:theme="@style/Theme.Theme">
         <activity
             android:exported="true"
-            android:name=".activities.MainActivity"
+            android:name="uk.trialmonster.observer.activities.MainActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity">
             <intent-filter>
@@ -32,30 +32,30 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activities.TimeListActivity"
+            android:name="uk.trialmonster.observer.activities.TimeListActivity"
             android:exported="true"
             android:label="@string/time_list"
-            android:parentActivityName=".activities.MainActivity"
+            android:parentActivityName="uk.trialmonster.observer.activities.MainActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity
-            android:name=".activities.SettingsActivity"
+            android:name="uk.trialmonster.observer.activities.SettingsActivity"
             android:exported="true"
             android:label="@string/title_activity_settings"
-            android:parentActivityName=".activities.MainActivity"
+            android:parentActivityName="uk.trialmonster.observer.activities.MainActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Settings"
             tools:ignore="LockedOrientationActivity" />
         <activity
-            android:name=".activities.HelpActivity"
+            android:name="uk.trialmonster.observer.activities.HelpActivity"
             android:label="@string/help"
-            android:parentActivityName=".activities.MainActivity"
+            android:parentActivityName="uk.trialmonster.observer.activities.MainActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity
-            android:name=".activities.ScoreListActivity"
+            android:name="uk.trialmonster.observer.activities.ScoreListActivity"
             android:label="Scores"
-            android:parentActivityName=".activities.MainActivity"
+            android:parentActivityName="uk.trialmonster.observer.activities.MainActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
 

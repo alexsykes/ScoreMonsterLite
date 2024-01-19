@@ -1,0 +1,131 @@
+package uk.trialmonster.observer;
+
+import android.content.Context;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.alexsykes.scoremonster.R;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+
+import uk.trialmonster.observer.activities.ScoreListActivity;
+
+public class ScoreListAdapter extends RecyclerView.Adapter<ScoreListAdapter.ScoreHolder> {
+    ArrayList<HashMap<String, String>> theScores;
+    HashMap<String, String> theScore;
+    OnItemClickListener listener;
+
+
+    public ScoreListAdapter(ArrayList<HashMap<String, String>> theScores) {
+        this.theScores = theScores;
+    }
+
+    public ScoreListAdapter(ArrayList<HashMap<String, String>> theScores, OnItemClickListener listener) {
+        this.theScores = theScores;
+        this.listener = listener;
+    }
+
+    @Override
+    public void onAttachedToRecyclerView(RecyclerView recyclerView) {
+        super.onAttachedToRecyclerView(recyclerView);
+    }
+
+    @NonNull
+    @Override
+    public ScoreHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+        // Point to data holder layout
+        View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.score_row, viewGroup, false);
+        ScoreHolder scoreHolder = new ScoreHolder(v);
+        return scoreHolder;
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull ScoreHolder scoreHolder, final int i) {
+        // Populate TextViews with data
+        theScore = theScores.get(i);
+        String syncState;
+        if (theScore.get("sync").equals("-1")) {
+            syncState = "Pending";
+        } else {
+            syncState = "OK";
+        }
+
+        scoreHolder.score.setText(theScore.get("score"));
+        scoreHolder.lap.setText(theScore.get("lap"));
+        scoreHolder.rider.setText(theScore.get("rider"));
+        scoreHolder.section.setText(theScore.get("section"));
+        // scoreHolder.trial.setText(theScore.get("trialid"));
+        // scoreHolder.trial.setText("trial");
+        scoreHolder.sync.setText(syncState);
+        scoreHolder.bind(theScore, listener);
+
+        // if (i % 2 != 0) scoreHolder.itemView.setBackgroundColor(R.color.purple_100);
+    }
+
+    @Override
+    public int getItemCount() {
+        return theScores.size();
+    }
+
+    public interface OnItemClickListener {
+        void onItemClick(HashMap<String, String> theScores);
+    }
+
+    public static class ScoreHolder extends RecyclerView.ViewHolder {
+        TextView rider;
+        TextView lap;
+        TextView score;
+        TextView sync;
+        TextView section;
+
+        public ScoreHolder(@NonNull View itemView) {
+            super(itemView);
+            score = itemView.findViewById(R.id.score);
+            lap = itemView.findViewById(R.id.lap);
+            rider = itemView.findViewById(R.id.rider);
+            sync = itemView.findViewById(R.id.sync);
+            section = itemView.findViewById(R.id.section);
+        }
+
+        public void bind(final HashMap<String, String> theScore, final OnItemClickListener listener) {
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    String id = theScore.get("id");
+                    String score = theScore.get("score");
+                    int scoreIndex;
+                    scoreIndex = 0;
+                    switch (score) {
+                        case "0":
+                            scoreIndex = 0;
+                            break;
+                        case "1":
+                            scoreIndex = 1;
+                            break;
+                        case "2":
+                            scoreIndex = 2;
+                            break;
+                        case "3":
+                            scoreIndex = 3;
+                            break;
+                        case "5":
+                            scoreIndex = 4;
+                            break;
+                        case "10":
+                            scoreIndex = 5;
+                            break;
+                    }
+
+                    Context context = v.getContext();
+                    ((ScoreListActivity) context).onClickCalled(id, scoreIndex);
+                }
+            });
+        }
+    }
+}

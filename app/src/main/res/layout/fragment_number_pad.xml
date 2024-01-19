@@ -7,9 +7,9 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:layout_gravity="center_horizontal"
-    tools:context=".NumberPadFragment">
+    tools:context="uk.trialmonster.observer.NumberPadFragment">
 
-<Button
+    <Button
         android:id="@+id/button1"
         style="@style/CustomButtonStyle"
         android:onClick="addDigit"

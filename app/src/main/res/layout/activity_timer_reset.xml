@@ -5,7 +5,7 @@
     style="@style/Theme.Theme"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".redundant.TimerResetActivity">
+    tools:context="uk.trialmonster.observer.redundant.TimerResetActivity">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
