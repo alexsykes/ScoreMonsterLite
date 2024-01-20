@@ -10,12 +10,14 @@
 
         <EditTextPreference
             android:selectAllOnFocus="true"
+            app:isPreferenceVisible="true"
             app:key="mobile"
             app:title="@string/contact"
             app:useSimpleSummaryProvider="true" />
 
         <EditTextPreference
             app:key="sectionText"
+            app:isPreferenceVisible="true"
             app:title="@string/section_number"
             app:useSimpleSummaryProvider="true" />
 
@@ -25,6 +27,7 @@
             app:title="@string/riding_number"
             app:useSimpleSummaryProvider="true" />
     </PreferenceCategory>
+
     <PreferenceCategory
         app:key="trial_details"
         app:title="@string/trial_header">
@@ -38,21 +41,28 @@
             app:useSimpleSummaryProvider="true" />
 
         <EditTextPreference
+            android:selectAllOnFocus="true"
             app:key="email"
             app:title="@string/email"
             app:useSimpleSummaryProvider="true" />
 
         <EditTextPreference
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
             app:key="numlapsText"
+            app:isPreferenceVisible="true"
             app:title="@string/number_of_laps"
             app:useSimpleSummaryProvider="true" />
 
         <EditTextPreference
             android:selectAllOnFocus="true"
+            android:singleLine="true"
             app:key="numsectionsText"
+            app:isPreferenceVisible="true"
             app:title="@string/number_of_sections"
             app:useSimpleSummaryProvider="true" />
     </PreferenceCategory>
+
     <PreferenceCategory app:title="Mode">
         <SwitchPreference
             android:defaultValue="false"

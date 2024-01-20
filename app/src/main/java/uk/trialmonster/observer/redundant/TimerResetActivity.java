@@ -18,8 +18,7 @@ import androidx.appcompat.widget.SwitchCompat;
 import androidx.appcompat.widget.Toolbar;
 import androidx.preference.PreferenceManager;
 
-import com.alexsykes.scoremonster.R;
-
+import uk.trialmonster.observer.R;
 import uk.trialmonster.observer.data.TimeDbHelper;
 
 public class TimerResetActivity extends AppCompatActivity {

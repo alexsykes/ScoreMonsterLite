@@ -24,7 +24,6 @@ import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.alexsykes.scoremonster.R;
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
@@ -51,6 +50,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import uk.trialmonster.observer.R;
 import uk.trialmonster.observer.ScoreListAdapter;
 import uk.trialmonster.observer.data.ScoreDbHelper;
 

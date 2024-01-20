@@ -27,7 +27,6 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.alexsykes.scoremonster.R;
 import com.opencsv.CSVWriter;
 
 import java.io.DataOutputStream;
@@ -43,6 +42,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
+import uk.trialmonster.observer.R;
 import uk.trialmonster.observer.data.TimeDbHelper;
 
 public class TimeListActivity extends AppCompatActivity {

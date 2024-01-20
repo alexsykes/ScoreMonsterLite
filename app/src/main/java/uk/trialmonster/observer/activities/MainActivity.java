@@ -30,8 +30,6 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.preference.PreferenceManager;
 
-import com.alexsykes.scoremonster.R;
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -39,6 +37,7 @@ import java.util.HashMap;
 
 import uk.trialmonster.observer.MainViewModel;
 import uk.trialmonster.observer.NumberPadFragment;
+import uk.trialmonster.observer.R;
 import uk.trialmonster.observer.TouchFragment;
 import uk.trialmonster.observer.data.ScoreContract;
 import uk.trialmonster.observer.data.ScoreDbHelper;

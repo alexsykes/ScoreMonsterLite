@@ -27,12 +27,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.preference.PreferenceManager;
 
-import com.alexsykes.scoremonster.R;
-
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 import uk.trialmonster.observer.NumberPadFragment;
+import uk.trialmonster.observer.R;
 import uk.trialmonster.observer.activities.HelpActivity;
 import uk.trialmonster.observer.activities.SettingsActivity;
 import uk.trialmonster.observer.activities.TimeListActivity;

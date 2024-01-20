@@ -23,12 +23,11 @@ import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceManager;
 import androidx.preference.SwitchPreference;
 
-import com.alexsykes.scoremonster.R;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
 
+import uk.trialmonster.observer.R;
 import uk.trialmonster.observer.data.ScoreDbHelper;
 import uk.trialmonster.observer.data.TimeDbHelper;
 import uk.trialmonster.observer.data.TrialDbHelper;
@@ -198,6 +197,8 @@ public class SettingsActivity extends AppCompatActivity {
             // ridingNumber pref
             EditTextPreference ridingNumberPref = findPreference("riderText");
             assert ridingNumberPref != null;
+            Boolean show = (mode == 1);
+            ridingNumberPref.setVisible(show);
             ridingNumberPref.setOnBindEditTextListener(editText -> editText.setInputType(InputType.TYPE_CLASS_NUMBER));
             ridingNumberPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                 @Override
@@ -215,7 +216,7 @@ public class SettingsActivity extends AppCompatActivity {
                 }
             });
 
-            // section pref
+            // Selected section
             EditTextPreference sectionPref = findPreference("sectionText");
             numsections = localPrefs.getInt("numsections", 1);
             assert sectionPref != null;
@@ -251,8 +252,8 @@ public class SettingsActivity extends AppCompatActivity {
             // numsections pref
             EditTextPreference numSectionsPref = findPreference("numsectionsText");
             assert numSectionsPref != null;
-            Boolean show = !timeMode;
-            numSectionsPref.setVisible(show);
+//            show = !timeMode;
+            numSectionsPref.setVisible(true);
             numSectionsPref.setText(String.valueOf(numsections));
             numSectionsPref.setOnBindEditTextListener(editText -> editText.setInputType(InputType.TYPE_CLASS_NUMBER));
             numSectionsPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
@@ -273,8 +274,8 @@ public class SettingsActivity extends AppCompatActivity {
             // numlaps pref
             EditTextPreference numLapsPref = findPreference("numlapsText");
             assert numLapsPref != null;
-            show = !timeMode;
-            numLapsPref.setVisible(show);
+//            show = !timeMode;
+            numLapsPref.setVisible(true);
             numLapsPref.setText(String.valueOf(numlaps));
             numLapsPref.setOnBindEditTextListener(editText -> editText.setInputType(InputType.TYPE_CLASS_NUMBER));
             numLapsPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
@@ -374,7 +375,7 @@ public class SettingsActivity extends AppCompatActivity {
                     return false;
                 }
             });
-            
+
             // Time reset pref
             SwitchPreference resetTimesSwitchPref = findPreference("reset_times_preference");
             assert resetTimesSwitchPref != null;
@@ -518,8 +519,8 @@ public class SettingsActivity extends AppCompatActivity {
                         // theTrialSettings.setVisible(false);
                     }
                     // Setup modes
-                    ridingNumberPref.setVisible(mode == 2);
-                    sectionPref.setVisible(mode != 4);
+                    ridingNumberPref.setVisible(mode == 1);
+                    sectionPref.setVisible(mode == 2);
 
                     return true;
                 }
@@ -533,8 +534,10 @@ public class SettingsActivity extends AppCompatActivity {
             });
 
             // Setup modes
-            ridingNumberPref.setVisible(mode == 2);
-            sectionPref.setVisible(mode != 4);
+            // Electronic scoring = 2
+            ridingNumberPref.setVisible(mode == 1);
+//            ridingNumberPref.setVisible(false);
+            sectionPref.setVisible(mode == 2);
 
         }
     }

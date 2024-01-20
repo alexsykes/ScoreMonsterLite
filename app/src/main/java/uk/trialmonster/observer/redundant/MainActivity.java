@@ -37,7 +37,6 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.preference.PreferenceManager;
 
-import com.alexsykes.scoremonster.R;
 import com.opencsv.CSVWriter;
 
 import java.io.DataOutputStream;
@@ -54,6 +53,7 @@ import java.util.HashMap;
 
 import uk.trialmonster.observer.MainViewModel;
 import uk.trialmonster.observer.NumberPadFragment;
+import uk.trialmonster.observer.R;
 import uk.trialmonster.observer.TouchFragment;
 import uk.trialmonster.observer.activities.HelpActivity;
 import uk.trialmonster.observer.activities.ScoreListActivity;

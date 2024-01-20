@@ -9,8 +9,6 @@ import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
 
-import com.alexsykes.scoremonster.R;
-
 
 /**
  * A simple {@link Fragment} subclass.

@@ -8,8 +8,6 @@ import android.widget.Button;
 
 import androidx.fragment.app.Fragment;
 
-import com.alexsykes.scoremonster.R;
-
 
 /**
  * A simple {@link Fragment} subclass.
