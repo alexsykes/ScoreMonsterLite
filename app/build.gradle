@@ -4,9 +4,10 @@ android {
     compileSdk 34
     defaultConfig {
         applicationId "uk.trialmonster.observer"
-        minSdk 24
-        versionCode 1
-        versionName "ariel arrow"
+        minSdkVersion 24
+        targetSdkVersion 33
+        versionCode 21
+        versionName "ariel red hunter"
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
         vectorDrawables.useSupportLibrary = true
     }
