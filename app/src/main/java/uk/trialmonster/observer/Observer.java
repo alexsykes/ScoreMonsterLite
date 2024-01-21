@@ -219,6 +219,19 @@ public class Observer extends Application {
         theTrialList = new ArrayList<>();
         JSONArray jsonArray = new JSONArray(json);
 
+//        HashMap<String, String> theManualHash = new HashMap<>();
+//        theManualHash.put("trialid", "0");
+//        theManualHash.put("date", "2025-12-31");
+//        theManualHash.put("club", "My Club");
+//        theManualHash.put("name", "Manual Entry");
+//        theManualHash.put("numlaps", "1");
+//        theManualHash.put("numsections", "1");
+//        theManualHash.put("starttime", "10:30");
+//        theManualHash.put("mode", "2");
+//        theManualHash.put("startinterval", "60");
+//        theManualHash.put("email", "alexjeddah@icloud.com");
+//        theTrialList.add(theManualHash);
+
         for (int index = 0; index < jsonArray.length(); index++) {
             HashMap<String, String> theTrialHash = new HashMap<>();
 

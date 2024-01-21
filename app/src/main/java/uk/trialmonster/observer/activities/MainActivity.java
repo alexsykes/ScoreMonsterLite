@@ -468,7 +468,7 @@ public class MainActivity extends AppCompatActivity {
         editor.apply();
 
         // Clear rider number if not a single rider
-        if (mode != 2) {
+        if (mode != 1) {
             numberLabel.setText("");
         }
         // If a single rider, then increment section
