@@ -139,10 +139,16 @@ public class SettingsActivity extends AppCompatActivity {
             email = localPrefs.getString("email", "");
             isManualTrial = localPrefs.getBoolean("manualTrial", false);
 
+            if (isManualTrial) {
+                trialid = -999;
+            }
+
             SharedPreferences.Editor editor = localPrefs.edit();
+
             editor.putLong("startInterval", startInterval);
             editor.putLong("penaltyTariff", penaltyTariff);
             editor.putInt("section", section);
+            editor.putInt("trialid", trialid);
             editor.remove("startIntervalText");
             editor.remove("penaltyText");
             editor.apply();
@@ -329,14 +335,7 @@ public class SettingsActivity extends AppCompatActivity {
                 public boolean onPreferenceChange(Preference preference, Object newValue) {
 
                     boolean isManualTrial = Boolean.valueOf(newValue.toString());
-//                    ListPreference theTrialIndexPreference = findPreference("theTrialIndex");
-//                    EditTextPreference trialNameTextPreference = findPreference("trialName");
-//                    EditTextPreference numSectionsPref = findPreference("numsectionsText");
-//                    EditTextPreference numLapsPref = findPreference("numlapsText");
-//                    EditTextPreference emailPref = findPreference("email");
-//                    assert numSectionsPref != null;
-//                    assert numLapsPref != null;
-//                    assert emailPref != null;
+
                     Log.i("info", "Manual trial preference changed: ");
                     manualTrialSwitchPref.setChecked(isManualTrial);
                     numSectionsPref.setVisible(isManualTrial);
@@ -344,6 +343,13 @@ public class SettingsActivity extends AppCompatActivity {
                     trialNamePref.setVisible(isManualTrial);
                     emailPref.setVisible(isManualTrial);
                     trialListPref.setVisible(!isManualTrial);
+                    if (isManualTrial) {
+                        trialid = -999;
+
+                        SharedPreferences.Editor editor = localPrefs.edit();
+                        editor.putInt("trialid", trialid);
+                        editor.apply();
+                    }
                     return false;
                 }
             });

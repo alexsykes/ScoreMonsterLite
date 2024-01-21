@@ -118,9 +118,14 @@ public class ScoreListActivity extends AppCompatActivity {
 
         emailMenuItem = menu.findItem(R.id.email);
         uploadMenuItem = menu.findItem(R.id.upload);
-//        uploadMenuItem.setEnabled(canConnect);
-//        emailMenuItem.setEnabled(canConnect);
 
+        if (trialid == -999) {
+            uploadMenuItem.setEnabled(false);
+            uploadMenuItem.setVisible(false);
+        } else {
+            uploadMenuItem.setEnabled(true);
+            uploadMenuItem.setVisible(true);
+        }
         return super.onCreateOptionsMenu(menu);
     }
 
