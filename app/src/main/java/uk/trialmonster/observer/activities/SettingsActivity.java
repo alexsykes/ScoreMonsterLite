@@ -104,7 +104,7 @@ public class SettingsActivity extends AppCompatActivity {
         int ridingNumber;
         long startInterval;
         long penaltyTariff;
-        boolean timeMode;
+        boolean timeMode, isManualTrial;
 
         @Override
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
@@ -137,6 +137,7 @@ public class SettingsActivity extends AppCompatActivity {
             timeMode = localPrefs.getBoolean("timeMode", false);
             trialid = localPrefs.getInt("trialid", 0);
             email = localPrefs.getString("email", "");
+            isManualTrial = localPrefs.getBoolean("manualTrial", false);
 
             SharedPreferences.Editor editor = localPrefs.edit();
             editor.putLong("startInterval", startInterval);
@@ -146,13 +147,38 @@ public class SettingsActivity extends AppCompatActivity {
             editor.remove("penaltyText");
             editor.apply();
 
-            // mobile pref
+
+            ListPreference trialListPref = findPreference("theTrialIndex");
             EditTextPreference mobilePref = findPreference("mobile");
+            EditTextPreference trialNamePref = findPreference("trialName");
+            EditTextPreference startIntervalPref = findPreference("startIntervalText");
+            EditTextPreference penaltyTariffPref = findPreference("penaltyTariffText");
+            EditTextPreference ridingNumberPref = findPreference("riderText");
+            EditTextPreference sectionPref = findPreference("sectionText");
+            EditTextPreference numSectionsPref = findPreference("numsectionsText");
+            EditTextPreference numLapsPref = findPreference("numlapsText");
+            EditTextPreference emailPref = findPreference("email");
+            EditTextPreference observerPref = findPreference("observer");
+            SwitchPreference manualTrialSwitchPref = findPreference("manualTrial");
+            SwitchPreference restartClockSwitchPref = findPreference("restart_clock_preference");
+            SwitchPreference resetScoresSwitchPref = findPreference("reset_scores_preference");
+            SwitchPreference resetTimesSwitchPref = findPreference("reset_times_preference");
+            SwitchPreference timeModeSwitchPref = findPreference("timeMode");
+            SwitchPreference advancedSwitchPref = findPreference("show_advanced");
+
+            // mobile pref
             assert mobilePref != null;
             mobilePref.setOnBindEditTextListener(editText -> editText.setInputType(InputType.TYPE_CLASS_PHONE));
 
+//            trialName pref
+            assert trialNamePref != null;
+            trialNamePref.setVisible(isManualTrial);
+            trialListPref.setVisible(!isManualTrial);
+            numLapsPref.setVisible(isManualTrial);
+            numSectionsPref.setVisible(isManualTrial);
+            emailPref.setVisible(isManualTrial);
+
             // startInterval pref
-            EditTextPreference startIntervalPref = findPreference("startIntervalText");
             assert startIntervalPref != null;
             startIntervalPref.setVisible(timeMode);
             startIntervalPref.setText(String.valueOf(startInterval));
@@ -174,7 +200,6 @@ public class SettingsActivity extends AppCompatActivity {
             });
 
             // penaltyTariff pref
-            EditTextPreference penaltyTariffPref = findPreference("penaltyTariffText");
             assert penaltyTariffPref != null;
             penaltyTariffPref.setVisible(timeMode);
             penaltyTariffPref.setOnBindEditTextListener(editText -> editText.setInputType(InputType.TYPE_CLASS_NUMBER));
@@ -195,7 +220,6 @@ public class SettingsActivity extends AppCompatActivity {
             });
 
             // ridingNumber pref
-            EditTextPreference ridingNumberPref = findPreference("riderText");
             assert ridingNumberPref != null;
             Boolean show = (mode == 1);
             ridingNumberPref.setVisible(show);
@@ -217,7 +241,6 @@ public class SettingsActivity extends AppCompatActivity {
             });
 
             // Selected section
-            EditTextPreference sectionPref = findPreference("sectionText");
             numsections = localPrefs.getInt("numsections", 1);
             assert sectionPref != null;
             String sectionsRange = "1 to " + numsections;
@@ -250,10 +273,9 @@ public class SettingsActivity extends AppCompatActivity {
             });
 
             // numsections pref
-            EditTextPreference numSectionsPref = findPreference("numsectionsText");
             assert numSectionsPref != null;
 //            show = !timeMode;
-            numSectionsPref.setVisible(true);
+//            numSectionsPref.setVisible(true);
             numSectionsPref.setText(String.valueOf(numsections));
             numSectionsPref.setOnBindEditTextListener(editText -> editText.setInputType(InputType.TYPE_CLASS_NUMBER));
             numSectionsPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
@@ -272,10 +294,9 @@ public class SettingsActivity extends AppCompatActivity {
             ;
 
             // numlaps pref
-            EditTextPreference numLapsPref = findPreference("numlapsText");
             assert numLapsPref != null;
 //            show = !timeMode;
-            numLapsPref.setVisible(true);
+//            numLapsPref.setVisible(true);
             numLapsPref.setText(String.valueOf(numlaps));
             numLapsPref.setOnBindEditTextListener(editText -> editText.setInputType(InputType.TYPE_CLASS_NUMBER));
             numLapsPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
@@ -292,20 +313,43 @@ public class SettingsActivity extends AppCompatActivity {
             ;
 
             // email pref
-            EditTextPreference emailPref = findPreference("email");
             assert emailPref != null;
             emailPref.setOnBindEditTextListener(editText -> editText.setInputType(InputType.TYPE_CLASS_TEXT |
                     InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS));
 
             // observer pref
-            EditTextPreference observerPref = findPreference("observer");
             assert observerPref != null;
             observerPref.setOnBindEditTextListener(editText -> editText.setInputType(InputType.TYPE_TEXT_FLAG_CAP_WORDS));
 
 
+            // Timer reset pref
+            assert manualTrialSwitchPref != null;
+            manualTrialSwitchPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                @Override
+                public boolean onPreferenceChange(Preference preference, Object newValue) {
+
+                    boolean isManualTrial = Boolean.valueOf(newValue.toString());
+//                    ListPreference theTrialIndexPreference = findPreference("theTrialIndex");
+//                    EditTextPreference trialNameTextPreference = findPreference("trialName");
+//                    EditTextPreference numSectionsPref = findPreference("numsectionsText");
+//                    EditTextPreference numLapsPref = findPreference("numlapsText");
+//                    EditTextPreference emailPref = findPreference("email");
+//                    assert numSectionsPref != null;
+//                    assert numLapsPref != null;
+//                    assert emailPref != null;
+                    Log.i("info", "Manual trial preference changed: ");
+                    manualTrialSwitchPref.setChecked(isManualTrial);
+                    numSectionsPref.setVisible(isManualTrial);
+                    numLapsPref.setVisible(isManualTrial);
+                    trialNamePref.setVisible(isManualTrial);
+                    emailPref.setVisible(isManualTrial);
+                    trialListPref.setVisible(!isManualTrial);
+                    return false;
+                }
+            });
+
 
             // Timer reset pref
-            SwitchPreference restartClockSwitchPref = findPreference("restart_clock_preference");
             assert restartClockSwitchPref != null;
             restartClockSwitchPref.setVisible(false);
 
@@ -341,7 +385,6 @@ public class SettingsActivity extends AppCompatActivity {
             });
 
             // Score reset pref
-            SwitchPreference resetScoresSwitchPref = findPreference("reset_scores_preference");
             assert resetScoresSwitchPref != null;
             resetScoresSwitchPref.setVisible(false);
 
@@ -377,7 +420,6 @@ public class SettingsActivity extends AppCompatActivity {
             });
 
             // Time reset pref
-            SwitchPreference resetTimesSwitchPref = findPreference("reset_times_preference");
             assert resetTimesSwitchPref != null;
             resetTimesSwitchPref.setVisible(false);
 
@@ -413,12 +455,10 @@ public class SettingsActivity extends AppCompatActivity {
             });
 
             // timeMode pref
-            SwitchPreference timeModeSwitchPref = findPreference("timeMode");
             assert timeModeSwitchPref != null;
 
 
             // Advanced mode
-            SwitchPreference advancedSwitchPref = findPreference("show_advanced");
             assert advancedSwitchPref != null;
             advancedSwitchPref.setChecked(false);
 
@@ -446,28 +486,28 @@ public class SettingsActivity extends AppCompatActivity {
                     editor.apply();
                     startIntervalPref.setVisible(isTimeMode);
                     penaltyTariffPref.setVisible(isTimeMode);
-                    numSectionsPref.setVisible(!isTimeMode);
-                    numLapsPref.setVisible(!isTimeMode);
+                    sectionPref.setVisible(!isTimeMode);
+//                    numSectionsPref.setVisible(!isTimeMode);
+//                    numLapsPref.setVisible(!isTimeMode);
                     return false;
                 }
             });
 
             // trialid pref
             int trialid = 0;
-            ListPreference trialListPref = findPreference("theTrialIndex");
             if (trialListPref.getValue() != null) {
                 trialid = Integer.valueOf(trialListPref.getValue());
             }
-            if (trialid == 0) {
-                Log.i("Note", "Manual Entry selected");
-                emailPref.setVisible(true);
-                numSectionsPref.setVisible(true);
-                numLapsPref.setVisible(true);
-            } else {
-                emailPref.setVisible(false);
-                numSectionsPref.setVisible(false);
-                numLapsPref.setVisible(false);
-            }
+//            if (trialid == 0) {
+//                Log.i("Note", "Manual Entry selected");
+//                emailPref.setVisible(true);
+//                numSectionsPref.setVisible(true);
+//                numLapsPref.setVisible(true);
+//            } else {
+//                emailPref.setVisible(false);
+//                numSectionsPref.setVisible(false);
+//                numLapsPref.setVisible(false);
+//            }
 
             trialListPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                 @Override
@@ -540,5 +580,10 @@ public class SettingsActivity extends AppCompatActivity {
             sectionPref.setVisible(mode == 2);
 
         }
+
+//        private void showManualMode(Boolean isManualTrial) {
+//            EditTextPreference trialNameTextPreference = findPreference("trialName");
+//            trialNameTextPreference.setVisible(isManualTrial);
+//        }
     }
 }

@@ -236,4 +236,11 @@ To change a score, click on the list icon in the toolbar. This will display a li
     <string name="reset_times">Reset times</string>
     <string name="advanced_settings">Advanced settings</string>
     <string name="email_data">Email data</string>
+    <string name="toggleManualEntry">Select manual entry</string>
+    <string name="observerName">Enter observer name</string>
+    <string name="observerContactNumber">Enter observer contact number</string>
+    <string name="enterSectionNumber">Enter section number</string>
+    <string name="enterRiderNumber">Enter rider number</string>
+    <string name="clock_started_at">"Clock started at "</string>
+    <string name="enter">Enter</string>
 </resources>

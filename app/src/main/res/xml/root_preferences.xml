@@ -6,6 +6,7 @@
             android:selectAllOnFocus="true"
             app:key="observer"
             app:title="@string/observer"
+            android:contentDescription="@string/observerName"
             app:useSimpleSummaryProvider="true" />
 
         <EditTextPreference
@@ -13,18 +14,21 @@
             app:isPreferenceVisible="true"
             app:key="mobile"
             app:title="@string/contact"
+            android:contentDescription="@string/observerContactNumber"
             app:useSimpleSummaryProvider="true" />
 
         <EditTextPreference
             app:key="sectionText"
             app:isPreferenceVisible="true"
             app:title="@string/section_number"
+            android:contentDescription="@string/enterSectionNumber"
             app:useSimpleSummaryProvider="true" />
 
         <EditTextPreference
             android:selectAllOnFocus="true"
             app:key="riderText"
             app:title="@string/riding_number"
+            android:contentDescription="@string/enterRiderNumber"
             app:useSimpleSummaryProvider="true" />
     </PreferenceCategory>
 
@@ -32,11 +36,23 @@
         app:key="trial_details"
         app:title="@string/trial_header">
 
+        <SwitchPreference
+            android:contentDescription="@string/toggleManualEntry"
+            android:defaultValue="false"
+            android:key="manualTrial"
+            android:title="Manual" />
+
         <ListPreference
             android:title="@string/select_trial"
             app:entries="@array/trial_entries"
             app:entryValues="@array/trial_values"
             app:key="theTrialIndex"
+            app:title="@string/trial_name"
+            app:useSimpleSummaryProvider="true" />
+
+        <EditTextPreference
+            android:selectAllOnFocus="true"
+            app:key="trialName"
             app:title="@string/trial_name"
             app:useSimpleSummaryProvider="true" />
 

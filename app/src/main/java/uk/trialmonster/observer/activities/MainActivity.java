@@ -83,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
     private int numsections;
     private int numlaps;
     private int numberInGroup;
-    private boolean isSingleUser, trialHasChanged, canConnect, timeMode;
+    private boolean isSingleUser, trialHasChanged, canConnect, timeMode, manualTrial;
     private int ridingNumber, trialid, mode;
 
     @Override
@@ -199,6 +199,7 @@ public class MainActivity extends AppCompatActivity {
         numsections = localPrefs.getInt("numsections", 1);
         email = localPrefs.getString("email", "");
         isSingleUser = localPrefs.getBoolean("isSingleUser", false);
+        manualTrial = localPrefs.getBoolean("manualTrial", false);
         ridingNumber = localPrefs.getInt("ridingNumber", 0);
         score = localPrefs.getInt("score", 0);
         numberInGroup = localPrefs.getInt("numberInGroup", 6);
@@ -229,11 +230,11 @@ public class MainActivity extends AppCompatActivity {
         if (timeMode) {
             SimpleDateFormat dateFormat = new SimpleDateFormat("h:mm:ss a");
             String dateString = dateFormat.format(clockStartTime);
-            statusLine.setText("Clock started at " + dateString);
+            statusLine.setText(R.string.clock_started_at + dateString);
             sectionLabelLayout.setVisibility(View.GONE);
             scoreLabel.setVisibility(View.INVISIBLE);
             if (clockStartTime > 0) {
-                saveButton.setText("Enter");
+                saveButton.setText(R.string.enter);
                 saveButton.setOnLongClickListener(new View.OnLongClickListener() {
                     @Override
                     public boolean onLongClick(View v) {
@@ -242,7 +243,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
             } else {
-                saveButton.setText("Start clock");
+                saveButton.setText(R.string.start_clock);
                 saveButton.setOnLongClickListener(new View.OnLongClickListener() {
                     @Override
                     public boolean onLongClick(View v) {
@@ -261,8 +262,8 @@ public class MainActivity extends AppCompatActivity {
                         editor.apply();
                         SimpleDateFormat dateFormat = new SimpleDateFormat("h:mm:ss a");
                         String dateString = dateFormat.format(clockStartTime);
-                        statusLine.setText("Clock started at " + dateString);
-                        saveButton.setText("Enter");
+                        statusLine.setText(getString(R.string.clock_started_at) + dateString);
+                        saveButton.setText(R.string.enter);
                         numberLabel.setText("");
                     }
                 });
@@ -272,7 +273,7 @@ public class MainActivity extends AppCompatActivity {
             sectionLabelLayout.setVisibility(View.GONE);
             status = theTrialName + " - Observer: " + observer;
             statusLine.setText(status);
-            saveButton.setText("Save");
+            saveButton.setText(R.string.save);
             scoreLabel.setVisibility(View.VISIBLE);
 
             if (touchFragment == null && !timeMode) {
