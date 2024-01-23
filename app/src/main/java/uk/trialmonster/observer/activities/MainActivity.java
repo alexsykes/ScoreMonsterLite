@@ -223,7 +223,7 @@ public class MainActivity extends AppCompatActivity {
         top = findViewById(R.id.top);
         incrementTextView = findViewById(R.id.incrementTextView);
         decrementTextView = findViewById(R.id.decrementTextView);
-        sectionDetail = findViewById(R.id.sectionDetail);
+//        sectionDetail = findViewById(R.id.sectionDetail);
         saveButton = findViewById(R.id.saveButton);
 
         // Set initial values
@@ -278,8 +278,8 @@ public class MainActivity extends AppCompatActivity {
 
             if (touchFragment == null && !timeMode) {
                 touchFragment = new TouchFragment();
+                getSupportFragmentManager().beginTransaction().add(R.id.bottom, touchFragment).commit();
             }
-            getSupportFragmentManager().beginTransaction().add(R.id.bottom, touchFragment).commit();
         }
 
         if (numberPadFragment == null) {

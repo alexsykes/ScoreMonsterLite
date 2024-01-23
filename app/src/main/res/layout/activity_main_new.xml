@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="uk.trialmonster.observer.redundant.MainActivity">
+    tools:context="uk.trialmonster.observer.activities.MainActivity">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/top_toolbar"
@@ -26,8 +26,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="4dp"
         android:text="@string/status_line"
-        android:textSize="16sp"
-        android:textStyle="bold"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/top_toolbar" />
@@ -55,6 +54,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="#00FFFFFF"
+                android:contentDescription="Go to previous section"
                 android:onClick="decrement"
                 android:text="@string/prev"
                 android:textAlignment="textStart"
@@ -67,6 +67,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:contentDescription="Rider number"
                 android:text="@string/_1"
                 android:textAlignment="center"
                 android:textSize="30sp"
@@ -78,6 +79,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="#00FFFFFF"
+                android:contentDescription="Go to next section"
                 android:onClick="increment"
                 android:text="@string/next"
                 android:textAlignment="textEnd"
@@ -115,6 +117,7 @@
         style="@style/bigLabel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:contentDescription="@string/score_"
         android:gravity="center_horizontal"
         android:text="@string/_0"
         app:layout_constraintEnd_toEndOf="parent"
@@ -135,6 +138,7 @@
         android:id="@+id/saveButton"
         style="@style/ScoreButton"
         android:layout_marginBottom="4dp"
+        android:contentDescription="@string/long_press_to_save"
         android:text="@string/save"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

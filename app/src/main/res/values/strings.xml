@@ -243,4 +243,25 @@ To change a score, click on the list icon in the toolbar. This will display a li
     <string name="enterRiderNumber">Enter rider number</string>
     <string name="clock_started_at">"Clock started at "</string>
     <string name="enter">Enter</string>
+    <string name="this_section_sets_details_of_your_trial">This section sets details of your trial</string>
+    <string name="select_trial_from_available_choices">Select trial from available choices</string>
+    <string name="enter_trial_name">Enter trial name</string>
+    <string name="enter_your_email_address">Enter your email address</string>
+    <string name="enter_number_of_laps">Enter number of laps</string>
+    <string name="enter_timing_mode">Enter timing mode</string>
+    <string name="enter_number_of_sections">Enter number of sections</string>
+    <string name="enter_start_interval">Enter start interval</string>
+    <string name="enter_penalty_tariff">Enter penalty tariff</string>
+    <string name="advanced__settings">Advanced settings</string>
+    <string name="display_help_screens">Display Help screens</string>
+    <string name="display_saved_scores">Display saved scores</string>
+    <string name="dislay_settings_screen">Dislay settings screen</string>
+    <string name="display_saved_times">Display saved times</string>
+    <string name="help_for_using_this_app">Help for using this app</string>
+    <string name="non_stop_rules">Non stop rules</string>
+    <string name="stop_permitted_rules">Stop permitted rules</string>
+    <string name="text_area_for_help">Text area for help</string>
+    <string name="score_">Score</string>
+    <string name="long_press_to_save">Long press to save</string>
+    <string name="currently_saved_scores_click_on_a_row_to_edit_score">Currently saved scores. Tap on a row to edit score</string>
 </resources>

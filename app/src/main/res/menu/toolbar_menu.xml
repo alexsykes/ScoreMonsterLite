@@ -5,34 +5,20 @@
         android:id="@+id/help"
         android:icon="@drawable/ic_baseline_help_white_48"
         android:title="@string/help"
+        android:contentDescription="@string/display_help_screens"
         app:showAsAction="always" />
 
     <item
         android:id="@+id/scoresheet"
         android:icon="@drawable/ic_list_white_48dp"
         android:title="@string/list_scores"
+        android:contentDescription="@string/display_saved_scores"
         app:showAsAction="always" />
-
-    <!-- item
-        android:id="@+id/email"
-        android:icon="@drawable/ic_baseline_email_48"
-        android:title="@string/sendmail"
-        app:showAsAction="ifRoom" /-->
-    <!--
-        <item
-            android:id="@+id/timer"
-            android:icon="@drawable/ic_timer_white_48dp"
-            android:title="@string/timing_mode"
-            app:showAsAction="ifRoom" />-->
-<!--    <item
-        android:id="@+id/reset"
-        android:icon="@drawable/ic_dialog_close_dark"
-        android:title="@string/reset_scores"
-        app:showAsAction="ifRoom" />-->
 
     <item
         android:id="@+id/setup"
         android:icon="@drawable/ic_settings_white_24dp"
         android:title="@string/setup"
+        android:contentDescription="@string/dislay_settings_screen"
         app:showAsAction="ifRoom" />
 </menu>

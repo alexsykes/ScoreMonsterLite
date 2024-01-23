@@ -183,6 +183,7 @@ public class SettingsActivity extends AppCompatActivity {
             numLapsPref.setVisible(isManualTrial);
             numSectionsPref.setVisible(isManualTrial);
             emailPref.setVisible(isManualTrial);
+            sectionPref.setVisible(true);
 
             // startInterval pref
             assert startIntervalPref != null;
@@ -566,7 +567,7 @@ public class SettingsActivity extends AppCompatActivity {
                     }
                     // Setup modes
                     ridingNumberPref.setVisible(mode == 1);
-                    sectionPref.setVisible(mode == 2);
+//                    sectionPref.setVisible(mode == 2);
 
                     return true;
                 }
@@ -583,7 +584,7 @@ public class SettingsActivity extends AppCompatActivity {
             // Electronic scoring = 2
             ridingNumberPref.setVisible(mode == 1);
 //            ridingNumberPref.setVisible(false);
-            sectionPref.setVisible(mode == 2);
+//            sectionPref.setVisible(mode == 2);
 
         }
 

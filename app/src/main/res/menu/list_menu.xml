@@ -5,11 +5,13 @@
         android:id="@+id/upload"
         android:icon="@drawable/ic_baseline_cloud_upload_48"
         android:title="@string/upload_data"
+        android:contentDescription="@string/upload_data"
         app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/email"
         android:icon="@drawable/ic_baseline_email_48"
         android:title="@string/email_data"
+        android:contentDescription="@string/email_data"
         app:showAsAction="ifRoom" />
 </menu>

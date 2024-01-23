@@ -228,7 +228,7 @@ public class TimeListActivity extends AppCompatActivity {
     }
 
     private boolean saveToCSV() {
-        String id, number, finishTime, elapsedTime, created, trialID;
+        String id, number, finishTime, elapsedTime, created, trialID, penalty;
 
         try {
             // Get fastest time
@@ -242,7 +242,7 @@ public class TimeListActivity extends AppCompatActivity {
             CSVWriter csvWrite = new CSVWriter(new FileWriter(exportDir));
 
             String[] header = {"id", "number", "finishTime",
-                    "elapsedTime", "created", "trialid", fastestTimeString};
+                    "elapsedTime", "penalty", "created", "trialid", fastestTimeString};
 
             csvWrite.writeNext(header, false);
 
@@ -254,10 +254,11 @@ public class TimeListActivity extends AppCompatActivity {
                 number = curChild.getString(1);
                 finishTime = curChild.getString(2);
                 elapsedTime = curChild.getString(3);
+                penalty = curChild.getString(4);
                 created = curChild.getString(5);
                 trialID = curChild.getString(6);
 
-                String[] arrStr = {id, number, finishTime, elapsedTime, created, trialID
+                String[] arrStr = {id, number, finishTime, elapsedTime, penalty, created, trialID
                 };
 
                 csvWrite.writeNext(arrStr, false);

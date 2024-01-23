@@ -29,9 +29,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="0.33"
+            android:contentDescription="@string/help_for_using_this_app"
             android:onClick="showHelp"
-            android:text="@string/helpText"
-           />
+            android:text="@string/helpText" />
 
         <Button
             android:id="@+id/nonStopButton"
@@ -39,6 +39,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="0.33"
+            android:contentDescription="@string/non_stop_rules"
             android:onClick="showNS"
             android:text="@string/no_stop" />
 
@@ -48,6 +49,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="0.33"
+            android:contentDescription="@string/stop_permitted_rules"
             android:onClick="showSP"
             android:text="@string/stop_permitted" />
 
@@ -70,6 +72,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="8dp"
+                android:contentDescription="@string/text_area_for_help"
                 android:lineSpacingExtra="4sp"
                 android:textSize="16sp" />
         </LinearLayout>
