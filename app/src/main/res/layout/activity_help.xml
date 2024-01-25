@@ -74,7 +74,7 @@
                 android:layout_marginEnd="8dp"
                 android:contentDescription="@string/text_area_for_help"
                 android:lineSpacingExtra="4sp"
-                android:textSize="16sp" />
+                android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
         </LinearLayout>
     </ScrollView>
 

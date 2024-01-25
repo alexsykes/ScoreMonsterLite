@@ -264,4 +264,6 @@ To change a score, click on the list icon in the toolbar. This will display a li
     <string name="score_">Score</string>
     <string name="long_press_to_save">Long press to save</string>
     <string name="currently_saved_scores_click_on_a_row_to_edit_score">Currently saved scores. Tap on a row to edit score</string>
+    <string name="go_to_previous_section">Go to previous section</string>
+    <string name="go_to_next_section">Go to next section</string>
 </resources>

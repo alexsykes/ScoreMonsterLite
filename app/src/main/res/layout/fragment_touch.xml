@@ -22,7 +22,8 @@
             android:layout_width="match_parent"
             android:backgroundTint="@color/colorButtonGreen"
             android:onClick="countDabs"
-            android:text="Clean" />
+            android:text="Clean"
+            android:textColor="@color/colorButtonText" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -33,20 +34,23 @@
                 android:id="@+id/dabButton"
                 style="@style/ScoreButton"
                 android:backgroundTint="@color/colorAccent"
+                android:textColor="@color/colorButtonText"
                 android:onClick="countDabs"
                 android:text="@string/dab" />
 
             <Button
                 android:id="@+id/fiveButton"
                 style="@style/ScoreButton"
-                android:backgroundTint="@color/colorButtonRed"
+                android:backgroundTint="@color/colorButtonBrightRed"
+                android:textColor="@color/colorButtonText"
                 android:onClick="countDabs"
                 android:text="@string/_5" />
 
             <Button
                 android:id="@+id/tenButton"
                 style="@style/ScoreButton"
-                android:backgroundTint="@color/black"
+                android:backgroundTint="@color/colorButtonDark"
+                android:textColor="@color/colorButtonText"
                 android:onClick="countDabs"
                 android:text="@string/_10" />
         </LinearLayout>
