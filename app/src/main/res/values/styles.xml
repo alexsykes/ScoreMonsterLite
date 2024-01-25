@@ -11,6 +11,7 @@
     <style name="bigLabel">
         <item name="android:textSize">64sp</item>
         <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/colorBigTextLabel</item>
     </style>
 
     <style name="CustomButtonStyle">

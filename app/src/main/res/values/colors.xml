@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-<!--    <color name="colorPrimary">#FF9800</color>-->
+    <!--    <color name="colorPrimary">#FF9800</color>-->
     <color name="colorPureRed">#FF0000</color>
     <color name="colorPrimaryDark">#F4511E</color>
     <color name="colorAccent">#FF5722</color>
     <color name="colorButtonRed">#D81B60</color>
-    <color name="colorButtonText">#FFFFFF</color>
-    <color name="colorButtonAmber">#FF5722</color>
+    <color name="colorButtonText">#FFFFFFFF</color>
+    <color name="colorButtonAmber">#FF7A22</color>
     <color name="colorButtonGreen">#4CAF50</color>
-    <color name="colorButtonBlue">#13238A</color>
+    <color name="colorButtonDark">#880E4F</color>
     <color name="colorButtonBrightRed">#FF000D</color>
     <color name="colorWhite">#FFFFFFFF</color>
+    <color name="colorBigTextLabel">#FF4A148C</color>
     <color name="green_button">#AED581</color>
     <color name="sand_button">#FFD54F</color>
     <color name="purple_100">#D1C4E9</color>
