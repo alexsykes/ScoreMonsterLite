@@ -128,7 +128,7 @@
             <EditTextPreference
                 android:contentDescription="@string/accountUser"
                 android:defaultValue=""
-                android:key="@string/account"
+                android:key="username"
                 android:selectAllOnFocus="true"
                 android:singleLine="true"
                 android:title="@string/username"

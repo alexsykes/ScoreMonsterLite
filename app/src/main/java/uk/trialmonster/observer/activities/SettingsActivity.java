@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.text.InputType;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -106,13 +107,14 @@ public class SettingsActivity extends AppCompatActivity {
 
     public static class SettingsFragment extends PreferenceFragmentCompat {
         SharedPreferences localPrefs;
-        String sectionPrefText, email, account, password;
+        String email, username, password;
         int trialid;
         int section;
         int numsections;
         int numlaps;
         int mode;
         int ridingNumber;
+        int loggedInUserID;
         long startInterval;
         long penaltyTariff;
         boolean timeMode, isManualTrial, isLoggedInUser;
@@ -150,7 +152,8 @@ public class SettingsActivity extends AppCompatActivity {
             email = localPrefs.getString("email", "");
             isManualTrial = localPrefs.getBoolean("manualTrial", false);
             isLoggedInUser = localPrefs.getBoolean("isLoggedInUser", false);
-            account = localPrefs.getString("account", "");
+            loggedInUserID = localPrefs.getInt("loggedInUserID", 0);
+            username = localPrefs.getString("username", "");
             password = localPrefs.getString("password", "");
 
 
@@ -170,7 +173,7 @@ public class SettingsActivity extends AppCompatActivity {
 
 
             ListPreference trialListPref = findPreference("theTrialIndex");
-            EditTextPreference accountPref = findPreference("account");
+            EditTextPreference usernamePref = findPreference("username");
             EditTextPreference passwordPref = findPreference("password");
             EditTextPreference mobilePref = findPreference("mobile");
             EditTextPreference trialNamePref = findPreference("trialName");
@@ -205,29 +208,32 @@ public class SettingsActivity extends AppCompatActivity {
             sectionPref.setVisible(true);
             loginPrefCategory.setVisible(false);
 
-//            Account preference
-            assert accountPref != null;
-            accountPref.setVisible(false);
-            accountPref.setText(account);
-//            accountPref.setOnBindEditTextListener(editText -> editText.setInputType(InputType.TYPE_TEXT_VARIATION_WEB_PASSWORD));
-            accountPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+//            Username preference
+            assert usernamePref != null;
+            usernamePref.setVisible(false);
+            usernamePref.setText(username);
+            usernamePref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                 @Override
-                public boolean onPreferenceChange(Preference preference, Object newValue) {
+                public boolean onPreferenceChange(@NonNull Preference preference, Object newValue) {
                     // Add check to empty return
-                    if (newValue.toString().trim().length() == 0) {
+                    username = newValue.toString().trim();
+                    if (username.length() == 0) {
                         Log.i("Note", "Empty");
-                        return false;
+                        return true;
                     }
-
-                    editor.putString("account", newValue.toString());
-                    accountPref.setText(newValue.toString());
+                    editor.putString("username", username);
+                    usernamePref.setText(username);
                     editor.apply();
+
+                    if (password != "") {
+                        checkLogin(password, username);
+                    }
                     return false;
                 }
             });
 
 
-//            Account preference
+//            Username preference
             assert passwordPref != null;
             passwordPref.setVisible(false);
             passwordPref.setText(password);
@@ -235,17 +241,19 @@ public class SettingsActivity extends AppCompatActivity {
 
             passwordPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                 @Override
-                public boolean onPreferenceChange(Preference preference, Object newValue) {
+                public boolean onPreferenceChange(@NonNull Preference preference, Object newValue) {
                     // Add check to empty return
                     if (newValue.toString().trim().length() == 0) {
                         Log.i("Note", "Empty");
                         return false;
                     }
-
-                    editor.putString("password", newValue.toString());
-                    passwordPref.setText(newValue.toString());
+                    password = newValue.toString().trim();
+                    editor.putString("password", password);
+                    passwordPref.setText(password);
                     editor.apply();
-                    checkLogin(newValue.toString());
+                    if (username != "") {
+                        checkLogin(password, username);
+                    }
                     return false;
                 }
             });
@@ -543,7 +551,7 @@ public class SettingsActivity extends AppCompatActivity {
                     resetTimesSwitchPref.setVisible(goAhead);
                     advancedSwitchPref.setChecked(goAhead);
                     loginPrefCategory.setVisible(goAhead);
-                    accountPref.setVisible(goAhead);
+                    usernamePref.setVisible(goAhead);
                     passwordPref.setVisible(goAhead);
                     return false;
                 }
@@ -656,16 +664,21 @@ public class SettingsActivity extends AppCompatActivity {
 
         }
 
-        private void checkLogin(String newValue) {
+        private void checkLogin(String newValue, String username) {
             RequestQueue requestQueue = Volley.newRequestQueue(getContext());
             String URL = "https://android.trialmonster.uk/joomlaAuth.php";
 
-            String requestBody = "Hello";
             StringRequest stringRequest = new StringRequest(Request.Method.POST, URL, new Response.Listener<String>() {
 
                 @Override
                 public void onResponse(String response) {
                     Log.d("Volley", "Response: " + response);
+                    SharedPreferences localPrefs = PreferenceManager.getDefaultSharedPreferences(getContext());
+                    SharedPreferences.Editor editor = localPrefs.edit();
+                    int id = Integer.parseInt(response);
+                    editor.putInt("loggedInUserID", id);
+                    editor.putBoolean("isLoggedInUser", id != 0);
+                    editor.commit();
                 }
             }, new Response.ErrorListener() {
                 @Override
@@ -682,7 +695,7 @@ public class SettingsActivity extends AppCompatActivity {
                 public Map<String, String> getParams() {
                     Map<String, String> params = new HashMap<String, String>();
                     params.put("Content-Type", "application/x-www-form-urlencoded");
-                    params.put("username", account);
+                    params.put("username", username);
                     params.put("password", newValue);
                     return params;
                 }
@@ -704,10 +717,5 @@ public class SettingsActivity extends AppCompatActivity {
                     DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
             requestQueue.add(stringRequest);
         }
-
-//        private void showManualMode(Boolean isManualTrial) {
-//            EditTextPreference trialNameTextPreference = findPreference("trialName");
-//            trialNameTextPreference.setVisible(isManualTrial);
-//        }
     }
 }

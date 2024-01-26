@@ -74,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
     private ScoreDbHelper scoreDbHelper;
     private TimeDbHelper timeDbHelper;
     private TrialDbHelper trialDbHelper;
-    private String status, filename, observer, theTrialName, detail, email, club, message;
+    private String status, filename, observer, theTrialName, detail, email, club, message, username;
     private final int serverResponseCode = 0;
     private int score;
     private int scoreCount;
@@ -82,8 +82,10 @@ public class MainActivity extends AppCompatActivity {
     private int section;
     private int numsections;
     private int numlaps;
+    private int loggedInUserID;
     private int numberInGroup;
-    private boolean isSingleUser, trialHasChanged, canConnect, timeMode, manualTrial;
+    private boolean isSingleUser, trialHasChanged, canConnect, timeMode, manualTrial,
+            isLoggedInUser;
     private int ridingNumber, trialid, mode;
 
     @Override
@@ -210,6 +212,15 @@ public class MainActivity extends AppCompatActivity {
         mode = localPrefs.getInt("mode", 0);
         usermode = Integer.valueOf(localPrefs.getString("usermode", "0"));
         timeMode = localPrefs.getBoolean("timeMode", false);
+        isLoggedInUser = localPrefs.getBoolean("isLoggedInUser", false);
+        loggedInUserID = localPrefs.getInt("loggedInUserID", 0);
+        username = localPrefs.getString("username", "");
+        if (loggedInUserID == 0) {
+            SharedPreferences.Editor editor = localPrefs.edit();
+            editor.putInt("loggedInUserID", 0);
+            editor.putBoolean("isLoggedInUser", false);
+            editor.apply();
+        }
     }
 
     void initialUISetup() {
