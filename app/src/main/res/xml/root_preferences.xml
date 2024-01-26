@@ -1,6 +1,7 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+
     <PreferenceCategory app:title="@string/observer_details">
         <EditTextPreference
             android:selectAllOnFocus="true"
@@ -110,14 +111,36 @@
             android:contentDescription="@string/enter_penalty_tariff"
             app:useSimpleSummaryProvider="true" />
     </PreferenceCategory>
-    <PreferenceCategory android:title="Advanced"
-        android:icon="@drawable/ic_baseline_warning_24">
 
+    <PreferenceCategory
+        android:title="Advanced"
+        android:icon="@drawable/ic_baseline_warning_24">
         <SwitchPreference
             android:defaultValue="false"
             android:key="show_advanced"
             android:contentDescription="@string/advanced__settings"
             android:title="@string/advanced_settings" />
+
+        <PreferenceCategory
+            android:key="loginPrefCategory"
+            android:title="@string/login_details">
+
+            <EditTextPreference
+                android:contentDescription="@string/accountUser"
+                android:defaultValue=""
+                android:key="@string/account"
+                android:selectAllOnFocus="true"
+                android:singleLine="true"
+                android:title="@string/username"
+                app:useSimpleSummaryProvider="true" />
+            <EditTextPreference
+                android:contentDescription="@string/password"
+                android:defaultValue=""
+                android:key="password"
+                android:selectAllOnFocus="true"
+                android:singleLine="true"
+                android:title="@string/password" />
+        </PreferenceCategory>
 
         <SwitchPreference
             android:defaultValue="false"

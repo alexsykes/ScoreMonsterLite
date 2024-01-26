@@ -19,12 +19,23 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.preference.EditTextPreference;
 import androidx.preference.ListPreference;
 import androidx.preference.Preference;
+import androidx.preference.PreferenceCategory;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceManager;
 import androidx.preference.SwitchPreference;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 import uk.trialmonster.observer.R;
@@ -95,7 +106,7 @@ public class SettingsActivity extends AppCompatActivity {
 
     public static class SettingsFragment extends PreferenceFragmentCompat {
         SharedPreferences localPrefs;
-        String sectionPrefText, email;
+        String sectionPrefText, email, account, password;
         int trialid;
         int section;
         int numsections;
@@ -104,7 +115,7 @@ public class SettingsActivity extends AppCompatActivity {
         int ridingNumber;
         long startInterval;
         long penaltyTariff;
-        boolean timeMode, isManualTrial;
+        boolean timeMode, isManualTrial, isLoggedInUser;
 
         @Override
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
@@ -138,6 +149,10 @@ public class SettingsActivity extends AppCompatActivity {
             trialid = localPrefs.getInt("trialid", 0);
             email = localPrefs.getString("email", "");
             isManualTrial = localPrefs.getBoolean("manualTrial", false);
+            isLoggedInUser = localPrefs.getBoolean("isLoggedInUser", false);
+            account = localPrefs.getString("account", "");
+            password = localPrefs.getString("password", "");
+
 
             if (isManualTrial) {
                 trialid = -999;
@@ -155,6 +170,8 @@ public class SettingsActivity extends AppCompatActivity {
 
 
             ListPreference trialListPref = findPreference("theTrialIndex");
+            EditTextPreference accountPref = findPreference("account");
+            EditTextPreference passwordPref = findPreference("password");
             EditTextPreference mobilePref = findPreference("mobile");
             EditTextPreference trialNamePref = findPreference("trialName");
             EditTextPreference startIntervalPref = findPreference("startIntervalText");
@@ -171,6 +188,8 @@ public class SettingsActivity extends AppCompatActivity {
             SwitchPreference resetTimesSwitchPref = findPreference("reset_times_preference");
             SwitchPreference timeModeSwitchPref = findPreference("timeMode");
             SwitchPreference advancedSwitchPref = findPreference("show_advanced");
+            PreferenceCategory loginPrefCategory = findPreference("loginPrefCategory");
+
 
             // mobile pref
             assert mobilePref != null;
@@ -184,6 +203,52 @@ public class SettingsActivity extends AppCompatActivity {
             numSectionsPref.setVisible(isManualTrial);
             emailPref.setVisible(isManualTrial);
             sectionPref.setVisible(true);
+            loginPrefCategory.setVisible(false);
+
+//            Account preference
+            assert accountPref != null;
+            accountPref.setVisible(false);
+            accountPref.setText(account);
+//            accountPref.setOnBindEditTextListener(editText -> editText.setInputType(InputType.TYPE_TEXT_VARIATION_WEB_PASSWORD));
+            accountPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                @Override
+                public boolean onPreferenceChange(Preference preference, Object newValue) {
+                    // Add check to empty return
+                    if (newValue.toString().trim().length() == 0) {
+                        Log.i("Note", "Empty");
+                        return false;
+                    }
+
+                    editor.putString("account", newValue.toString());
+                    accountPref.setText(newValue.toString());
+                    editor.apply();
+                    return false;
+                }
+            });
+
+
+//            Account preference
+            assert passwordPref != null;
+            passwordPref.setVisible(false);
+            passwordPref.setText(password);
+            passwordPref.setOnBindEditTextListener(editText -> editText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD));
+
+            passwordPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                @Override
+                public boolean onPreferenceChange(Preference preference, Object newValue) {
+                    // Add check to empty return
+                    if (newValue.toString().trim().length() == 0) {
+                        Log.i("Note", "Empty");
+                        return false;
+                    }
+
+                    editor.putString("password", newValue.toString());
+                    passwordPref.setText(newValue.toString());
+                    editor.apply();
+                    checkLogin(newValue.toString());
+                    return false;
+                }
+            });
 
             // startInterval pref
             assert startIntervalPref != null;
@@ -477,6 +542,9 @@ public class SettingsActivity extends AppCompatActivity {
                     resetScoresSwitchPref.setVisible(goAhead);
                     resetTimesSwitchPref.setVisible(goAhead);
                     advancedSwitchPref.setChecked(goAhead);
+                    loginPrefCategory.setVisible(goAhead);
+                    accountPref.setVisible(goAhead);
+                    passwordPref.setVisible(goAhead);
                     return false;
                 }
             });
@@ -586,6 +654,55 @@ public class SettingsActivity extends AppCompatActivity {
 //            ridingNumberPref.setVisible(false);
 //            sectionPref.setVisible(mode == 2);
 
+        }
+
+        private void checkLogin(String newValue) {
+            RequestQueue requestQueue = Volley.newRequestQueue(getContext());
+            String URL = "https://android.trialmonster.uk/joomlaAuth.php";
+
+            String requestBody = "Hello";
+            StringRequest stringRequest = new StringRequest(Request.Method.POST, URL, new Response.Listener<String>() {
+
+                @Override
+                public void onResponse(String response) {
+                    Log.d("Volley", "Response: " + response);
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Log.d("VOLLEY", error.toString());
+                }
+            }) {
+                @Override
+                public String getBodyContentType() {
+                    return "application/json; charset=utf-8";
+                }
+
+                @Override
+                public Map<String, String> getParams() {
+                    Map<String, String> params = new HashMap<String, String>();
+                    params.put("Content-Type", "application/x-www-form-urlencoded");
+                    params.put("username", account);
+                    params.put("password", newValue);
+                    return params;
+                }
+
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    Map<String, String> params = new HashMap<String, String>();
+                    params.put("Content-Type", "application/x-www-form-urlencoded");
+                    return params;
+                }
+            };
+
+            Log.d("string", stringRequest.toString());
+            int MY_SOCKET_TIMEOUT_MS = 5000;
+
+            stringRequest.setRetryPolicy(new DefaultRetryPolicy(
+                    MY_SOCKET_TIMEOUT_MS,
+                    DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                    DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+            requestQueue.add(stringRequest);
         }
 
 //        private void showManualMode(Boolean isManualTrial) {

@@ -7,5 +7,8 @@
 
     <color name="colorBigTextLabel">#FFFFFFFF</color>
     <color name="colorButtonBrightRed">#FF000D</color>
+    <color name="purple_100">#FFFFFFFF</color>
+    <color name="purple_500">#FFFFFFFF</color>
+    <color name="purple_200">#FFFFFFFF</color>
 
 </resources>
