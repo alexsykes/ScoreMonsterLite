@@ -99,6 +99,7 @@ public class Observer extends Application {
                 + TrialContract.TrialEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + TrialContract.TrialEntry.COLUMN_TRIAL_NUMLAPS + " INTEGER NOT NULL DEFAULT 0, "
                 + TrialContract.TrialEntry.COLUMN_TRIAL_NUMSECTIONS + " INTEGER NOT NULL DEFAULT 0, "
+                + TrialContract.TrialEntry.COLUMN_TRIAL_CREATED_BY + " INTEGER NOT NULL DEFAULT 0, "
                 + TrialContract.TrialEntry.COLUMN_TRIAL_MODE + " INTEGER NOT NULL DEFAULT 0, "
                 + TrialContract.TrialEntry.COLUMN_TRIAL_INTERVAL + " INTEGER NOT NULL DEFAULT 0, "
                 + TrialContract.TrialEntry.COLUMN_TRIAL_NAME + " TEXT , "
@@ -128,7 +129,8 @@ public class Observer extends Application {
     private void getTrialListFromServer() {
         // Instantiate the RequestQueue.
         RequestQueue queue = Volley.newRequestQueue(this);
-        String url = "https://android.trialmonster.uk/getAndroidFutureTrials.php";
+//        String url = "https://android.trialmonster.uk/getAndroidFutureTrials.php";
+        String url = "https://android.trialmonster.uk/getTrialListScoreMonster.php";
 
 // Request a string response from the provided URL.
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
@@ -172,6 +174,7 @@ public class Observer extends Application {
             String club = theTrial.get("club");
             String mode = theTrial.get("mode");
             String startinterval = theTrial.get("startinterval");
+            String created_by = theTrial.get("created_by");
 
             // Create a ContentValues object where column names are the keys,
             ContentValues values = new ContentValues();
@@ -185,6 +188,7 @@ public class Observer extends Application {
             values.put(TrialContract.TrialEntry.COLUMN_TRIAL_CLUB, club);
             values.put(TrialContract.TrialEntry.COLUMN_TRIAL_MODE, mode);
             values.put(TrialContract.TrialEntry.COLUMN_TRIAL_INTERVAL, startinterval);
+            values.put(TrialContract.TrialEntry.COLUMN_TRIAL_CREATED_BY, created_by);
             values.put(TrialContract.TrialEntry._ID, _id);
 
             db.insertWithOnConflict("trials", null, values, SQLiteDatabase.CONFLICT_REPLACE);
@@ -219,19 +223,6 @@ public class Observer extends Application {
         theTrialList = new ArrayList<>();
         JSONArray jsonArray = new JSONArray(json);
 
-//        HashMap<String, String> theManualHash = new HashMap<>();
-//        theManualHash.put("trialid", "0");
-//        theManualHash.put("date", "2025-12-31");
-//        theManualHash.put("club", "My Club");
-//        theManualHash.put("name", "Manual Entry");
-//        theManualHash.put("numlaps", "1");
-//        theManualHash.put("numsections", "1");
-//        theManualHash.put("starttime", "10:30");
-//        theManualHash.put("mode", "2");
-//        theManualHash.put("startinterval", "60");
-//        theManualHash.put("email", "alexjeddah@icloud.com");
-//        theTrialList.add(theManualHash);
-
         for (int index = 0; index < jsonArray.length(); index++) {
             HashMap<String, String> theTrialHash = new HashMap<>();
 
@@ -245,6 +236,7 @@ public class Observer extends Application {
             theTrialHash.put("mode", jsonArray.getJSONObject(index).getString("scoringmode"));
             theTrialHash.put("startinterval", jsonArray.getJSONObject(index).getString("startinterval"));
             theTrialHash.put("email", jsonArray.getJSONObject(index).getString("email"));
+            theTrialHash.put("created_by", jsonArray.getJSONObject(index).getString("created_by"));
             theTrialList.add(theTrialHash);
         }
 

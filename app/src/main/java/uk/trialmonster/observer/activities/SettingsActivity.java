@@ -11,6 +11,7 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.text.InputType;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
@@ -52,6 +53,8 @@ public class SettingsActivity extends AppCompatActivity {
     ArrayList<HashMap<String, String>> options;
     TrialDbHelper mDbHelper;
 
+    int loggedInUserID;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,17 +75,19 @@ public class SettingsActivity extends AppCompatActivity {
         }
         isOnline = isOnline();
         localPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-
+        loggedInUserID = localPrefs.getInt("loggedInUserID", 0);
         // Get saved trial data
         mDbHelper = new TrialDbHelper(this);
-        populateTrialList();
+
+        populateTrialList(loggedInUserID);
+
     }
 
-    private void populateTrialList() {
+    private void populateTrialList(int loggedInUserID) {
         localPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor editor = localPrefs.edit();
-        theTrialList = mDbHelper.getTrialList();
-        options = mDbHelper.getPrefsOptions();
+        theTrialList = mDbHelper.getTrialList(loggedInUserID);
+        options = mDbHelper.getPrefsOptions(loggedInUserID);
 
         editor.putString("theIds", options.get(0).get("ids"));
         editor.putString("theNames", options.get(0).get("names"));
@@ -679,6 +684,13 @@ public class SettingsActivity extends AppCompatActivity {
                     editor.putInt("loggedInUserID", id);
                     editor.putBoolean("isLoggedInUser", id != 0);
                     editor.commit();
+
+                    String message = "You are not logged in - check your username and password";
+                    if (id != 0) {
+                        message = "You are now logged in as " + username;
+                    }
+                    Toast.makeText(getContext(), message,
+                            Toast.LENGTH_LONG).show();
                 }
             }, new Response.ErrorListener() {
                 @Override
