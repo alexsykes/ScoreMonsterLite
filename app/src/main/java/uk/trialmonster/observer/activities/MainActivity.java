@@ -49,7 +49,6 @@ public class MainActivity extends AppCompatActivity {
     public static final String EXTRA_MESSAGE = "com.alexsykes.scoremonster.activities.MESSAGE";
     public static final int TEXT_REQUEST = 1;
     public static final int NOT_SYNCED = -1;
-    final String uploadFilePath = "mnt/sdcard/Documents/Scoremonster/";
     SharedPreferences localPrefs;
     MainViewModel model;
     String[] theTrials, theIDs;
@@ -532,17 +531,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void insertTime(int riderNumber, long finishTimeInMillis) {
-        long elapsedTime, timeInterval, deltaTime, riderStartTime;
-        trialDbHelper = new TrialDbHelper(this);
-        // startInterval = trialDbHelper.getStartInterval(trialid);
+        long timeInterval, deltaTime, riderStartTime;
 
-        /*  finishTimeInMillis - real finishtime
-            timeInterval - time delay for each rider
-            Zero for #1
-            deltaTime - real time difference between startTime and riderStartTime
-            riderStartTime - time rider actually started
-            elapsedTime - time on course for rider
-         */
         timeInterval = (riderNumber - 1) * 1000 * startInterval;
         riderStartTime = clockStartTime + timeInterval;
 
@@ -561,21 +551,10 @@ public class MainActivity extends AppCompatActivity {
         values.put(TimeContract.TimeEntry.COLUMN_TIME_ELAPSEDTIME, deltaTime);
         db.insert(TimeContract.TimeEntry.TABLE_NAME, null, values);
 
-
-        // timeDbHelper.updateTrial(trialid, startInterval, penaltyTariff);
         // Confirm committed with sound
         playSoundFile(R.raw.ting);
         Toast.makeText(this, "Finish time recorded", Toast.LENGTH_SHORT).show();
     }
-
-//    protected boolean canConnect() {
-//        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-//        NetworkInfo netInfo = cm.getActiveNetworkInfo();
-//
-//        model.setOnline(netInfo != null && netInfo.isConnectedOrConnecting());
-//        return netInfo != null && netInfo.isConnectedOrConnecting();
-//    }
-
 
     // Menu options
     private void goScoreList() {

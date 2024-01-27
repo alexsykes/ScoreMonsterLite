@@ -1,5 +1,5 @@
 <?php
-require("conf.php");
+require("conf_dev.php");
 
 //creating a new connection object using mysqli 
 $conn = new mysqli($servername, $username, $password, $database);
@@ -15,7 +15,7 @@ if ($conn->connect_error) {
 //creating an array for storing the data 
 $trials = array(); 
 
-$sql = "SELECT id, eventname, date, club, numlaps, numsections, starttime, email, scoringmode, startinterval  FROM ".$dbprefix."entryman_trial WHERE date >= DATE(NOW()) - INTERVAL 28 DAY AND published = 1  ORDER BY `date` ASC";
+$sql = "SELECT id, eventname, date, club, numlaps, numsections, starttime, email, scoringmode, startinterval, created_by  FROM ".$dbprefix."entryman_trial WHERE date >= DATE(NOW()) - INTERVAL 7 DAY AND published = 1  ORDER BY `date` ASC";
 //creating an statment with the query
 $stmt = $conn->prepare($sql);
 
@@ -23,7 +23,7 @@ $stmt = $conn->prepare($sql);
 $stmt->execute();
 
 //binding results for that statment 
-$stmt->bind_result($id, $eventname, $date, $club, $numlaps, $numsections, $starttime, $email, $scoringmode, $startinterval);
+$stmt->bind_result($id, $eventname, $date, $club, $numlaps, $numsections, $starttime, $email, $scoringmode, $startinterval, $created_by);
 
 //looping through all the records
 while($stmt->fetch()){
@@ -39,7 +39,8 @@ while($stmt->fetch()){
 		'starttime'=>$starttime,
 		'scoringmode'=>$scoringmode,
 		'startinterval'=>$startinterval,
-		'email' => $email
+		'email' => $email, 
+		'created_by' => $created_by
 	];
 	
 	//pushing the array inside the hero array 

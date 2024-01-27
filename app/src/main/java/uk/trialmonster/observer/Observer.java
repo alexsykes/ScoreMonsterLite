@@ -5,14 +5,10 @@ package uk.trialmonster.observer;
 import android.app.Application;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.text.TextUtils;
 import android.util.Log;
-
-import androidx.preference.PreferenceManager;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -33,9 +29,6 @@ import uk.trialmonster.observer.data.TimeContract;
 import uk.trialmonster.observer.data.TrialContract;
 
 public class Observer extends Application {
-    private static final String BASE_URL = "https://android.trialmonster.uk/";
-    private final int trialid = -999;
-    String[] theTrials, theIDs;
     ArrayList<HashMap<String, String>> theTrialList;
     boolean canConnect;
 
@@ -55,7 +48,6 @@ public class Observer extends Application {
 
         // if online, loads list of trials
         if (canConnect) {
-            String URL = BASE_URL + "getTrialListScoreMonster.php";
             try {
                 getTrialListFromServer();
                 Log.i("Info", "Trials data loaded");
@@ -129,7 +121,6 @@ public class Observer extends Application {
     private void getTrialListFromServer() {
         // Instantiate the RequestQueue.
         RequestQueue queue = Volley.newRequestQueue(this);
-//        String url = "https://android.trialmonster.uk/getAndroidFutureTrials.php";
         String url = "https://android.trialmonster.uk/getTrialListScoreMonster.php";
 
 // Request a string response from the provided URL.
@@ -137,9 +128,6 @@ public class Observer extends Application {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-//                        Log.i("Info", "getTrialListFromServer:onResponse called");
-//                        Log.i("Info", response);
-
                         updateTrialsDB(response);
                     }
                 }, new Response.ErrorListener() {
@@ -178,7 +166,7 @@ public class Observer extends Application {
 
             // Create a ContentValues object where column names are the keys,
             ContentValues values = new ContentValues();
-            // String dateString = currentTimeStamp;
+
             values.put(TrialContract.TrialEntry.COLUMN_TRIAL_NAME, theName);
             values.put(TrialContract.TrialEntry.COLUMN_TRIAL_DATE, theDate);
             values.put(TrialContract.TrialEntry.COLUMN_TRIAL_EMAIL, theEmail);
@@ -192,32 +180,9 @@ public class Observer extends Application {
             values.put(TrialContract.TrialEntry._ID, _id);
 
             db.insertWithOnConflict("trials", null, values, SQLiteDatabase.CONFLICT_REPLACE);
-
-            //   Log.i("Note", "Result: ");
         }
         db.close();
     }
-
-    private void setTrialsList(ArrayList<HashMap<String, String>> theTrialList) {
-        SharedPreferences localPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-        // Need name and id from theTrialList
-        int size = theTrialList.size();
-        String[] theTrialNames = new String[size];
-        String[] theTrialIds = new String[size];
-        for (int index = 0; index < size; index++) {
-            theTrialNames[index] = theTrialList.get(index).get("name");
-            theTrialIds[index] = theTrialList.get(index).get("id");
-        }
-
-        String theTrialListNames = TextUtils.join(",", theTrialNames);
-        String theTrialListIds = TextUtils.join(",", theTrialIds);
-        SharedPreferences.Editor editor = localPrefs.edit();
-
-        editor.putString("theNames", theTrialListNames);
-        editor.putString("theIds", theTrialListIds);
-        editor.apply();
-    }
-
     // Convert returned string to Arraylist for saving in DB
     private ArrayList<HashMap<String, String>> getTrialListFromServer(String json) throws JSONException {
         theTrialList = new ArrayList<>();
@@ -239,7 +204,6 @@ public class Observer extends Application {
             theTrialHash.put("created_by", jsonArray.getJSONObject(index).getString("created_by"));
             theTrialList.add(theTrialHash);
         }
-
         return theTrialList;
     }
 

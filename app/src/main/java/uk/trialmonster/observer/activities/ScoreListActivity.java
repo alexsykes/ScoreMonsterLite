@@ -518,7 +518,7 @@ public class ScoreListActivity extends AppCompatActivity {
                     Toast.LENGTH_LONG).show();
         } else {
             volleyScoreUpload();
-//            markAsDone(trialid);
+            markAsDone(trialid);
         }
     }
 
@@ -576,7 +576,7 @@ public class ScoreListActivity extends AppCompatActivity {
 
     private void volleyScoreUpload() {
         RequestQueue requestQueue = Volley.newRequestQueue(this);
-        String URL = "https://android.trialmonster.uk/uploadVolleyJSONArray.php";
+        String URL = "https://android.trialmonster.uk/androidScoreUpload.php";
 
         JSONArray data = getDataForUpload();
         String requestBody = data.toString();
