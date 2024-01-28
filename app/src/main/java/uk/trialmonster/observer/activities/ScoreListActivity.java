@@ -545,7 +545,7 @@ public class ScoreListActivity extends AppCompatActivity {
     }
 
     private JSONArray getDataForUpload() {
-        ArrayList<HashMap<String, String>> dataToUpload = scoreDbHelper.getScoreListForUpload(trialid);
+        ArrayList<HashMap<String, String>> dataToUpload = scoreDbHelper.getScoreListForUpload(94);
         //   JSONArray trialdata = mDbHelper.getTrialData(trialid);
         JSONArray scoresJSONArray
                 = new JSONArray();
