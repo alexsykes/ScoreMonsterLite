@@ -373,6 +373,44 @@ public class ScoreListActivity extends AppCompatActivity {
             Log.e("Child", e.getMessage(), e);
             return false;
         }
+    }    // Save current scores to CSV
+
+    private boolean newSaveToCSV() {
+        String rider, section, scores;
+
+        try {
+            exportDir = new File(getFilesDir(), filename);
+
+            // Create new CSV file in storage
+            exportDir.createNewFile();
+            CSVWriter csvWrite = new CSVWriter(new FileWriter(exportDir));
+
+//            Prepare and write filednames as header
+            String[] header = {"Rider", "Section", "Scores"};
+            csvWrite.writeNext(header, false);
+
+            // Get score data for current trial
+            Cursor curChild = scoreDbHelper.getScoresForEmail(trialid);
+            while (curChild.moveToNext()) {
+                section = curChild.getString(1);
+                rider = curChild.getString(0);
+                scores = curChild.getString(2);
+
+                String[] arrStr = {rider, section, scores
+                };
+
+                csvWrite.writeNext(arrStr, false);
+            }
+            // Close filewriter
+            curChild.close();
+            csvWrite.close();
+            scoreDbHelper.close();
+            return true;
+
+        } catch (IOException e) {
+            Log.e("Child", e.getMessage(), e);
+            return false;
+        }
     }
 
     // From https://stackoverflow.com/questions/32262829/how-to-upload-file-using-volley-library-in-android
@@ -539,7 +577,7 @@ public class ScoreListActivity extends AppCompatActivity {
             filename = "data_" + ts + ".csv";
             String sendMailURL = "https://www.trialmonster.uk/android/sendMailWithFile.php?id=" + ts + "&trialid=" + trialid + "&email=" + email;
 
-            saveToCSV();
+            newSaveToCSV();
             processCSV(sendMailURL);
         }
     }

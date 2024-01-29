@@ -146,7 +146,7 @@ public class ScoreDbHelper extends SQLiteOpenHelper {
         return result;
     }
 
-    public ArrayList<ScoreData> getScoresForUpload(int trialid) {
+    public Cursor getScoresForEmail(int trialid) {
         String rider, section, scores;
 
         SQLiteDatabase db = this.getWritableDatabase();
@@ -159,16 +159,16 @@ public class ScoreDbHelper extends SQLiteOpenHelper {
                 "section, " +
                 "lap) GROUP BY  section, rider ORDER BY lap ASC";
         Cursor cursor = db.rawQuery(sql, new String[]{});
-        while (cursor.moveToNext()) {
-            section = cursor.getString(1);
-            rider = cursor.getString(0);
-            scores = cursor.getString(2);
-
-            ScoreData theScore = new ScoreData(section, rider, scores);
-            theScores.add(theScore);
-        }
-        cursor.close();
-        return theScores;
+//        while (cursor.moveToNext()) {
+//            section = cursor.getString(1);
+//            rider = cursor.getString(0);
+//            scores = cursor.getString(2);
+//
+//            ScoreData theScore = new ScoreData(section, rider, scores);
+//            theScores.add(theScore);
+//        }
+//        cursor.close();
+        return cursor;
     }
 
     public void update(String scoreid, String score) {

@@ -11,6 +11,7 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.text.InputType;
 import android.util.Log;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -45,6 +46,8 @@ import uk.trialmonster.observer.data.ScoreDbHelper;
 import uk.trialmonster.observer.data.TimeDbHelper;
 import uk.trialmonster.observer.data.TrialDbHelper;
 
+//TODO - update trialList following login
+
 public class SettingsActivity extends AppCompatActivity {
     boolean isOnline;
     SharedPreferences localPrefs;
@@ -52,6 +55,7 @@ public class SettingsActivity extends AppCompatActivity {
     public ArrayList<HashMap<String, String>> theTrialList;
     ArrayList<HashMap<String, String>> options;
     TrialDbHelper mDbHelper;
+    TextView statusLine;
 
     int loggedInUserID;
 
@@ -80,7 +84,8 @@ public class SettingsActivity extends AppCompatActivity {
         mDbHelper = new TrialDbHelper(this);
 
         populateTrialList(loggedInUserID);
-
+        statusLine = findViewById(R.id.statusLine);
+//        statusLine.setText(SettingsFragment.getTrialDetails());
     }
 
     private void populateTrialList(int loggedInUserID) {
@@ -112,7 +117,7 @@ public class SettingsActivity extends AppCompatActivity {
 
     public static class SettingsFragment extends PreferenceFragmentCompat {
         SharedPreferences localPrefs;
-        String email, username, password;
+        String email, username, password, observer, mobile, trialName;
         int trialid;
         int section;
         int numsections;
@@ -123,6 +128,11 @@ public class SettingsActivity extends AppCompatActivity {
         long startInterval;
         long penaltyTariff;
         boolean timeMode, isManualTrial, isLoggedInUser;
+
+        public static String getTrialDetails() {
+
+            return "Trial: ";
+        }
 
         @Override
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
@@ -145,22 +155,24 @@ public class SettingsActivity extends AppCompatActivity {
 
         private void setup() {
             // Setup known values
-            section = localPrefs.getInt("section", 1);
-            numsections = localPrefs.getInt("numsections", 1);
-            numlaps = localPrefs.getInt("numlaps", 1);
-            ridingNumber = localPrefs.getInt("ridingNumber", 1);
+            section = localPrefs.getInt("section", 0);
+            numsections = localPrefs.getInt("numsections", 0);
+            numlaps = localPrefs.getInt("numlaps", 0);
+            ridingNumber = localPrefs.getInt("ridingNumber", 0);
             penaltyTariff = localPrefs.getLong("penaltyTariff", 60);
             startInterval = localPrefs.getLong("startInterval", 60);
             mode = localPrefs.getInt("mode", 0);
             timeMode = localPrefs.getBoolean("timeMode", false);
             trialid = localPrefs.getInt("trialid", 0);
+            trialName = localPrefs.getString("trialName", "");
             email = localPrefs.getString("email", "");
-            isManualTrial = localPrefs.getBoolean("manualTrial", false);
+            isManualTrial = localPrefs.getBoolean("isManualTrial", true);
             isLoggedInUser = localPrefs.getBoolean("isLoggedInUser", false);
             loggedInUserID = localPrefs.getInt("loggedInUserID", 0);
             username = localPrefs.getString("username", "");
             password = localPrefs.getString("password", "");
-
+            observer = localPrefs.getString("observer", "");
+            mobile = localPrefs.getString("mobile", "");
 
             if (isManualTrial) {
                 trialid = -999;
@@ -198,13 +210,120 @@ public class SettingsActivity extends AppCompatActivity {
             SwitchPreference advancedSwitchPref = findPreference("show_advanced");
             PreferenceCategory loginPrefCategory = findPreference("loginPrefCategory");
 
+            // observer pref
+            assert observerPref != null;
+            if (!observer.equals("")) {
+                observerPref.setTitle("Observer: " + observer);
+            }
+            observerPref.setOnBindEditTextListener(editText -> editText.setInputType(InputType.TYPE_TEXT_FLAG_CAP_WORDS));
+            observerPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                @Override
+                public boolean onPreferenceChange(@NonNull Preference preference, Object newValue) {
+                    observer = String.valueOf(newValue).trim();
+                    observerPref.setTitle("Observer: " + observer);
+                    observerPref.setText(observer);
+                    editor.putString("observer", observer);
+                    editor.apply();
+                    return false;
+                }
+            });
 
             // mobile pref
             assert mobilePref != null;
+            if (!mobile.equals("")) {
+                mobilePref.setTitle("Contact number: " + mobile);
+            }
             mobilePref.setOnBindEditTextListener(editText -> editText.setInputType(InputType.TYPE_CLASS_PHONE));
+            mobilePref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                @Override
+                public boolean onPreferenceChange(@NonNull Preference preference, Object newValue) {
+                    mobile = String.valueOf(newValue).trim();
+                    mobilePref.setTitle("Contact number: " + mobile);
+                    mobilePref.setText(mobile);
+                    editor.putString("mobile", mobile);
+                    editor.apply();
+                    return false;
+                }
+            });
 
-//            trialName pref
+            // Selected section
+            assert sectionPref != null;
+            String sectionsRange = "1 to " + numsections;
+            sectionPref.setDialogMessage(sectionsRange);
+            sectionPref.setText(String.valueOf(section));
+            sectionPref.setTitle("Section: " + section);
+
+            sectionPref.setOnBindEditTextListener(editText -> editText.setInputType(InputType.TYPE_CLASS_NUMBER));
+            sectionPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                @Override
+                public boolean onPreferenceChange(Preference preference, Object newValue) {
+                    // Add check to empty return
+                    if (newValue.toString().trim().length() == 0) {
+                        Log.i("Note", "Empty");
+                        return false;
+                    }
+                    section = Integer.parseInt(newValue.toString());
+                    if (0 < section && section <= numsections) {
+                        sectionPref.setText(newValue.toString());
+                        sectionPref.setTitle("Section: " + newValue);
+                        editor.putInt("section", section);
+//                        editor.putString("sectionText", String.valueOf(section));
+                        editor.apply();
+                        sectionPref.setIcon(null);
+                        return false;
+                    } else {
+                        sectionPref.setText("Invalid choice");
+                        sectionPref.setIcon(R.drawable.ic_warning_red_48dp);
+                        return false;
+                    }
+                }
+            });
+
+            // Manual trial pref
+            assert manualTrialSwitchPref != null;
+            manualTrialSwitchPref.setVisible(isLoggedInUser);
+            manualTrialSwitchPref.setChecked(isManualTrial);
+            manualTrialSwitchPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                @Override
+                public boolean onPreferenceChange(Preference preference, Object newValue) {
+
+                    boolean isManualTrial = Boolean.valueOf(newValue.toString());
+
+                    Log.i("info", "Manual trial preference changed: ");
+                    manualTrialSwitchPref.setChecked(isManualTrial);
+                    numSectionsPref.setVisible(isManualTrial);
+                    numLapsPref.setVisible(isManualTrial);
+                    trialNamePref.setVisible(isManualTrial);
+                    emailPref.setVisible(isManualTrial);
+                    trialListPref.setVisible(!isManualTrial);
+                    if (isManualTrial) {
+                        trialid = -999;
+
+                        SharedPreferences.Editor editor = localPrefs.edit();
+                        editor.putInt("trialid", trialid);
+                        editor.apply();
+                    }
+                    return false;
+                }
+            });
+
+            //            trialName pref
             assert trialNamePref != null;
+            trialNamePref.setVisible(true);
+            trialNamePref.setTitle("Trial: " + trialName);
+            trialNamePref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                @Override
+                public boolean onPreferenceChange(@NonNull Preference preference, Object newValue) {
+                    trialName = String.valueOf(newValue).trim();
+                    trialNamePref.setTitle("Trial: " + trialName);
+                    trialNamePref.setText(trialName);
+                    editor.putString("trialName", trialName);
+                    return false;
+                }
+            });
+
+            //TODO
+            // Settings - move
             trialNamePref.setVisible(isManualTrial);
             trialListPref.setVisible(!isManualTrial);
             numLapsPref.setVisible(isManualTrial);
@@ -238,7 +357,7 @@ public class SettingsActivity extends AppCompatActivity {
             });
 
 
-//            Username preference
+//            Password preference
             assert passwordPref != null;
             passwordPref.setVisible(false);
             passwordPref.setText(password);
@@ -325,38 +444,6 @@ public class SettingsActivity extends AppCompatActivity {
                 }
             });
 
-            // Selected section
-            numsections = localPrefs.getInt("numsections", 1);
-            assert sectionPref != null;
-            String sectionsRange = "1 to " + numsections;
-            sectionPref.setDialogMessage(sectionsRange);
-            sectionPref.setText(String.valueOf(section));
-
-            sectionPref.setOnBindEditTextListener(editText -> editText.setInputType(InputType.TYPE_CLASS_NUMBER));
-            sectionPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-                @Override
-                public boolean onPreferenceChange(Preference preference, Object newValue) {
-                    // Add check to empty return
-                    if (newValue.toString().trim().length() == 0) {
-                        Log.i("Note", "Empty");
-                        return false;
-                    }
-                    section = Integer.parseInt(newValue.toString());
-                    if (0 < section && section <= numsections) {
-                        sectionPref.setText(newValue.toString());
-                        editor.putInt("section", section);
-//                        editor.putString("sectionText", String.valueOf(section));
-                        editor.apply();
-                        sectionPref.setIcon(null);
-                        return false;
-                    } else {
-                        sectionPref.setText("Invalid choice");
-                        sectionPref.setIcon(R.drawable.ic_warning_red_48dp);
-                        return false;
-                    }
-                }
-            });
-
             // numsections pref
             assert numSectionsPref != null;
 //            show = !timeMode;
@@ -401,37 +488,6 @@ public class SettingsActivity extends AppCompatActivity {
             assert emailPref != null;
             emailPref.setOnBindEditTextListener(editText -> editText.setInputType(InputType.TYPE_CLASS_TEXT |
                     InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS));
-
-            // observer pref
-            assert observerPref != null;
-            observerPref.setOnBindEditTextListener(editText -> editText.setInputType(InputType.TYPE_TEXT_FLAG_CAP_WORDS));
-
-
-            // Timer reset pref
-            assert manualTrialSwitchPref != null;
-            manualTrialSwitchPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-                @Override
-                public boolean onPreferenceChange(Preference preference, Object newValue) {
-
-                    boolean isManualTrial = Boolean.valueOf(newValue.toString());
-
-                    Log.i("info", "Manual trial preference changed: ");
-                    manualTrialSwitchPref.setChecked(isManualTrial);
-                    numSectionsPref.setVisible(isManualTrial);
-                    numLapsPref.setVisible(isManualTrial);
-                    trialNamePref.setVisible(isManualTrial);
-                    emailPref.setVisible(isManualTrial);
-                    trialListPref.setVisible(!isManualTrial);
-                    if (isManualTrial) {
-                        trialid = -999;
-
-                        SharedPreferences.Editor editor = localPrefs.edit();
-                        editor.putInt("trialid", trialid);
-                        editor.apply();
-                    }
-                    return false;
-                }
-            });
 
 
             // Timer reset pref
@@ -581,22 +637,13 @@ public class SettingsActivity extends AppCompatActivity {
                 }
             });
 
-            // trialid pref
+            // trialList pref
             int trialid = 0;
             if (trialListPref.getValue() != null) {
                 trialid = Integer.valueOf(trialListPref.getValue());
             }
-//            if (trialid == 0) {
-//                Log.i("Note", "Manual Entry selected");
-//                emailPref.setVisible(true);
-//                numSectionsPref.setVisible(true);
-//                numLapsPref.setVisible(true);
-//            } else {
-//                emailPref.setVisible(false);
-//                numSectionsPref.setVisible(false);
-//                numLapsPref.setVisible(false);
-//            }
 
+            trialListPref.setTitle("Trial: " + trialName);
             trialListPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                 @Override
                 public boolean onPreferenceChange(Preference preference, Object newValue) {
@@ -611,18 +658,21 @@ public class SettingsActivity extends AppCompatActivity {
                     startInterval = Long.parseLong(theTrialData.get("startInterval"));
                     String email = theTrialData.get("email");
                     String date = theTrialData.get("date");
-                    String name = theTrialData.get("name");
+                    String trialName = theTrialData.get("name");
                     String club = theTrialData.get("club");
+
+                    trialListPref.setTitle("Trial: " + trialName);
 
                     editor.putString("theTrialIndex", newValue.toString());  // Check if this is necessary
                     editor.putBoolean("trialHasChanged", true);
+                    editor.putBoolean("isManualTrial", false);
                     editor.putInt("trialid", trialid);
                     editor.putInt("numsections", numsections);
                     editor.putInt("numlaps", numlaps);
                     editor.putInt("mode", mode);
                     editor.putString("date", date);
                     editor.putString("email", email);
-                    editor.putString("name", name);
+                    editor.putString("trialName", trialName);
                     editor.putString("club", club);
                     editor.putLong("startInterval", startInterval);
                     editor.apply();
@@ -664,9 +714,6 @@ public class SettingsActivity extends AppCompatActivity {
             // Setup modes
             // Electronic scoring = 2
             ridingNumberPref.setVisible(mode == 1);
-//            ridingNumberPref.setVisible(false);
-//            sectionPref.setVisible(mode == 2);
-
         }
 
         private void checkLogin(String newValue, String username) {
@@ -683,6 +730,10 @@ public class SettingsActivity extends AppCompatActivity {
                     int id = Integer.parseInt(response);
                     editor.putInt("loggedInUserID", id);
                     editor.putBoolean("isLoggedInUser", id != 0);
+                    isLoggedInUser = (id != 0);
+                    SwitchPreference manualTrialSwitchPref = findPreference("manualTrial");
+                    manualTrialSwitchPref.setVisible(isLoggedInUser);
+                    manualTrialSwitchPref.setChecked(isManualTrial);
                     editor.commit();
 
                     String message = "You are not logged in - check your username and password";
