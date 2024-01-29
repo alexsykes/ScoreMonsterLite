@@ -547,7 +547,7 @@ public class ScoreListActivity extends AppCompatActivity {
                     Toast.LENGTH_LONG).show();
         } else {
             volleyScoreUpload();
-            markAsDone(trialid);
+//            markAsDone(trialid);
         }
     }
 
@@ -574,10 +574,8 @@ public class ScoreListActivity extends AppCompatActivity {
     }
 
     private JSONArray getDataForUpload() {
-        ArrayList<HashMap<String, String>> dataToUpload = scoreDbHelper.getScoreListForUpload(94);
-        //   JSONArray trialdata = mDbHelper.getTrialData(trialid);
-        JSONArray scoresJSONArray
-                = new JSONArray();
+        ArrayList<HashMap<String, String>> dataToUpload = scoreDbHelper.getScoreListForUpload(trialid);
+        JSONArray scoresJSONArray = new JSONArray();
 
         for (int i = 0; i < dataToUpload.size(); i++) {
             JSONArray score = new JSONArray();
@@ -585,12 +583,12 @@ public class ScoreListActivity extends AppCompatActivity {
             score.put(scoreItem.get("id"));
             score.put(scoreItem.get("rider"));
             score.put(scoreItem.get("lap"));
-            String sc = scoreItem.get("score");
-            if (sc.equals("10")) {
-                score.put("x");
-            } else {
-                score.put(scoreItem.get("score"));
-            }
+            score.put(scoreItem.get("score"));
+//            if (sc.equals("10")) {
+//                score.put("x");
+//            } else {
+//                score.put(scoreItem.get("score"));
+//            }
             score.put(scoreItem.get("section"));
             score.put(scoreItem.get("trialid"));
             score.put(scoreItem.get("sync"));
@@ -609,6 +607,7 @@ public class ScoreListActivity extends AppCompatActivity {
 
         JSONArray data = getDataForUpload();
         String requestBody = data.toString();
+//        Log.i("Info", "volleyScoreUpload: " + requestBody);
         StringRequest stringRequest = new StringRequest(Request.Method.POST, URL, new Response.Listener<String>() {
 
             @Override
