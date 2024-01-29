@@ -52,7 +52,7 @@
                 android:backgroundTint="@color/colorButtonDark"
                 android:textColor="@color/colorButtonText"
                 android:onClick="countDabs"
-                android:text="@string/_10" />
+                android:text="@string/X" />
         </LinearLayout>
 
     </LinearLayout>

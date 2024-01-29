@@ -99,9 +99,7 @@
             android:contentDescription="@string/enter_penalty_tariff" />
     </PreferenceCategory>
 
-    <PreferenceCategory
-        android:title="Advanced"
-        android:icon="@drawable/ic_baseline_warning_24">
+    <PreferenceCategory android:title="Advanced">
         <SwitchPreference
             android:defaultValue="false"
             android:key="show_advanced"
@@ -130,16 +128,19 @@
         </PreferenceCategory>
 
         <SwitchPreference
+            android:icon="@drawable/ic_warning_24dp"
             android:defaultValue="false"
             android:key="restart_clock_preference"
             android:contentDescription="@string/restart_clock"
             android:title="@string/restart_clock" />
         <SwitchPreference
+            android:icon="@drawable/ic_warning_24dp"
             android:defaultValue="false"
             android:key="reset_scores_preference"
             android:contentDescription="@string/reset_scores"
             android:title="@string/reset_scores" />
         <SwitchPreference
+            android:icon="@drawable/ic_warning_24dp"
             android:defaultValue="false"
             android:key="reset_times_preference"
             android:contentDescription="@string/reset_times"

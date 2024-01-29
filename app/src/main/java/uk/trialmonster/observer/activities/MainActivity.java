@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
 
     // Layout variables
     TextView numberLabel, scoreLabel, sectionNumberTextView, decrementTextView,
-            incrementTextView, sectionDetail, statusLine;
+            incrementTextView, statusLine;
     LinearLayout sectionPicker, sectionLabelLayout;
     ConstraintLayout top, bottom;
     // Utility
@@ -254,6 +254,7 @@ public class MainActivity extends AppCompatActivity {
         numberLabel = findViewById(R.id.numberLabel);
         scoreLabel = findViewById(R.id.scoreLabel);
         statusLine = findViewById(R.id.statusLine);
+//        statusLine.setVisibility(View.INVISIBLE);
         sectionLabelLayout = findViewById(R.id.sectionLabelLayout);
         sectionNumberTextView = findViewById(R.id.sectionNumber);
         sectionNumberTextView.setText(valueOf(section));
@@ -386,7 +387,7 @@ public class MainActivity extends AppCompatActivity {
             int scoreValue = Integer.parseInt(score);
 
             if (score.equals("10")) {
-                score = "X";
+                score = "x";
             }
             // Update prefs for single rider
             SharedPreferences.Editor editor = localPrefs.edit();
@@ -482,7 +483,7 @@ public class MainActivity extends AppCompatActivity {
             case "Clean":
                 score = 0;
                 break;
-            case "10":
+            case "x":
                 score = 10;
                 break;
             case "5":

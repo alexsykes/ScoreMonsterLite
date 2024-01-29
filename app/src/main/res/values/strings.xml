@@ -271,4 +271,5 @@ To change a score, click on the list icon in the toolbar. This will display a li
     <string name="password">Password</string>
     <string name="username">Username</string>
     <string name="account">account</string>
+    <string name="X">x</string>
 </resources>

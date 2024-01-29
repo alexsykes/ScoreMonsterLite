@@ -11,6 +11,7 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.text.InputType;
 import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -46,7 +47,8 @@ import uk.trialmonster.observer.data.ScoreDbHelper;
 import uk.trialmonster.observer.data.TimeDbHelper;
 import uk.trialmonster.observer.data.TrialDbHelper;
 
-//TODO - update trialList following login
+//TODO - update trialList following login - done?
+// TODO - reset maual switch following trial selected
 
 public class SettingsActivity extends AppCompatActivity {
     boolean isOnline;
@@ -85,6 +87,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         populateTrialList(loggedInUserID);
         statusLine = findViewById(R.id.statusLine);
+        statusLine.setVisibility(View.GONE);
 //        statusLine.setText(SettingsFragment.getTrialDetails());
     }
 
@@ -300,6 +303,7 @@ public class SettingsActivity extends AppCompatActivity {
                         trialid = -999;
 
                         SharedPreferences.Editor editor = localPrefs.edit();
+                        editor.putBoolean("isManualTrial", isManualTrial);
                         editor.putInt("trialid", trialid);
                         editor.apply();
                     }
@@ -446,8 +450,8 @@ public class SettingsActivity extends AppCompatActivity {
 
             // numsections pref
             assert numSectionsPref != null;
-//            show = !timeMode;
-//            numSectionsPref.setVisible(true);
+
+            numSectionsPref.setTitle("Number of sections: " + numsections);
             numSectionsPref.setText(String.valueOf(numsections));
             numSectionsPref.setOnBindEditTextListener(editText -> editText.setInputType(InputType.TYPE_CLASS_NUMBER));
             numSectionsPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
@@ -456,6 +460,7 @@ public class SettingsActivity extends AppCompatActivity {
                     numSectionsPref.setText(newValue.toString());
                     SharedPreferences.Editor editor = localPrefs.edit();
                     numsections = Integer.parseInt(newValue.toString());
+                    numSectionsPref.setTitle("Number of sections: " + numsections);
                     String sectionsRange = "1 to " + numsections;
                     sectionPref.setDialogMessage(sectionsRange);
                     editor.putInt("numsections", numsections);
@@ -467,9 +472,9 @@ public class SettingsActivity extends AppCompatActivity {
 
             // numlaps pref
             assert numLapsPref != null;
-//            show = !timeMode;
-//            numLapsPref.setVisible(true);
+
             numLapsPref.setText(String.valueOf(numlaps));
+            numLapsPref.setTitle("Number of laps: " + numlaps);
             numLapsPref.setOnBindEditTextListener(editText -> editText.setInputType(InputType.TYPE_CLASS_NUMBER));
             numLapsPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                 @Override
@@ -477,6 +482,7 @@ public class SettingsActivity extends AppCompatActivity {
                     numLapsPref.setText(newValue.toString());
                     SharedPreferences.Editor editor = localPrefs.edit();
                     int numlaps = Integer.parseInt(newValue.toString());
+                    numLapsPref.setTitle("Number of laps: " + numlaps);
                     editor.putInt("numlaps", numlaps);
                     editor.apply();
                     return false;
@@ -486,8 +492,20 @@ public class SettingsActivity extends AppCompatActivity {
 
             // email pref
             assert emailPref != null;
+            emailPref.setTitle("Email: " + email);
             emailPref.setOnBindEditTextListener(editText -> editText.setInputType(InputType.TYPE_CLASS_TEXT |
                     InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS));
+            emailPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                @Override
+                public boolean onPreferenceChange(@NonNull Preference preference, Object newValue) {
+                    email = newValue.toString();
+                    emailPref.setTitle("Email: " + email);
+                    emailPref.setText(email);
+                    editor.putString("email", email);
+                    editor.apply();
+                    return false;
+                }
+            });
 
 
             // Timer reset pref
@@ -498,20 +516,19 @@ public class SettingsActivity extends AppCompatActivity {
                 @Override
                 public boolean onPreferenceChange(Preference preference, Object newValue) {
                     Log.i("info", "Time reset changed: ");
-                    AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
 
-                    alert.setTitle("Warning");
-                    alert.setMessage("Data will be destroyed");
-                    alert.setIcon(R.drawable.ic_warning_red_48dp);
+                    builder.setTitle("Warning - Timing clock will be reset");
+                    builder.setIcon(R.drawable.ic_warning_red_48dp);
 
-                    alert.setCancelable(true);
-                    alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    builder.setCancelable(false);
+                    builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int i) {
                             dialog.cancel();
                         }
                     });
-                    alert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             // Clock restart
@@ -520,7 +537,7 @@ public class SettingsActivity extends AppCompatActivity {
                             editor.apply();
                         }
                     });
-                    alert.show();
+                    builder.show();
                     return false;
                 }
             });
@@ -535,8 +552,7 @@ public class SettingsActivity extends AppCompatActivity {
                     Log.i("info", "Time reset changed: ");
                     AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
 
-                    alert.setTitle("Warning");
-                    alert.setMessage("Data will be destroyed");
+                    alert.setTitle("Warning - Score data will be destroyed");
                     alert.setIcon(R.drawable.ic_warning_red_48dp);
 
                     alert.setCancelable(true);
@@ -570,8 +586,7 @@ public class SettingsActivity extends AppCompatActivity {
                     Log.i("info", "Time reset changed: ");
                     AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
 
-                    alert.setTitle("Warning");
-                    alert.setMessage("Data will be destroyed");
+                    alert.setTitle("Warning - Time data will be destroyed");
                     alert.setIcon(R.drawable.ic_warning_red_48dp);
 
                     alert.setCancelable(true);
@@ -687,19 +702,11 @@ public class SettingsActivity extends AppCompatActivity {
                     if (trialid == 0) {
                         Log.i("Note", "Manual Entry selected");
                         emailPref.setVisible(true);
-                        // numSectionsPref.setVisible(true);
-                        // numLapsPref.setVisible(true);
-                        // theTrialSettings.setVisible(true);
                     } else {
                         emailPref.setVisible(false);
-                        // numSectionsPref.setVisible(false);
-                        // numLapsPref.setVisible(false);
-                        // theTrialSettings.setVisible(false);
                     }
                     // Setup modes
                     ridingNumberPref.setVisible(mode == 1);
-//                    sectionPref.setVisible(mode == 2);
-
                     return true;
                 }
 

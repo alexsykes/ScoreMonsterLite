@@ -175,7 +175,8 @@ public class ScoreDbHelper extends SQLiteOpenHelper {
 
         SQLiteDatabase db = this.getReadableDatabase();
         // String query = "UPDATE scores SET score = " + score + ", edited = 1, updated = DATETIME('now','localtime'), sync = " + NOT_SYNCED + " WHERE _id = " + scoreid;
-        String query = "UPDATE scores SET score = " + score + ", edited = 1, updated = DATETIME('now'), sync = " + NOT_SYNCED + " WHERE _id = " + scoreid;
+        String query = "UPDATE scores SET score = '" + score + "', edited = 1, updated = DATETIME" +
+                "('now'), sync = " + NOT_SYNCED + " WHERE _id = " + scoreid;
         db.execSQL(query);
         // db.close();
     }

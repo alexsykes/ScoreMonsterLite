@@ -151,15 +151,6 @@ public class ScoreListActivity extends AppCompatActivity {
                             Toast.LENGTH_LONG).show();
                 }
                 return true;
-
-
-/*            case R.id.timer:
-                goTimer();
-                return true;*/
-
-//            case R.id.reset:
-//                reset();
-//                return true;
             default:
                 // If we got here, the user's action was not recognized.
                 // Invoke the superclass to handle it.
@@ -224,7 +215,7 @@ public class ScoreListActivity extends AppCompatActivity {
 
                             break;
                         case 5:
-                            score1 = "10";
+                            score1 = "x";
 
                             break;
                     }
