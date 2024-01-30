@@ -49,7 +49,6 @@ public class MainActivity extends AppCompatActivity {
     public static final String EXTRA_MESSAGE = "com.alexsykes.scoremonster.activities.MESSAGE";
     public static final int TEXT_REQUEST = 1;
     public static final int NOT_SYNCED = -1;
-    final String uploadFilePath = "mnt/sdcard/Documents/Scoremonster/";
     SharedPreferences localPrefs;
     MainViewModel model;
     String[] theTrials, theIDs;
@@ -62,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
 
     // Layout variables
     TextView numberLabel, scoreLabel, sectionNumberTextView, decrementTextView,
-            incrementTextView, sectionDetail, statusLine;
+            incrementTextView, statusLine;
     LinearLayout sectionPicker, sectionLabelLayout;
     ConstraintLayout top, bottom;
     // Utility
@@ -74,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
     private ScoreDbHelper scoreDbHelper;
     private TimeDbHelper timeDbHelper;
     private TrialDbHelper trialDbHelper;
-    private String status, filename, observer, theTrialName, detail, email, club, message;
+    private String status, mobile, observer, theTrialName, detail, email, club, message, username;
     private final int serverResponseCode = 0;
     private int score;
     private int scoreCount;
@@ -82,8 +81,10 @@ public class MainActivity extends AppCompatActivity {
     private int section;
     private int numsections;
     private int numlaps;
+    private int loggedInUserID;
     private int numberInGroup;
-    private boolean isSingleUser, trialHasChanged, canConnect, timeMode, manualTrial;
+    private boolean isSingleUser, trialHasChanged, canConnect, timeMode, isManualTrial,
+            isLoggedInUser;
     private int ridingNumber, trialid, mode;
 
     @Override
@@ -174,7 +175,33 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
 //        Log.i("Info", "MainActivityNew:onStart called");
         getPrefs();
+        if (!checkPrefs()) {
+            goSetup();
+        }
         initialUISetup();
+    }
+
+    private boolean checkPrefs() {
+        if (observer.equals("")) {
+            return false;
+        }
+        if (mobile.equals("")) {
+            return false;
+        }
+        if (email.equals("")) {
+            return false;
+        }
+
+        if (!timeMode) {
+            if (section == 0) {
+                return false;
+            }
+            if (numlaps == 0) {
+                return false;
+            }
+            return numsections != 0;
+        }
+        return true;
     }
 
     @Override
@@ -193,23 +220,33 @@ public class MainActivity extends AppCompatActivity {
         startInterval = localPrefs.getLong("startInterval", 60);
         penaltyTariff = localPrefs.getLong("penaltyTariff", 60);
         observer = localPrefs.getString("observer", "");
-        section = localPrefs.getInt("section", 1);
+        mobile = localPrefs.getString("mobile", "");
+        section = localPrefs.getInt("section", 0);
         trialid = localPrefs.getInt("trialid", 0);
-        numlaps = localPrefs.getInt("numlaps", 1);
-        numsections = localPrefs.getInt("numsections", 1);
+        numlaps = localPrefs.getInt("numlaps", 0);
+        numsections = localPrefs.getInt("numsections", 0);
         email = localPrefs.getString("email", "");
         isSingleUser = localPrefs.getBoolean("isSingleUser", false);
-        manualTrial = localPrefs.getBoolean("manualTrial", false);
+        isManualTrial = localPrefs.getBoolean("manualTrial", true);
         ridingNumber = localPrefs.getInt("ridingNumber", 0);
         score = localPrefs.getInt("score", 0);
         numberInGroup = localPrefs.getInt("numberInGroup", 6);
         scoreCount = localPrefs.getInt("scoreCount", 0);
-        theTrialName = localPrefs.getString("trialName", "None selected");
+        theTrialName = localPrefs.getString("trialName", "");
         club = localPrefs.getString("club", "None selected");
         trialHasChanged = localPrefs.getBoolean("", true);
         mode = localPrefs.getInt("mode", 0);
         usermode = Integer.valueOf(localPrefs.getString("usermode", "0"));
         timeMode = localPrefs.getBoolean("timeMode", false);
+        isLoggedInUser = localPrefs.getBoolean("isLoggedInUser", false);
+        loggedInUserID = localPrefs.getInt("loggedInUserID", 0);
+        username = localPrefs.getString("username", "");
+        if (loggedInUserID == 0) {
+            SharedPreferences.Editor editor = localPrefs.edit();
+            editor.putInt("loggedInUserID", 0);
+            editor.putBoolean("isLoggedInUser", false);
+            editor.apply();
+        }
     }
 
     void initialUISetup() {
@@ -217,6 +254,7 @@ public class MainActivity extends AppCompatActivity {
         numberLabel = findViewById(R.id.numberLabel);
         scoreLabel = findViewById(R.id.scoreLabel);
         statusLine = findViewById(R.id.statusLine);
+//        statusLine.setVisibility(View.INVISIBLE);
         sectionLabelLayout = findViewById(R.id.sectionLabelLayout);
         sectionNumberTextView = findViewById(R.id.sectionNumber);
         sectionNumberTextView.setText(valueOf(section));
@@ -348,18 +386,22 @@ public class MainActivity extends AppCompatActivity {
             int riderNumber = Integer.parseInt(rider);
             int scoreValue = Integer.parseInt(score);
 
+            if (score.equals("10")) {
+                score = "x";
+            }
             // Update prefs for single rider
             SharedPreferences.Editor editor = localPrefs.edit();
             editor.putInt("ridingNumber", riderNumber);
             editor.putString("riderText", rider);
             editor.apply();
 
-            insertScore(riderNumber, scoreValue);
+            insertScore(riderNumber, score);
             scoreCount++;
             clearScore();
         }
     }
-    private void insertScore(int rider, int score) {
+
+    private void insertScore(int rider, String score) {
         ToneGenerator toneGen1 = new ToneGenerator(AudioManager.STREAM_MUSIC, ToneGenerator.MAX_VOLUME);
         // Check for numberof completed laps
         // Gets the database in write mode
@@ -441,7 +483,7 @@ public class MainActivity extends AppCompatActivity {
             case "Clean":
                 score = 0;
                 break;
-            case "10":
+            case "x":
                 score = 10;
                 break;
             case "5":
@@ -521,17 +563,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void insertTime(int riderNumber, long finishTimeInMillis) {
-        long elapsedTime, timeInterval, deltaTime, riderStartTime;
-        trialDbHelper = new TrialDbHelper(this);
-        // startInterval = trialDbHelper.getStartInterval(trialid);
+        long timeInterval, deltaTime, riderStartTime;
 
-        /*  finishTimeInMillis - real finishtime
-            timeInterval - time delay for each rider
-            Zero for #1
-            deltaTime - real time difference between startTime and riderStartTime
-            riderStartTime - time rider actually started
-            elapsedTime - time on course for rider
-         */
         timeInterval = (riderNumber - 1) * 1000 * startInterval;
         riderStartTime = clockStartTime + timeInterval;
 
@@ -550,21 +583,10 @@ public class MainActivity extends AppCompatActivity {
         values.put(TimeContract.TimeEntry.COLUMN_TIME_ELAPSEDTIME, deltaTime);
         db.insert(TimeContract.TimeEntry.TABLE_NAME, null, values);
 
-
-        // timeDbHelper.updateTrial(trialid, startInterval, penaltyTariff);
         // Confirm committed with sound
         playSoundFile(R.raw.ting);
         Toast.makeText(this, "Finish time recorded", Toast.LENGTH_SHORT).show();
     }
-
-//    protected boolean canConnect() {
-//        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-//        NetworkInfo netInfo = cm.getActiveNetworkInfo();
-//
-//        model.setOnline(netInfo != null && netInfo.isConnectedOrConnecting());
-//        return netInfo != null && netInfo.isConnectedOrConnecting();
-//    }
-
 
     // Menu options
     private void goScoreList() {
@@ -591,229 +613,6 @@ public class MainActivity extends AppCompatActivity {
         intent.putExtra(EXTRA_MESSAGE, message);
         startActivity(intent);
     }
-
-//    private void sendEmail() {
-//        canConnect = canConnect();
-//        if (!canConnect) {
-//            Toast.makeText(MainActivity.this, "Email cannot be sent at this time - no Internet connection.",
-//                    Toast.LENGTH_LONG).show();
-//        } else {
-//            // Get timestamp and add to filename
-//            Date date = new Date();
-//            // getTime() returns current time in milliseconds
-//            long time = date.getTime();
-//            String ts = valueOf(time);
-//            filename = "scores_" + ts + ".csv";
-//            String sendMailURL = "https://www.trialmonster.uk/android/sendMailWithFile.php?id=" + ts + "&trialid=" + trialid + "&email=" + email;
-//
-//            Log.i("Monitor", sendMailURL);
-//            // processCSV(sendMailURL);
-//        }
-//    }
-
-//    private void saveToCSV() {
-//        String id, observer, section, rider, lap, created, updated, edited, sync, score, thetrialid;
-//
-//        try {
-//            File exportDir = new File(getFilesDir(), filename);
-//            CSVWriter csvWrite = new CSVWriter(new FileWriter(exportDir));
-//
-//            String[] header = {"id", "rider", "section",
-//                    "lap", "score", "observer", "created", "updated", "edited", "trialid", "sync", email};
-//
-//            csvWrite.writeNext(header, false);
-//
-//            // Get current data
-//
-//            Cursor curChild = scoreDbHelper.getAll(trialid);
-//            while (curChild.moveToNext()) {
-//                id = curChild.getString(0);
-//                observer = curChild.getString(1);
-//                section = curChild.getString(2);
-//                rider = curChild.getString(3);
-//                lap = curChild.getString(4);
-//                created = curChild.getString(5);
-//                updated = curChild.getString(6);
-//                edited = curChild.getString(7);
-//                thetrialid = curChild.getString(8);
-//                sync = curChild.getString(9);
-//                score = curChild.getString(10);
-//
-//                String[] arrStr = {id, rider, section, lap, score, observer, created, updated, edited, thetrialid, sync
-//                };
-//
-//                csvWrite.writeNext(arrStr, false);
-//            }
-//            Log.i("Info", "MainActivity: saveToCSV: 834");
-//            curChild.close();
-//            csvWrite.close();
-//
-//        } catch (IOException e) {
-//            //  Log.e("Child", e.getMessage(), e);
-//        }
-//    }
-//    private void processCSV(final String sendMailURL) {
-//        /*
-//         * Processing the CSV done online
-//         * so we need an AsyncTask
-//         * The constrains defined here are
-//         * Void -> We are not passing anything
-//         * Void -> Nothing at progress update as well
-//         * String -> After completion it should return a string and it will be the json string
-//         * */
-//        class ProcessCSV extends AsyncTask<Void, Void, String> {
-//
-//            //this method will be called before execution
-//            //you can display a progress bar or something
-//            //so that user can understand that he should wait
-//            //as network operation may take some time
-//            @Override
-//            protected void onPreExecute() {
-//                super.onPreExecute();
-//                dialog = ProgressDialog.show(MainActivity.this, "Scoremonster",
-//                        "Processing scores… this make take some time!", true);
-//                // Prepare CSV file
-//                saveToCSV();
-//            }
-//
-//            protected void onPostExecute(String s) {
-//                super.onPostExecute(s);
-//                dialog.dismiss();
-//
-//                if (s.contentEquals("OK")) {
-//                    String toastMessage = "The email has been sent successfully to " + email;
-//                    runOnUiThread(() -> Toast.makeText(MainActivity.this, toastMessage,
-//                            Toast.LENGTH_LONG).show());
-//                }
-//            }
-//
-//            //in this method we are fetching the json string
-//            @Override
-//            protected String doInBackground(Void... voids) {
-//
-//                uploadFile(uploadFilePath + filename);
-//                try {
-//                    //creating a URL
-//                    URL url = new URL(sendMailURL);
-//
-//                    //Opening the URL using HttpURLConnection
-//                    HttpURLConnection con = (HttpURLConnection) url.openConnection();
-//                    message = con.getResponseMessage();
-//                    return message;
-//
-//                } catch (Exception e) {
-//                    return null;
-//                }
-//            }
-//        }
-//        ProcessCSV processCSV = new ProcessCSV();
-//        processCSV.execute();
-//    }
-//    public void uploadFile(String sourceFileUri) {
-//        File directory = getFilesDir();
-//        File sourceFile = new File(directory, filename);
-//        HttpURLConnection conn;
-//        DataOutputStream dos;
-//        String lineEnd = "\r\n";
-//        String twoHyphens = "--";
-//        String boundary = "*****";
-//        int bytesRead, bytesAvailable, bufferSize;
-//        byte[] buffer;
-//        int maxBufferSize = 1024 * 1024;
-//
-//        if (!sourceFile.isFile()) {
-//            dialog.dismiss();
-//            runOnUiThread(() -> {
-//            });
-//
-//        } else {
-//            try {
-//                final String upLoadServerUri = "http://android.trialmonster.uk/UploadToServer.php";
-//                // open a URL connection to the Servlet
-//                FileInputStream fileInputStream = new FileInputStream(sourceFile);
-//                URL url = new URL(upLoadServerUri);
-//
-//                // Open a HTTP  connection to  the URL
-//                conn = (HttpURLConnection) url.openConnection();
-//                conn.setDoInput(true); // Allow Inputs
-//                conn.setDoOutput(true); // Allow Outputs
-//                conn.setUseCaches(false); // Don't use a Cached Copy
-//                conn.setRequestMethod("POST");
-//                conn.setRequestProperty("Connection", "Keep-Alive");
-//                conn.setRequestProperty("ENCTYPE", "multipart/form-data");
-//                conn.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + boundary);
-//                conn.setRequestProperty("uploaded_file", sourceFileUri);
-//
-//                dos = new DataOutputStream(conn.getOutputStream());
-//
-//                dos.writeBytes(twoHyphens + boundary + lineEnd);
-//                dos.writeBytes("Content-Disposition: form-data; name=\"uploaded_file\";filename=\""
-//                        + sourceFileUri + "\"" + lineEnd);
-//
-//                dos.writeBytes(lineEnd);
-//
-//                // create a buffer of  maximum size
-//                bytesAvailable = fileInputStream.available();
-//
-//                bufferSize = Math.min(bytesAvailable, maxBufferSize);
-//                buffer = new byte[bufferSize];
-//
-//                // read file and write it into form...
-//                bytesRead = fileInputStream.read(buffer, 0, bufferSize);
-//
-//                while (bytesRead > 0) {
-//
-//                    dos.write(buffer, 0, bufferSize);
-//                    bytesAvailable = fileInputStream.available();
-//                    bufferSize = Math.min(bytesAvailable, maxBufferSize);
-//                    bytesRead = fileInputStream.read(buffer, 0, bufferSize);
-//
-//                }
-//
-//                // send multipart form data necessary after file data...
-//                dos.writeBytes(lineEnd);
-//                dos.writeBytes(twoHyphens + boundary + twoHyphens + lineEnd);
-//
-//                // Responses from the server (code and message)
-//                serverResponseCode = conn.getResponseCode();
-//                if (serverResponseCode != 200) {
-//
-//                    runOnUiThread(() -> Toast.makeText(MainActivity.this, "Error processing data",
-//                            Toast.LENGTH_LONG).show());
-//                }
-//
-//                //close the streams //
-//                fileInputStream.close();
-//                dos.flush();
-//                dos.close();
-//
-//            } catch (MalformedURLException ex) {
-//
-//                dialog.dismiss();
-//                ex.printStackTrace();
-//
-//                runOnUiThread(() -> {
-//                    // messageText.setText("MalformedURLException Exception : check script url.");
-//                    Toast.makeText(MainActivity.this, "MalformedURLException",
-//                            Toast.LENGTH_SHORT).show();
-//                });
-//
-//                //   Log.e("Upload file to server", "error: " + ex.getMessage(), ex);
-//            } catch (Exception e) {
-//
-//                dialog.dismiss();
-//                e.printStackTrace();
-//
-//                runOnUiThread(() -> {
-//                    // messageText.setText("Got Exception : see logcat ");
-//                    Toast.makeText(MainActivity.this, "Got Exception : see logcat ",
-//                            Toast.LENGTH_SHORT).show();
-//                });
-//                //   Log.e("Upload file Exception", "Exception : " + e.getMessage(), e);
-//            }
-//            dialog.dismiss();
-//        }
-//    }
 
     //play a soundfile
     public void playSoundFile(Integer fileName) {

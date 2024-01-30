@@ -115,7 +115,7 @@ public class ScoreListAdapter extends RecyclerView.Adapter<ScoreListAdapter.Scor
                         case "5":
                             scoreIndex = 4;
                             break;
-                        case "10":
+                        case "x":
                             scoreIndex = 5;
                             break;
                     }

@@ -55,10 +55,11 @@ public class TrialDbHelper extends SQLiteOpenHelper {
         db.execSQL(query);
     }
 
-    public ArrayList<HashMap<String, String>> getPrefsOptions() {
+    public ArrayList<HashMap<String, String>> getPrefsOptions(int loggedInUserID) {
         SQLiteDatabase db = this.getWritableDatabase();
         ArrayList<HashMap<String, String>> optionList = new ArrayList<>();
-        String query = "SELECT group_concat(_id, ','),group_concat(name, ',')  FROM trials ORDER BY date ASC";
+        String query = "SELECT group_concat(_id, ','),group_concat(name, ',')  FROM trials " +
+                "WHERE created_by = " + loggedInUserID + " ORDER BY date ASC";
 //        Log.i("Query", query);
         Cursor cursor = db.rawQuery(query, null);
         while (cursor.moveToNext()) {
@@ -71,10 +72,11 @@ public class TrialDbHelper extends SQLiteOpenHelper {
         return optionList;
     }
 
-    public ArrayList<HashMap<String, String>> getTrialList() {
+    public ArrayList<HashMap<String, String>> getTrialList(int loggedInUserID) {
         SQLiteDatabase db = this.getWritableDatabase();
         ArrayList<HashMap<String, String>> trialList = new ArrayList<>();
-        String query = "SELECT * FROM trials ORDER BY date ASC";
+        String query = "SELECT * FROM trials WHERE created_by = " + loggedInUserID + " ORDER BY " +
+                "date ASC";
 //        Log.i("Query", query);
         Cursor cursor = db.rawQuery(query, null);
         while (cursor.moveToNext()) {

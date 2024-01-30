@@ -151,15 +151,6 @@ public class ScoreListActivity extends AppCompatActivity {
                             Toast.LENGTH_LONG).show();
                 }
                 return true;
-
-
-/*            case R.id.timer:
-                goTimer();
-                return true;*/
-
-//            case R.id.reset:
-//                reset();
-//                return true;
             default:
                 // If we got here, the user's action was not recognized.
                 // Invoke the superclass to handle it.
@@ -224,7 +215,7 @@ public class ScoreListActivity extends AppCompatActivity {
 
                             break;
                         case 5:
-                            score1 = "10";
+                            score1 = "x";
 
                             break;
                     }
@@ -359,6 +350,44 @@ public class ScoreListActivity extends AppCompatActivity {
 
                 String[] arrStr = {id, rider, section, lap, score, observer, thetrialid, created,
                         updated
+                };
+
+                csvWrite.writeNext(arrStr, false);
+            }
+            // Close filewriter
+            curChild.close();
+            csvWrite.close();
+            scoreDbHelper.close();
+            return true;
+
+        } catch (IOException e) {
+            Log.e("Child", e.getMessage(), e);
+            return false;
+        }
+    }    // Save current scores to CSV
+
+    private boolean newSaveToCSV() {
+        String rider, section, scores;
+
+        try {
+            exportDir = new File(getFilesDir(), filename);
+
+            // Create new CSV file in storage
+            exportDir.createNewFile();
+            CSVWriter csvWrite = new CSVWriter(new FileWriter(exportDir));
+
+//            Prepare and write filednames as header
+            String[] header = {"Rider", "Section", "Scores"};
+            csvWrite.writeNext(header, false);
+
+            // Get score data for current trial
+            Cursor curChild = scoreDbHelper.getScoresForEmail(trialid);
+            while (curChild.moveToNext()) {
+                section = curChild.getString(1);
+                rider = curChild.getString(0);
+                scores = curChild.getString(2);
+
+                String[] arrStr = {rider, section, scores
                 };
 
                 csvWrite.writeNext(arrStr, false);
@@ -539,16 +568,14 @@ public class ScoreListActivity extends AppCompatActivity {
             filename = "data_" + ts + ".csv";
             String sendMailURL = "https://www.trialmonster.uk/android/sendMailWithFile.php?id=" + ts + "&trialid=" + trialid + "&email=" + email;
 
-            saveToCSV();
+            newSaveToCSV();
             processCSV(sendMailURL);
         }
     }
 
     private JSONArray getDataForUpload() {
         ArrayList<HashMap<String, String>> dataToUpload = scoreDbHelper.getScoreListForUpload(trialid);
-        //   JSONArray trialdata = mDbHelper.getTrialData(trialid);
-        JSONArray scoresJSONArray
-                = new JSONArray();
+        JSONArray scoresJSONArray = new JSONArray();
 
         for (int i = 0; i < dataToUpload.size(); i++) {
             JSONArray score = new JSONArray();
@@ -556,9 +583,9 @@ public class ScoreListActivity extends AppCompatActivity {
             score.put(scoreItem.get("id"));
             score.put(scoreItem.get("rider"));
             score.put(scoreItem.get("lap"));
-            String sc = scoreItem.get("score");
-            if (sc.equals("10")) {
-                score.put("x");
+//            score.put(scoreItem.get("score"));
+            if (scoreItem.get("score").equals("x")) {
+                score.put("X");
             } else {
                 score.put(scoreItem.get("score"));
             }
@@ -576,10 +603,11 @@ public class ScoreListActivity extends AppCompatActivity {
 
     private void volleyScoreUpload() {
         RequestQueue requestQueue = Volley.newRequestQueue(this);
-        String URL = "https://android.trialmonster.uk/uploadVolleyJSONArray.php";
+        String URL = "https://android.trialmonster.uk/androidScoreUpload.php";
 
         JSONArray data = getDataForUpload();
         String requestBody = data.toString();
+//        Log.i("Info", "volleyScoreUpload: " + requestBody);
         StringRequest stringRequest = new StringRequest(Request.Method.POST, URL, new Response.Listener<String>() {
 
             @Override

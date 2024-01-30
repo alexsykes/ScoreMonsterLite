@@ -1,35 +1,30 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-
     <PreferenceCategory app:title="@string/observer_details">
         <EditTextPreference
             android:selectAllOnFocus="true"
             app:key="observer"
             app:title="@string/observer"
-            android:contentDescription="@string/observerName"
-            app:useSimpleSummaryProvider="true" />
+            android:contentDescription="@string/observerName" />
 
         <EditTextPreference
+            android:contentDescription="@string/observerContactNumber"
             android:selectAllOnFocus="true"
             app:isPreferenceVisible="true"
             app:key="mobile"
-            app:title="@string/contact"
-            android:contentDescription="@string/observerContactNumber"
-            app:useSimpleSummaryProvider="true" />
+            app:title="@string/contact" />
 
         <EditTextPreference
             app:key="sectionText"
             app:isPreferenceVisible="true"
             app:title="@string/section_number"
-            android:contentDescription="@string/enterSectionNumber"
-            app:useSimpleSummaryProvider="true" />
+            android:contentDescription="@string/enterSectionNumber" />
 
         <EditTextPreference
             android:selectAllOnFocus="true"
             app:key="riderText"
             app:title="@string/riding_number"
-            android:contentDescription="@string/enterRiderNumber"
-            app:useSimpleSummaryProvider="true" />
+            android:contentDescription="@string/enterRiderNumber" />
     </PreferenceCategory>
 
     <PreferenceCategory
@@ -49,22 +44,19 @@
             app:entryValues="@array/trial_values"
             app:key="theTrialIndex"
             app:title="@string/trial_name"
-            android:contentDescription="@string/select_trial_from_available_choices"
-            app:useSimpleSummaryProvider="true" />
+            android:contentDescription="@string/select_trial_from_available_choices" />
 
         <EditTextPreference
             android:selectAllOnFocus="true"
             app:key="trialName"
             app:title="@string/trial_name"
-            android:contentDescription="@string/enter_trial_name"
-            app:useSimpleSummaryProvider="true" />
+            android:contentDescription="@string/enter_trial_name" />
 
         <EditTextPreference
             android:selectAllOnFocus="true"
             app:key="email"
             android:contentDescription="@string/enter_your_email_address"
-            app:title="@string/email"
-            app:useSimpleSummaryProvider="true" />
+            app:title="@string/email" />
 
         <EditTextPreference
             android:selectAllOnFocus="true"
@@ -72,8 +64,7 @@
             android:contentDescription="@string/enter_number_of_laps"
             app:key="numlapsText"
             app:isPreferenceVisible="true"
-            app:title="@string/number_of_laps"
-            app:useSimpleSummaryProvider="true" />
+            app:title="@string/number_of_laps" />
 
         <EditTextPreference
             android:selectAllOnFocus="true"
@@ -81,8 +72,7 @@
             app:key="numsectionsText"
             app:isPreferenceVisible="true"
             app:title="@string/number_of_sections"
-            android:contentDescription="@string/enter_number_of_sections"
-            app:useSimpleSummaryProvider="true" />
+            android:contentDescription="@string/enter_number_of_sections" />
     </PreferenceCategory>
 
     <PreferenceCategory app:title="Mode">
@@ -98,8 +88,7 @@
             android:selectAllOnFocus="true"
             android:singleLine="true"
             android:title="Start interval"
-            android:contentDescription="@string/enter_start_interval"
-            app:useSimpleSummaryProvider="true" />
+            android:contentDescription="@string/enter_start_interval" />
 
         <EditTextPreference
             android:defaultValue="60"
@@ -107,29 +96,51 @@
             android:selectAllOnFocus="true"
             android:singleLine="true"
             android:title="Penalty tariff"
-            android:contentDescription="@string/enter_penalty_tariff"
-            app:useSimpleSummaryProvider="true" />
+            android:contentDescription="@string/enter_penalty_tariff" />
     </PreferenceCategory>
-    <PreferenceCategory android:title="Advanced"
-        android:icon="@drawable/ic_baseline_warning_24">
 
+    <PreferenceCategory android:title="Advanced">
         <SwitchPreference
             android:defaultValue="false"
             android:key="show_advanced"
             android:contentDescription="@string/advanced__settings"
             android:title="@string/advanced_settings" />
 
+        <PreferenceCategory
+            android:key="loginPrefCategory"
+            android:title="@string/login_details">
+
+            <EditTextPreference
+                android:contentDescription="@string/accountUser"
+                android:defaultValue=""
+                android:key="username"
+                android:selectAllOnFocus="true"
+                android:singleLine="true"
+                android:title="@string/username"
+                app:useSimpleSummaryProvider="true" />
+            <EditTextPreference
+                android:contentDescription="@string/password"
+                android:defaultValue=""
+                android:key="password"
+                android:selectAllOnFocus="true"
+                android:singleLine="true"
+                android:title="@string/password" />
+        </PreferenceCategory>
+
         <SwitchPreference
+            android:icon="@drawable/ic_warning_24dp"
             android:defaultValue="false"
             android:key="restart_clock_preference"
             android:contentDescription="@string/restart_clock"
             android:title="@string/restart_clock" />
         <SwitchPreference
+            android:icon="@drawable/ic_warning_24dp"
             android:defaultValue="false"
             android:key="reset_scores_preference"
             android:contentDescription="@string/reset_scores"
             android:title="@string/reset_scores" />
         <SwitchPreference
+            android:icon="@drawable/ic_warning_24dp"
             android:defaultValue="false"
             android:key="reset_times_preference"
             android:contentDescription="@string/reset_times"

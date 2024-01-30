@@ -45,10 +45,6 @@
         <item name="android:color">@color/black</item>
     </style>
 
-    <style name="Widget.ActionMode.ActionBar" parent="@style/ThemeOverlay.AppCompat.DayNight">
-        <item name="colorPrimaryDark">@color/white</item>
-        <item name="colorControlNormal">@color/white</item>
-    </style>
 
     <style name="editText" parent="@style/ThemeOverlay.AppCompat.DayNight">
         <item name="android:editTextStyle">@color/colorPureRed</item>
