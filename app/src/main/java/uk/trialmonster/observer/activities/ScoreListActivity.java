@@ -583,12 +583,12 @@ public class ScoreListActivity extends AppCompatActivity {
             score.put(scoreItem.get("id"));
             score.put(scoreItem.get("rider"));
             score.put(scoreItem.get("lap"));
-            score.put(scoreItem.get("score"));
-//            if (sc.equals("10")) {
-//                score.put("x");
-//            } else {
-//                score.put(scoreItem.get("score"));
-//            }
+//            score.put(scoreItem.get("score"));
+            if (scoreItem.get("score").equals("x")) {
+                score.put("X");
+            } else {
+                score.put(scoreItem.get("score"));
+            }
             score.put(scoreItem.get("section"));
             score.put(scoreItem.get("trialid"));
             score.put(scoreItem.get("sync"));
