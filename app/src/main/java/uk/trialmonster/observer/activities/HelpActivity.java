@@ -1,8 +1,8 @@
 package uk.trialmonster.observer.activities;
 
 import android.os.Bundle;
-import android.text.Html;
 import android.view.View;
+import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -14,6 +14,7 @@ import uk.trialmonster.observer.R;
 
 public class HelpActivity extends AppCompatActivity {
     TextView helpTextView;
+    WebView webView;
     String helpText;
     Button nsButton, helpButton, spButton;
 
@@ -35,9 +36,13 @@ public class HelpActivity extends AppCompatActivity {
         helpButton = findViewById(R.id.helpButton);
         nsButton = findViewById(R.id.nonStopButton);
         spButton = findViewById(R.id.stopPermittedButton);
+        webView = findViewById(R.id.webView);
+        webView.setVisibility(View.VISIBLE);
+        webView.getSettings().setJavaScriptEnabled(true);
+        webView.loadUrl("https://trialmonster.uk/index.php?option=com_content&view=article&id=9");
+
         // helpButton.setEnabled(false);
         //  helpButton.setBackgroundColor(getResources().getColor(R.color.colorWhite));
-        helpTextView.setText(Html.fromHtml(getString(R.string.helpApp)));
 
 /*        LinearLayout scrollView = findViewById(R.id.layout);
         // Create TextView programmatically.
@@ -53,18 +58,37 @@ public class HelpActivity extends AppCompatActivity {
 
     }
 
+    public void showPrivacy(View view) {
+//        webView.setVisibility(View.VISIBLE);
+//        helpTextView.setVisibility(View.GONE);
+        webView.loadUrl("https://trialmonster.uk/index.php?option=com_content&view=article&id=9");
+        webView.getSettings().setJavaScriptEnabled(true);
+    }
+
     public void showHelp(View view) {
-        helpTextView = findViewById(R.id.helpApp);
-        helpTextView.setText(Html.fromHtml(getString(R.string.helpApp)));
+//        helpTextView = findViewById(R.id.helpApp);
+//        helpTextView.setText(Html.fromHtml(getString(R.string.helpApp)));
+//        webView.setVisibility(View.GONE);
+//        helpTextView.setVisibility(View.VISIBLE);
+        webView.loadUrl("https://trialmonster.uk/index.php?option=com_content&view=article&id=12");
+        webView.getSettings().setJavaScriptEnabled(true);
     }
 
     public void showNS(View view) {
-        helpTextView = findViewById(R.id.helpApp);
-        helpTextView.setText(Html.fromHtml(getString(R.string.tsr22NS)));
+//        helpTextView = findViewById(R.id.helpApp);
+//        helpTextView.setText(Html.fromHtml(getString(R.string.tsr22NS)));
+//        webView.setVisibility(View.GONE);
+//        helpTextView.setVisibility(View.VISIBLE);
+        webView.loadUrl("https://trialmonster.uk/index.php?option=com_content&view=article&id=11");
+        webView.getSettings().setJavaScriptEnabled(true);
     }
 
     public void showSP(View view) {
-        helpTextView = findViewById(R.id.helpApp);
-        helpTextView.setText(Html.fromHtml(getString(R.string.tsr22SP)));
+//        helpTextView = findViewById(R.id.helpApp);
+//        helpTextView.setText(Html.fromHtml(getString(R.string.tsr22SP)));
+//        webView.setVisibility(View.GONE);
+//        helpTextView.setVisibility(View.VISIBLE);
+        webView.loadUrl("https://trialmonster.uk/index.php?option=com_content&view=article&id=10");
+        webView.getSettings().setJavaScriptEnabled(true);
     }
 }
