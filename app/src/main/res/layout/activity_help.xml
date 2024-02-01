@@ -26,9 +26,9 @@
         <Button
             android:id="@+id/dataProtection"
             style="?android:attr/buttonBarButtonStyle"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="0.33"
+            android:layout_weight="1"
             android:contentDescription="@string/data_protection"
             android:onClick="showPrivacy"
             android:text="@string/privacyText" />
@@ -36,9 +36,9 @@
         <Button
             android:id="@+id/helpButton"
             style="?android:attr/buttonBarButtonStyle"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="0.33"
+            android:layout_weight="1"
             android:contentDescription="@string/help_for_using_this_app"
             android:onClick="showHelp"
             android:text="@string/helpText" />
@@ -46,9 +46,9 @@
         <Button
             android:id="@+id/nonStopButton"
             style="?android:attr/buttonBarButtonStyle"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="0.33"
+            android:layout_weight="1"
             android:contentDescription="@string/non_stop_rules"
             android:onClick="showNS"
             android:text="@string/no_stop" />
@@ -56,9 +56,9 @@
         <Button
             android:id="@+id/stopPermittedButton"
             style="?android:attr/buttonBarButtonStyle"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="0.33"
+            android:layout_weight="1"
             android:contentDescription="@string/stop_permitted_rules"
             android:onClick="showSP"
             android:text="@string/stop_permitted" />
