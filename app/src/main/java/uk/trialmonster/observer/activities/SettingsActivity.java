@@ -11,6 +11,7 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.text.InputType;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -51,7 +52,7 @@ import uk.trialmonster.observer.data.TrialDbHelper;
 // TODO - reset maual switch following trial selected
 
 public class SettingsActivity extends AppCompatActivity {
-    boolean isOnline;
+    boolean isOnline, incomplete;
     SharedPreferences localPrefs;
     ArrayList<HashMap<String, String>> theTrialData;
     public ArrayList<HashMap<String, String>> theTrialList;
@@ -88,7 +89,22 @@ public class SettingsActivity extends AppCompatActivity {
         populateTrialList(loggedInUserID);
         statusLine = findViewById(R.id.statusLine);
         statusLine.setVisibility(View.GONE);
-//        statusLine.setText(SettingsFragment.getTrialDetails());
+    }
+
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            String observer = localPrefs.getString("observer", "");
+            String email = localPrefs.getString("email", "");
+            String trialName = localPrefs.getString("trialName", "");
+            String mobile = localPrefs.getString("mobile", "");
+            if (observer.equals("") || email.equals("") || mobile.equals("") || trialName.equals("")) {
+                Toast.makeText(this, "Additional data needed", Toast.LENGTH_LONG).show();
+            } else {
+                finish();
+            }
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void populateTrialList(int loggedInUserID) {
@@ -130,7 +146,7 @@ public class SettingsActivity extends AppCompatActivity {
         int loggedInUserID;
         long startInterval;
         long penaltyTariff;
-        boolean timeMode, isManualTrial, isLoggedInUser;
+        boolean timeMode, isManualTrial, isLoggedInUser, incomplete;
 
         public static String getTrialDetails() {
 
@@ -145,6 +161,7 @@ public class SettingsActivity extends AppCompatActivity {
             setTrials();
         }
 
+
         private void setTrials() {
             localPrefs = PreferenceManager.getDefaultSharedPreferences(getContext());
 
@@ -158,9 +175,9 @@ public class SettingsActivity extends AppCompatActivity {
 
         private void setup() {
             // Setup known values
-            section = localPrefs.getInt("section", 0);
-            numsections = localPrefs.getInt("numsections", 0);
-            numlaps = localPrefs.getInt("numlaps", 0);
+            section = localPrefs.getInt("section", 1);
+            numsections = localPrefs.getInt("numsections", 1);
+            numlaps = localPrefs.getInt("numlaps", 1);
             ridingNumber = localPrefs.getInt("ridingNumber", 0);
             penaltyTariff = localPrefs.getLong("penaltyTariff", 60);
             startInterval = localPrefs.getLong("startInterval", 60);
@@ -176,6 +193,7 @@ public class SettingsActivity extends AppCompatActivity {
             password = localPrefs.getString("password", "");
             observer = localPrefs.getString("observer", "");
             mobile = localPrefs.getString("mobile", "");
+            incomplete = localPrefs.getBoolean("incomplete", false);
 
             if (isManualTrial) {
                 trialid = -999;
@@ -226,6 +244,12 @@ public class SettingsActivity extends AppCompatActivity {
                     observerPref.setTitle("Observer: " + observer);
                     observerPref.setText(observer);
                     editor.putString("observer", observer);
+
+                    if (observer.equals("")) {
+                        observerPref.setIcon(R.drawable.ic_baseline_warning_24);
+                    } else {
+                        observerPref.setIcon(null);
+                    }
                     editor.apply();
                     return false;
                 }
@@ -245,6 +269,11 @@ public class SettingsActivity extends AppCompatActivity {
                     mobilePref.setText(mobile);
                     editor.putString("mobile", mobile);
                     editor.apply();
+                    if (mobile.equals("")) {
+                        mobilePref.setIcon(R.drawable.ic_baseline_warning_24);
+                    } else {
+                        mobilePref.setIcon(null);
+                    }
                     return false;
                 }
             });
@@ -255,6 +284,11 @@ public class SettingsActivity extends AppCompatActivity {
             sectionPref.setDialogMessage(sectionsRange);
             sectionPref.setText(String.valueOf(section));
             sectionPref.setTitle("Section: " + section);
+            if ((section > numsections) || (section == 0)) {
+                sectionPref.setTitle("Invalid section number: " + section);
+                sectionPref.setText("");
+                sectionPref.setIcon(R.drawable.ic_warning_red_48dp);
+            }
 
             sectionPref.setOnBindEditTextListener(editText -> editText.setInputType(InputType.TYPE_CLASS_NUMBER));
             sectionPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
@@ -270,15 +304,16 @@ public class SettingsActivity extends AppCompatActivity {
                         sectionPref.setText(newValue.toString());
                         sectionPref.setTitle("Section: " + newValue);
                         editor.putInt("section", section);
-//                        editor.putString("sectionText", String.valueOf(section));
-                        editor.apply();
+                        editor.putBoolean("incomplete", false);
                         sectionPref.setIcon(null);
-                        return false;
                     } else {
-                        sectionPref.setText("Invalid choice");
+                        sectionPref.setTitle("Invalid section number: " + section);
+                        sectionPref.setText("");
                         sectionPref.setIcon(R.drawable.ic_warning_red_48dp);
-                        return false;
+                        editor.putBoolean("incomplete", true);
                     }
+                    editor.apply();
+                    return false;
                 }
             });
 
@@ -319,9 +354,15 @@ public class SettingsActivity extends AppCompatActivity {
                 @Override
                 public boolean onPreferenceChange(@NonNull Preference preference, Object newValue) {
                     trialName = String.valueOf(newValue).trim();
-                    trialNamePref.setTitle("Trial: " + trialName);
                     trialNamePref.setText(trialName);
                     editor.putString("trialName", trialName);
+                    trialNamePref.setTitle("Trial: " + trialName);
+                    editor.commit();
+                    if (trialName.equals("")) {
+                        trialNamePref.setIcon(R.drawable.ic_baseline_warning_24);
+                    } else {
+                        trialNamePref.setIcon(null);
+                    }
                     return false;
                 }
             });
@@ -465,6 +506,15 @@ public class SettingsActivity extends AppCompatActivity {
                     sectionPref.setDialogMessage(sectionsRange);
                     editor.putInt("numsections", numsections);
                     editor.apply();
+                    if ((section > numsections) || (section == 0)) {
+                        sectionPref.setTitle("Invalid section number: " + section);
+                        sectionPref.setText("");
+                        sectionPref.setIcon(R.drawable.ic_warning_red_48dp);
+                    } else {
+                        sectionPref.setTitle("Section: " + section);
+                        sectionPref.setText(String.valueOf(section));
+                        sectionPref.setIcon(null);
+                    }
                     return false;
                 }
             })
@@ -498,11 +548,17 @@ public class SettingsActivity extends AppCompatActivity {
             emailPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                 @Override
                 public boolean onPreferenceChange(@NonNull Preference preference, Object newValue) {
-                    email = newValue.toString();
+                    email = newValue.toString().trim();
                     emailPref.setTitle("Email: " + email);
                     emailPref.setText(email);
-                    editor.putString("email", email);
+//                    editor.putString("email", email);
                     editor.apply();
+
+                    if (email.equals("")) {
+                        emailPref.setIcon(R.drawable.ic_baseline_warning_24);
+                    } else {
+                        emailPref.setIcon(null);
+                    }
                     return false;
                 }
             });

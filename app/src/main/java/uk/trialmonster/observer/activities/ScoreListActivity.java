@@ -535,7 +535,6 @@ public class ScoreListActivity extends AppCompatActivity {
                 Log.e("Upload file Exception", "Exception : "
                         + e.getMessage(), e);
             }
-//            dialog.dismiss();
             return serverResponseCode;
         }
     }
@@ -547,7 +546,7 @@ public class ScoreListActivity extends AppCompatActivity {
                     Toast.LENGTH_LONG).show();
         } else {
             volleyScoreUpload();
-//            markAsDone(trialid);
+            markAsDone(trialid);
         }
     }
 

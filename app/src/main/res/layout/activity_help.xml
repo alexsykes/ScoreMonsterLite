@@ -24,6 +24,16 @@
         android:orientation="horizontal">
 
         <Button
+            android:id="@+id/dataProtection"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.33"
+            android:contentDescription="@string/data_protection"
+            android:onClick="showPrivacy"
+            android:text="@string/privacyText" />
+
+        <Button
             android:id="@+id/helpButton"
             style="?android:attr/buttonBarButtonStyle"
             android:layout_width="wrap_content"
@@ -63,11 +73,18 @@
         <LinearLayout
             android:id="@+id/layout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:orientation="vertical">
+
+            <WebView
+                android:id="@+id/webView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="visible" />
 
             <TextView
                 android:id="@+id/helpApp"
+                android:visibility="gone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
