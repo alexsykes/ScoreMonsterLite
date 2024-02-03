@@ -179,8 +179,6 @@ public class SettingsActivity extends AppCompatActivity {
 
         private void setup() {
             SharedPreferences.Editor editor = localPrefs.edit();
-            // find all prefs
-
 
             EditTextPreference observerPref = findPreference("observer");
             EditTextPreference mobilePref = findPreference("mobile");
@@ -229,22 +227,31 @@ public class SettingsActivity extends AppCompatActivity {
             mobile = localPrefs.getString("mobile", "");
             incomplete = localPrefs.getBoolean("incomplete", false);
 
-            if (isManualTrial) {
-                trialid = -999;
-            }
 
+//          Always visible fields
             observerPref.setVisible(true);
             mobilePref.setVisible(true);
             sectionPref.setVisible(true);
 
-            manualTrialSwitchPref.setVisible(false);
-            trialListPref.setVisible(isLoggedInUser);
+            if (isManualTrial) {
+                trialid = -999;
+            }
 
-            trialNamePref.setVisible(!isLoggedInUser);
-            numLapsPref.setVisible(!isLoggedInUser);
-            numSectionsPref.setVisible(!isLoggedInUser);
-            emailPref.setVisible(!isLoggedInUser);
-
+            if (isLoggedInUser) {
+                manualTrialSwitchPref.setVisible(false);
+                trialListPref.setVisible(true);
+                trialNamePref.setVisible(false);
+                numLapsPref.setVisible(false);
+                numSectionsPref.setVisible(false);
+                emailPref.setVisible(false);
+            } else {
+                manualTrialSwitchPref.setVisible(true);
+                trialListPref.setVisible(false);
+                trialNamePref.setVisible(true);
+                numLapsPref.setVisible(true);
+                numSectionsPref.setVisible(true);
+                emailPref.setVisible(true);
+            }
 
             editor.putLong("startInterval", startInterval);
             editor.putLong("penaltyTariff", penaltyTariff);
@@ -821,26 +828,44 @@ public class SettingsActivity extends AppCompatActivity {
                     Log.d("Volley", "Response: " + response);
                     SharedPreferences localPrefs = PreferenceManager.getDefaultSharedPreferences(getContext());
                     SharedPreferences.Editor editor = localPrefs.edit();
-                    SwitchPreference manualTrialSwitchPref = findPreference("manualTrial");
+
+                    PreferenceCategory loginPrefCategory = findPreference("loginPrefCategory");
+
+                    SwitchPreference advancedSwitchPref = findPreference("show_advanced");
                     ListPreference trialListPref = findPreference("theTrialIndex");
                     EditTextPreference trialNamePref = findPreference("trialName");
                     EditTextPreference numLapsPref = findPreference("numlapsText");
                     EditTextPreference numSectionsPref = findPreference("numsectionsText");
                     EditTextPreference emailPref = findPreference("email");
+                    EditTextPreference usernamePref = findPreference("username");
+                    EditTextPreference passwordPref = findPreference("password");
+
+                    EditTextPreference ridingNumberPref = findPreference("riderText");
+                    SwitchPreference restartClockSwitchPref = findPreference("restart_clock_preference");
+                    SwitchPreference resetScoresSwitchPref = findPreference("reset_scores_preference");
+                    SwitchPreference resetTimesSwitchPref = findPreference("reset_times_preference");
 
                     int id = Integer.parseInt(response);
                     editor.putInt("loggedInUserID", id);
                     isLoggedInUser = (id != 0);
                     editor.putBoolean("isLoggedInUser", isLoggedInUser);
-
-//                    manualTrialSwitchPref.setVisible(!isLoggedInUser);
-//                    manualTrialSwitchPref.setChecked(!isLoggedInUser);
                     trialNamePref.setVisible(!isLoggedInUser);
                     trialListPref.setVisible(isLoggedInUser);
 
                     numLapsPref.setVisible(!isLoggedInUser);
                     numSectionsPref.setVisible(!isLoggedInUser);
                     emailPref.setVisible(!isLoggedInUser);
+                    advancedSwitchPref.setChecked(!isLoggedInUser);
+                    restartClockSwitchPref.setVisible(!isLoggedInUser);
+                    resetScoresSwitchPref.setVisible(!isLoggedInUser);
+                    resetTimesSwitchPref.setVisible(!isLoggedInUser);
+                    advancedSwitchPref.setChecked(!isLoggedInUser);
+                    loginPrefCategory.setVisible(!isLoggedInUser);
+                    usernamePref.setVisible(!isLoggedInUser);
+                    passwordPref.setVisible(!isLoggedInUser);
+
+                    loginPrefCategory.setVisible(!isLoggedInUser);
+
                     if (isLoggedInUser) {
 
                         // Get users trial data
@@ -852,6 +877,7 @@ public class SettingsActivity extends AppCompatActivity {
 
                         editor.putString("theIds", options.get(0).get("ids"));
                         editor.putString("theNames", options.get(0).get("names"));
+
 //                     Update trialListPref
                         CharSequence[] entries = localPrefs.getString("theNames", "Manual Entry").split(",");
                         CharSequence[] entryValues = localPrefs.getString("theIds", "0").split(",");

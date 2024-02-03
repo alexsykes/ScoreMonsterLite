@@ -18,8 +18,11 @@
 
         <EditTextPreference
             android:contentDescription="@string/enterSectionNumber"
+            app:dialogMessage="Section selection"
+            app:dialogTitle="Section Number"
             app:isPreferenceVisible="true"
             app:key="sectionText"
+            app:singleLineTitle="false"
             app:summary="@string/enterSectionNumber"
             app:title="@string/section_number" />
 
@@ -32,8 +35,8 @@
     </PreferenceCategory>
 
     <PreferenceCategory
-        app:key="trial_details"
         android:contentDescription="@string/this_section_sets_details_of_your_trial"
+        app:key="trial_details"
         app:title="@string/trial_header">
 
         <SwitchPreference
@@ -87,9 +90,9 @@
 
     <PreferenceCategory app:title="Mode">
         <SwitchPreference
+            android:contentDescription="@string/enter_timing_mode"
             android:defaultValue="false"
             android:key="timeMode"
-            android:contentDescription="@string/enter_timing_mode"
             android:title="@string/timing_mode_switch" />
 
         <EditTextPreference
@@ -138,29 +141,29 @@
                 android:key="password"
                 android:selectAllOnFocus="true"
                 android:singleLine="true"
-                app:summary="Enter login password"
-                android:title="@string/password" />
+                android:title="@string/password"
+                app:summary="Enter login password" />
         </PreferenceCategory>
 
         <SwitchPreference
-            android:icon="@drawable/ic_warning_24dp"
-            android:defaultValue="false"
-            android:key="restart_clock_preference"
             android:contentDescription="@string/restart_clock"
+            android:defaultValue="false"
+            android:icon="@drawable/ic_warning_24dp"
+            android:key="restart_clock_preference"
             android:summary="@string/reset_clock"
             android:title="@string/restart_clock" />
         <SwitchPreference
-            android:icon="@drawable/ic_warning_24dp"
-            android:defaultValue="false"
-            android:key="reset_scores_preference"
             android:contentDescription="@string/reset_scores"
+            android:defaultValue="false"
+            android:icon="@drawable/ic_warning_24dp"
+            android:key="reset_scores_preference"
             android:summary="@string/reset_scores"
             android:title="@string/reset_scores" />
         <SwitchPreference
-            android:icon="@drawable/ic_warning_24dp"
-            android:defaultValue="false"
-            android:key="reset_times_preference"
             android:contentDescription="@string/reset_times"
+            android:defaultValue="false"
+            android:icon="@drawable/ic_warning_24dp"
+            android:key="reset_times_preference"
             android:summary="@string/reset_times"
             android:title="@string/reset_times" />
     </PreferenceCategory>

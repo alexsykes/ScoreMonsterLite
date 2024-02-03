@@ -309,7 +309,7 @@ public class MainActivity extends AppCompatActivity {
 
         } else {
             sectionLabelLayout.setVisibility(View.GONE);
-            status = theTrialName + " - Observer: " + observer;
+            status = theTrialName + " - Observer: " + observer + " - Section: " + section;
             statusLine.setText(status);
             saveButton.setText(R.string.save);
             scoreLabel.setVisibility(View.VISIBLE);

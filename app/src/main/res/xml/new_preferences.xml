@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory
+        android:key="logged_in_user"
+        android:title="Preference category"
+        app:isPreferenceVisible="true"
+        app:title="Logged-in user">
+        <ListPreference
+            android:contentDescription="@string/select_trial_from_available_choices"
+            android:title="@string/select_trial"
+            app:entries="@array/trial_entries"
+            app:entryValues="@array/trial_values"
+            app:key="theTrialIndex"
+            app:summary="@string/select_trial"
+            app:title="@string/trial_name" />
+        <EditTextPreference
+            android:defaultValue=""
+            android:key="sectionText"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:title="@string/section_number"
+            app:isPreferenceVisible="true" />
+        <EditTextPreference
+            android:defaultValue=""
+            android:key="observer"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:title="@string/observerName"
+            app:dialogMessage="Please enter observer's name"
+            app:dialogTitle="Observer name"
+            app:isPreferenceVisible="true" />
+        <EditTextPreference
+            android:contentDescription="@string/enterRiderNumber"
+            android:selectAllOnFocus="true"
+            app:key="riderText"
+            app:summary="@string/riding_number"
+            app:title="@string/riding_number" />
+        <EditTextPreference
+            android:defaultValue=""
+            android:key="mobile"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:title="@string/observerContactNumber"
+            app:isPreferenceVisible="true" />
+
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:key="guest_user"
+        android:title="Preference category"
+        app:isPreferenceVisible="true"
+        app:title="Guest user">
+
+        <EditTextPreference
+            android:defaultValue="Default value"
+            android:key="edit_text_preference_1"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:title="Edit text preference" />
+    </PreferenceCategory>
+</PreferenceScreen>
