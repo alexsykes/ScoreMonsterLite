@@ -39,13 +39,6 @@
         app:key="trial_details"
         app:title="@string/trial_header">
 
-        <SwitchPreference
-            android:contentDescription="@string/toggleManualEntry"
-            android:defaultValue="false"
-            android:key="manualTrial"
-            android:title="Manual"
-            app:summary="@string/manual_mode_switch" />
-
         <ListPreference
             android:contentDescription="@string/select_trial_from_available_choices"
             android:title="@string/select_trial"
