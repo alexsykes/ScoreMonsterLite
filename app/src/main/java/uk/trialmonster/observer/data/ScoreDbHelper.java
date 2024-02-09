@@ -147,12 +147,13 @@ public class ScoreDbHelper extends SQLiteOpenHelper {
     }
 
     public Cursor getScoresForEmail(int trialid) {
-        String rider, section, scores;
+        String rider, section, scores, observer;
 
         SQLiteDatabase db = this.getWritableDatabase();
         ArrayList<ScoreData> theScores = new ArrayList<>();
 //        SQLiteDatabase db = this.getReadableDatabase();
-        String sql = "SELECT rider, section, GROUP_CONCAT(score, '') AS scores FROM (SELECT " +
+        String sql = "SELECT rider, section, GROUP_CONCAT(score, '') AS scores FROM " +
+                "(SELECT " +
                 "score, " +
                 "section, rider, lap FROM scores WHERE trialid = " + trialid +
                 " ORDER BY rider, " +
