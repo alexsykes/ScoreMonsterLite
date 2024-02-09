@@ -75,7 +75,7 @@ public class ScoreListActivity extends AppCompatActivity {
     // Button processButton;
     int serverResponseCode = 0, section, trialid;
     private ScoreDbHelper scoreDbHelper;
-    private String filename, email;
+    private String filename, email, observer, mobile;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -101,6 +101,8 @@ public class ScoreListActivity extends AppCompatActivity {
         localPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         section = localPrefs.getInt("section", 1);
         trialid = localPrefs.getInt("trialid", -999);
+        observer = localPrefs.getString("observer", "");
+        mobile = localPrefs.getString("mobile", "");
 
         // Create database connection
 //        mDbHelper = new ScoreDbHelper(this);
@@ -377,7 +379,9 @@ public class ScoreListActivity extends AppCompatActivity {
             CSVWriter csvWrite = new CSVWriter(new FileWriter(exportDir));
 
 //            Prepare and write filednames as header
+            String[] details = {"Observer: ", observer, mobile};
             String[] header = {"Rider", "Section", "Scores"};
+            csvWrite.writeNext(details, false);
             csvWrite.writeNext(header, false);
 
             // Get score data for current trial
@@ -386,7 +390,7 @@ public class ScoreListActivity extends AppCompatActivity {
                 section = curChild.getString(1);
                 rider = curChild.getString(0);
                 scores = curChild.getString(2);
-
+//                observer = curChild.getString(3);
                 String[] arrStr = {rider, section, scores
                 };
 
@@ -535,7 +539,6 @@ public class ScoreListActivity extends AppCompatActivity {
                 Log.e("Upload file Exception", "Exception : "
                         + e.getMessage(), e);
             }
-//            dialog.dismiss();
             return serverResponseCode;
         }
     }
@@ -547,7 +550,7 @@ public class ScoreListActivity extends AppCompatActivity {
                     Toast.LENGTH_LONG).show();
         } else {
             volleyScoreUpload();
-//            markAsDone(trialid);
+            markAsDone(trialid);
         }
     }
 

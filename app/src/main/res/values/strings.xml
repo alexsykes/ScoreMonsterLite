@@ -272,4 +272,30 @@ To change a score, click on the list icon in the toolbar. This will display a li
     <string name="username">Username</string>
     <string name="account">account</string>
     <string name="X">x</string>
+    <string name="timing_mode_switch">Timing mode switch</string>
+    <string name="reset_clock">Reset clock</string>
+    <string name="manual_mode_switch">Manual mode switch</string>
+    <string name="data_protection">Privacy</string>
+    <string name="privacyText">Your data</string>
+    <string name="privacy"><![CDATA[<b>This Privacy Notice explains how TrialMonster uses the personal data we collect from you when you use this app.</b>
+<p><b>What data do we collect?</b><br>
+TrialMonster Observer Edition collects the following data:
+Personal identification data you directly provide - name, email address and phone number.</p>
+<p><b>How do we collect your data?</b><br>
+We collect and process your data when you act as an Observer in a motorcycle trial.</p>
+<p><b>How will we use your data?</b><br>
+Your data will be used for sending the data which you have collected to you and for contacting you relating to event data which you have collected.</p>
+<p><b>How do we store your data?</b><br>
+TrialMonster securely stores your data at GoDaddy premises or on cloud services provided by GoDaddy. Your data will not be published for general access nor disclosed or sold to third parties. TrialMonster, however, assumes no responsibility for the security of this information whilst on GoDaddy servers.</p>
+<p><b>How do I request you to delete my data?</b><br>
+If you wish your data to be deleted, please send an email request to admin@trialmonster.uk</p>
+<p><b>Changes to our Privacy Notice</b><br>We will revise or update this Notice if our practices change, or as we develop better ways to keep you informed about them. Please refer back to this page often for the latest information and the effective date of any changes. If we decide to change this Notice, we will post a new Notice on our website and change the date at the bottom. Changes to the Notice shall not apply retroactively.</p>
+<p><b>How to contact us</b><br>You may request access to your personal data in order to verify its accuracy and may request correction. To do so in connection with your use of this app please contact admin@trialmonster.uk </p>
+]]></string>
+    <string name="title_activity_settings_prefs">SettingsPrefs</string>
+
+    <!-- Preference Titles -->
+    <string name="messages_header">Messages</string>
+    <string name="sync_header">Sync</string>
+    <string name="reply_title">Default reply action</string>
 </resources>

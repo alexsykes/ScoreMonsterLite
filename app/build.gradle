@@ -6,8 +6,8 @@ android {
         applicationId "uk.trialmonster.observer"
         minSdkVersion 24
         targetSdkVersion 33
-        versionCode 24
-        versionName "ariel red hunter"
+        versionCode 30
+        versionName "ariel leader"
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
         vectorDrawables.useSupportLibrary = true
     }
@@ -25,7 +25,6 @@ android {
         abortOnError false
     }
     namespace 'uk.trialmonster.observer'
-
 }
 
 dependencies {
