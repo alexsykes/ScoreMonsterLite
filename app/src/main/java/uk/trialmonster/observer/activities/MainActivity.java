@@ -324,10 +324,7 @@ public class MainActivity extends AppCompatActivity {
             numberPadFragment = new NumberPadFragment();
             getSupportFragmentManager().beginTransaction().add(R.id.top, numberPadFragment).commit();
         }
-//        if (touchFragment == null && !timeMode) {
-//            touchFragment = new TouchFragment();
-//            getSupportFragmentManager().beginTransaction().add(R.id.bottom, touchFragment).commit();
-//        }
+
         if (touchFragment != null && timeMode) {
             getSupportFragmentManager().beginTransaction().remove(touchFragment).commit();
         }

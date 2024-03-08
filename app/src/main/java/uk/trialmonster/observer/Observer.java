@@ -121,7 +121,7 @@ public class Observer extends Application {
     private void getTrialListFromServer() {
         // Instantiate the RequestQueue.
         RequestQueue queue = Volley.newRequestQueue(this);
-        String url = "https://android.trialmonster.uk/getTrialListScoreMonster.php";
+        String url = "https://android.trialmonster.uk/getTrialListScoreMonsterLive.php";
 
 // Request a string response from the provided URL.
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,

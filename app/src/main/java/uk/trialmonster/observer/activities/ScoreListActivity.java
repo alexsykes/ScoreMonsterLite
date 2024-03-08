@@ -58,7 +58,6 @@ public class ScoreListActivity extends AppCompatActivity {
 //    String TAG = "Info";
     /**********  File Path *************/
     final String uploadFilePath = "mnt/sdcard/Documents/Scoremonster/";
-    //    private final String baseURL = "https://android.trialmonster.uk/addCSVtodb.php?trialid=";
     File exportDir = new File(Environment.getExternalStoragePublicDirectory("Documents/Scoremonster"), "");
 
     MenuItem emailMenuItem;
@@ -76,6 +75,7 @@ public class ScoreListActivity extends AppCompatActivity {
     int serverResponseCode = 0, section, trialid;
     private ScoreDbHelper scoreDbHelper;
     private String filename, email, observer, mobile;
+    private boolean isLoggedInUser;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -103,6 +103,7 @@ public class ScoreListActivity extends AppCompatActivity {
         trialid = localPrefs.getInt("trialid", -999);
         observer = localPrefs.getString("observer", "");
         mobile = localPrefs.getString("mobile", "");
+        isLoggedInUser = localPrefs.getBoolean("isLoggedInUser", false);
 
         // Create database connection
 //        mDbHelper = new ScoreDbHelper(this);
@@ -121,7 +122,7 @@ public class ScoreListActivity extends AppCompatActivity {
         emailMenuItem = menu.findItem(R.id.email);
         uploadMenuItem = menu.findItem(R.id.upload);
 
-        if (trialid == -999) {
+        if (trialid == -999 || !isLoggedInUser) {
             uploadMenuItem.setEnabled(false);
             uploadMenuItem.setVisible(false);
         } else {
@@ -569,7 +570,9 @@ public class ScoreListActivity extends AppCompatActivity {
             long time = date.getTime();
             String ts = String.valueOf(time);
             filename = "data_" + ts + ".csv";
-            String sendMailURL = "https://www.trialmonster.uk/android/sendMailWithFile.php?id=" + ts + "&trialid=" + trialid + "&email=" + email;
+            String sendMailURL =
+                    "https://www.trialmonster.uk/android/sendMailWithFileLive.php?id=" + ts +
+                            "&trialid=" + trialid + "&email=" + email;
 
             newSaveToCSV();
             processCSV(sendMailURL);
@@ -606,7 +609,7 @@ public class ScoreListActivity extends AppCompatActivity {
 
     private void volleyScoreUpload() {
         RequestQueue requestQueue = Volley.newRequestQueue(this);
-        String URL = "https://android.trialmonster.uk/androidScoreUpload.php";
+        String URL = "https://android.trialmonster.uk/androidScoreUploadLive.php";
 
         JSONArray data = getDataForUpload();
         String requestBody = data.toString();
