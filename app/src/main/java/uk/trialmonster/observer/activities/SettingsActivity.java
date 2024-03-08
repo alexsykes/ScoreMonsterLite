@@ -138,8 +138,10 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     public static class SettingsFragment extends PreferenceFragmentCompat {
+        public static final String TAG = "Info";
         SharedPreferences localPrefs;
-        String email, username, password, observer, mobile, trialName;
+        String email, username, password, observer, mobile, trialName, adminLockPass,
+                adminLockNewPass, adminLockConfirmPass;
         int trialid;
         int section;
         int numsections;
@@ -185,8 +187,10 @@ public class SettingsActivity extends AppCompatActivity {
             EditTextPreference observerPref = findPreference("observer");
             EditTextPreference mobilePref = findPreference("mobile");
             EditTextPreference sectionPref = findPreference("sectionText");
+            EditTextPreference adminLockNewPassPref = findPreference("adminLockNewPass");
+            EditTextPreference adminLockPassPref = findPreference("adminLockPass");
+            EditTextPreference adminLockConfirmPassPref = findPreference("adminLockConfirmPass");
 
-//            SwitchPreference manualTrialSwitchPref = findPreference("manualTrial");
             ListPreference trialListPref = findPreference("theTrialIndex");
 
             EditTextPreference trialNamePref = findPreference("trialName");
@@ -228,6 +232,7 @@ public class SettingsActivity extends AppCompatActivity {
             observer = localPrefs.getString("observer", "");
             mobile = localPrefs.getString("mobile", "");
             incomplete = localPrefs.getBoolean("incomplete", false);
+            adminLockPass = localPrefs.getString("adminLockPass", "");
 
 
 //          Always visible fields
@@ -351,41 +356,6 @@ public class SettingsActivity extends AppCompatActivity {
                 }
             });
 
-//            // Manual trial pref
-//            assert manualTrialSwitchPref != null;
-////            manualTrialSwitchPref.setVisible(false);
-//            manualTrialSwitchPref.setChecked(isManualTrial);
-//            manualTrialSwitchPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-//                @Override
-//                public boolean onPreferenceChange(Preference preference, Object newValue) {
-//
-//                    boolean isManualTrial = Boolean.valueOf(newValue.toString());
-//
-//                    Log.i("info", "Manual trial preference changed: ");
-//                    manualTrialSwitchPref.setChecked(isManualTrial);
-//                    observerPref.setVisible(true);
-//                    mobilePref.setVisible(true);
-//                    sectionPref.setVisible(true);
-//
-//                    manualTrialSwitchPref.setVisible(false);
-//                    trialListPref.setVisible(!isManualTrial);
-//
-//                    trialNamePref.setVisible(isManualTrial);
-//                    numLapsPref.setVisible(isManualTrial);
-//                    numSectionsPref.setVisible(isManualTrial);
-//                    emailPref.setVisible(isManualTrial);
-//
-//                    if (isManualTrial) {
-//                        trialid = -999;
-//
-//                        SharedPreferences.Editor editor = localPrefs.edit();
-//                        editor.putBoolean("isManualTrial", isManualTrial);
-//                        editor.putInt("trialid", trialid);
-//                        editor.apply();
-//                    }
-//                    return false;
-//                }
-//            });
 
             //            trialName pref
             assert trialNamePref != null;
@@ -409,14 +379,6 @@ public class SettingsActivity extends AppCompatActivity {
             });
 
             //TODO
-            // Settings - move
-//            trialNamePref.setVisible(isManualTrial);
-//            trialListPref.setVisible(!isManualTrial);
-//            numLapsPref.setVisible(isManualTrial);
-//            numSectionsPref.setVisible(isManualTrial);
-//            emailPref.setVisible(isManualTrial);
-//            sectionPref.setVisible(true);
-//            loginPrefCategory.setVisible(false);
 
 //            Username preference
             assert usernamePref != null;
@@ -464,6 +426,30 @@ public class SettingsActivity extends AppCompatActivity {
                     if (username != "") {
                         checkLogin(password, username);
                     }
+                    return false;
+                }
+            });
+
+//          Admin lock password
+            assert adminLockPassPref != null;
+            adminLockPassPref.setVisible(true);
+            adminLockPassPref.setText("");
+            adminLockPassPref.setOnBindEditTextListener(editText -> editText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD));
+            adminLockPassPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                @Override
+                public boolean onPreferenceChange(@NonNull Preference preference, Object newValue) {
+                    // Add check to empty return
+                    if (newValue.toString().trim().length() == 0) {
+                        Log.i("Note", "Empty");
+                        return false;
+                    }
+                    String returnedValue = newValue.toString().trim();
+                    if (returnedValue.equals(adminLockPass)) {
+                        Log.i(TAG, "Password match: " + returnedValue);
+                    } else {
+                        Log.i(TAG, "Password mismatch: " + returnedValue);
+                    }
+
                     return false;
                 }
             });

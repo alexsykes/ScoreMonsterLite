@@ -115,6 +115,33 @@
             android:title="@string/advanced_settings"
             app:summary="@string/advanced__settings" />
 
+        <EditTextPreference
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="textPassword"
+            android:key="adminLock"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:title="@string/admin_password"
+            app:key="adminLockPass" />
+        <EditTextPreference
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="textPassword"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:title="@string/new_password"
+            app:enableCopying="false"
+            app:key="adminLockNewPass" />
+        <EditTextPreference
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="textPassword"
+            android:key="adminLockConfirmPass"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:title="@string/confirm_password"
+            app:key="adminLockConfirmPass" />
         <PreferenceCategory
             android:key="loginPrefCategory"
             android:title="@string/login_details">
