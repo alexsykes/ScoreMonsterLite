@@ -24,7 +24,6 @@ public class TrialDbHelper extends SQLiteOpenHelper {
      * @param context of the app
      */
     public TrialDbHelper(Context context) {
-
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 

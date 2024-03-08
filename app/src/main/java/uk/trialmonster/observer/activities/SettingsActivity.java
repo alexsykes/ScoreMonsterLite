@@ -822,7 +822,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         private void checkLogin(String newValue, String username) {
             RequestQueue requestQueue = Volley.newRequestQueue(getContext());
-            String URL = "https://android.trialmonster.uk/joomlaAuth.php";
+            String URL = "https://android.trialmonster.uk/joomlaAuthLive.php";
 
             StringRequest stringRequest = new StringRequest(Request.Method.POST, URL, new Response.Listener<String>() {
 
