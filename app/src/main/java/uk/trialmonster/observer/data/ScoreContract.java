@@ -31,6 +31,7 @@ public class ScoreContract extends AppCompatActivity {
         public final static String COLUMN_SCORE_TOTAL = "total";
         public final static String COLUMN_SCORE_SCOREDATA = "scoredata";
         public final static String COLUMN_SCORE_SYNC = "sync";
+        public final static String COLUMN_SCORE_DELETED = "deleted";
         public final static String COLUMN_SCORE_COUNT = "count";
     }
 }

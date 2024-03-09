@@ -161,6 +161,7 @@ A failure is considered to have occurred if:
         <item>Three</item>
         <item>Five</item>
         <item>Ten</item>
+        <item>Delete score</item>
     </string-array>
     <string name="helpApp">
 <![CDATA[

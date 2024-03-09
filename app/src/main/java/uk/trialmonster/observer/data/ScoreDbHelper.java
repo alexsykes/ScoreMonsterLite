@@ -131,6 +131,12 @@ public class ScoreDbHelper extends SQLiteOpenHelper {
         return numLaps;
     }
 
+    public void markAsDeleted(String scoreid) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String deleted = "1";
+        String query = "UPDATE scores SET deleted = 1, updated = DATETIME('now') WHERE _id = " + scoreid;
+        db.execSQL(query);
+    }
 
     public void markAsDone(int trialid) {
         SQLiteDatabase db = this.getReadableDatabase();
@@ -156,6 +162,7 @@ public class ScoreDbHelper extends SQLiteOpenHelper {
                 "(SELECT " +
                 "score, " +
                 "section, rider, lap FROM scores WHERE trialid = " + trialid +
+                " AND deleted = '0'" +
                 " ORDER BY rider, " +
                 "section, " +
                 "lap) GROUP BY  section, rider ORDER BY lap ASC";
@@ -207,7 +214,7 @@ public class ScoreDbHelper extends SQLiteOpenHelper {
     public ArrayList<HashMap<String, String>> getScoreListForUpload(int trialid) {
         SQLiteDatabase db = this.getWritableDatabase();
         ArrayList<HashMap<String, String>> scoreList = new ArrayList<>();
-        String query = "SELECT * FROM scores WHERE trialid = " + trialid + " AND sync = -1 ORDER " +
+        String query = "SELECT * FROM scores WHERE trialid = " + trialid + " AND sync = -1 AND deleted = 0 ORDER " +
                 "BY _id DESC";
 //        Log.i("Query", query);
         //  String query = "SELECT * FROM scores  ORDER BY _id DESC";
@@ -247,5 +254,29 @@ public class ScoreDbHelper extends SQLiteOpenHelper {
 
         cursor.close();
         return trialDetail;
+    }
+
+    public ArrayList<HashMap<String, String>> getUndeletedScoreList(int trialid) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ArrayList<HashMap<String, String>> scoreList = new ArrayList<>();
+        String query = "SELECT * FROM scores WHERE trialid = " + trialid + " AND deleted = 0 ORDER BY _id DESC";
+//       Log.i("Query", query);
+        //  String query = "SELECT * FROM scores  ORDER BY _id DESC";
+        Cursor cursor = db.rawQuery(query, null);
+        while (cursor.moveToNext()) {
+            HashMap<String, String> scores = new HashMap<>();
+            scores.put("id", cursor.getString(cursor.getColumnIndex(ScoreContract.ScoreEntry._ID)));
+            scores.put("rider", cursor.getString(cursor.getColumnIndex(ScoreContract.ScoreEntry.COLUMN_SCORE_RIDER)));
+            scores.put("lap", cursor.getString(cursor.getColumnIndex(ScoreContract.ScoreEntry.COLUMN_SCORE_LAP)));
+            scores.put("score", cursor.getString(cursor.getColumnIndex(ScoreContract.ScoreEntry.COLUMN_SCORE_SCORE)));
+            scores.put("section", cursor.getString(cursor.getColumnIndex(ScoreContract.ScoreEntry.COLUMN_SCORE_SECTION)));
+            scores.put("trialid", cursor.getString(cursor.getColumnIndex(ScoreContract.ScoreEntry.COLUMN_SCORE_TRIALID)));
+            scores.put("sync", cursor.getString(cursor.getColumnIndex(ScoreContract.ScoreEntry.COLUMN_SCORE_SYNC)));
+            scores.put("edited", cursor.getString(cursor.getColumnIndex(ScoreContract.ScoreEntry.COLUMN_SCORE_EDITED)));
+            scoreList.add(scores);
+        }
+        cursor.close();
+        db.close();
+        return scoreList;
     }
 }

@@ -219,11 +219,18 @@ public class ScoreListActivity extends AppCompatActivity {
                             break;
                         case 5:
                             score1 = "x";
-
+                            break;
+                        case 6:
+                            score1 = "d";
                             break;
                     }
                     scoreDbHelper = new ScoreDbHelper(ScoreListActivity.this);
-                    scoreDbHelper.update(scoreid, score1);
+                    if(score1.contentEquals("d"))
+                    {
+                        scoreDbHelper.markAsDeleted(scoreid);
+                    } else {
+                        scoreDbHelper.update(scoreid, score1);
+                    }
                     scoreDbHelper.close();
                     populateScoreList();
                 })
@@ -235,7 +242,8 @@ public class ScoreListActivity extends AppCompatActivity {
 
     private void populateScoreList() {
         scoreDbHelper = new ScoreDbHelper(this);
-        theScoreList = scoreDbHelper.getScoreList(trialid);
+//        theScoreList = scoreDbHelper.getScoreList(trialid);
+        theScoreList = scoreDbHelper.getUndeletedScoreList(trialid);
 //        Log.i("trialid", "" + trialid);
         scoreView = findViewById(R.id.scoreView);
         LinearLayoutManager llm = new LinearLayoutManager(this);

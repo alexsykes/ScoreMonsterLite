@@ -14,6 +14,7 @@ public class Score {
     String updated;
     String edited;
     String scoredata;
+    String deleted;
 
     public Score(String section, String score,  String rider, String lap, String trialid, String count, String observer, String created, String updated, String edited, String scoredata) {
         this.section = section;
@@ -28,9 +29,10 @@ public class Score {
         this.edited = edited;
         this.scoredata = scoredata;
         this.sync = "-1";
+        this.deleted = "0";
     }
 
-    public Score(String section, String score,  String rider, String lap, String trialid, String count, String observer, String created, String updated, String edited, String scoredata, String sync) {
+    public Score(String section, String score,  String rider, String lap, String trialid, String count, String observer, String created, String updated, String edited, String scoredata, String sync, String deleted) {
         this.section = section;
         this.score = score;
         this.rider = rider;
@@ -43,6 +45,7 @@ public class Score {
         this.edited = edited;
         this.scoredata = scoredata;
         this.sync = sync;
+        this.deleted = deleted;
     }
 
     public Score(String section, String score, String rider, String lap, int _id, String observer) {
@@ -52,6 +55,7 @@ public class Score {
         this.lap = lap;
         this.sync = "-1";
         this._id = _id;
+        this.deleted = "0";
     }
 
     public Score(String section, String score, String rider, String lap, int _id, String observer, String sync) {
@@ -61,6 +65,7 @@ public class Score {
         this.lap = lap;
         this.sync = sync;
         this._id = _id;
+        this.deleted = "0";
     }
 
     public Score(String section, String score, String rider, String lap, int parseInt, String observer, String created, String sync) {
@@ -71,6 +76,7 @@ public class Score {
         this.sync = sync;
         this.created = created;
         this._id = _id;
+        this.deleted = "0";
     }
 
     public int get_id() {
