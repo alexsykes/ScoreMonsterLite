@@ -249,4 +249,23 @@ public class ScoreDbHelper extends SQLiteOpenHelper {
         cursor.close();
         return trialDetail;
     }
+
+    public ArrayList<HashMap<String, String>> getNewScoreListForUpload(int trialid) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ArrayList<HashMap<String, String>> scoreList = new ArrayList<>();
+        String query = "SELECT * FROM scores WHERE trialid = " + trialid + " AND sync = -1 ORDER " +
+                "BY _id DESC";
+
+        Cursor cursor = db.rawQuery(query, null);
+        while (cursor.moveToNext()) {
+            HashMap<String, String> scores = new HashMap<>();
+            scores.put("id", cursor.getString(cursor.getColumnIndex(ScoreContract.ScoreEntry._ID)));
+            scores.put("score", cursor.getString(cursor.getColumnIndex(ScoreContract.ScoreEntry.COLUMN_SCORE_SCORE)));
+            scores.put("updated",
+                    cursor.getString(cursor.getColumnIndex(ScoreContract.ScoreEntry.COLUMN_SCORE_UPDATED)));
+            scoreList.add(scores);
+        }
+        cursor.close();
+        return scoreList;
+    }
 }

@@ -551,7 +551,7 @@ public class ScoreListActivity extends AppCompatActivity {
                     Toast.LENGTH_LONG).show();
         } else {
             volleyScoreUpload();
-            markAsDone(trialid);
+//            markAsDone(trialid);
         }
     }
 
@@ -580,28 +580,19 @@ public class ScoreListActivity extends AppCompatActivity {
     }
 
     private JSONArray getDataForUpload() {
-        ArrayList<HashMap<String, String>> dataToUpload = scoreDbHelper.getScoreListForUpload(trialid);
+        ArrayList<HashMap<String, String>> dataToUpload = scoreDbHelper.getNewScoreListForUpload(trialid);
         JSONArray scoresJSONArray = new JSONArray();
 
         for (int i = 0; i < dataToUpload.size(); i++) {
             JSONArray score = new JSONArray();
             HashMap<String, String> scoreItem = dataToUpload.get(i);
             score.put(scoreItem.get("id"));
-            score.put(scoreItem.get("rider"));
-            score.put(scoreItem.get("lap"));
-//            score.put(scoreItem.get("score"));
             if (scoreItem.get("score").equals("x")) {
                 score.put("X");
             } else {
                 score.put(scoreItem.get("score"));
             }
-            score.put(scoreItem.get("section"));
-            score.put(scoreItem.get("trialid"));
-            score.put(scoreItem.get("sync"));
-            score.put(scoreItem.get("edited"));
-            score.put(scoreItem.get("created"));
             score.put(scoreItem.get("updated"));
-
             scoresJSONArray.put(score);
         }
         return scoresJSONArray;
@@ -609,7 +600,7 @@ public class ScoreListActivity extends AppCompatActivity {
 
     private void volleyScoreUpload() {
         RequestQueue requestQueue = Volley.newRequestQueue(this);
-        String URL = "https://android.trialmonster.uk/androidScoreUploadLive.php";
+        String URL = "https://android.trialmonster.uk/androidNewScoreUploadLive.php";
 
         JSONArray data = getDataForUpload();
         String requestBody = data.toString();
