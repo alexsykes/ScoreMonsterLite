@@ -8,42 +8,42 @@ public class Score {
     String rider;
     String lap;
     String trialid;
-    String count;
-    String observer;
+//    String count;
+//    String observer;
     String created;
     String updated;
     String edited;
-    String scoredata;
+//    String scoredata;
     String deleted;
 
-    public Score(String section, String score,  String rider, String lap, String trialid, String count, String observer, String created, String updated, String edited, String scoredata) {
+    public Score(String section, String score,  String rider, String lap, String trialid, String created, String updated, String edited) {
         this.section = section;
         this.score = score;
         this.rider = rider;
         this.lap = lap;
         this.trialid = trialid;
-        this.count = count;
-        this.observer = observer;
+//        this.count = count;
+//        this.observer = observer;
         this.created = created;
         this.updated = updated;
         this.edited = edited;
-        this.scoredata = scoredata;
+//        this.scoredata = scoredata;
         this.sync = "-1";
         this.deleted = "0";
     }
 
-    public Score(String section, String score,  String rider, String lap, String trialid, String count, String observer, String created, String updated, String edited, String scoredata, String sync, String deleted) {
+    public Score(String section, String score,  String rider, String lap, String trialid, String created, String updated, String edited,  String sync, String deleted) {
         this.section = section;
         this.score = score;
         this.rider = rider;
         this.lap = lap;
         this.trialid = trialid;
-        this.count = count;
-        this.observer = observer;
+//        this.count = count;
+//        this.observer = observer;
         this.created = created;
         this.updated = updated;
         this.edited = edited;
-        this.scoredata = scoredata;
+//        this.scoredata = scoredata;
         this.sync = sync;
         this.deleted = deleted;
     }
@@ -95,9 +95,7 @@ public class Score {
         return trialid;
     }
 
-    public String getCount() {
-        return count;
-    }
+
 
     public String getCreated() {
         return created;
@@ -111,13 +109,13 @@ public class Score {
         return edited;
     }
 
-    public String getScoredata() {
-        return scoredata;
-    }
+//    public String getScoredata() {
+//        return scoredata;
+//    }
 
-    public String getObserver() {
-        return observer;
-    }
+//    public String getObserver() {
+//        return observer;
+//    }
 
     public String getID(){
         return Integer.toString(_id);
