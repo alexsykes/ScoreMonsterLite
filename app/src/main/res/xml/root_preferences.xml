@@ -17,6 +17,16 @@
             app:title="@string/contact" />
 
         <EditTextPreference
+            android:contentDescription="@string/enterDayNumber"
+            app:dialogMessage="Day selection"
+            app:dialogTitle="Day Number"
+            app:isPreferenceVisible="true"
+            app:key="dayText"
+            app:singleLineTitle="false"
+            app:summary="@string/enterDayNumber"
+            app:title="@string/day_number" />
+
+        <EditTextPreference
             android:contentDescription="@string/enterSectionNumber"
             app:dialogMessage="Section selection"
             app:dialogTitle="Section Number"

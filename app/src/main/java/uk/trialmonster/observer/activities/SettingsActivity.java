@@ -112,7 +112,8 @@ public class SettingsActivity extends AppCompatActivity {
     private void populateTrialList(int loggedInUserID) {
         localPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor editor = localPrefs.edit();
-        theTrialList = mDbHelper.getTrialList(loggedInUserID);
+//        theTrialList = mDbHelper.getTrialList(loggedInUserID);
+
         options = mDbHelper.getPrefsOptions(loggedInUserID);
 
         editor.putString("theIds", options.get(0).get("ids"));
@@ -141,11 +142,13 @@ public class SettingsActivity extends AppCompatActivity {
         public static final String TAG = "Info";
         SharedPreferences localPrefs;
         String email, username, password, observer, mobile, trialName, adminLockPass,
-                adminLockNewPass, adminLockConfirmPass;
+                adminLockNewPass, adminLockConfirmPass, dayText;
         int trialid;
         int section;
         int numsections;
         int numlaps;
+        int numdays;
+        int dayNum;
         int mode;
         int ridingNumber;
         int loggedInUserID;
@@ -196,6 +199,7 @@ public class SettingsActivity extends AppCompatActivity {
 
             EditTextPreference trialNamePref = findPreference("trialName");
             EditTextPreference numLapsPref = findPreference("numlapsText");
+            EditTextPreference daysPref = findPreference("dayText");
             EditTextPreference numSectionsPref = findPreference("numsectionsText");
             EditTextPreference emailPref = findPreference("email");
 
@@ -219,6 +223,7 @@ public class SettingsActivity extends AppCompatActivity {
             section = localPrefs.getInt("section", 1);
             numsections = localPrefs.getInt("numsections", 1);
             numlaps = localPrefs.getInt("numlaps", 1);
+            numdays = localPrefs.getInt("numdays", 1);
             ridingNumber = localPrefs.getInt("ridingNumber", 0);
             penaltyTariff = localPrefs.getLong("penaltyTariff", 60);
             startInterval = localPrefs.getLong("startInterval", 60);
@@ -236,6 +241,10 @@ public class SettingsActivity extends AppCompatActivity {
             mobile = localPrefs.getString("mobile", "");
             incomplete = localPrefs.getBoolean("incomplete", false);
             adminLockPass = localPrefs.getString("adminLockPass", "13151");
+            dayText = localPrefs.getString("dayText", "1");
+            dayNum = localPrefs.getInt("dayNum", 1);
+
+
             if (adminLockPass.length() < 1) {
                 adminLockPass = "13151";
             }
@@ -323,6 +332,49 @@ public class SettingsActivity extends AppCompatActivity {
                     return false;
                 }
             });
+
+//          Day selection
+            assert daysPref != null;
+            String daysRange = "1 to " + numdays;
+            daysPref.setDialogMessage(daysRange);
+            daysPref.setTitle("Day: " + dayText);
+            if ((dayNum > numdays) || (dayNum == 0)) {
+                daysPref.setTitle("Invalid day number: " + dayNum);
+                daysPref.setText(dayText);
+                daysPref.setIcon(R.drawable.ic_warning_red_48dp);
+            }
+            daysPref.setOnBindEditTextListener(editText -> editText.setInputType(InputType.TYPE_CLASS_NUMBER));
+            daysPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                @Override
+                public boolean onPreferenceChange(Preference preference, Object newValue) {
+                    // Add check to empty return
+                    dayText = newValue.toString().trim();
+
+                    if (dayText.equals("")) {
+                        daysPref.setIcon(R.drawable.ic_warning_red_48dp);
+                        editor.putString("dayText", "1");
+                        editor.putInt("dayNum", 1);
+                        editor.apply();
+                        return false;
+                    }
+                    dayNum = Integer.parseInt(dayText);
+                    if (dayNum == 0 || dayNum > numdays) {
+
+                        daysPref.setIcon(R.drawable.ic_warning_red_48dp);
+                        return false;
+                    }
+
+                    daysPref.setTitle("Day: " + dayText);
+                    daysPref.setIcon(null);
+
+                    editor.putString("dayText", dayText);
+                    editor.putInt("dayNum", dayNum);
+                    editor.apply();
+                    return false;
+                }
+            });
+
+
 
             // Selected section
             assert sectionPref != null;
@@ -808,6 +860,8 @@ public class SettingsActivity extends AppCompatActivity {
                     HashMap<String, String> theTrialData;
                     theTrialData = getTrialData(trialid).get(0);
                     numsections = Integer.parseInt(Objects.requireNonNull(theTrialData.get("numsections")));
+                    numdays =
+                            Integer.parseInt(Objects.requireNonNull(theTrialData.get("numdays")));
                     numlaps = Integer.parseInt(Objects.requireNonNull(theTrialData.get("numlaps")));
                     mode = Integer.parseInt(Objects.requireNonNull(theTrialData.get("mode")));
                     startInterval = Long.parseLong(theTrialData.get("startInterval"));
@@ -824,6 +878,7 @@ public class SettingsActivity extends AppCompatActivity {
                     editor.putInt("trialid", trialid);
                     editor.putInt("numsections", numsections);
                     editor.putInt("numlaps", numlaps);
+                    editor.putInt("numdays", numdays);
                     editor.putInt("mode", mode);
                     editor.putString("date", date);
                     editor.putString("email", email);

@@ -303,4 +303,6 @@ If you wish your data to be deleted, please send an email request to admin@trial
     <string name="confirm_password">Confirm password</string>
     <string name="enter_new_password">Enter new password</string>
     <string name="enter_confirm_password">Enter new password to confirm</string>
+    <string name="enterDayNumber">Enter day number</string>
+    <string name="day_number">Day number</string>
 </resources>
