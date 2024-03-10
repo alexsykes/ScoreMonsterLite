@@ -456,6 +456,7 @@ public class SettingsActivity extends AppCompatActivity {
                     editor.putString("adminLockPass", adminLockPass);
                     editor.apply();
                     adminLockNewPassPref.setVisible(goAhead);
+
                     adminLockConfirmPassPref.setVisible(goAhead);
                     restartClockSwitchPref.setVisible(goAhead);
                     resetScoresSwitchPref.setVisible(goAhead);
@@ -497,7 +498,7 @@ public class SettingsActivity extends AppCompatActivity {
                         Log.i(TAG, "Passwords match");
                         editor.putString("adminLockPass", adminLockNewPass);
                         adminLockPass = adminLockNewPass;
-                        editor.commit();
+                        editor.apply();
                         message = "Admin password changed to " + adminLockNewPass;
                     } else {
                         message = "Passwords do not match!";

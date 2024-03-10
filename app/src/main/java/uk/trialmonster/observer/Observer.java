@@ -70,7 +70,7 @@ public class Observer extends Application {
         // Create a String that contains the SQL statement to create the scores table
         String SQL_CREATE_SCORES_TABLE = "CREATE TABLE IF NOT EXISTS " + ScoreContract.ScoreEntry.TABLE_NAME + " ("
                 + ScoreContract.ScoreEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-                + ScoreContract.ScoreEntry.COLUMN_SCORE_OBSERVER + " TEXT NOT NULL, "
+                + ScoreContract.ScoreEntry.COLUMN_SCORE_OBSERVER + " TEXT , "
                 + ScoreContract.ScoreEntry.COLUMN_SCORE_SECTION + " INTEGER NOT NULL, "
                 + ScoreContract.ScoreEntry.COLUMN_SCORE_RIDER + " INTEGER NOT NULL, "
                 + ScoreContract.ScoreEntry.COLUMN_SCORE_LAP + " INTEGER NOT NULL DEFAULT 0, "
@@ -79,7 +79,8 @@ public class Observer extends Application {
                 + ScoreContract.ScoreEntry.COLUMN_SCORE_EDITED + " INTEGER NOT NULL DEFAULT 0, "
                 + ScoreContract.ScoreEntry.COLUMN_SCORE_TRIALID + " INTEGER NOT NULL DEFAULT 0, "
                 + ScoreContract.ScoreEntry.COLUMN_SCORE_SYNC + " INTEGER NOT NULL DEFAULT 1, "
-                + ScoreContract.ScoreEntry.COLUMN_SCORE_SCORE + " TEXT NOT NULL);";
+                + ScoreContract.ScoreEntry.COLUMN_SCORE_DAY + " INTEGER NOT NULL DEFAULT 1, "
+                + ScoreContract.ScoreEntry.COLUMN_SCORE_SCORE + " TEXT );";
 
         // Execute the SQL statement
         db.execSQL(SQL_CREATE_SCORES_TABLE);
@@ -95,6 +96,7 @@ public class Observer extends Application {
                 + TrialContract.TrialEntry.COLUMN_TRIAL_CREATED_BY + " INTEGER NOT NULL DEFAULT 0, "
                 + TrialContract.TrialEntry.COLUMN_TRIAL_MODE + " INTEGER NOT NULL DEFAULT 0, "
                 + TrialContract.TrialEntry.COLUMN_TRIAL_INTERVAL + " INTEGER NOT NULL DEFAULT 0, "
+                + TrialContract.TrialEntry.COLUMN_TRIAL_NUMDAYS + " INTEGER NOT NULL DEFAULT 1, "
                 + TrialContract.TrialEntry.COLUMN_TRIAL_NAME + " TEXT , "
                 + TrialContract.TrialEntry.COLUMN_TRIAL_DATE + " TEXT , "
                 + TrialContract.TrialEntry.COLUMN_TRIAL_EMAIL + " TEXT , "
@@ -117,6 +119,87 @@ public class Observer extends Application {
         // Execute the SQL statement
         db.execSQL(SQL_CREATE_TIMES_TABLE);
         db.close();
+    }
+
+    private void getScoreListFromServer() {
+        // Instantiate the RequestQueue.
+        RequestQueue queue = Volley.newRequestQueue(this);
+        String url = "https://android.trialmonster.uk/getScoreListScoreMonsterLive" +
+                ".php?trialid=" + 94 + "&section=" + 1 + "&day=" + 1;
+
+        Log.i("Info", "URL:" + url);
+
+// Request a string response from the provided URL.
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        updateScoresDB(response);
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                // Log.i("Info", "That didn't work!");
+
+            }
+        });
+// Add the request to the RequestQueue.
+        queue.add(stringRequest);
+    }
+
+    private void updateScoresDB(String response) {
+        try {
+            theScoreList = getScoreListFromResponse(response);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        SQLiteDatabase db = mDbHelper.getWritableDatabase();
+        for (int i = 0; i < theScoreList.size(); i++) {
+            HashMap<String, String> theScore = theScoreList.get(i);
+            String _id = theScore.get("_id");
+            String lap = theScore.get("lap");
+            String rider = theScore.get("rider");
+            String day = theScore.get("day");
+            String section = theScore.get("section");
+            String trialid = theScore.get("trialid");
+            String score = theScore.get("score");
+//            String _id = theScore.get("id");
+
+            // Create a ContentValues object where column names are the keys,
+            ContentValues values = new ContentValues();
+
+            values.put(ScoreContract.ScoreEntry._ID, _id);
+            values.put(ScoreContract.ScoreEntry.COLUMN_SCORE_RIDER, rider);
+            values.put(ScoreContract.ScoreEntry.COLUMN_SCORE_SECTION, section);
+            values.put(ScoreContract.ScoreEntry.COLUMN_SCORE_LAP, lap);
+            values.put(ScoreContract.ScoreEntry.COLUMN_SCORE_DAY, day);
+            values.put(ScoreContract.ScoreEntry.COLUMN_SCORE_TRIALID, trialid);
+            if (score != "null") {
+                values.put(ScoreContract.ScoreEntry.COLUMN_SCORE_SCORE, score);
+            }
+
+            db.insertWithOnConflict("scores", null, values, SQLiteDatabase.CONFLICT_REPLACE);
+        }
+        db.close();
+    }
+
+    private ArrayList<HashMap<String, String>> getScoreListFromResponse(String json) throws JSONException {
+        theScoreList = new ArrayList<>();
+        JSONArray jsonArray = new JSONArray(json);
+
+        for (int index = 0; index < jsonArray.length(); index++) {
+            HashMap<String, String> theScoreHash = new HashMap<>();
+
+            theScoreHash.put("_id", jsonArray.getJSONObject(index).getString("id"));
+            theScoreHash.put("lap", jsonArray.getJSONObject(index).getString("lap"));
+            theScoreHash.put("rider", jsonArray.getJSONObject(index).getString("rider"));
+            theScoreHash.put("section", jsonArray.getJSONObject(index).getString("section"));
+            theScoreHash.put("day", jsonArray.getJSONObject(index).getString("day"));
+            theScoreHash.put("score", jsonArray.getJSONObject(index).getString("score"));
+            theScoreHash.put("trialid", jsonArray.getJSONObject(index).getString("trialid"));
+            theScoreList.add(theScoreHash);
+        }
+        return theScoreList;
     }
 
     private void getTrialListFromServer() {
@@ -142,37 +225,10 @@ public class Observer extends Application {
         queue.add(stringRequest);
     }
 
-
-    private void getScoreListFromServer() {
-        // Instantiate the RequestQueue.
-        RequestQueue queue = Volley.newRequestQueue(this);
-        String url = "https://android.trialmonster.uk/getScoreListScoreMonsterLive.php";
-
-// Request a string response from the provided URL.
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        updateScoresDB(response);
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                // Log.i("Info", "That didn't work!");
-
-            }
-        });
-// Add the request to the RequestQueue.
-        queue.add(stringRequest);
-    }
-
-    private void updateScoresDB(String response) {
-    }
-
     private void updateTrialsDB(String response) {
         // Convert response to arraylist
         try {
-            theTrialList = getTrialListFromServer(response);
+            theTrialList = getTrialListFromResponse(response);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -183,6 +239,7 @@ public class Observer extends Application {
             String theDate = theTrial.get("date");
             String theName = theTrial.get("name");
             String theNumSections = theTrial.get("numsections");
+            String numdays = theTrial.get("numdays");
             String theNumLaps = theTrial.get("numlaps");
             String _id = theTrial.get("trialid");
             String theEmail = theTrial.get("email");
@@ -199,6 +256,7 @@ public class Observer extends Application {
             values.put(TrialContract.TrialEntry.COLUMN_TRIAL_EMAIL, theEmail);
             values.put(TrialContract.TrialEntry.COLUMN_TRIAL_NUMLAPS, theNumLaps);
             values.put(TrialContract.TrialEntry.COLUMN_TRIAL_NUMSECTIONS, theNumSections);
+            values.put(TrialContract.TrialEntry.COLUMN_TRIAL_NUMDAYS, numdays);
             values.put(TrialContract.TrialEntry.COLUMN_TRIAL_TRIALID, _id);
             values.put(TrialContract.TrialEntry.COLUMN_TRIAL_CLUB, club);
             values.put(TrialContract.TrialEntry.COLUMN_TRIAL_MODE, mode);
@@ -210,8 +268,8 @@ public class Observer extends Application {
         }
         db.close();
     }
-    // Convert returned string to Arraylist for saving in DB
-    private ArrayList<HashMap<String, String>> getTrialListFromServer(String json) throws JSONException {
+
+    private ArrayList<HashMap<String, String>> getTrialListFromResponse(String json) throws JSONException {
         theTrialList = new ArrayList<>();
         JSONArray jsonArray = new JSONArray(json);
 
@@ -223,6 +281,7 @@ public class Observer extends Application {
             theTrialHash.put("club", jsonArray.getJSONObject(index).getString("club"));
             theTrialHash.put("name", jsonArray.getJSONObject(index).getString("name"));
             theTrialHash.put("numlaps", jsonArray.getJSONObject(index).getString("numlaps"));
+            theTrialHash.put("numdays", jsonArray.getJSONObject(index).getString("numdays"));
             theTrialHash.put("numsections", jsonArray.getJSONObject(index).getString("numsections"));
             theTrialHash.put("starttime", jsonArray.getJSONObject(index).getString("starttime"));
             theTrialHash.put("mode", jsonArray.getJSONObject(index).getString("scoringmode"));
@@ -239,4 +298,5 @@ public class Observer extends Application {
         NetworkInfo netInfo = cm.getActiveNetworkInfo();
         return netInfo != null && netInfo.isConnectedOrConnecting();
     }
+
 }

@@ -35,7 +35,8 @@ public class ScoreDbHelper extends SQLiteOpenHelper {
     public ArrayList<HashMap<String, String>> getScoreList(int trialid) {
         SQLiteDatabase db = this.getWritableDatabase();
         ArrayList<HashMap<String, String>> scoreList = new ArrayList<>();
-       String query = "SELECT * FROM scores WHERE trialid = " + trialid + " ORDER BY _id DESC";
+        String query = "SELECT * FROM scores WHERE trialid = " + trialid + " AND score NOT NULL " +
+                "ORDER BY updated DESC";
 //       Log.i("Query", query);
         //  String query = "SELECT * FROM scores  ORDER BY _id DESC";
         Cursor cursor = db.rawQuery(query, null);
@@ -238,7 +239,6 @@ public class ScoreDbHelper extends SQLiteOpenHelper {
         JSONArray trialDetail = new JSONArray();
         String query = "SELECT * FROM trials WHERE trialid = " + trialid ;
         Cursor cursor = db.rawQuery(query, null);
-        int colindex = Integer.parseInt(TrialContract.TrialEntry._ID);
         String id = cursor.getString(cursor.getColumnIndex(TrialContract.TrialEntry._ID));
         String name = cursor.getString(cursor.getColumnIndex(TrialContract.TrialEntry.COLUMN_TRIAL_NAME));
 //        trialDetail.add(cursor.getString(cursor.getColumnIndex(ScoreEntry._ID));

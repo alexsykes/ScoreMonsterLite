@@ -89,6 +89,8 @@ public class TrialDbHelper extends SQLiteOpenHelper {
             trial.put("mode", cursor.getString(cursor.getColumnIndex(TrialContract.TrialEntry.COLUMN_TRIAL_MODE)));
             trial.put("email", cursor.getString(cursor.getColumnIndex(TrialContract.TrialEntry.COLUMN_TRIAL_EMAIL)));
             trial.put("club", cursor.getString(cursor.getColumnIndex(TrialContract.TrialEntry.COLUMN_TRIAL_CLUB)));
+            trial.put("numdays",
+                    cursor.getString(cursor.getColumnIndex(TrialContract.TrialEntry.COLUMN_TRIAL_NUMDAYS)));
             trialList.add(trial);
         }
         cursor.close();

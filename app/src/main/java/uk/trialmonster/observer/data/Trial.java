@@ -1,12 +1,18 @@
 package uk.trialmonster.observer.data;
 
 public class Trial {
-    int _id, numsections, numlaps, mode, created_by;
+    int _id;
+    int numsections;
+    int numlaps;
+    int mode;
+    int created_by;
+
+    int numdays;
     long startinterval;
     String email, date, name, club;
 
     public Trial(int _id, int numsections, int numlaps, int mode, String email, String date,
-                 String name, String club, long startinterval, int created_by) {
+                 String name, String club, long startinterval, int created_by, int multiday) {
         this._id = _id;
         this.numsections = numsections;
         this.numlaps = numlaps;
@@ -17,6 +23,7 @@ public class Trial {
         this.club = club;
         this.startinterval = startinterval;
         this.created_by = created_by;
+        this.numdays = numdays;
     }
 
     public int getMode() {
@@ -45,6 +52,14 @@ public class Trial {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public int getNumdays() {
+        return numdays;
+    }
+
+    public void setNumdays(int numdays) {
+        this.numdays = numdays;
     }
 
 }
