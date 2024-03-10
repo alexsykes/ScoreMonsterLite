@@ -123,7 +123,8 @@ public class ScoreDbHelper extends SQLiteOpenHelper {
 
     public int getRiderLap(int rider, int section, int trialid) {
         SQLiteDatabase db = this.getReadableDatabase();
-        String query = "SELECT score AS numLaps FROM scores WHERE rider = " + rider + " AND section = " + section + " AND trialid = " + trialid;
+        String query =
+                "SELECT score AS numLaps FROM scores WHERE score IS NOT NULL AND rider = " + rider + " AND section = " + section + " AND trialid = " + trialid;
         Cursor cursor = db.rawQuery(query, null);
         int numLaps = cursor.getCount();
         cursor.close();

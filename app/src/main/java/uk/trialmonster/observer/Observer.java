@@ -178,7 +178,7 @@ public class Observer extends Application {
                 values.put(ScoreContract.ScoreEntry.COLUMN_SCORE_SCORE, score);
             }
 
-            db.insertWithOnConflict("scores", null, values, SQLiteDatabase.CONFLICT_REPLACE);
+            db.insertWithOnConflict("scores", null, values, SQLiteDatabase.CONFLICT_IGNORE);
         }
         db.close();
     }
