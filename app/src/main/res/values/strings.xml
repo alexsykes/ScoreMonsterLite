@@ -272,7 +272,7 @@ To change a score, click on the list icon in the toolbar. This will display a li
     <string name="username">Username</string>
     <string name="account">account</string>
     <string name="X">x</string>
-    <string name="timing_mode_switch">Timing mode switch</string>
+    <string name="timing_mode_switch">Timing mode</string>
     <string name="reset_clock">Reset clock</string>
     <string name="manual_mode_switch">Manual mode switch</string>
     <string name="data_protection">Privacy</string>
@@ -301,4 +301,6 @@ If you wish your data to be deleted, please send an email request to admin@trial
     <string name="admin_password">Admin password</string>
     <string name="new_password">New password</string>
     <string name="confirm_password">Confirm password</string>
+    <string name="enter_new_password">Enter new password</string>
+    <string name="enter_confirm_password">Enter new password to confirm</string>
 </resources>

@@ -81,66 +81,44 @@
             app:title="@string/number_of_sections" />
     </PreferenceCategory>
 
-    <PreferenceCategory app:title="Mode">
-        <SwitchPreference
-            android:contentDescription="@string/enter_timing_mode"
-            android:defaultValue="false"
-            android:key="timeMode"
-            android:title="@string/timing_mode_switch" />
 
-        <EditTextPreference
-            android:contentDescription="@string/enter_start_interval"
-            android:defaultValue="60"
-            android:key="startIntervalText"
-            android:selectAllOnFocus="true"
-            android:singleLine="true"
-            android:title="Start interval"
-            app:summary="@string/enter_start_interval" />
-
-        <EditTextPreference
-            android:contentDescription="@string/enter_penalty_tariff"
-            android:defaultValue="60"
-            android:key="penaltyTariffText"
-            android:selectAllOnFocus="true"
-            android:singleLine="true"
-            android:title="Penalty tariff"
-            app:summary="@string/enter_penalty_tariff" />
-    </PreferenceCategory>
-
-    <PreferenceCategory android:title="Advanced">
+    <PreferenceCategory android:title="Admin">
         <SwitchPreference
             android:contentDescription="@string/advanced__settings"
             android:defaultValue="false"
             android:key="show_advanced"
+            app:isPreferenceVisible="false"
             android:title="@string/advanced_settings"
             app:summary="@string/advanced__settings" />
 
         <EditTextPreference
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:inputType="textPassword"
             android:key="adminLock"
+            android:title="@string/password"
             android:selectAllOnFocus="true"
             android:singleLine="true"
-            android:title="@string/admin_password"
+            app:isPreferenceVisible="true"
             app:key="adminLockPass" />
         <EditTextPreference
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:inputType="textPassword"
             android:selectAllOnFocus="true"
             android:singleLine="true"
             android:title="@string/new_password"
             app:enableCopying="false"
-            app:key="adminLockNewPass" />
+            app:isPreferenceVisible="false"
+            app:key="adminLockNewPass"
+            app:summary="@string/enter_new_password" />
         <EditTextPreference
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:inputType="textPassword"
             android:key="adminLockConfirmPass"
+            app:isPreferenceVisible="false"
             android:selectAllOnFocus="true"
             android:singleLine="true"
             android:title="@string/confirm_password"
+            app:summary="@string/enter_confirm_password"
             app:key="adminLockConfirmPass" />
         <PreferenceCategory
             android:key="loginPrefCategory"
@@ -164,7 +142,34 @@
                 android:title="@string/password"
                 app:summary="Enter login password" />
         </PreferenceCategory>
+        <PreferenceCategory
+            android:key="timingModeCategory"
+            android:title="@string/timing_mode">
+            <SwitchPreference
+                android:contentDescription="@string/enter_timing_mode"
+                android:defaultValue="false"
+                android:key="timeMode"
+                android:title="@string/timing_mode_switch" />
 
+            <EditTextPreference
+                android:contentDescription="@string/enter_start_interval"
+                android:defaultValue="60"
+                android:key="startIntervalText"
+                android:selectAllOnFocus="true"
+                android:singleLine="true"
+                android:title="Start interval"
+                app:summary="@string/enter_start_interval" />
+
+            <EditTextPreference
+                android:contentDescription="@string/enter_penalty_tariff"
+                android:defaultValue="60"
+                android:key="penaltyTariffText"
+                android:selectAllOnFocus="true"
+                android:singleLine="true"
+                android:title="Penalty tariff"
+                app:summary="@string/enter_penalty_tariff" />
+
+        </PreferenceCategory>
         <SwitchPreference
             android:contentDescription="@string/restart_clock"
             android:defaultValue="false"

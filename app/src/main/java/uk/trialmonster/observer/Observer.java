@@ -29,7 +29,7 @@ import uk.trialmonster.observer.data.TimeContract;
 import uk.trialmonster.observer.data.TrialContract;
 
 public class Observer extends Application {
-    ArrayList<HashMap<String, String>> theTrialList;
+    ArrayList<HashMap<String, String>> theTrialList, theScoreList;
     boolean canConnect;
 
     // Databases
@@ -50,6 +50,7 @@ public class Observer extends Application {
         if (canConnect) {
             try {
                 getTrialListFromServer();
+                getScoreListFromServer();
                 Log.i("Info", "Trials data loaded");
             } catch (NullPointerException e) {
                 Log.e("Info", "Error loading trials data");
@@ -141,6 +142,32 @@ public class Observer extends Application {
         queue.add(stringRequest);
     }
 
+
+    private void getScoreListFromServer() {
+        // Instantiate the RequestQueue.
+        RequestQueue queue = Volley.newRequestQueue(this);
+        String url = "https://android.trialmonster.uk/getScoreListScoreMonsterLive.php";
+
+// Request a string response from the provided URL.
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        updateScoresDB(response);
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                // Log.i("Info", "That didn't work!");
+
+            }
+        });
+// Add the request to the RequestQueue.
+        queue.add(stringRequest);
+    }
+
+    private void updateScoresDB(String response) {
+    }
 
     private void updateTrialsDB(String response) {
         // Convert response to arraylist

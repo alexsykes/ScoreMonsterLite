@@ -234,7 +234,7 @@ public class MainActivity extends AppCompatActivity {
         scoreCount = localPrefs.getInt("scoreCount", 0);
         theTrialName = localPrefs.getString("trialName", "");
         club = localPrefs.getString("club", "None selected");
-        trialHasChanged = localPrefs.getBoolean("", true);
+//        trialHasChanged = localPrefs.getBoolean("", true);
         mode = localPrefs.getInt("mode", 0);
         usermode = Integer.valueOf(localPrefs.getString("usermode", "0"));
         timeMode = localPrefs.getBoolean("timeMode", false);

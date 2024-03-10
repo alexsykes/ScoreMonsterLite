@@ -169,7 +169,6 @@ public class SettingsActivity extends AppCompatActivity {
             setTrials();
         }
 
-
         private void setTrials() {
             localPrefs = PreferenceManager.getDefaultSharedPreferences(getContext());
 
@@ -182,13 +181,15 @@ public class SettingsActivity extends AppCompatActivity {
         }
 
         private void setup() {
+            adminLockNewPass = "";
+            adminLockConfirmPass = "";
             SharedPreferences.Editor editor = localPrefs.edit();
 
             EditTextPreference observerPref = findPreference("observer");
             EditTextPreference mobilePref = findPreference("mobile");
             EditTextPreference sectionPref = findPreference("sectionText");
-            EditTextPreference adminLockNewPassPref = findPreference("adminLockNewPass");
             EditTextPreference adminLockPassPref = findPreference("adminLockPass");
+            EditTextPreference adminLockNewPassPref = findPreference("adminLockNewPass");
             EditTextPreference adminLockConfirmPassPref = findPreference("adminLockConfirmPass");
 
             ListPreference trialListPref = findPreference("theTrialIndex");
@@ -211,6 +212,8 @@ public class SettingsActivity extends AppCompatActivity {
             SwitchPreference resetScoresSwitchPref = findPreference("reset_scores_preference");
             SwitchPreference resetTimesSwitchPref = findPreference("reset_times_preference");
             PreferenceCategory loginPrefCategory = findPreference("loginPrefCategory");
+            PreferenceCategory modePrefCategory = findPreference("modePrefCategory");
+            PreferenceCategory timingModeCategory = findPreference("timingModeCategory");
 
             // Setup current values
             section = localPrefs.getInt("section", 1);
@@ -232,14 +235,18 @@ public class SettingsActivity extends AppCompatActivity {
             observer = localPrefs.getString("observer", "");
             mobile = localPrefs.getString("mobile", "");
             incomplete = localPrefs.getBoolean("incomplete", false);
-            adminLockPass = localPrefs.getString("adminLockPass", "");
+            adminLockPass = localPrefs.getString("adminLockPass", "13151");
+            if (adminLockPass.length() < 1) {
+                adminLockPass = "13151";
+            }
 
 
-//          Always visible fields
+//          Initial visibility settings
             observerPref.setVisible(true);
             mobilePref.setVisible(true);
             sectionPref.setVisible(true);
             loginPrefCategory.setVisible(false);
+            timingModeCategory.setVisible(false);
 
             if (!isLoggedInUser) {
                 trialid = -999;
@@ -444,11 +451,59 @@ public class SettingsActivity extends AppCompatActivity {
                         return false;
                     }
                     String returnedValue = newValue.toString().trim();
-                    if (returnedValue.equals(adminLockPass)) {
-                        Log.i(TAG, "Password match: " + returnedValue);
+
+                    boolean goAhead = returnedValue.equals(adminLockPass);
+                    editor.putString("adminLockPass", adminLockPass);
+                    editor.apply();
+                    adminLockNewPassPref.setVisible(goAhead);
+                    adminLockConfirmPassPref.setVisible(goAhead);
+                    restartClockSwitchPref.setVisible(goAhead);
+                    resetScoresSwitchPref.setVisible(goAhead);
+                    resetTimesSwitchPref.setVisible(goAhead);
+                    advancedSwitchPref.setChecked(goAhead);
+                    loginPrefCategory.setVisible(goAhead);
+                    timeModeSwitchPref.setVisible(goAhead);
+                    timingModeCategory.setVisible(goAhead);
+                    usernamePref.setVisible(goAhead);
+                    passwordPref.setVisible(goAhead);
+                    return false;
+                }
+            });
+
+            //          Admin lock password
+            assert adminLockNewPassPref != null;
+            adminLockNewPassPref.setText("");
+            adminLockNewPassPref.setOnBindEditTextListener(editText -> editText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD));
+            adminLockNewPassPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                @Override
+                public boolean onPreferenceChange(@NonNull Preference preference, Object newValue) {
+                    adminLockNewPass = newValue.toString().trim();
+                    return false;
+                }
+            });
+
+            //          Admin lock password
+            assert adminLockConfirmPassPref != null;
+            adminLockConfirmPassPref.setText("");
+            adminLockConfirmPassPref.setOnBindEditTextListener(editText -> editText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD));
+            adminLockConfirmPassPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                @Override
+                public boolean onPreferenceChange(@NonNull Preference preference, Object newValue) {
+                    String message = "";
+                    adminLockConfirmPass = newValue.toString().trim();
+                    if (adminLockNewPass.length() == 0) {
+                        message = "Password must not be left empty!";
+                    } else if (adminLockNewPass.equals(adminLockConfirmPass)) {
+                        Log.i(TAG, "Passwords match");
+                        editor.putString("adminLockPass", adminLockNewPass);
+                        adminLockPass = adminLockNewPass;
+                        editor.commit();
+                        message = "Admin password changed to " + adminLockNewPass;
                     } else {
-                        Log.i(TAG, "Password mismatch: " + returnedValue);
+                        message = "Passwords do not match!";
                     }
+                    Toast.makeText(getContext(), message,
+                            Toast.LENGTH_LONG).show();
 
                     return false;
                 }
@@ -700,7 +755,7 @@ public class SettingsActivity extends AppCompatActivity {
             // Advanced mode
             assert advancedSwitchPref != null;
             advancedSwitchPref.setChecked(false);
-            advancedSwitchPref.setVisible(true);
+            advancedSwitchPref.setVisible(false);
             advancedSwitchPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                 @Override
                 public boolean onPreferenceChange(Preference preference, Object newValue) {
@@ -712,6 +767,7 @@ public class SettingsActivity extends AppCompatActivity {
                     loginPrefCategory.setVisible(goAhead);
                     usernamePref.setVisible(goAhead);
                     passwordPref.setVisible(goAhead);
+                    timeModeSwitchPref.setVisible(goAhead);
                     return false;
                 }
             });
