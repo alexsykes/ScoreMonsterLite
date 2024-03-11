@@ -3,9 +3,11 @@ package uk.trialmonster.observer.activities;
 // TODO - check riderNumber on change/lauch in mode 2
 // TODO - update numsections and numlaps filed on initial load of trial
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -38,12 +40,16 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
 import uk.trialmonster.observer.R;
+import uk.trialmonster.observer.data.ScoreContract;
 import uk.trialmonster.observer.data.ScoreDbHelper;
 import uk.trialmonster.observer.data.TimeDbHelper;
 import uk.trialmonster.observer.data.TrialDbHelper;
@@ -59,7 +65,6 @@ public class SettingsActivity extends AppCompatActivity {
     ArrayList<HashMap<String, String>> options;
     TrialDbHelper mDbHelper;
     TextView statusLine;
-
 
     int loggedInUserID;
 
@@ -865,8 +870,14 @@ public class SettingsActivity extends AppCompatActivity {
                 @Override
                 public boolean onPreferenceChange(Preference preference, Object newValue) {
                     SharedPreferences.Editor editor = localPrefs.edit();
+                    int oldTrialId = localPrefs.getInt("trialid", 0);
                     int trialid = Integer.parseInt(newValue.toString());
 
+
+                    if (trialid != oldTrialId) {
+//                        Get score data from server
+                        getScoreData(trialid);
+                    }
                     HashMap<String, String> theTrialData;
                     theTrialData = getTrialData(trialid).get(0);
                     numsections = Integer.parseInt(Objects.requireNonNull(theTrialData.get("numsections")));
@@ -884,7 +895,6 @@ public class SettingsActivity extends AppCompatActivity {
 
                     editor.putString("theTrialIndex", newValue.toString());  // Check if this is necessary
                     editor.putBoolean("trialHasChanged", true);
-//                    editor.putBoolean("isManualTrial", false);
                     editor.putInt("trialid", trialid);
                     editor.putInt("numsections", numsections);
                     editor.putInt("numlaps", numlaps);
@@ -928,6 +938,95 @@ public class SettingsActivity extends AppCompatActivity {
             ridingNumberPref.setVisible(mode == 1);
         }
 
+        private void getScoreData(int trialid) {
+            // Instantiate the RequestQueue.
+            RequestQueue queue = Volley.newRequestQueue(getContext());
+//            String url = "https://android.trialmonster.uk/getScoreListScoreMonsterLive" +
+//                    ".php?trialid=" + 94 + "&section=" + 1 + "&day=" + 1;
+            String url = "https://android.trialmonster.uk/getScoreListScoreMonsterLive" +
+                    ".php?trialid=" + trialid;
+
+            Log.i("Info", "URL:" + url);
+
+// Request a string response from the provided URL
+            StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                    new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            updateScoresDB(response);
+
+                        }
+                    }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    // Log.i("Info", "That didn't work!");
+
+                }
+            });
+// Add the request to the RequestQueue.
+            queue.add(stringRequest);
+        }
+
+        private void updateScoresDB(String response) {
+            // Get saved trial data
+            TrialDbHelper mDbHelper = new TrialDbHelper(getContext());
+            ArrayList<HashMap<String, String>> theScoreList = new ArrayList<HashMap<String,
+                    String>>();
+            try {
+                theScoreList =
+                        getScoreListFromResponse(response);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            SQLiteDatabase db = mDbHelper.getWritableDatabase();
+            for (int i = 0; i < theScoreList.size(); i++) {
+                HashMap<String, String> theScore = theScoreList.get(i);
+                String _id = theScore.get("_id");
+                String lap = theScore.get("lap");
+                String rider = theScore.get("rider");
+                String day = theScore.get("day");
+                String section = theScore.get("section");
+                String trialid = theScore.get("trialid");
+                String score = theScore.get("score");
+//            String _id = theScore.get("id");
+
+                // Create a ContentValues object where column names are the keys,
+                ContentValues values = new ContentValues();
+
+                values.put(ScoreContract.ScoreEntry._ID, _id);
+                values.put(ScoreContract.ScoreEntry.COLUMN_SCORE_RIDER, rider);
+                values.put(ScoreContract.ScoreEntry.COLUMN_SCORE_SECTION, section);
+                values.put(ScoreContract.ScoreEntry.COLUMN_SCORE_LAP, lap);
+                values.put(ScoreContract.ScoreEntry.COLUMN_SCORE_DAY, day);
+                values.put(ScoreContract.ScoreEntry.COLUMN_SCORE_TRIALID, trialid);
+                if (score != "null") {
+                    values.put(ScoreContract.ScoreEntry.COLUMN_SCORE_SCORE, score);
+                }
+
+                db.insertWithOnConflict("scores", null, values, SQLiteDatabase.CONFLICT_IGNORE);
+            }
+            Toast.makeText(getContext(), "Scores downloaded", Toast.LENGTH_LONG).show();
+            db.close();
+        }
+
+        private ArrayList<HashMap<String, String>> getScoreListFromResponse(String json) throws JSONException {
+            ArrayList<HashMap<String, String>> theScoreList = new ArrayList<>();
+            JSONArray jsonArray = new JSONArray(json);
+
+            for (int index = 0; index < jsonArray.length(); index++) {
+                HashMap<String, String> theScoreHash = new HashMap<>();
+
+                theScoreHash.put("_id", jsonArray.getJSONObject(index).getString("id"));
+                theScoreHash.put("lap", jsonArray.getJSONObject(index).getString("lap"));
+                theScoreHash.put("rider", jsonArray.getJSONObject(index).getString("rider"));
+                theScoreHash.put("section", jsonArray.getJSONObject(index).getString("section"));
+                theScoreHash.put("day", jsonArray.getJSONObject(index).getString("day"));
+                theScoreHash.put("score", jsonArray.getJSONObject(index).getString("score"));
+                theScoreHash.put("trialid", jsonArray.getJSONObject(index).getString("trialid"));
+                theScoreList.add(theScoreHash);
+            }
+            return theScoreList;
+        }
         private void checkLogin(String newValue, String username) {
             RequestQueue requestQueue = Volley.newRequestQueue(getContext());
             String URL = "https://android.trialmonster.uk/joomlaAuthLive.php";

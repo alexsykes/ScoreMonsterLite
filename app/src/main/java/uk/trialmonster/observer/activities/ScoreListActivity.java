@@ -72,7 +72,7 @@ public class ScoreListActivity extends AppCompatActivity {
     boolean canConnect;
     SharedPreferences localPrefs;
     // Button processButton;
-    int serverResponseCode = 0, section, trialid;
+    int serverResponseCode = 0, section, trialid, day;
     private ScoreDbHelper scoreDbHelper;
     private String filename, email, observer, mobile;
     private boolean isLoggedInUser;
@@ -100,6 +100,7 @@ public class ScoreListActivity extends AppCompatActivity {
         // Get shared preferences for trialid, section
         localPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         section = localPrefs.getInt("section", 1);
+        day = localPrefs.getInt("dayNum", 1);
         trialid = localPrefs.getInt("trialid", -999);
         observer = localPrefs.getString("observer", "");
         mobile = localPrefs.getString("mobile", "");
@@ -235,7 +236,7 @@ public class ScoreListActivity extends AppCompatActivity {
 
     private void populateScoreList() {
         scoreDbHelper = new ScoreDbHelper(this);
-        theScoreList = scoreDbHelper.getScoreList(trialid);
+        theScoreList = scoreDbHelper.getScoreList(trialid, day, section);
 //        Log.i("trialid", "" + trialid);
         scoreView = findViewById(R.id.scoreView);
         LinearLayoutManager llm = new LinearLayoutManager(this);
@@ -580,7 +581,8 @@ public class ScoreListActivity extends AppCompatActivity {
     }
 
     private JSONArray getDataForUpload() {
-        ArrayList<HashMap<String, String>> dataToUpload = scoreDbHelper.getNewScoreListForUpload(trialid);
+        ArrayList<HashMap<String, String>> dataToUpload =
+                scoreDbHelper.getNewScoreListForUpload(trialid, section, day);
         JSONArray scoresJSONArray = new JSONArray();
 
         for (int i = 0; i < dataToUpload.size(); i++) {
@@ -611,7 +613,7 @@ public class ScoreListActivity extends AppCompatActivity {
             @Override
             public void onResponse(String response) {
                 Log.d("Volley", "Response: " + response);
-                markAsDone(trialid);
+                markAsDone(trialid, day, section);
             }
         }, new Response.ErrorListener() {
             @Override
@@ -647,5 +649,12 @@ public class ScoreListActivity extends AppCompatActivity {
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         requestQueue.add(stringRequest);
+    }
+
+    private void markAsDone(int trialid, int day, int section) {
+        scoreDbHelper = new ScoreDbHelper(this);
+        scoreDbHelper.markAsDone(trialid, day, section);
+        scoreDbHelper.close();
+        populateScoreList();
     }
 }

@@ -406,7 +406,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Check number of laps completed
         SQLiteDatabase db = scoreDbHelper.getWritableDatabase();
-        int lap = 1 + scoreDbHelper.getRiderLap(rider, section, trialid);
+        int lap = 1 + scoreDbHelper.getRiderLap(rider, section, trialid, day);
 
         if (lap > numlaps) {
             toneGen1.startTone(ToneGenerator.TONE_CDMA_ALERT_CALL_GUARD, 150);
@@ -430,7 +430,7 @@ public class MainActivity extends AppCompatActivity {
         // Check for numberof completed laps
         // Gets the database in write mode
         SQLiteDatabase db = scoreDbHelper.getWritableDatabase();
-        int lap = 1 + scoreDbHelper.getRiderLap(rider, section, trialid);
+        int lap = 1 + scoreDbHelper.getRiderLap(rider, section, trialid, day);
         if (lap > numlaps) {
             toneGen1.startTone(ToneGenerator.TONE_CDMA_ALERT_CALL_GUARD, 150);
             Toast.makeText(this, "Already completed " + numlaps + " laps", Toast.LENGTH_LONG).show();

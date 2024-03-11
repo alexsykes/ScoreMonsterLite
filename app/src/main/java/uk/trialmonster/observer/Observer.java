@@ -51,7 +51,7 @@ public class Observer extends Application {
         if (canConnect) {
             try {
                 getTrialListFromServer();
-                getScoreListFromServer();
+//                getScoreListFromServer();
                 Log.i("Info", "Trials data loaded");
             } catch (NullPointerException e) {
                 Log.e("Info", "Error loading trials data");

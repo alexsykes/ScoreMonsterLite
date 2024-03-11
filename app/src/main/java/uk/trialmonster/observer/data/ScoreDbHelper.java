@@ -275,4 +275,88 @@ public class ScoreDbHelper extends SQLiteOpenHelper {
         db.close();
         return scoreList;
     }
+
+    public ArrayList<HashMap<String, String>> getScoreList(int trialid, int day, int section) {
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        ArrayList<HashMap<String, String>> scoreList = new ArrayList<>();
+        String query = "SELECT * FROM scores WHERE trialid = " + trialid +
+                " AND section = " + section +
+                " AND day = " + day +
+                " AND score NOT NULL " +
+                "ORDER BY updated DESC";
+//       Log.i("Query", query);
+        //  String query = "SELECT * FROM scores  ORDER BY _id DESC";
+        Cursor cursor = db.rawQuery(query, null);
+        while (cursor.moveToNext()) {
+            HashMap<String, String> scores = new HashMap<>();
+            scores.put("id", cursor.getString(cursor.getColumnIndex(ScoreContract.ScoreEntry._ID)));
+            scores.put("rider", cursor.getString(cursor.getColumnIndex(ScoreContract.ScoreEntry.COLUMN_SCORE_RIDER)));
+            scores.put("lap", cursor.getString(cursor.getColumnIndex(ScoreContract.ScoreEntry.COLUMN_SCORE_LAP)));
+            scores.put("score", cursor.getString(cursor.getColumnIndex(ScoreContract.ScoreEntry.COLUMN_SCORE_SCORE)));
+            scores.put("section", cursor.getString(cursor.getColumnIndex(ScoreContract.ScoreEntry.COLUMN_SCORE_SECTION)));
+            scores.put("trialid", cursor.getString(cursor.getColumnIndex(ScoreContract.ScoreEntry.COLUMN_SCORE_TRIALID)));
+            scores.put("sync", cursor.getString(cursor.getColumnIndex(ScoreContract.ScoreEntry.COLUMN_SCORE_SYNC)));
+            scores.put("edited", cursor.getString(cursor.getColumnIndex(ScoreContract.ScoreEntry.COLUMN_SCORE_EDITED)));
+            scores.put("day",
+                    cursor.getString(cursor.getColumnIndex(ScoreContract.ScoreEntry.COLUMN_SCORE_DAY)));
+            scoreList.add(scores);
+        }
+        cursor.close();
+        db.close();
+        return scoreList;
+
+    }
+
+    public ArrayList<HashMap<String, String>> getNewScoreListForUpload(int trialid, int section, int day) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ArrayList<HashMap<String, String>> scoreList = new ArrayList<>();
+        String query = "SELECT * FROM scores WHERE trialid = " + trialid +
+                " AND day = " + day +
+                " AND section = " + section +
+                " AND sync = -1 ORDER " +
+                "BY _id DESC";
+
+        Cursor cursor = db.rawQuery(query, null);
+        while (cursor.moveToNext()) {
+            HashMap<String, String> scores = new HashMap<>();
+            scores.put("id", cursor.getString(cursor.getColumnIndex(ScoreContract.ScoreEntry._ID)));
+            scores.put("score", cursor.getString(cursor.getColumnIndex(ScoreContract.ScoreEntry.COLUMN_SCORE_SCORE)));
+            scores.put("updated",
+                    cursor.getString(cursor.getColumnIndex(ScoreContract.ScoreEntry.COLUMN_SCORE_UPDATED)));
+            scores.put("created",
+                    cursor.getString(cursor.getColumnIndex(ScoreContract.ScoreEntry.COLUMN_SCORE_CREATED)));
+            scoreList.add(scores);
+        }
+        cursor.close();
+        db.close();
+        return scoreList;
+    }
+
+    public void markAsDone(int trialid, int day, int section) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "UPDATE scores SET sync = " + SYNCED +
+                " WHERE sync = " + NOT_SYNCED +
+                " AND trialid = " + trialid +
+                " AND section = " + section +
+                " AND day = " + day;
+        db.execSQL(query);
+        db.close();
+    }
+
+    public int getRiderLap(int rider, int section, int trialid, int day) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query =
+                "SELECT score AS numLaps FROM scores WHERE score IS NOT NULL" +
+                        " AND rider = " + rider +
+                        " AND section = " + section +
+                        " AND day = " + day +
+                        " AND trialid = " + trialid;
+        Cursor cursor = db.rawQuery(query, null);
+        int numLaps = cursor.getCount();
+        cursor.close();
+
+//        db.close();
+        return numLaps;
+    }
 }
