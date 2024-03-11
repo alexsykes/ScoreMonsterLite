@@ -83,6 +83,7 @@ public class ScoreDbHelper extends SQLiteOpenHelper {
             theScores.add(theScore);
         }
         cursor.close();
+        db.close();
         return theScores;
     }
 
@@ -90,6 +91,7 @@ public class ScoreDbHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         String query  = "DELETE FROM scores";
         db.execSQL(query);
+        db.close();
     }
 
     // Used in Score List
@@ -115,7 +117,7 @@ public class ScoreDbHelper extends SQLiteOpenHelper {
             scoreList.add(scores);
         }
         cursor.close();
-        // db.close();
+        db.close();
         return scoreList;
     }
 
@@ -129,7 +131,7 @@ public class ScoreDbHelper extends SQLiteOpenHelper {
         int numLaps = cursor.getCount();
         cursor.close();
 
-        // db.close();
+        db.close();
         return numLaps;
     }
 
@@ -138,13 +140,13 @@ public class ScoreDbHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
         String query = "UPDATE scores SET sync = " + SYNCED + " WHERE sync = " + NOT_SYNCED + " AND trialid = " + trialid;
         db.execSQL(query);
-//        db.close();
+        db.close();
     }
 
     public Cursor getAll(int id) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor result = db.rawQuery("SELECT  * FROM scores WHERE  trialid=" + id, new String[]{});
-//        db.close();
+        db.close();
         return result;
     }
 
@@ -171,6 +173,7 @@ public class ScoreDbHelper extends SQLiteOpenHelper {
 //            theScores.add(theScore);
 //        }
 //        cursor.close();
+        db.close();
         return cursor;
     }
 
@@ -181,7 +184,7 @@ public class ScoreDbHelper extends SQLiteOpenHelper {
         String query = "UPDATE scores SET score = '" + score + "', edited = 1, updated = DATETIME" +
                 "('now'), sync = " + NOT_SYNCED + " WHERE _id = " + scoreid;
         db.execSQL(query);
-        // db.close();
+        db.close();
     }
 
 
@@ -231,7 +234,7 @@ public class ScoreDbHelper extends SQLiteOpenHelper {
             scoreList.add(scores);
         }
         cursor.close();
-//        db.close();
+        db.close();
         return scoreList;
     }
 
@@ -247,6 +250,7 @@ public class ScoreDbHelper extends SQLiteOpenHelper {
         trialDetail.put(name);
 
         cursor.close();
+        db.close();
         return trialDetail;
     }
 
@@ -268,6 +272,7 @@ public class ScoreDbHelper extends SQLiteOpenHelper {
             scoreList.add(scores);
         }
         cursor.close();
+        db.close();
         return scoreList;
     }
 }

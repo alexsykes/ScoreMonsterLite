@@ -89,8 +89,13 @@ public class SettingsActivity extends AppCompatActivity {
         mDbHelper = new TrialDbHelper(this);
 
         populateTrialList(loggedInUserID);
+
+        int section = localPrefs.getInt("section", 1);
+        int day = localPrefs.getInt("dayNum", 1);
+        String statusLineText = "Section: " + section + " Day: " + day;
         statusLine = findViewById(R.id.statusLine);
-        statusLine.setVisibility(View.GONE);
+        statusLine.setVisibility(View.VISIBLE);
+        statusLine.setText(statusLineText);
     }
 
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -218,6 +223,7 @@ public class SettingsActivity extends AppCompatActivity {
             PreferenceCategory loginPrefCategory = findPreference("loginPrefCategory");
             PreferenceCategory modePrefCategory = findPreference("modePrefCategory");
             PreferenceCategory timingModeCategory = findPreference("timingModeCategory");
+            PreferenceCategory trialDetailsCategory = findPreference("trial_details");
 
             // Setup current values
             section = localPrefs.getInt("section", 1);
@@ -256,6 +262,7 @@ public class SettingsActivity extends AppCompatActivity {
             sectionPref.setVisible(true);
             loginPrefCategory.setVisible(false);
             timingModeCategory.setVisible(false);
+            trialDetailsCategory.setVisible(false);
 
             if (!isLoggedInUser) {
                 trialid = -999;
@@ -509,7 +516,7 @@ public class SettingsActivity extends AppCompatActivity {
                     editor.apply();
                     adminLockNewPassPref.setVisible(goAhead);
 
-                    adminLockConfirmPassPref.setVisible(goAhead);
+                    trialDetailsCategory.setVisible(goAhead);
                     restartClockSwitchPref.setVisible(goAhead);
                     resetScoresSwitchPref.setVisible(goAhead);
                     resetTimesSwitchPref.setVisible(goAhead);
@@ -531,6 +538,8 @@ public class SettingsActivity extends AppCompatActivity {
                 @Override
                 public boolean onPreferenceChange(@NonNull Preference preference, Object newValue) {
                     adminLockNewPass = newValue.toString().trim();
+                    adminLockNewPassPref.setVisible(false);
+                    adminLockConfirmPassPref.setVisible(true);
                     return false;
                 }
             });
@@ -552,6 +561,7 @@ public class SettingsActivity extends AppCompatActivity {
                         adminLockPass = adminLockNewPass;
                         editor.apply();
                         message = "Admin password changed to " + adminLockNewPass;
+                        adminLockConfirmPassPref.setVisible(false);
                     } else {
                         message = "Passwords do not match!";
                     }

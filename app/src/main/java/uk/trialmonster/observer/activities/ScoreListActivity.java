@@ -611,7 +611,7 @@ public class ScoreListActivity extends AppCompatActivity {
             @Override
             public void onResponse(String response) {
                 Log.d("Volley", "Response: " + response);
-//                markAsDone(trialid);
+                markAsDone(trialid);
             }
         }, new Response.ErrorListener() {
             @Override

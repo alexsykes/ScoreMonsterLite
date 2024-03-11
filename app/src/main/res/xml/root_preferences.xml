@@ -17,78 +17,11 @@
             app:title="@string/contact" />
 
         <EditTextPreference
-            android:contentDescription="@string/enterDayNumber"
-            app:dialogMessage="Day selection"
-            app:dialogTitle="Day Number"
-            app:isPreferenceVisible="true"
-            app:key="dayText"
-            app:singleLineTitle="false"
-            app:summary="@string/enterDayNumber"
-            app:title="@string/day_number" />
-
-        <EditTextPreference
-            android:contentDescription="@string/enterSectionNumber"
-            app:dialogMessage="Section selection"
-            app:dialogTitle="Section Number"
-            app:isPreferenceVisible="true"
-            app:key="sectionText"
-            app:singleLineTitle="false"
-            app:summary="@string/enterSectionNumber"
-            app:title="@string/section_number" />
-
-        <EditTextPreference
             android:contentDescription="@string/enterRiderNumber"
             android:selectAllOnFocus="true"
             app:key="riderText"
             app:summary="@string/riding_number"
             app:title="@string/riding_number" />
-    </PreferenceCategory>
-
-    <PreferenceCategory
-        android:contentDescription="@string/this_section_sets_details_of_your_trial"
-        app:key="trial_details"
-        app:title="@string/trial_header">
-
-        <ListPreference
-            android:contentDescription="@string/select_trial_from_available_choices"
-            android:title="@string/select_trial"
-            app:entries="@array/trial_entries"
-            app:entryValues="@array/trial_values"
-            app:key="theTrialIndex"
-            app:summary="@string/select_trial"
-            app:title="@string/trial_name" />
-
-        <EditTextPreference
-            android:contentDescription="@string/enter_trial_name"
-            android:selectAllOnFocus="true"
-            app:key="trialName"
-            app:summary="@string/enter_trial_name"
-            app:title="@string/trial_name" />
-
-        <EditTextPreference
-            android:contentDescription="@string/enter_your_email_address"
-            android:selectAllOnFocus="true"
-            app:key="email"
-            app:summary="@string/enter_your_email_address"
-            app:title="@string/email" />
-
-        <EditTextPreference
-            android:contentDescription="@string/enter_number_of_laps"
-            android:selectAllOnFocus="true"
-            android:singleLine="true"
-            app:isPreferenceVisible="true"
-            app:key="numlapsText"
-            app:summary="@string/enter_number_of_laps"
-            app:title="@string/number_of_laps" />
-
-        <EditTextPreference
-            android:contentDescription="@string/enter_number_of_sections"
-            android:selectAllOnFocus="true"
-            android:singleLine="true"
-            app:isPreferenceVisible="true"
-            app:key="numsectionsText"
-            app:summary="@string/enter_number_of_sections"
-            app:title="@string/number_of_sections" />
     </PreferenceCategory>
 
 
@@ -130,6 +63,70 @@
             android:title="@string/confirm_password"
             app:summary="@string/enter_confirm_password"
             app:key="adminLockConfirmPass" />
+        <PreferenceCategory
+            android:contentDescription="@string/this_section_sets_details_of_your_trial"
+            app:key="trial_details"
+            app:title="@string/trial_header">
+
+            <EditTextPreference
+                android:contentDescription="@string/enterDayNumber"
+                app:dialogMessage="Day selection"
+                app:dialogTitle="Day Number"
+                app:isPreferenceVisible="true"
+                app:key="dayText"
+                app:singleLineTitle="false"
+                app:summary="@string/enterDayNumber"
+                app:title="@string/day_number" />
+            <EditTextPreference
+                android:contentDescription="@string/enterSectionNumber"
+                app:dialogMessage="Section selection"
+                app:dialogTitle="Section Number"
+                app:isPreferenceVisible="true"
+                app:key="sectionText"
+                app:singleLineTitle="false"
+                app:summary="@string/enterSectionNumber"
+                app:title="@string/section_number" />
+            <ListPreference
+                android:contentDescription="@string/select_trial_from_available_choices"
+                android:title="@string/select_trial"
+                app:entries="@array/trial_entries"
+                app:entryValues="@array/trial_values"
+                app:key="theTrialIndex"
+                app:summary="@string/select_trial"
+                app:title="@string/trial_name" />
+
+            <EditTextPreference
+                android:contentDescription="@string/enter_trial_name"
+                android:selectAllOnFocus="true"
+                app:key="trialName"
+                app:summary="@string/enter_trial_name"
+                app:title="@string/trial_name" />
+
+            <EditTextPreference
+                android:contentDescription="@string/enter_your_email_address"
+                android:selectAllOnFocus="true"
+                app:key="email"
+                app:summary="@string/enter_your_email_address"
+                app:title="@string/email" />
+
+            <EditTextPreference
+                android:contentDescription="@string/enter_number_of_laps"
+                android:selectAllOnFocus="true"
+                android:singleLine="true"
+                app:isPreferenceVisible="true"
+                app:key="numlapsText"
+                app:summary="@string/enter_number_of_laps"
+                app:title="@string/number_of_laps" />
+
+            <EditTextPreference
+                android:contentDescription="@string/enter_number_of_sections"
+                android:selectAllOnFocus="true"
+                android:singleLine="true"
+                app:isPreferenceVisible="true"
+                app:key="numsectionsText"
+                app:summary="@string/enter_number_of_sections"
+                app:title="@string/number_of_sections" />
+        </PreferenceCategory>
         <PreferenceCategory
             android:key="loginPrefCategory"
             android:title="@string/login_details">
