@@ -263,6 +263,8 @@ public class ScoreDbHelper extends SQLiteOpenHelper {
             scores.put("score", cursor.getString(cursor.getColumnIndex(ScoreContract.ScoreEntry.COLUMN_SCORE_SCORE)));
             scores.put("updated",
                     cursor.getString(cursor.getColumnIndex(ScoreContract.ScoreEntry.COLUMN_SCORE_UPDATED)));
+            scores.put("created",
+                    cursor.getString(cursor.getColumnIndex(ScoreContract.ScoreEntry.COLUMN_SCORE_CREATED)));
             scoreList.add(scores);
         }
         cursor.close();

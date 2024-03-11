@@ -9,6 +9,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -126,6 +127,8 @@ public class Observer extends Application {
         RequestQueue queue = Volley.newRequestQueue(this);
         String url = "https://android.trialmonster.uk/getScoreListScoreMonsterLive" +
                 ".php?trialid=" + 94 + "&section=" + 1 + "&day=" + 1;
+//        String url = "https://android.trialmonster.uk/getScoreListScoreMonsterLive" +
+//                ".php?trialid=" + 94 ;
 
         Log.i("Info", "URL:" + url);
 
@@ -135,6 +138,8 @@ public class Observer extends Application {
                     @Override
                     public void onResponse(String response) {
                         updateScoresDB(response);
+
+
                     }
                 }, new Response.ErrorListener() {
             @Override
@@ -180,6 +185,7 @@ public class Observer extends Application {
 
             db.insertWithOnConflict("scores", null, values, SQLiteDatabase.CONFLICT_IGNORE);
         }
+        Toast.makeText(this, "Scores downloaded", Toast.LENGTH_LONG).show();
         db.close();
     }
 

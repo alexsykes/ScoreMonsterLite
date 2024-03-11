@@ -593,6 +593,7 @@ public class ScoreListActivity extends AppCompatActivity {
                 score.put(scoreItem.get("score"));
             }
             score.put(scoreItem.get("updated"));
+            score.put(scoreItem.get("created"));
             scoresJSONArray.put(score);
         }
         return scoresJSONArray;
@@ -610,11 +611,12 @@ public class ScoreListActivity extends AppCompatActivity {
             @Override
             public void onResponse(String response) {
                 Log.d("Volley", "Response: " + response);
+//                markAsDone(trialid);
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.d("VOLLEY", error.toString());
+                Log.d("Volley", error.toString());
             }
         }) {
             @Override
