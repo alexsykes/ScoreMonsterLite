@@ -311,7 +311,8 @@ public class MainActivity extends AppCompatActivity {
 
         } else {
             sectionLabelLayout.setVisibility(View.GONE);
-            status = theTrialName + " - Observer: " + observer + " - Section: " + section;
+            status = theTrialName + " - Observer: " + observer + " - Day: " + day + " - " +
+                    "Section: " + section;
             statusLine.setText(status);
             saveButton.setText(R.string.save);
             scoreLabel.setVisibility(View.VISIBLE);
@@ -413,7 +414,10 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "Already completed " + numlaps + " laps", Toast.LENGTH_LONG).show();
         } else {
             String query =
-                    "UPDATE scores SET score = " + score + ", sync = -1, updated = DATETIME('now') WHERE trialid = " + trialid +
+                    "UPDATE scores SET score = " + score + ", sync = -1, updated = DATETIME" +
+                            " ('now'), " +
+                            " observer = '" + observer +
+                            "' WHERE trialid = " + trialid +
                             " AND section =  " + section +
                             " AND day = " + day +
                             " AND lap = " + lap +

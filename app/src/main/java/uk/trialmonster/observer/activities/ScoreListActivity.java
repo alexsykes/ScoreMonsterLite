@@ -67,11 +67,8 @@ public class ScoreListActivity extends AppCompatActivity {
     RecyclerView scoreView;
     ArrayList<HashMap<String, String>> theScoreList;
     TextView messageText;
-    //    private final String processURL = null;
-//    ProgressDialog dialog = null;
     boolean canConnect;
     SharedPreferences localPrefs;
-    // Button processButton;
     int serverResponseCode = 0, section, trialid, day;
     private ScoreDbHelper scoreDbHelper;
     private String filename, email, observer, mobile;
@@ -105,9 +102,6 @@ public class ScoreListActivity extends AppCompatActivity {
         observer = localPrefs.getString("observer", "");
         mobile = localPrefs.getString("mobile", "");
         isLoggedInUser = localPrefs.getBoolean("isLoggedInUser", false);
-
-        // Create database connection
-//        mDbHelper = new ScoreDbHelper(this);
         populateScoreList();
     }
 
@@ -224,7 +218,7 @@ public class ScoreListActivity extends AppCompatActivity {
                             break;
                     }
                     scoreDbHelper = new ScoreDbHelper(ScoreListActivity.this);
-                    scoreDbHelper.update(scoreid, score1);
+                    scoreDbHelper.update(scoreid, score1, observer);
                     scoreDbHelper.close();
                     populateScoreList();
                 })
@@ -371,7 +365,7 @@ public class ScoreListActivity extends AppCompatActivity {
     }    // Save current scores to CSV
 
     private boolean newSaveToCSV() {
-        String rider, section, scores;
+        String rider, section, scores, day;
 
         try {
             exportDir = new File(getFilesDir(), filename);
@@ -382,7 +376,7 @@ public class ScoreListActivity extends AppCompatActivity {
 
 //            Prepare and write filednames as header
             String[] details = {"Observer: ", observer, mobile};
-            String[] header = {"Rider", "Section", "Scores"};
+            String[] header = {"Rider", "Section", "Day", "Scores"};
             csvWrite.writeNext(details, false);
             csvWrite.writeNext(header, false);
 
@@ -392,8 +386,9 @@ public class ScoreListActivity extends AppCompatActivity {
                 section = curChild.getString(1);
                 rider = curChild.getString(0);
                 scores = curChild.getString(2);
+                day = curChild.getString(3);
 //                observer = curChild.getString(3);
-                String[] arrStr = {rider, section, scores
+                String[] arrStr = {rider, section, day, scores
                 };
 
                 csvWrite.writeNext(arrStr, false);

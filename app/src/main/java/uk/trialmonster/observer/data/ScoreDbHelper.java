@@ -156,31 +156,21 @@ public class ScoreDbHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         ArrayList<ScoreData> theScores = new ArrayList<>();
 //        SQLiteDatabase db = this.getReadableDatabase();
-        String sql = "SELECT rider, section, GROUP_CONCAT(score, '') AS scores FROM " +
+        String sql = "SELECT rider, section, GROUP_CONCAT(score, '') AS scores, day FROM " +
                 "(SELECT " +
                 "score, " +
-                "section, rider, lap FROM scores WHERE trialid = " + trialid +
+                "section, rider, lap, day FROM scores WHERE trialid = " + trialid +
                 " ORDER BY rider, " +
                 "section, " +
-                "lap) GROUP BY  section, rider ORDER BY lap ASC";
+                "day, lap) GROUP BY  section, rider, day ORDER BY lap ASC";
         Cursor cursor = db.rawQuery(sql, new String[]{});
-//        while (cursor.moveToNext()) {
-//            section = cursor.getString(1);
-//            rider = cursor.getString(0);
-//            scores = cursor.getString(2);
-//
-//            ScoreData theScore = new ScoreData(section, rider, scores);
-//            theScores.add(theScore);
-//        }
-//        cursor.close();
-        db.close();
         return cursor;
     }
 
     public void update(String scoreid, String score) {
 
         SQLiteDatabase db = this.getReadableDatabase();
-        // String query = "UPDATE scores SET score = " + score + ", edited = 1, updated = DATETIME('now','localtime'), sync = " + NOT_SYNCED + " WHERE _id = " + scoreid;
+
         String query = "UPDATE scores SET score = '" + score + "', edited = 1, updated = DATETIME" +
                 "('now'), sync = " + NOT_SYNCED + " WHERE _id = " + scoreid;
         db.execSQL(query);
@@ -358,5 +348,16 @@ public class ScoreDbHelper extends SQLiteOpenHelper {
 
 //        db.close();
         return numLaps;
+    }
+
+    public void update(String scoreid, String score, String observer) {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String query = "UPDATE scores SET score = '" + score + "', edited = 1," +
+                " observer = '" + observer +
+                "', updated = DATETIME" +
+                "('now'), sync = " + NOT_SYNCED + " WHERE _id = " + scoreid;
+        db.execSQL(query);
+        db.close();
     }
 }
