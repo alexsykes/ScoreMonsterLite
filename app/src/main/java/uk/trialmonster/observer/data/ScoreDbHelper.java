@@ -369,16 +369,18 @@ public class ScoreDbHelper extends SQLiteOpenHelper {
     }
 
     public void deleteScore(String id) {
-        int lap, trialid, day, section;
+        int lap, trialid, day, section, score;
         SQLiteDatabase db = this.getWritableDatabase();
         JSONArray scoreDetail = new JSONArray();
-        String query = "SELECT * FROM scores WHERE _id = " + id;
+        String query = "SELECT day, section, lap, score FROM scores WHERE _id = " + id;
         Cursor cursor = db.rawQuery(query, null);
+        int stree = cursor.getCount();
+        cursor.moveToFirst();
+        day = cursor.getInt(0);
+        section = cursor.getInt(1);
+        lap = cursor.getInt(2);
+        score = cursor.getInt(3);
 
-        lap = cursor.getInt(0);
-        trialid = cursor.getInt(cursor.getColumnIndex(ScoreContract.ScoreEntry.COLUMN_SCORE_TRIALID));
-        section = cursor.getInt(cursor.getColumnIndex(ScoreContract.ScoreEntry.COLUMN_SCORE_SECTION));
-        day = cursor.getInt(cursor.getColumnIndex(ScoreContract.ScoreEntry.COLUMN_SCORE_DAY));
 
     }
 }

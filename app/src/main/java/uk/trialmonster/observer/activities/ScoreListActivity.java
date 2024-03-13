@@ -211,10 +211,9 @@ public class ScoreListActivity extends AppCompatActivity {
                         case 5:
                             score1 = "x";
                             break;
-//                        case 6:
-////                            score1 = "N";
-////                            deleteScore(scoreid);
-//                            return;
+                        case 6:
+                            deleteScore(scoreid);
+                            return;
                     }
                     scoreDbHelper = new ScoreDbHelper(ScoreListActivity.this);
                     scoreDbHelper.update(scoreid, score1, observer);
@@ -588,11 +587,6 @@ public class ScoreListActivity extends AppCompatActivity {
             JSONArray score = new JSONArray();
             HashMap<String, String> scoreItem = dataToUpload.get(i);
             score.put(scoreItem.get("id"));
-//            if (scoreItem.get("score").equals("x")) {
-//                score.put("X");
-//            } else {
-//                score.put(scoreItem.get("score"));
-//            }
 
             scoreStr = scoreItem.get("score");
             scoreStr = scoreStr.toUpperCase();

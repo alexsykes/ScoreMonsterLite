@@ -304,5 +304,6 @@ If you wish your data to be deleted, please send an email request to admin@trial
         <item>Three</item>
         <item>Five</item>
         <item>Ten</item>
+        <item>Remove</item>
     </string-array>
 </resources>
