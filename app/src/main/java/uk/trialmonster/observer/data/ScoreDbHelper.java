@@ -273,8 +273,8 @@ public class ScoreDbHelper extends SQLiteOpenHelper {
         String query = "SELECT * FROM scores WHERE trialid = " + trialid +
                 " AND section = " + section +
                 " AND day = " + day +
-                " AND score NOT NULL " +
-                "ORDER BY updated DESC";
+//                " AND score NOT NULL " +
+                " ORDER BY updated DESC";
 //       Log.i("Query", query);
         //  String query = "SELECT * FROM scores  ORDER BY _id DESC";
         Cursor cursor = db.rawQuery(query, null);
@@ -352,12 +352,33 @@ public class ScoreDbHelper extends SQLiteOpenHelper {
 
     public void update(String scoreid, String score, String observer) {
         SQLiteDatabase db = this.getReadableDatabase();
-
-        String query = "UPDATE scores SET score = '" + score + "', edited = 1," +
-                " observer = '" + observer +
-                "', updated = DATETIME" +
-                "('now'), sync = " + NOT_SYNCED + " WHERE _id = " + scoreid;
+        String query = "";
+        if (score.equals("N")) {
+            query = "UPDATE scores SET score = NULL, edited = 1," +
+                    " observer = '" + observer +
+                    "', updated = DATETIME" +
+                    "('now'), sync = " + NOT_SYNCED + " WHERE _id = " + scoreid;
+        } else {
+            query = "UPDATE scores SET score = '" + score + "', edited = 1," +
+                    " observer = '" + observer +
+                    "', updated = DATETIME" +
+                    "('now'), sync = " + NOT_SYNCED + " WHERE _id = " + scoreid;
+        }
         db.execSQL(query);
         db.close();
+    }
+
+    public void deleteScore(String id) {
+        int lap, trialid, day, section;
+        SQLiteDatabase db = this.getWritableDatabase();
+        JSONArray scoreDetail = new JSONArray();
+        String query = "SELECT * FROM scores WHERE _id = " + id;
+        Cursor cursor = db.rawQuery(query, null);
+
+        lap = cursor.getInt(0);
+        trialid = cursor.getInt(cursor.getColumnIndex(ScoreContract.ScoreEntry.COLUMN_SCORE_TRIALID));
+        section = cursor.getInt(cursor.getColumnIndex(ScoreContract.ScoreEntry.COLUMN_SCORE_SECTION));
+        day = cursor.getInt(cursor.getColumnIndex(ScoreContract.ScoreEntry.COLUMN_SCORE_DAY));
+
     }
 }

@@ -198,24 +198,23 @@ public class ScoreListActivity extends AppCompatActivity {
                             break;
                         case 1:
                             score1 = "1";
-
                             break;
                         case 2:
                             score1 = "2";
-
                             break;
                         case 3:
                             score1 = "3";
-
                             break;
                         case 4:
                             score1 = "5";
-
                             break;
                         case 5:
                             score1 = "x";
-
                             break;
+                        case 6:
+//                            score1 = "N";
+//                            deleteScore(scoreid);
+                            return;
                     }
                     scoreDbHelper = new ScoreDbHelper(ScoreListActivity.this);
                     scoreDbHelper.update(scoreid, score1, observer);
@@ -226,6 +225,10 @@ public class ScoreListActivity extends AppCompatActivity {
                     // removes the dialog from the screen
                 })
                 .show();
+    }
+
+    private void deleteScore(String id) {
+        scoreDbHelper.deleteScore(id);
     }
 
     private void populateScoreList() {
