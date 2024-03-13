@@ -154,15 +154,6 @@ A failure is considered to have occurred if:
     <string name="trial_name">Trial name</string>
     <string name="sendmail">Email scores</string>
     <string name="help">Help</string>
-    <string-array name="scores">
-        <item>Clean</item>
-        <item>One</item>
-        <item>Two</item>
-        <item>Three</item>
-        <item>Five</item>
-        <item>Ten</item>
-        <item>Remove</item>
-    </string-array>
     <string name="helpApp">
 <![CDATA[
 <b>ScoreMonster Help</b><br/>
@@ -306,4 +297,12 @@ If you wish your data to be deleted, please send an email request to admin@trial
     <string name="enter_confirm_password">Enter new password to confirm</string>
     <string name="enterDayNumber">Enter day number</string>
     <string name="day_number">Day number</string>
+    <string-array name="scores">
+        <item>Clean</item>
+        <item>One</item>
+        <item>Two</item>
+        <item>Three</item>
+        <item>Five</item>
+        <item>Ten</item>
+    </string-array>
 </resources>

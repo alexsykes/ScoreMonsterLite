@@ -273,7 +273,7 @@ public class ScoreDbHelper extends SQLiteOpenHelper {
         String query = "SELECT * FROM scores WHERE trialid = " + trialid +
                 " AND section = " + section +
                 " AND day = " + day +
-//                " AND score NOT NULL " +
+                " AND score NOT NULL " +
                 " ORDER BY updated DESC";
 //       Log.i("Query", query);
         //  String query = "SELECT * FROM scores  ORDER BY _id DESC";

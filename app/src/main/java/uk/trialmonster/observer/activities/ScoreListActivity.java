@@ -211,10 +211,10 @@ public class ScoreListActivity extends AppCompatActivity {
                         case 5:
                             score1 = "x";
                             break;
-                        case 6:
-//                            score1 = "N";
-//                            deleteScore(scoreid);
-                            return;
+//                        case 6:
+////                            score1 = "N";
+////                            deleteScore(scoreid);
+//                            return;
                     }
                     scoreDbHelper = new ScoreDbHelper(ScoreListActivity.this);
                     scoreDbHelper.update(scoreid, score1, observer);
@@ -583,15 +583,20 @@ public class ScoreListActivity extends AppCompatActivity {
                 scoreDbHelper.getNewScoreListForUpload(trialid, section, day);
         JSONArray scoresJSONArray = new JSONArray();
 
+        String scoreStr;
         for (int i = 0; i < dataToUpload.size(); i++) {
             JSONArray score = new JSONArray();
             HashMap<String, String> scoreItem = dataToUpload.get(i);
             score.put(scoreItem.get("id"));
-            if (scoreItem.get("score").equals("x")) {
-                score.put("X");
-            } else {
-                score.put(scoreItem.get("score"));
-            }
+//            if (scoreItem.get("score").equals("x")) {
+//                score.put("X");
+//            } else {
+//                score.put(scoreItem.get("score"));
+//            }
+
+            scoreStr = scoreItem.get("score");
+            scoreStr = scoreStr.toUpperCase();
+            score.put(scoreStr);
             score.put(scoreItem.get("updated"));
             score.put(scoreItem.get("created"));
             scoresJSONArray.put(score);
