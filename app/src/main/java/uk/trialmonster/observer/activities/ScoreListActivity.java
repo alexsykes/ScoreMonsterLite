@@ -69,7 +69,7 @@ public class ScoreListActivity extends AppCompatActivity {
     TextView messageText;
     boolean canConnect;
     SharedPreferences localPrefs;
-    int serverResponseCode = 0, section, trialid, day;
+    int serverResponseCode = 0, section, trialid, day, numlaps;
     private ScoreDbHelper scoreDbHelper;
     private String filename, email, observer, mobile;
     private boolean isLoggedInUser;
@@ -96,6 +96,7 @@ public class ScoreListActivity extends AppCompatActivity {
         canConnect = canConnect();
         // Get shared preferences for trialid, section
         localPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        numlaps = localPrefs.getInt("numlaps", 0);
         section = localPrefs.getInt("section", 1);
         day = localPrefs.getInt("dayNum", 1);
         trialid = localPrefs.getInt("trialid", -999);
@@ -227,7 +228,8 @@ public class ScoreListActivity extends AppCompatActivity {
     }
 
     private void deleteScore(String id) {
-        scoreDbHelper.deleteScore(id);
+        scoreDbHelper.deleteScore(id, numlaps, observer);
+        populateScoreList();
     }
 
     private void populateScoreList() {

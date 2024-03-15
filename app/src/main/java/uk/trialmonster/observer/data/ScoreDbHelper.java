@@ -1,9 +1,11 @@
 package uk.trialmonster.observer.data;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import org.json.JSONArray;
 
@@ -13,6 +15,7 @@ import java.util.HashMap;
 public class ScoreDbHelper extends SQLiteOpenHelper {
     private static final int SYNCED = 0;
     private static final int NOT_SYNCED = -1;
+    SharedPreferences localPrefs;
     /**
      * Name of the database file
      */
@@ -368,19 +371,68 @@ public class ScoreDbHelper extends SQLiteOpenHelper {
         db.close();
     }
 
-    public void deleteScore(String id) {
-        int lap, trialid, day, section, score;
+    public void deleteScore(String scoreToDeleteID, int numlaps, String observer) {
+        int lap, trialid, day, section, rider;
+
+        Log.i("Info9", "scoreToDeleteID: " + scoreToDeleteID);
+        String score;
         SQLiteDatabase db = this.getWritableDatabase();
         JSONArray scoreDetail = new JSONArray();
-        String query = "SELECT day, section, lap, score FROM scores WHERE _id = " + id;
-        Cursor cursor = db.rawQuery(query, null);
-        int stree = cursor.getCount();
-        cursor.moveToFirst();
-        day = cursor.getInt(0);
-        section = cursor.getInt(1);
-        lap = cursor.getInt(2);
-        score = cursor.getInt(3);
+        String selectScoreToDelete =
+                "SELECT day, section, lap, score, trialid, rider FROM scores WHERE _id = " + scoreToDeleteID;
+        Cursor scoreToDelete = db.rawQuery(selectScoreToDelete, null);
+
+        scoreToDelete.moveToFirst();
+        day = scoreToDelete.getInt(0);
+        section = scoreToDelete.getInt(1);
+        lap = scoreToDelete.getInt(2);
+        score = scoreToDelete.getString(3);
+        trialid = scoreToDelete.getInt(4);
+        rider = scoreToDelete.getInt(5);
+
+//      Get ids of trial, rider, day, section in lap order
+        String getIdsToEdit = "SELECT _id, score, lap FROM scores WHERE " +
+                " trialid = " + trialid +
+                " AND rider = " + rider +
+                " AND section = " + section +
+                " AND day = " + day +
+//                " AND lap >= " + lap +
+                " ORDER BY lap ASC";
 
 
+        ArrayList<HashMap<String, String>> scoreList = new ArrayList<>();
+        Cursor idsToEdit = db.rawQuery(getIdsToEdit, null);
+        while (idsToEdit.moveToNext()) {
+            HashMap<String, String> scores = new HashMap<>();
+
+            scores.put("_id",
+                    idsToEdit.getString(0));
+            scores.put("score", idsToEdit.getString(1));
+            scores.put("lap", idsToEdit.getString(2));
+            scoreList.add(scores);
+        }
+
+        if (lap < numlaps) {
+            for (int i = numlaps; i > lap; i--) {
+                String sourceID = scoreList.get(i - 1).get("_id");
+                String targetID = scoreList.get(i - 2).get("_id");
+                String updateScoreQuery = "UPDATE scores SET score = " + scoreList.get(i - 1).get(
+                        "score") +
+                        ", observer = '" + observer +
+                        "', updated = DATETIME" +
+                        "('now'), sync = " + NOT_SYNCED +
+                        " WHERE _id = " + scoreList.get(i - 2).get(
+                        "_id");
+                db.execSQL(updateScoreQuery);
+                Log.i("Info9", "SQL: " + updateScoreQuery);
+            }
+        }
+//        String deleteScoreQuery =
+//                "UPDATE scores SET score = NULL WHERE _id = " + scoreToDeleteID;
+//        db.execSQL(deleteScoreQuery);
+
+//        Log.i("Info9", "FinalSQL: " + deleteScoreQuery);
+        idsToEdit.close();
+        scoreToDelete.close();
     }
 }
