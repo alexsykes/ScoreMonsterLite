@@ -278,6 +278,11 @@ public class ScoreDbHelper extends SQLiteOpenHelper {
                 " AND day = " + day +
                 " AND score NOT NULL " +
                 " ORDER BY updated DESC";
+//        String query = "SELECT * FROM scores WHERE trialid = " + trialid +
+//                " AND section = " + section +
+//                " AND day = " + day +
+//                " AND sync = -1 " +
+//                " ORDER BY updated DESC";
 //       Log.i("Query", query);
         //  String query = "SELECT * FROM scores  ORDER BY _id DESC";
         Cursor cursor = db.rawQuery(query, null);
@@ -298,7 +303,6 @@ public class ScoreDbHelper extends SQLiteOpenHelper {
         cursor.close();
         db.close();
         return scoreList;
-
     }
 
     public ArrayList<HashMap<String, String>> getNewScoreListForUpload(int trialid, int section, int day) {
@@ -426,6 +430,13 @@ public class ScoreDbHelper extends SQLiteOpenHelper {
                 db.execSQL(updateScoreQuery);
                 Log.i("Info9", "SQL: " + updateScoreQuery);
             }
+            String updateScoreQuery =
+                    "UPDATE scores SET score = NULL , observer = '" + observer +
+                            "', updated = DATETIME" +
+                            "('now'), sync = " + NOT_SYNCED +
+                            " WHERE _id = " + scoreList.get(numlaps - 1).get(
+                            "_id");
+            db.execSQL(updateScoreQuery);
         }
 //        String deleteScoreQuery =
 //                "UPDATE scores SET score = NULL WHERE _id = " + scoreToDeleteID;

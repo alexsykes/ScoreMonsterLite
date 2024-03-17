@@ -591,7 +591,7 @@ public class ScoreListActivity extends AppCompatActivity {
             score.put(scoreItem.get("id"));
 
             scoreStr = scoreItem.get("score");
-            scoreStr = scoreStr.toUpperCase();
+//            scoreStr = scoreStr.toUpperCase();
             score.put(scoreStr);
             score.put(scoreItem.get("updated"));
             score.put(scoreItem.get("created"));
