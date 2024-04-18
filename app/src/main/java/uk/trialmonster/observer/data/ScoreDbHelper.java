@@ -192,6 +192,17 @@ public class ScoreDbHelper extends SQLiteOpenHelper {
         db.close();
     }
 
+    public void lapseScores(int trialid, int section, int dayNum) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        int newid = -trialid;
+        String query = "UPDATE scores SET trialid = " + newid + " WHERE trialid = " + trialid +
+                " AND DAY = " + dayNum + " AND section = " + section;
+//        Log.i("Query", query);
+        // Execute the SQL statement
+        db.execSQL(query);
+        db.close();
+    }
+
     @Override
     public void onCreate(SQLiteDatabase db) {
 

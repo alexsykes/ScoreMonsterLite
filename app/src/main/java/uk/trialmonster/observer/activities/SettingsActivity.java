@@ -23,6 +23,7 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.FragmentResultListener;
 import androidx.preference.EditTextPreference;
 import androidx.preference.ListPreference;
 import androidx.preference.Preference;
@@ -89,7 +90,24 @@ public class SettingsActivity extends AppCompatActivity {
                     .beginTransaction()
                     .replace(R.id.settings, new SettingsFragment())
                     .commit();
+            Log.i("Info", "onCreate: ");
         }
+
+//      Added to update section number in statusLine on change
+        getSupportFragmentManager().setFragmentResultListener("requestKey", this, new FragmentResultListener() {
+            @Override
+            public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle bundle) {
+                // We use a String here, but any type that can be put in a Bundle is supported.
+                String result = bundle.getString("bundleKey");
+                int section = bundle.getInt("section", 1);
+                int day = localPrefs.getInt("dayNum", 1);
+                // Do something with the result.
+                String statusLineText = "Section: " + section + " Day: " + day;
+                statusLine = findViewById(R.id.statusLine);
+                statusLine.setVisibility(View.VISIBLE);
+                statusLine.setText(statusLineText);
+            }
+        });
         // Get saved trial data
         mDbHelper = new TrialDbHelper(this);
 
@@ -416,6 +434,15 @@ public class SettingsActivity extends AppCompatActivity {
                         editor.putInt("section", section);
                         editor.putBoolean("incomplete", false);
                         sectionPref.setIcon(null);
+
+                        Bundle result = new Bundle();
+                        result.putString("bundleKey", "result");
+                        result.putInt("section", section);
+                        getParentFragmentManager().setFragmentResult("requestKey", result);
+
+
+
+
                     } else {
                         sectionPref.setTitle("Invalid section number: " + section);
                         sectionPref.setText("");
@@ -772,7 +799,7 @@ public class SettingsActivity extends AppCompatActivity {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             ScoreDbHelper scoreDbHelper = new ScoreDbHelper(getContext());
-                            scoreDbHelper.lapseScores(trialid);
+                            scoreDbHelper.lapseScores(trialid, section, dayNum);
                             Log.i("Info", "Delete scores - trialid: " + trialid);
                             dialog.dismiss();
                         }
