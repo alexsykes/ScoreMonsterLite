@@ -39,6 +39,7 @@
             app:dialogTitle="Day Number"
             app:isPreferenceVisible="true"
             app:key="dayText"
+            app:useSimpleSummaryProvider="true"
             app:singleLineTitle="false"
             app:summary="@string/enterDayNumber"
             app:title="@string/day_number" />
@@ -47,6 +48,7 @@
             app:dialogMessage="Section selection"
             app:dialogTitle="Section Number"
             app:isPreferenceVisible="true"
+            app:useSimpleSummaryProvider="true"
             app:key="sectionText"
             app:singleLineTitle="false"
             app:summary="@string/enterSectionNumber"
@@ -64,14 +66,14 @@
             android:contentDescription="@string/enter_trial_name"
             android:selectAllOnFocus="true"
             app:key="trialName"
-            app:summary="@string/enter_trial_name"
+            app:useSimpleSummaryProvider="true"
             app:title="@string/trial_name" />
 
         <EditTextPreference
             android:contentDescription="@string/enter_your_email_address"
             android:selectAllOnFocus="true"
             app:key="email"
-            app:summary="@string/enter_your_email_address"
+            app:useSimpleSummaryProvider="true"
             app:title="@string/email" />
 
         <EditTextPreference
@@ -79,8 +81,8 @@
             android:selectAllOnFocus="true"
             android:singleLine="true"
             app:isPreferenceVisible="true"
+            app:useSimpleSummaryProvider="true"
             app:key="numlapsText"
-            app:summary="@string/enter_number_of_laps"
             app:title="@string/number_of_laps" />
 
         <EditTextPreference
@@ -89,7 +91,7 @@
             android:singleLine="true"
             app:isPreferenceVisible="true"
             app:key="numsectionsText"
-            app:summary="@string/enter_number_of_sections"
+            app:useSimpleSummaryProvider="true"
             app:title="@string/number_of_sections" />
     </PreferenceCategory>
 
@@ -169,7 +171,7 @@
                 android:selectAllOnFocus="true"
                 android:singleLine="true"
                 android:title="Start interval"
-                app:summary="@string/enter_start_interval" />
+                app:useSimpleSummaryProvider="true" />
 
             <EditTextPreference
                 android:contentDescription="@string/enter_penalty_tariff"
@@ -178,7 +180,7 @@
                 android:selectAllOnFocus="true"
                 android:singleLine="true"
                 android:title="Penalty tariff"
-                app:summary="@string/enter_penalty_tariff" />
+                app:useSimpleSummaryProvider="true" />
 
         </PreferenceCategory>
         <SwitchPreference

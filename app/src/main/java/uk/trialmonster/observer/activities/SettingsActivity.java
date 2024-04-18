@@ -98,19 +98,35 @@ public class SettingsActivity extends AppCompatActivity {
 //      Added to update section number in statusLine on change
         getSupportFragmentManager().setFragmentResultListener("sectionChange", this,
                 new FragmentResultListener() {
-            @Override
-            public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle bundle) {
-                // We use a String here, but any type that can be put in a Bundle is supported.
+                    @Override
+                    public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle bundle) {
+                        // We use a String here, but any type that can be put in a Bundle is supported.
 //                String result = bundle.getString("bundleKey");
-                int section = bundle.getInt("section", 1);
-                int day = localPrefs.getInt("dayNum", 1);
-                // Do something with the result.
-                String statusLineText = "Section: " + section + " Day: " + day;
-                statusLine = findViewById(R.id.statusLine);
-                statusLine.setVisibility(View.VISIBLE);
-                statusLine.setText(statusLineText);
-            }
-        });
+                        int section = bundle.getInt("section", 1);
+                        int day = localPrefs.getInt("dayNum", 1);
+                        // Do something with the result.
+                        String statusLineText = "Section: " + section + " Day: " + day;
+                        statusLine = findViewById(R.id.statusLine);
+                        statusLine.setVisibility(View.VISIBLE);
+                        statusLine.setText(statusLineText);
+                    }
+                });
+
+//      Added to update section number in statusLine on change
+        getSupportFragmentManager().setFragmentResultListener("login", this,
+                new FragmentResultListener() {
+                    @Override
+                    public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle bundle) {
+                        // We use a String here, but any type that can be put in a Bundle is supported.
+//                String result = bundle.getString("bundleKey");
+
+                        // Do something with the result.
+                        String statusLineText = "User logged in";
+                        statusLine = findViewById(R.id.statusLine);
+                        statusLine.setVisibility(View.VISIBLE);
+                        statusLine.setText(statusLineText);
+                    }
+                });
         // Get saved trial data
         mDbHelper = new TrialDbHelper(this);
         populateTrialList(loggedInUserID);
@@ -174,7 +190,7 @@ public class SettingsActivity extends AppCompatActivity {
 
     public static class SettingsFragment extends PreferenceFragmentCompat {
         public static final String TAG = "Info";
-        SharedPreferences localPrefs;
+
         String email, username, password, observer, mobile, trialName, adminLockPass,
                 adminLockNewPass, adminLockConfirmPass, dayText;
         int trialid;
@@ -190,21 +206,23 @@ public class SettingsActivity extends AppCompatActivity {
         long penaltyTariff;
         boolean timeMode, isLoggedInUser, incomplete;
 
-        PreferenceCategory loginPrefCategory = findPreference("loginPrefCategory");
+        SharedPreferences localPrefs;
+        SharedPreferences.Editor editor;
+        int initialUserId;
+        PreferenceCategory loginPrefCategory;
 
-        SwitchPreference advancedSwitchPref = findPreference("show_advanced");
-        ListPreference trialListPref = findPreference("theTrialIndex");
-        EditTextPreference trialNamePref = findPreference("trialName");
-        EditTextPreference numLapsPref = findPreference("numlapsText");
-        EditTextPreference numSectionsPref = findPreference("numsectionsText");
-        EditTextPreference emailPref = findPreference("email");
-        EditTextPreference usernamePref = findPreference("username");
-        EditTextPreference passwordPref = findPreference("password");
-
-        EditTextPreference ridingNumberPref = findPreference("riderText");
-        SwitchPreference restartClockSwitchPref = findPreference("restart_clock_preference");
-        SwitchPreference resetScoresSwitchPref = findPreference("reset_scores_preference");
-        SwitchPreference resetTimesSwitchPref = findPreference("reset_times_preference");
+        SwitchPreference advancedSwitchPref;
+        ListPreference trialListPref;
+        EditTextPreference trialNamePref;
+        EditTextPreference numLapsPref;
+        EditTextPreference numSectionsPref;
+        EditTextPreference emailPref;
+        EditTextPreference usernamePref;
+        EditTextPreference passwordPref;
+        EditTextPreference ridingNumberPref;
+        SwitchPreference restartClockSwitchPref;
+        SwitchPreference resetScoresSwitchPref;
+        SwitchPreference resetTimesSwitchPref;
 //        boolean isManualTrial;
 
         public static String getTrialDetails() {
@@ -214,16 +232,36 @@ public class SettingsActivity extends AppCompatActivity {
 
         @Override
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
+//          Set up prefs and editor
             localPrefs = PreferenceManager.getDefaultSharedPreferences(getContext());
-            loggedInUserID = localPrefs.getInt("loggedInUserID", 0);
-            isLoggedInUser = localPrefs.getBoolean("isLoggedInUser", false);
+            editor = localPrefs.edit();
             setPreferencesFromResource(R.xml.root_preferences, rootKey);
+
+//          Set up prefs
+            advancedSwitchPref = findPreference("show_advanced");
+            trialListPref = findPreference("theTrialIndex");
+            trialNamePref = findPreference("trialName");
+            numLapsPref = findPreference("numlapsText");
+            numSectionsPref = findPreference("numsectionsText");
+            emailPref = findPreference("email");
+            usernamePref = findPreference("username");
+            passwordPref = findPreference("password");
+            ridingNumberPref = findPreference("riderText");
+            resetTimesSwitchPref = findPreference("reset_times_preference");
+            resetScoresSwitchPref = findPreference("reset_scores_preference");
+            restartClockSwitchPref = findPreference("restart_clock_preference");
+            loginPrefCategory = findPreference("loginPrefCategory");
+
+//          get initial values
+            isLoggedInUser = localPrefs.getBoolean("isLoggedInUser", false);
+            loggedInUserID = localPrefs.getInt("loggedInUserID", 0);
+            initialUserId = localPrefs.getInt("loggedInUserID", -1);
+
             setup();
             setTrials();
         }
 
         private void setTrials() {
-            localPrefs = PreferenceManager.getDefaultSharedPreferences(getContext());
 
             CharSequence[] entries = localPrefs.getString("theNames","Manual Entry").split(",");
             CharSequence[] entryValues = localPrefs.getString("theIds", "0").split(",");
@@ -380,7 +418,7 @@ public class SettingsActivity extends AppCompatActivity {
                 @Override
                 public boolean onPreferenceChange(@NonNull Preference preference, Object newValue) {
                     mobile = String.valueOf(newValue).trim();
-                    mobilePref.setTitle("Contact number: " + mobile);
+                    mobilePref.setTitle("Contact number");
                     mobilePref.setText(mobile);
                     editor.putString("mobile", mobile);
                     editor.apply();
@@ -397,9 +435,9 @@ public class SettingsActivity extends AppCompatActivity {
             assert daysPref != null;
             String daysRange = "1 to " + numdays;
             daysPref.setDialogMessage(daysRange);
-            daysPref.setTitle("Day: " + dayText);
+            daysPref.setTitle("Day");
             if ((dayNum > numdays) || (dayNum == 0)) {
-                daysPref.setTitle("Invalid day number: " + dayNum);
+                daysPref.setTitle("Invalid day number");
                 daysPref.setText(dayText);
                 daysPref.setIcon(R.drawable.ic_warning_red_48dp);
             }
@@ -424,7 +462,7 @@ public class SettingsActivity extends AppCompatActivity {
                         return false;
                     }
 
-                    daysPref.setTitle("Day: " + dayText);
+                    daysPref.setTitle("Day");
                     daysPref.setIcon(null);
 
                     editor.putString("dayText", dayText);
@@ -441,9 +479,9 @@ public class SettingsActivity extends AppCompatActivity {
             String sectionsRange = "1 to " + numsections;
             sectionPref.setDialogMessage(sectionsRange);
             sectionPref.setText(String.valueOf(section));
-            sectionPref.setTitle("Section: " + section);
+            sectionPref.setTitle("Section");
             if ((section > numsections) || (section == 0)) {
-                sectionPref.setTitle("Invalid section number: " + section);
+                sectionPref.setTitle("Invalid section number");
                 sectionPref.setText("");
                 sectionPref.setIcon(R.drawable.ic_warning_red_48dp);
             }
@@ -484,14 +522,14 @@ public class SettingsActivity extends AppCompatActivity {
             //            trialName pref
             assert trialNamePref != null;
 //            trialNamePref.setVisible(true);
-            trialNamePref.setTitle("Trial: " + trialName);
+            trialNamePref.setTitle("Trial");
             trialNamePref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                 @Override
                 public boolean onPreferenceChange(@NonNull Preference preference, Object newValue) {
                     trialName = String.valueOf(newValue).trim();
                     trialNamePref.setText(trialName);
                     editor.putString("trialName", trialName);
-                    trialNamePref.setTitle("Trial: " + trialName);
+                    trialNamePref.setTitle("Trial");
                     editor.commit();
                     if (trialName.equals("")) {
                         trialNamePref.setIcon(R.drawable.ic_baseline_warning_24);
@@ -695,7 +733,7 @@ public class SettingsActivity extends AppCompatActivity {
             // numsections pref
             assert numSectionsPref != null;
 
-            numSectionsPref.setTitle("Number of sections: " + numsections);
+            numSectionsPref.setTitle("Number of sections");
             numSectionsPref.setText(String.valueOf(numsections));
             numSectionsPref.setOnBindEditTextListener(editText -> editText.setInputType(InputType.TYPE_CLASS_NUMBER));
             numSectionsPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
@@ -727,7 +765,7 @@ public class SettingsActivity extends AppCompatActivity {
             assert numLapsPref != null;
 
             numLapsPref.setText(String.valueOf(numlaps));
-            numLapsPref.setTitle("Number of laps: " + numlaps);
+            numLapsPref.setTitle("Number of laps");
             numLapsPref.setOnBindEditTextListener(editText -> editText.setInputType(InputType.TYPE_CLASS_NUMBER));
             numLapsPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                 @Override
@@ -735,7 +773,7 @@ public class SettingsActivity extends AppCompatActivity {
                     numLapsPref.setText(newValue.toString());
                     SharedPreferences.Editor editor = localPrefs.edit();
                     int numlaps = Integer.parseInt(newValue.toString());
-                    numLapsPref.setTitle("Number of laps: " + numlaps);
+                    numLapsPref.setTitle("Number of laps");
                     editor.putInt("numlaps", numlaps);
                     editor.apply();
                     return false;
@@ -745,14 +783,14 @@ public class SettingsActivity extends AppCompatActivity {
 
             // email pref
             assert emailPref != null;
-            emailPref.setTitle("Email: " + email);
+            emailPref.setTitle("Email");
             emailPref.setOnBindEditTextListener(editText -> editText.setInputType(InputType.TYPE_CLASS_TEXT |
                     InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS));
             emailPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                 @Override
                 public boolean onPreferenceChange(@NonNull Preference preference, Object newValue) {
                     email = newValue.toString().trim();
-                    emailPref.setTitle("Email: " + email);
+//                    emailPref.setTitle("Email: " + email);
                     emailPref.setText(email);
 //                    editor.putString("email", email);
                     editor.apply();
@@ -1105,22 +1143,16 @@ public class SettingsActivity extends AppCompatActivity {
                 @Override
                 public void onResponse(String response) {
                     Log.d("Volley", "Response: " + response);
-                    SharedPreferences localPrefs = PreferenceManager.getDefaultSharedPreferences(getContext());
-                    SharedPreferences.Editor editor = localPrefs.edit();
-                    int initialUserId = localPrefs.getInt("loggedInUserID", -1);
-
-
 
                     int id = Integer.parseInt(response);
                     editor.putInt("loggedInUserID", id);
                     isLoggedInUser = (id != 0);
                     editor.putBoolean("isLoggedInUser", isLoggedInUser);
                     editor.putBoolean("manualMode", !isLoggedInUser);
+
                     Bundle result = new Bundle();
                     result.putBoolean("manualMode", !isLoggedInUser);
                     getParentFragmentManager().setFragmentResult("login", result);
-
-
 
                     trialNamePref.setVisible(!isLoggedInUser);
                     trialListPref.setVisible(isLoggedInUser);
