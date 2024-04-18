@@ -58,7 +58,7 @@ public class TrialDbHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         ArrayList<HashMap<String, String>> optionList = new ArrayList<>();
         String query = "SELECT group_concat(_id, ','),group_concat(name, ',')  FROM trials " +
-                "WHERE created_by = " + loggedInUserID + " ORDER BY date ASC";
+                "WHERE created_by = " + loggedInUserID + " AND date > DATE('now')  ORDER BY date ASC";
 //        Log.i("Query", query);
         Cursor cursor = db.rawQuery(query, null);
         while (cursor.moveToNext()) {
