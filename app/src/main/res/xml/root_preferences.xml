@@ -1,6 +1,8 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <PreferenceCategory app:title="@string/observer_details">
+    <PreferenceCategory
+        android:key="observerDetails"
+        app:title="@string/observer_details">
         <EditTextPreference
             android:contentDescription="@string/observerName"
             android:selectAllOnFocus="true"
@@ -21,6 +23,7 @@
         <EditTextPreference
             android:contentDescription="@string/enterRiderNumber"
             android:selectAllOnFocus="true"
+            app:isPreferenceVisible="true"
             app:key="riderText"
             app:useSimpleSummaryProvider="true"
             app:summary="@string/riding_number"
@@ -30,7 +33,7 @@
 
     <PreferenceCategory
         android:contentDescription="@string/this_section_sets_details_of_your_trial"
-        app:key="trial_details"
+        app:key="trialDetails"
         app:title="@string/trial_header">
 
         <EditTextPreference
