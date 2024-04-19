@@ -50,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
     public static final int TEXT_REQUEST = 1;
     public static final int NOT_SYNCED = -1;
     SharedPreferences localPrefs;
+    SharedPreferences.Editor editor;
     MainViewModel model;
     String[] theTrials, theIDs;
     ArrayList<HashMap<String, String>> theTrialData;
@@ -85,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
     private int loggedInUserID;
     private int numberInGroup;
     private boolean isSingleUser, trialHasChanged, canConnect, timeMode, isManualTrial,
-            isLoggedInUser;
+            isLoggedInUser, isAdminUser;
     private int ridingNumber, trialid, mode;
 
     @Override
@@ -217,6 +218,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void getPrefs() {
         localPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        editor = localPrefs.edit();
         clockStartTime = localPrefs.getLong("clockStartTime", 0);
         startInterval = localPrefs.getLong("startInterval", 60);
         penaltyTariff = localPrefs.getLong("penaltyTariff", 60);
@@ -229,6 +231,7 @@ public class MainActivity extends AppCompatActivity {
         email = localPrefs.getString("email", "");
         isSingleUser = localPrefs.getBoolean("isSingleUser", false);
         isManualTrial = localPrefs.getBoolean("manualTrial", true);
+//        isAdminUser = false;
         ridingNumber = localPrefs.getInt("ridingNumber", 0);
         day = localPrefs.getInt("dayNum", 1);
         score = localPrefs.getInt("score", 0);
@@ -236,19 +239,18 @@ public class MainActivity extends AppCompatActivity {
         scoreCount = localPrefs.getInt("scoreCount", 0);
         theTrialName = localPrefs.getString("trialName", "");
         club = localPrefs.getString("club", "None selected");
-//        trialHasChanged = localPrefs.getBoolean("", true);
         mode = localPrefs.getInt("mode", 0);
         usermode = Integer.valueOf(localPrefs.getString("usermode", "0"));
         timeMode = localPrefs.getBoolean("timeMode", false);
         isLoggedInUser = localPrefs.getBoolean("isLoggedInUser", false);
         loggedInUserID = localPrefs.getInt("loggedInUserID", 0);
         username = localPrefs.getString("username", "");
+
         if (loggedInUserID == 0) {
-            SharedPreferences.Editor editor = localPrefs.edit();
             editor.putInt("loggedInUserID", 0);
             editor.putBoolean("isLoggedInUser", false);
-            editor.apply();
         }
+        editor.apply();
     }
 
     void initialUISetup() {

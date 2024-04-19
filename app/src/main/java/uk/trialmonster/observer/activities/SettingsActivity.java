@@ -59,7 +59,7 @@ import uk.trialmonster.observer.data.TrialDbHelper;
 // TODO - reset maual switch following trial selected
 
 public class SettingsActivity extends AppCompatActivity {
-    boolean isOnline, isLoggedInUser, manualMode;
+    boolean isOnline, isLoggedInUser, isAdminUser, manualMode;
     SharedPreferences localPrefs;
     ArrayList<HashMap<String, String>> theTrialData;
     public ArrayList<HashMap<String, String>> theTrialList;
@@ -200,7 +200,7 @@ public class SettingsActivity extends AppCompatActivity {
                 loggedInUserID,
                 initialUserId;
         long startInterval, penaltyTariff;
-        boolean timeMode, isLoggedInUser, incomplete, isManualTrial;
+        boolean timeMode, isLoggedInUser, incomplete, isManualTrial, isAdminUser;
 
         SharedPreferences localPrefs;
         SharedPreferences.Editor editor;
@@ -220,12 +220,13 @@ public class SettingsActivity extends AppCompatActivity {
 //          Set up prefs and editor
             localPrefs = PreferenceManager.getDefaultSharedPreferences(getContext());
             editor = localPrefs.edit();
+            isAdminUser = localPrefs.getBoolean("isAdminUser", false);
             setPreferencesFromResource(R.xml.root_preferences, rootKey);
 
             setupInitialPrefs();
             saveInitialValuesToPrefs();
             setTrials();
-//            setupPrefs();
+            setupPrefs();
         }
 
         private void setupInitialPrefs() {
@@ -270,7 +271,7 @@ public class SettingsActivity extends AppCompatActivity {
             numdays = localPrefs.getInt("numdays", 1);
             penaltyTariff = localPrefs.getLong("penaltyTariff", 60);
             startInterval = localPrefs.getLong("startInterval", 60);
-
+            isAdminUser = localPrefs.getBoolean("isAdminUser", false);
 //          Score data
             section = localPrefs.getInt("section", 1);
             dayText = localPrefs.getString("dayText", "1");
@@ -285,6 +286,7 @@ public class SettingsActivity extends AppCompatActivity {
             username = localPrefs.getString("username", "");
             password = localPrefs.getString("password", "");
             ridingNumber = localPrefs.getInt("ridingNumber", 0);
+            isAdminUser = localPrefs.getBoolean("isAdminUser", false);
 
 //          Observer prefs
             observerName = localPrefs.getString("observer", "");
@@ -311,13 +313,7 @@ public class SettingsActivity extends AppCompatActivity {
             usernamePref.setVisible(true);
             passwordPref.setVisible(true);//   
 
-            restartClockSwitchPref.setVisible(true);
-            resetScoresSwitchPref.setVisible(true);
-            resetTimesSwitchPref.setVisible(true);
-            advancedSwitchPref.setChecked(true);
-            loginPrefCategory.setVisible(true);
-            timeModeSwitchPref.setVisible(true);
-            timeModeSwitchPref.setVisible(true);
+            adminUserLoggedIn(isAdminUser);
             usernamePref.setVisible(true);
             passwordPref.setVisible(true);
 
@@ -325,8 +321,19 @@ public class SettingsActivity extends AppCompatActivity {
             ridingNumberPref.setVisible(false);
         }
 
-        private void setTrials() {
+        private void adminUserLoggedIn(boolean isAdminUser) {
+            restartClockSwitchPref.setVisible(isAdminUser);
+            resetScoresSwitchPref.setVisible(isAdminUser);
+            resetTimesSwitchPref.setVisible(isAdminUser);
+            advancedSwitchPref.setChecked(isAdminUser);
+            loginPrefCategory.setVisible(isAdminUser);
+            timeModeSwitchPref.setVisible(isAdminUser);
+            timeModePrefCategory.setVisible(isAdminUser);
+            adminLockNewPassPref.setVisible(isAdminUser);
+        }
 
+        private void setTrials() {
+            // Get saved values from prefers file
             CharSequence[] entries = localPrefs.getString("theNames", "Manual Entry").split(",");
             CharSequence[] entryValues = localPrefs.getString("theIds", "0").split(",");
             ListPreference lp = findPreference("theTrialIndex");
@@ -566,11 +573,12 @@ public class SettingsActivity extends AppCompatActivity {
                     }
                     String returnedValue = newValue.toString().trim();
 
-                    boolean goAhead = returnedValue.equals(adminLockPass);
+                    isAdminUser = returnedValue.equals(adminLockPass);
                     editor.putString("adminLockPass", adminLockPass);
+                    editor.putBoolean("isAdminUser", isAdminUser);
                     editor.apply();
-                    adminLockNewPassPref.setVisible(goAhead);
 
+                    adminUserLoggedIn(isAdminUser);
 //                    trialDetailsPrefCategory.setVisible(goAhead);
 //                    restartClockSwitchPref.setVisible(goAhead);
 //                    resetScoresSwitchPref.setVisible(goAhead);

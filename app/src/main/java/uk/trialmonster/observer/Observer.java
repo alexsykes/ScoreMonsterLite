@@ -5,11 +5,14 @@ package uk.trialmonster.observer;
 import android.app.Application;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
 import android.widget.Toast;
+
+import androidx.preference.PreferenceManager;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -40,6 +43,12 @@ public class Observer extends Application {
     public void onCreate() {
         super.onCreate();
         Log.i("Note", "OnAppStart");
+
+        SharedPreferences localPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = localPrefs.edit();
+        editor.putBoolean("isAdminUser", false);
+        editor.apply();
+
 
         // Create database connection
         dbInit();
