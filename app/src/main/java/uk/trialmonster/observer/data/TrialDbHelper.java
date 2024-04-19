@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -69,6 +70,20 @@ public class TrialDbHelper extends SQLiteOpenHelper {
         }
         cursor.close();
         return optionList;
+    }
+
+    public Cursor getTrialOptions(int loggedInUserID) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ArrayList<HashMap<String, String>> optionList = new ArrayList<>();
+//        String query = "SELECT _id, name  FROM trials " +
+//                "WHERE created_by = " + loggedInUserID + " AND date > DATE('now')  ORDER BY date ASC";
+
+        String query = "SELECT group_concat(_id, ','),group_concat(name, ',')  FROM trials " +
+                "WHERE created_by = " + loggedInUserID + " AND date > DATE('now')  ORDER BY date ASC";
+//        String query = "SELECT group_concat(_id, ','),group_concat(name, ',')  FROM trials  ORDER BY date ASC";
+        Log.i("Info", query);
+        Cursor cursor = db.rawQuery(query, null);
+        return cursor;
     }
 
     public ArrayList<HashMap<String, String>> getTrialList(int loggedInUserID) {

@@ -7,6 +7,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -165,13 +166,17 @@ public class SettingsActivity extends AppCompatActivity {
     private void populateTrialList(int loggedInUserID) {
         localPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor editor = localPrefs.edit();
-//        theTrialList = mDbHelper.getTrialList(loggedInUserID);
 
-        options = mDbHelper.getPrefsOptions(loggedInUserID);
-
-        editor.putString("theIds", options.get(0).get("ids"));
-        editor.putString("theNames", options.get(0).get("names"));
+        Cursor cursor = mDbHelper.getTrialOptions(loggedInUserID);
+        if (cursor.moveToFirst()) {
+            editor.putString("theIds", cursor.getString(0));
+            editor.putString("theNames", cursor.getString(1));
+        } else {
+            editor.putString("theIds", "");
+            editor.putString("theNames", "");
+        }
         editor.apply();
+        cursor.close();
         mDbHelper.close();
     }
 
@@ -1139,17 +1144,21 @@ public class SettingsActivity extends AppCompatActivity {
                     userLoggedIn(isLoggedInUser);
 
 //                  Only change trial details for new user
-//                    if (isLoggedInUser && (initialUserId != id)) {
                     if (isLoggedInUser && (initialUserId != id)) {
+//                    if (isLoggedInUser ) {
 
                         // Get users trial data
                         TrialDbHelper mDbHelper = new TrialDbHelper(getContext());
-
-                        ArrayList<HashMap<String, String>> options = mDbHelper.getPrefsOptions(loggedInUserID);
+                        Cursor cursor = mDbHelper.getTrialOptions(loggedInUserID);
+                        if (cursor.moveToFirst()) {
+                            editor.putString("theIds", cursor.getString(0));
+                            editor.putString("theNames", cursor.getString(1));
+                        } else {
+                            editor.putString("theIds", "");
+                            editor.putString("theNames", "");
+                        }
+                        cursor.close();
                         mDbHelper.close();
-
-                        editor.putString("theIds", options.get(0).get("ids"));
-                        editor.putString("theNames", options.get(0).get("names"));
 
 //                     Update trialListPref
                         CharSequence[] entries = localPrefs.getString("theNames", "").split(",");
