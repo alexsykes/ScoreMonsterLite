@@ -287,6 +287,7 @@ public class SettingsActivity extends AppCompatActivity {
             password = localPrefs.getString("password", "");
             ridingNumber = localPrefs.getInt("ridingNumber", 0);
             isAdminUser = localPrefs.getBoolean("isAdminUser", false);
+            userLoggedIn(isLoggedInUser);
 
 //          Observer prefs
             observerName = localPrefs.getString("observer", "");
@@ -330,6 +331,14 @@ public class SettingsActivity extends AppCompatActivity {
             timeModeSwitchPref.setVisible(isAdminUser);
             timeModePrefCategory.setVisible(isAdminUser);
             adminLockNewPassPref.setVisible(isAdminUser);
+        }
+
+        private void userLoggedIn(boolean isLoggedInUser) {
+            numLapsPref.setVisible(!isLoggedInUser);
+            numSectionsPref.setVisible(!isLoggedInUser);
+            trialListPref.setVisible(isLoggedInUser);
+            trialNamePref.setVisible(!isLoggedInUser);
+            emailPref.setVisible(!isLoggedInUser);
         }
 
         private void setTrials() {
@@ -1127,20 +1136,10 @@ public class SettingsActivity extends AppCompatActivity {
                     trialNamePref.setVisible(!isLoggedInUser);
                     trialListPref.setVisible(isLoggedInUser);
 
-                    numLapsPref.setVisible(!isLoggedInUser);
-                    numSectionsPref.setVisible(!isLoggedInUser);
-                    emailPref.setVisible(!isLoggedInUser);
-                    advancedSwitchPref.setChecked(!isLoggedInUser);
-                    restartClockSwitchPref.setVisible(!isLoggedInUser);
-                    resetScoresSwitchPref.setVisible(!isLoggedInUser);
-                    resetTimesSwitchPref.setVisible(!isLoggedInUser);
-                    advancedSwitchPref.setChecked(!isLoggedInUser);
-                    loginPrefCategory.setVisible(true);
-                    usernamePref.setVisible(true);
-                    passwordPref.setVisible(true);
-
+                    userLoggedIn(isLoggedInUser);
 
 //                  Only change trial details for new user
+//                    if (isLoggedInUser && (initialUserId != id)) {
                     if (isLoggedInUser && (initialUserId != id)) {
 
                         // Get users trial data
@@ -1153,20 +1152,19 @@ public class SettingsActivity extends AppCompatActivity {
                         editor.putString("theNames", options.get(0).get("names"));
 
 //                     Update trialListPref
-                        CharSequence[] entries = localPrefs.getString("theNames", "Manual Entry").split(",");
+                        CharSequence[] entries = localPrefs.getString("theNames", "").split(",");
                         CharSequence[] entryValues = localPrefs.getString("theIds", "0").split(",");
 
-                        trialListPref.setEntries(entries);
-                        trialListPref.setEntryValues(entryValues);
+                        if (entries.length < 0) {
+                            trialListPref.setEntries(entries);
+                            trialListPref.setEntryValues(entryValues);
+                        }
                     } else {
                         editor.putInt("trialid", -999);
                         editor.putString("theTrialIndex", "-999");
                     }
 
                     editor.apply();
-
-
-                    editor.commit();
 
                     String message = "You are not logged in - check your username and password";
                     if (id != 0) {
