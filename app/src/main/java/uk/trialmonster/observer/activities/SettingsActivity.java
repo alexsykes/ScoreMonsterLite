@@ -106,13 +106,13 @@ public class SettingsActivity extends AppCompatActivity {
                     public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle bundle) {
                         // We use a String here, but any type that can be put in a Bundle is supported.
 //                String result = bundle.getString("bundleKey");
-                        int section = bundle.getInt("section", 1);
-                        int day = localPrefs.getInt("dayNum", 1);
-                        // Do something with the result.
-                        String statusLineText = "Section: " + section + " Day: " + day;
-                        statusLine = findViewById(R.id.statusLine);
-                        statusLine.setVisibility(View.VISIBLE);
-                        statusLine.setText(statusLineText);
+//                        int section = bundle.getInt("section", 1);
+//                        int day = localPrefs.getInt("dayNum", 1);
+//                        // Do something with the result.
+//                        String statusLineText = "Section: " + section + " Day: " + day;
+//                        statusLine = findViewById(R.id.statusLine);
+//                        statusLine.setVisibility(View.VISIBLE);
+//                        statusLine.setText(statusLineText);
                     }
                 });
 
@@ -123,9 +123,14 @@ public class SettingsActivity extends AppCompatActivity {
                     public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle bundle) {
                         // We use a String here, but any type that can be put in a Bundle is supported.
 //                String result = bundle.getString("bundleKey");
-
-                        // Do something with the result.
-                        String statusLineText = "User logged in";
+                        String statusLineText;
+                        isLoggedInUser = bundle.getBoolean("isLoggedInUser");
+                        if (isLoggedInUser) {
+                            // Do something with the result.
+                            statusLineText = "Logged in as: " + username;
+                        } else {
+                            statusLineText = "You are not logged in. Manual mode ONLY";
+                        }
                         statusLine = findViewById(R.id.statusLine);
                         statusLine.setVisibility(View.VISIBLE);
                         statusLine.setText(statusLineText);
@@ -138,7 +143,7 @@ public class SettingsActivity extends AppCompatActivity {
         int day = localPrefs.getInt("dayNum", 1);
         username = localPrefs.getString("username", "");
         if (!manualMode) {
-            statusLineText = "Logged in as : " + username;
+            statusLineText = "Logged in as: " + username;
         } else {
             statusLineText = "You are not logged in. Manual mode ONLY";
         }
@@ -213,6 +218,8 @@ public class SettingsActivity extends AppCompatActivity {
         PreferenceCategory loginPrefCategory, trialDetailsPrefCategory,
                 observerDetailsPrefCategory, timeModePrefCategory;
 
+        Preference isManualTrialPref;
+
         ListPreference trialListPref;
         EditTextPreference trialNamePref, numLapsPref, daysPref, numSectionsPref, emailPref,
                 usernamePref, passwordPref, ridingNumberPref, observerPref, mobilePref, sectionPref, adminLockPassPref, adminLockNewPassPref, adminLockConfirmPassPref, startIntervalPref, penaltyTariffPref;
@@ -242,6 +249,7 @@ public class SettingsActivity extends AppCompatActivity {
             timeModePrefCategory = findPreference("timingModeCategory");
 
 //          Define prefs
+            isManualTrialPref = findPreference("isManualTrial");
             advancedSwitchPref = findPreference("show_advanced");
             trialListPref = findPreference("theTrialIndex");
             trialNamePref = findPreference("trialName");
@@ -311,10 +319,16 @@ public class SettingsActivity extends AppCompatActivity {
             adminLockConfirmPass = "";
 //          Set inital visibility
 
+//            isManualTrialPref.setSummary(trialName);
+            trialListPref.setVisible(isLoggedInUser);
+            trialNamePref.setVisible(!isLoggedInUser);
+            isManualTrialPref.setVisible(false);
+
             loginPrefCategory.setVisible(true);
             trialDetailsPrefCategory.setVisible(true);
             observerDetailsPrefCategory.setVisible(true);
             timeModePrefCategory.setVisible(true);
+//            isManualTrialPref.setTitle(trialName);
 
             usernamePref.setVisible(true);
             passwordPref.setVisible(true);//   
@@ -323,6 +337,7 @@ public class SettingsActivity extends AppCompatActivity {
             usernamePref.setVisible(true);
             passwordPref.setVisible(true);
 
+            daysPref.setVisible(numdays > 1);
 //            TODO - add manual scoring mode
             ridingNumberPref.setVisible(false);
         }
@@ -510,7 +525,7 @@ public class SettingsActivity extends AppCompatActivity {
                     trialNamePref.setText(trialName);
                     editor.putString("trialName", trialName);
                     trialNamePref.setTitle("Trial");
-                    editor.commit();
+                    editor.apply();
                     if (trialName.equals("")) {
                         trialNamePref.setIcon(R.drawable.ic_baseline_warning_24);
                     } else {
@@ -764,7 +779,7 @@ public class SettingsActivity extends AppCompatActivity {
 
             // email pref
             assert emailPref != null;
-            emailPref.setTitle("Email");
+//            emailPref.setTitle("Email");
             emailPref.setOnBindEditTextListener(editText -> editText.setInputType(InputType.TYPE_CLASS_TEXT |
                     InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS));
             emailPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
@@ -945,13 +960,21 @@ public class SettingsActivity extends AppCompatActivity {
                     int oldTrialId = localPrefs.getInt("trialid", 0);
                     int trialid = Integer.parseInt(newValue.toString());
 
-
+                    if (trialid == 0) {
+                        Log.i(TAG, "trialid: " + trialid);
+                        editor.putString("trialName", "Manual Entry");
+                        editor.putInt("trialid", 0);
+                        editor.apply();
+                        trialListPref.setVisible(false);
+                        return true;
+                    }
                     if (trialid != oldTrialId) {
 //                        Get score data from server
                         getScoreData(trialid);
+                        trialListPref.setVisible(true);
                     }
 
-                    getScoreData(trialid);
+//                    getScoreData(trialid);
 
 //                    getScoreData(trialid);
                     HashMap<String, String> theTrialData;
@@ -1134,6 +1157,7 @@ public class SettingsActivity extends AppCompatActivity {
 
                     Bundle result = new Bundle();
                     result.putBoolean("manualMode", !isLoggedInUser);
+                    result.putBoolean("isLoggedInUser", isLoggedInUser);
                     result.putString("username", username);
                     result.putInt("userID", id);
                     getParentFragmentManager().setFragmentResult("login", result);
@@ -1153,9 +1177,13 @@ public class SettingsActivity extends AppCompatActivity {
                         if (cursor.moveToFirst()) {
                             editor.putString("theIds", cursor.getString(0));
                             editor.putString("theNames", cursor.getString(1));
+                            trialListPref.setVisible(true);
+                            trialNamePref.setVisible(false);
                         } else {
                             editor.putString("theIds", "");
                             editor.putString("theNames", "");
+                            trialListPref.setVisible(false);
+                            trialNamePref.setVisible(true);
                         }
                         cursor.close();
                         mDbHelper.close();
@@ -1169,8 +1197,8 @@ public class SettingsActivity extends AppCompatActivity {
                             trialListPref.setEntryValues(entryValues);
                         }
                     } else {
-                        editor.putInt("trialid", -999);
-                        editor.putString("theTrialIndex", "-999");
+                        editor.putInt("trialid", 0);
+                        editor.putString("theTrialIndex", "0");
                     }
 
                     editor.apply();

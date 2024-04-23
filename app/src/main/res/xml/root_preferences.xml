@@ -4,13 +4,22 @@
         android:key="observerDetails"
         app:title="@string/observer_details">
         <EditTextPreference
+            android:contentDescription="@string/enterSectionNumber"
+            app:dialogMessage="Section selection"
+            app:dialogTitle="Section Number"
+            app:isPreferenceVisible="true"
+            app:key="sectionText"
+            app:singleLineTitle="false"
+            app:summary="@string/enterSectionNumber"
+            app:title="@string/section_number"
+            app:useSimpleSummaryProvider="true" />
+        <EditTextPreference
             android:contentDescription="@string/observerName"
             android:selectAllOnFocus="true"
             app:useSimpleSummaryProvider="true"
             app:key="observer"
             app:summary="@string/observerName"
             app:title="@string/observer" />
-
         <EditTextPreference
             android:contentDescription="@string/observerContactNumber"
             android:selectAllOnFocus="true"
@@ -19,7 +28,12 @@
             app:useSimpleSummaryProvider="true"
             app:summary="@string/observerContactNumber"
             app:title="@string/contact" />
-
+        <EditTextPreference
+            android:contentDescription="@string/enter_your_email_address"
+            android:selectAllOnFocus="true"
+            app:key="email"
+            app:title="@string/email_results_to"
+            app:useSimpleSummaryProvider="true" />
         <EditTextPreference
             android:contentDescription="@string/enterRiderNumber"
             android:selectAllOnFocus="true"
@@ -46,16 +60,6 @@
             app:singleLineTitle="false"
             app:summary="@string/enterDayNumber"
             app:title="@string/day_number" />
-        <EditTextPreference
-            android:contentDescription="@string/enterSectionNumber"
-            app:dialogMessage="Section selection"
-            app:dialogTitle="Section Number"
-            app:isPreferenceVisible="true"
-            app:useSimpleSummaryProvider="true"
-            app:key="sectionText"
-            app:singleLineTitle="false"
-            app:summary="@string/enterSectionNumber"
-            app:title="@string/section_number" />
         <ListPreference
             android:contentDescription="@string/select_trial_from_available_choices"
             android:title="@string/select_trial"
@@ -65,19 +69,19 @@
             app:summary="@string/select_trial"
             app:title="@string/trial_name" />
 
+        <Preference
+            app:key="isManualTrial"
+            app:summary="Manual entry of trial details"
+            app:title="Manual Trial"
+            app:useSimpleSummaryProvider="true" />
+
+
         <EditTextPreference
             android:contentDescription="@string/enter_trial_name"
             android:selectAllOnFocus="true"
             app:key="trialName"
             app:useSimpleSummaryProvider="true"
             app:title="@string/trial_name" />
-
-        <EditTextPreference
-            android:contentDescription="@string/enter_your_email_address"
-            android:selectAllOnFocus="true"
-            app:key="email"
-            app:useSimpleSummaryProvider="true"
-            app:title="@string/email" />
 
         <EditTextPreference
             android:contentDescription="@string/enter_number_of_laps"
