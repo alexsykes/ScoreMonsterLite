@@ -47,6 +47,7 @@ import uk.trialmonster.observer.data.TrialDbHelper;
 
 public class MainActivity extends AppCompatActivity {
     public static final String EXTRA_MESSAGE = "com.alexsykes.scoremonster.activities.MESSAGE";
+    public static final String TAG = "Info";
     public static final int TEXT_REQUEST = 1;
     public static final int NOT_SYNCED = -1;
     SharedPreferences localPrefs;
@@ -230,7 +231,7 @@ public class MainActivity extends AppCompatActivity {
         numsections = localPrefs.getInt("numsections", 0);
         email = localPrefs.getString("email", "");
         isSingleUser = localPrefs.getBoolean("isSingleUser", false);
-        isManualTrial = localPrefs.getBoolean("manualTrial", true);
+        isManualTrial = localPrefs.getBoolean("isManualTrial", true);
 //        isAdminUser = false;
         ridingNumber = localPrefs.getInt("ridingNumber", 0);
         day = localPrefs.getInt("dayNum", 1);
@@ -396,10 +397,39 @@ public class MainActivity extends AppCompatActivity {
             editor.putInt("ridingNumber", riderNumber);
             editor.putString("riderText", rider);
             editor.apply();
+            if (!isManualTrial) {
+                updateScore(riderNumber, score, day);
+                scoreCount++;
+                clearScore();
+            } else {
+                saveManualScore(riderNumber, score, day);
+                clearScore();
+            }
+        }
+    }
 
-            updateScore(riderNumber, score, day);
-            scoreCount++;
-            clearScore();
+    private void saveManualScore(int rider, String score, int day) {
+        Log.i(TAG, "saveManualScore: ");
+        ToneGenerator toneGen1 = new ToneGenerator(AudioManager.STREAM_MUSIC, ToneGenerator.MAX_VOLUME);
+
+        // Check number of laps completed
+        SQLiteDatabase db = scoreDbHelper.getWritableDatabase();
+        int lap = 1 + scoreDbHelper.getRiderLap(rider, section, trialid, day);
+
+        if (lap > numlaps) {
+            toneGen1.startTone(ToneGenerator.TONE_CDMA_ALERT_CALL_GUARD, 150);
+            Toast.makeText(this, "Already completed " + numlaps + " laps", Toast.LENGTH_LONG).show();
+        } else {
+            String query =
+                    "INSERT INTO scores ('rider', 'score', 'created', 'trialid', 'section', " +
+                            "'sync') " +
+                            "VALUES(121, 1," +
+                            " DATETIME('now'), 0, 1, -1) ";
+
+            db.execSQL(query);
+
+            playSoundFile(R.raw.ting);
+            Toast.makeText(this, "Score saved", Toast.LENGTH_SHORT).show();
         }
     }
 

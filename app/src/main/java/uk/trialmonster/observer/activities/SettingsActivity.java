@@ -60,7 +60,7 @@ import uk.trialmonster.observer.data.TrialDbHelper;
 // TODO - reset maual switch following trial selected
 
 public class SettingsActivity extends AppCompatActivity {
-    boolean isOnline, isLoggedInUser, isAdminUser, manualMode;
+    boolean isOnline, isLoggedInUser, isAdminUser, manualMode, isManualTrial;
     SharedPreferences localPrefs;
     ArrayList<HashMap<String, String>> theTrialData;
     public ArrayList<HashMap<String, String>> theTrialList;
@@ -88,7 +88,8 @@ public class SettingsActivity extends AppCompatActivity {
         localPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         loggedInUserID = localPrefs.getInt("loggedInUserID", 0);
         isLoggedInUser = localPrefs.getBoolean("isLoggedInUser", false);
-        manualMode = localPrefs.getBoolean("manualMode", true);
+//        manualMode = localPrefs.getBoolean("manualMode", true);
+        isManualTrial = localPrefs.getBoolean("isManualTrial", true);
 
 
         if (savedInstanceState == null) {
@@ -142,7 +143,7 @@ public class SettingsActivity extends AppCompatActivity {
         int section = localPrefs.getInt("section", 1);
         int day = localPrefs.getInt("dayNum", 1);
         username = localPrefs.getString("username", "");
-        if (!manualMode) {
+        if (!isManualTrial) {
             statusLineText = "Logged in as: " + username;
         } else {
             statusLineText = "You are not logged in. Manual mode ONLY";
@@ -1153,10 +1154,10 @@ public class SettingsActivity extends AppCompatActivity {
                     editor.putInt("loggedInUserID", id);
                     isLoggedInUser = (id != 0);
                     editor.putBoolean("isLoggedInUser", isLoggedInUser);
-                    editor.putBoolean("manualMode", !isLoggedInUser);
+                    editor.putBoolean("isManualTrial", !isLoggedInUser);
 
                     Bundle result = new Bundle();
-                    result.putBoolean("manualMode", !isLoggedInUser);
+                    result.putBoolean("isManualTrial", !isLoggedInUser);
                     result.putBoolean("isLoggedInUser", isLoggedInUser);
                     result.putString("username", username);
                     result.putInt("userID", id);
