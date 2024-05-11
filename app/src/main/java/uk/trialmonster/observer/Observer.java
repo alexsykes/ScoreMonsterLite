@@ -43,6 +43,8 @@ public class Observer extends Application {
     public void onCreate() {
         super.onCreate();
         Log.i("Note", "OnAppStart");
+        // Create database connection
+        dbInit();
 
         SharedPreferences localPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor editor = localPrefs.edit();
@@ -50,8 +52,7 @@ public class Observer extends Application {
         editor.apply();
 
 
-        // Create database connection
-        dbInit();
+
 
         // Check for connectivity
         canConnect = canConnect();
@@ -248,7 +249,7 @@ public class Observer extends Application {
             e.printStackTrace();
         }
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
-
+        mDbHelper.deleteAllTrials();
         for (int i = 0; i < theTrialList.size(); i++) {
             HashMap<String, String> theTrial = theTrialList.get(i);
             String theDate = theTrial.get("date");

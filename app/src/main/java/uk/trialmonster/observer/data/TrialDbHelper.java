@@ -77,9 +77,11 @@ public class TrialDbHelper extends SQLiteOpenHelper {
         ArrayList<HashMap<String, String>> optionList = new ArrayList<>();
 //        String query = "SELECT _id, name  FROM trials " +
 //                "WHERE created_by = " + loggedInUserID + " AND date > DATE('now')  ORDER BY date ASC";
-
+//
+//        String query = "SELECT group_concat(_id, ','),group_concat(name, ',')  FROM trials " +
+//                "WHERE created_by = " + loggedInUserID + " AND date > DATE('now')  ORDER BY date ASC";
         String query = "SELECT group_concat(_id, ','),group_concat(name, ',')  FROM trials " +
-                "WHERE created_by = " + loggedInUserID + " AND date > DATE('now')  ORDER BY date ASC";
+                "WHERE created_by = " + loggedInUserID + "  ORDER BY date ASC";
 //        String query = "SELECT group_concat(_id, ','),group_concat(name, ',')  FROM trials  ORDER BY date ASC";
         Log.i("Info", query);
         Cursor cursor = db.rawQuery(query, null);

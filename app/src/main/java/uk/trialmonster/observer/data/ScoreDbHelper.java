@@ -457,4 +457,14 @@ public class ScoreDbHelper extends SQLiteOpenHelper {
         idsToEdit.close();
         scoreToDelete.close();
     }
+
+    public void deleteAllTrials() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "DELETE FROM trials";
+        Log.i("Query", query);
+        // Execute the SQL statement
+        db.execSQL(query);
+//        db.close();
+    }
+
 }

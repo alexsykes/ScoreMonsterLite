@@ -62,8 +62,8 @@ import uk.trialmonster.observer.data.TrialDbHelper;
 public class SettingsActivity extends AppCompatActivity {
     boolean isOnline, isLoggedInUser, isAdminUser, manualMode, isManualTrial;
     SharedPreferences localPrefs;
-    ArrayList<HashMap<String, String>> theTrialData;
-    public ArrayList<HashMap<String, String>> theTrialList;
+    //    ArrayList<HashMap<String, String>> theTrialData;
+//    public ArrayList<HashMap<String, String>> theTrialList;
     ArrayList<HashMap<String, String>> options;
     TrialDbHelper mDbHelper;
     TextView statusLine;
@@ -97,7 +97,7 @@ public class SettingsActivity extends AppCompatActivity {
                     .beginTransaction()
                     .replace(R.id.settings, new SettingsFragment())
                     .commit();
-            Log.i("Info", "onCreate: ");
+            Log.i("Info", "onCreate: Settings");
         }
 
 //      Added to update section number in statusLine on change
@@ -159,8 +159,8 @@ public class SettingsActivity extends AppCompatActivity {
             String email = localPrefs.getString("email", "");
             String trialName = localPrefs.getString("trialName", "");
             String mobile = localPrefs.getString("mobile", "");
-            if (observer.equals("") || email.equals("") || mobile.equals("") || trialName.equals("")) {
-                Toast.makeText(this, "Additional data needed", Toast.LENGTH_LONG).show();
+            if (observer.equals("") || mobile.equals("")) {
+                Toast.makeText(this, "Observer name and contact details cannot be left empty", Toast.LENGTH_LONG).show();
             } else {
                 finish();
             }
@@ -175,6 +175,8 @@ public class SettingsActivity extends AppCompatActivity {
 
         Cursor cursor = mDbHelper.getTrialOptions(loggedInUserID);
         if (cursor.moveToFirst()) {
+            String theIds = cursor.getString(0);
+            String theNames = cursor.getString(1);
             editor.putString("theIds", cursor.getString(0));
             editor.putString("theNames", cursor.getString(1));
         } else {

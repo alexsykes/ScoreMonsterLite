@@ -191,9 +191,7 @@ public class MainActivity extends AppCompatActivity {
         if (mobile.equals("")) {
             return false;
         }
-        if (email.equals("")) {
-            return false;
-        }
+
 
         if (!timeMode) {
             if (section == 0) {
@@ -225,10 +223,10 @@ public class MainActivity extends AppCompatActivity {
         penaltyTariff = localPrefs.getLong("penaltyTariff", 60);
         observer = localPrefs.getString("observer", "");
         mobile = localPrefs.getString("mobile", "");
-        section = localPrefs.getInt("section", 0);
+        section = localPrefs.getInt("section", 1);
         trialid = localPrefs.getInt("trialid", 0);
-        numlaps = localPrefs.getInt("numlaps", 0);
-        numsections = localPrefs.getInt("numsections", 0);
+        numlaps = localPrefs.getInt("numlaps", 1);
+        numsections = localPrefs.getInt("numsections", 1);
         email = localPrefs.getString("email", "");
         isSingleUser = localPrefs.getBoolean("isSingleUser", false);
         isManualTrial = localPrefs.getBoolean("isManualTrial", true);
@@ -253,7 +251,6 @@ public class MainActivity extends AppCompatActivity {
         }
         editor.apply();
     }
-
     void initialUISetup() {
         // Initialise UI fields
         numberLabel = findViewById(R.id.numberLabel);
@@ -421,11 +418,12 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "Already completed " + numlaps + " laps", Toast.LENGTH_LONG).show();
         } else {
             String query =
-                    "INSERT INTO scores ('rider', 'score', 'created', 'trialid', 'section', " +
+                    "INSERT INTO scores ('lap', 'rider', 'score', 'created', 'trialid', " +
+                            "'section', " +
                             "'sync') " +
-                            "VALUES(121, 1," +
-                            " DATETIME('now'), 0, 1, -1) ";
-
+                            "VALUES(" + lap + " , " + rider + "," + score + "," +
+                            " DATETIME('now'), 0, " + section + ", -1) ";
+            Log.i(TAG, "Query: " + query);
             db.execSQL(query);
 
             playSoundFile(R.raw.ting);
