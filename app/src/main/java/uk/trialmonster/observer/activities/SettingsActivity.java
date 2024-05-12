@@ -279,7 +279,7 @@ public class SettingsActivity extends AppCompatActivity {
             // Get initial values from localPrefs
             // Setup current values
 //           Trial details
-            trialid = localPrefs.getInt("trialid", 0);
+            trialid = localPrefs.getInt("trialid", -999);
             trialName = localPrefs.getString("trialName", "");
             isManualTrial = localPrefs.getBoolean("isManualTrial", true);
             numsections = localPrefs.getInt("numsections", 1);

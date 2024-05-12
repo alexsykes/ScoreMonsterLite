@@ -224,7 +224,7 @@ public class MainActivity extends AppCompatActivity {
         observer = localPrefs.getString("observer", "");
         mobile = localPrefs.getString("mobile", "");
         section = localPrefs.getInt("section", 1);
-        trialid = localPrefs.getInt("trialid", 0);
+        trialid = localPrefs.getInt("trialid", -999);
         numlaps = localPrefs.getInt("numlaps", 1);
         numsections = localPrefs.getInt("numsections", 1);
         email = localPrefs.getString("email", "");
@@ -422,7 +422,7 @@ public class MainActivity extends AppCompatActivity {
                             "'section', " +
                             "'sync') " +
                             "VALUES(" + lap + " , " + rider + "," + score + "," +
-                            " DATETIME('now'), 0, " + section + ", -1) ";
+                            " DATETIME('now'), " + trialid + ", " + section + ", -1) ";
             Log.i(TAG, "Query: " + query);
             db.execSQL(query);
 
