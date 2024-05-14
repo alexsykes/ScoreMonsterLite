@@ -236,7 +236,7 @@ public class MainActivity extends AppCompatActivity {
         score = localPrefs.getInt("score", 0);
         numberInGroup = localPrefs.getInt("numberInGroup", 6);
         scoreCount = localPrefs.getInt("scoreCount", 0);
-        theTrialName = localPrefs.getString("trialName", "");
+        theTrialName = localPrefs.getString("trialName", "My Trial");
         club = localPrefs.getString("club", "None selected");
         mode = localPrefs.getInt("mode", 0);
         usermode = Integer.valueOf(localPrefs.getString("usermode", "0"));

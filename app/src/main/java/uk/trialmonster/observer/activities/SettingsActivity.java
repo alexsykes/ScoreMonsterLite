@@ -180,8 +180,8 @@ public class SettingsActivity extends AppCompatActivity {
             editor.putString("theIds", cursor.getString(0));
             editor.putString("theNames", cursor.getString(1));
         } else {
-            editor.putString("theIds", "");
-            editor.putString("theNames", "");
+            editor.putString("theIds", "-999");
+            editor.putString("theNames", "My Trial");
         }
         editor.apply();
         cursor.close();
@@ -366,8 +366,8 @@ public class SettingsActivity extends AppCompatActivity {
 
         private void setTrials() {
             // Get saved values from prefers file
-            CharSequence[] entries = localPrefs.getString("theNames", "Manual Entry").split(",");
-            CharSequence[] entryValues = localPrefs.getString("theIds", "0").split(",");
+            CharSequence[] entries = localPrefs.getString("theNames", "My Trial").split(",");
+            CharSequence[] entryValues = localPrefs.getString("theIds", "-999").split(",");
             ListPreference lp = findPreference("theTrialIndex");
             assert lp != null;
             lp.setEntries(entries);
@@ -1152,6 +1152,8 @@ public class SettingsActivity extends AppCompatActivity {
                 public void onResponse(String response) {
                     Log.d("Volley", "Response: " + response);
 
+                    String theIds = "";
+                    String theNames = "";
                     int id = Integer.parseInt(response);
                     editor.putInt("loggedInUserID", id);
                     isLoggedInUser = (id != 0);
@@ -1172,36 +1174,39 @@ public class SettingsActivity extends AppCompatActivity {
 
 //                  Only change trial details for new user
                     if (isLoggedInUser && (initialUserId != id)) {
+                        loggedInUserID = id;
 //                    if (isLoggedInUser ) {
 
                         // Get users trial data
                         TrialDbHelper mDbHelper = new TrialDbHelper(getContext());
                         Cursor cursor = mDbHelper.getTrialOptions(loggedInUserID);
                         if (cursor.moveToFirst()) {
-                            editor.putString("theIds", cursor.getString(0));
-                            editor.putString("theNames", cursor.getString(1));
+                            theIds = cursor.getString(0);
+                            theNames = cursor.getString(1);
                             trialListPref.setVisible(true);
                             trialNamePref.setVisible(false);
                         } else {
-                            editor.putString("theIds", "");
-                            editor.putString("theNames", "");
                             trialListPref.setVisible(false);
                             trialNamePref.setVisible(true);
                         }
+
+                        editor.putString("theIds", theIds);
+                        editor.putString("theNames", theNames);
+                        editor.apply();
                         cursor.close();
                         mDbHelper.close();
 
 //                     Update trialListPref
-                        CharSequence[] entries = localPrefs.getString("theNames", "").split(",");
-                        CharSequence[] entryValues = localPrefs.getString("theIds", "0").split(",");
+                        CharSequence[] entries = theNames.split(",");
+                        CharSequence[] entryValues = theIds.split(",");
 
-                        if (entries.length < 0) {
+                        if (entries.length > 0) {
                             trialListPref.setEntries(entries);
                             trialListPref.setEntryValues(entryValues);
                         }
                     } else {
-                        editor.putInt("trialid", 0);
-                        editor.putString("theTrialIndex", "0");
+                        editor.putInt("trialid", -999);
+                        editor.putString("theTrialIndex", "-999");
                     }
 
                     editor.apply();
@@ -1250,5 +1255,7 @@ public class SettingsActivity extends AppCompatActivity {
                     DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
             requestQueue.add(stringRequest);
         }
+
+
     }
 }
