@@ -2,7 +2,6 @@ package uk.trialmonster.observer;
 // TODO - update elapsedTime to take account of startTime and startInterval
 // TODO - SettingsActivity - update trial data on chamge of trial - done
 
-import android.annotation.SuppressLint;
 import android.app.Application;
 import android.content.ContentValues;
 import android.content.Context;
@@ -25,17 +24,8 @@ import com.android.volley.toolbox.Volley;
 import org.json.JSONArray;
 import org.json.JSONException;
 
-import java.security.SecureRandom;
-import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.HashMap;
-
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSession;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
 
 import uk.trialmonster.observer.data.ScoreContract;
 import uk.trialmonster.observer.data.ScoreDbHelper;
@@ -48,36 +38,6 @@ public class Observer extends Application {
 
     // Databases
     private ScoreDbHelper mDbHelper;
-
-    @SuppressLint("TrulyRandom")
-    public static void handleSSLHandshake() {
-        try {
-            TrustManager[] trustAllCerts = new TrustManager[]{new X509TrustManager() {
-                public X509Certificate[] getAcceptedIssuers() {
-                    return new X509Certificate[0];
-                }
-
-                @Override
-                public void checkClientTrusted(X509Certificate[] certs, String authType) {
-                }
-
-                @Override
-                public void checkServerTrusted(X509Certificate[] certs, String authType) {
-                }
-            }};
-
-            SSLContext sc = SSLContext.getInstance("SSL");
-            sc.init(null, trustAllCerts, new SecureRandom());
-            HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
-            HttpsURLConnection.setDefaultHostnameVerifier(new HostnameVerifier() {
-                @Override
-                public boolean verify(String arg0, SSLSession arg1) {
-                    return true;
-                }
-            });
-        } catch (Exception ignored) {
-        }
-    }
 
     @Override
     public void onCreate() {
