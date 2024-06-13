@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
     Button saveButton;
 
     // Layout variables
-    TextView numberLabel, scoreLabel, sectionNumberTextView, decrementTextView,
+    TextView numberLabel, scoreLabel, newScoreLabel, sectionNumberTextView, decrementTextView,
             incrementTextView, statusLine;
     LinearLayout sectionPicker, sectionLabelLayout;
     ConstraintLayout top, bottom;

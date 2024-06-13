@@ -1,4 +1,5 @@
 <resources>
+
     <style name="AppTheme" parent="Theme.Theme">
         <!-- Customize your theme here. -->
         <!--        <item name="colorPrimary">@color/colorPrimary</item>-->
@@ -21,7 +22,7 @@
         <item name="android:shadowColor">?android:attr/colorBackground</item>
         <item name="android:textColor">@color/colorWhite</item>
         <item name="android:gravity">center</item>
-        <item name="android:textSize">24sp</item>
+        <item name="android:textSize">42sp</item>
         <item name="android:layout_margin">3dp</item>
         <item name="android:padding">0dp</item>
     </style>
@@ -45,7 +46,7 @@
         <item name="android:shadowDx">5</item>
         <item name="android:shadowDy">5</item>
         <item name="android:shadowRadius">5</item>
-        <item name="android:textSize">24sp</item>
+        <item name="android:textSize">42sp</item>
         <item name="android:shadowColor">?android:attr/colorBackground</item>
         <item name="android:gravity">center</item>
         <item name="android:layout_margin">3dp</item>
