@@ -4,9 +4,15 @@
     <!--        <domain includeSubdomains="false">trialmonster.uk</domain>-->
     <!--    </domain-config>-->
     <domain-config>
-        <domain includeSubdomains="true">trialmonster.uk</domain>
+        <domain includeSubdomains="false">android.trialmonster.uk</domain>
         <trust-anchors>
             <certificates src="@raw/android" />
+        </trust-anchors>
+    </domain-config>
+    <domain-config>
+        <domain includeSubdomains="false">trialmonster.uk</domain>
+        <trust-anchors>
+            <certificates src="@raw/monster" />
         </trust-anchors>
     </domain-config>
 </network-security-config>
