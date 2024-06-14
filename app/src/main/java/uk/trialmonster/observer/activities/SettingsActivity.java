@@ -219,7 +219,7 @@ public class SettingsActivity extends AppCompatActivity {
         SharedPreferences.Editor editor;
 
         PreferenceCategory loginPrefCategory, trialDetailsPrefCategory,
-                observerDetailsPrefCategory, timeModePrefCategory;
+                observerDetailsPrefCategory, timeModePrefCategory, trialSelectCategory;
 
         Preference isManualTrialPref;
 
@@ -250,6 +250,7 @@ public class SettingsActivity extends AppCompatActivity {
             trialDetailsPrefCategory = findPreference("trialDetails");
             observerDetailsPrefCategory = findPreference("observerDetails");
             timeModePrefCategory = findPreference("timingModeCategory");
+            trialSelectCategory = findPreference("trialSelectCategory");
 
 //          Define prefs
             isManualTrialPref = findPreference("isManualTrial");
@@ -331,6 +332,7 @@ public class SettingsActivity extends AppCompatActivity {
             trialDetailsPrefCategory.setVisible(true);
             observerDetailsPrefCategory.setVisible(true);
             timeModePrefCategory.setVisible(true);
+            trialSelectCategory.setVisible(isAdminUser);
 //            isManualTrialPref.setTitle(trialName);
 
             usernamePref.setVisible(true);
@@ -354,6 +356,7 @@ public class SettingsActivity extends AppCompatActivity {
             timeModeSwitchPref.setVisible(isAdminUser);
             timeModePrefCategory.setVisible(isAdminUser);
             adminLockNewPassPref.setVisible(isAdminUser);
+            trialSelectCategory.setVisible(isAdminUser);
         }
 
         private void userLoggedIn(boolean isLoggedInUser) {

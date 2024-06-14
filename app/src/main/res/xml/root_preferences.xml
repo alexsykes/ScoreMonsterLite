@@ -60,14 +60,7 @@
             app:singleLineTitle="false"
             app:summary="@string/enterDayNumber"
             app:title="@string/day_number" />
-        <ListPreference
-            android:contentDescription="@string/select_trial_from_available_choices"
-            android:title="@string/select_trial"
-            app:entries="@array/trial_entries"
-            app:entryValues="@array/trial_values"
-            app:key="theTrialIndex"
-            app:summary="@string/select_trial"
-            app:title="@string/trial_name" />
+
 
         <Preference
             app:key="isManualTrial"
@@ -110,6 +103,7 @@
             app:isPreferenceVisible="false"
             android:title="@string/advanced_settings"
             app:summary="@string/advanced__settings" />
+
 
         <EditTextPreference
             android:layout_width="wrap_content"
@@ -161,6 +155,18 @@
                 android:singleLine="true"
                 android:title="@string/password"
                 app:summary="Enter login password" />
+        </PreferenceCategory>
+        <PreferenceCategory
+            android:key="trialSelectCategory"
+            android:title="@string/select_trial">
+            <ListPreference
+                android:contentDescription="@string/select_trial_from_available_choices"
+                android:title="@string/select_trial"
+                app:entries="@array/trial_entries"
+                app:entryValues="@array/trial_values"
+                app:key="theTrialIndex"
+                app:summary="@string/select_trial"
+                app:title="@string/trial_name" />
         </PreferenceCategory>
         <PreferenceCategory
             android:key="timingModeCategory"
