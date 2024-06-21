@@ -10,7 +10,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.preference.PreferenceManager;
 
@@ -45,7 +44,7 @@ public class Observer extends Application {
         Log.i("Note", "OnAppStart");
         // Create database connection
         dbInit();
-//handleSSLHandshake();
+
         SharedPreferences localPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor editor = localPrefs.edit();
         editor.putBoolean("isAdminUser", false);
@@ -132,7 +131,7 @@ public class Observer extends Application {
         db.close();
     }
 
-    private void getScoreListFromServer() {
+   /* private void getScoreListFromServer() {
         // Instantiate the RequestQueue.
         RequestQueue queue = Volley.newRequestQueue(this);
         String url = "https://android.trialmonster.uk/getScoreListScoreMonsterLive" +
@@ -160,9 +159,9 @@ public class Observer extends Application {
         });
 // Add the request to the RequestQueue.
         queue.add(stringRequest);
-    }
+    }*/
 
-    private void updateScoresDB(String response) {
+  /*  private void updateScoresDB(String response) {
         try {
             theScoreList = getScoreListFromResponse(response);
         } catch (JSONException e) {
@@ -197,9 +196,9 @@ public class Observer extends Application {
         }
         Toast.makeText(this, "Scores downloaded", Toast.LENGTH_LONG).show();
         db.close();
-    }
+    }*/
 
-    private ArrayList<HashMap<String, String>> getScoreListFromResponse(String json) throws JSONException {
+  /*  private ArrayList<HashMap<String, String>> getScoreListFromResponse(String json) throws JSONException {
         theScoreList = new ArrayList<>();
         JSONArray jsonArray = new JSONArray(json);
 
@@ -216,7 +215,7 @@ public class Observer extends Application {
             theScoreList.add(theScoreHash);
         }
         return theScoreList;
-    }
+    }*/
 
     private void getTrialListFromServer() {
         // Instantiate the RequestQueue.

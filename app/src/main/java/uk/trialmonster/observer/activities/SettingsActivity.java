@@ -240,8 +240,9 @@ public class SettingsActivity extends AppCompatActivity {
 
             setupInitialPrefs();
             saveInitialValuesToPrefs();
-            setTrials();
+//            setTrials();
             setupPrefs();
+            setupTrialPrefOptions(loggedInUserID);
         }
 
         private void setupInitialPrefs() {
@@ -367,15 +368,15 @@ public class SettingsActivity extends AppCompatActivity {
             emailPref.setVisible(!isLoggedInUser);
         }
 
-        private void setTrials() {
-            // Get saved values from prefers file
-            CharSequence[] entries = localPrefs.getString("theNames", "My Trial").split(",");
-            CharSequence[] entryValues = localPrefs.getString("theIds", "-999").split(",");
-            ListPreference lp = findPreference("theTrialIndex");
-            assert lp != null;
-            lp.setEntries(entries);
-            lp.setEntryValues(entryValues);
-        }
+//        private void setTrials() {
+//            // Get saved values from prefers file
+//            CharSequence[] entries = localPrefs.getString("theNames", "My Trial").split(",");
+//            CharSequence[] entryValues = localPrefs.getString("theIds", "-999").split(",");
+////            ListPreference lp = findPreference("theTrialIndex");
+////            assert lp != null;
+//            trialListPref.setEntries(entries);
+//            trialListPref.setEntryValues(entryValues);
+//        }
 
         private void saveInitialValuesToPrefs() {
             editor.putLong("startInterval", startInterval);
@@ -1173,44 +1174,48 @@ public class SettingsActivity extends AppCompatActivity {
                     trialNamePref.setVisible(!isLoggedInUser);
                     trialListPref.setVisible(isLoggedInUser);
 
+//                  Set pref visibilities on isLoggedInUser state
                     userLoggedIn(isLoggedInUser);
 
 //                  Only change trial details for new user
+//                  Start of working area
                     if (isLoggedInUser && (initialUserId != id)) {
                         loggedInUserID = id;
-//                    if (isLoggedInUser ) {
 
-                        // Get users trial data
-                        TrialDbHelper mDbHelper = new TrialDbHelper(getContext());
-                        Cursor cursor = mDbHelper.getTrialOptions(loggedInUserID);
-                        if (cursor.moveToFirst()) {
-                            theIds = cursor.getString(0);
-                            theNames = cursor.getString(1);
-                            trialListPref.setVisible(true);
-                            trialNamePref.setVisible(false);
-                        } else {
-                            trialListPref.setVisible(false);
-                            trialNamePref.setVisible(true);
-                        }
-
-                        editor.putString("theIds", theIds);
-                        editor.putString("theNames", theNames);
-                        editor.apply();
-                        cursor.close();
-                        mDbHelper.close();
-
-//                     Update trialListPref
-                        CharSequence[] entries = theNames.split(",");
-                        CharSequence[] entryValues = theIds.split(",");
-
-                        if (entries.length > 0) {
-                            trialListPref.setEntries(entries);
-                            trialListPref.setEntryValues(entryValues);
-                        }
+                        setupTrialPrefOptions(loggedInUserID);
+//                        // Get users trial data
+//                        TrialDbHelper mDbHelper = new TrialDbHelper(getContext());
+//                        Cursor cursor = mDbHelper.getTrialOptions(loggedInUserID);
+//                        if (cursor.moveToFirst()) {
+//                            theIds = cursor.getString(0);
+//                            theNames = cursor.getString(1);
+//                            trialListPref.setVisible(true);
+//                            trialNamePref.setVisible(false);
+//                        } else {
+//                            trialListPref.setVisible(false);
+//                            trialNamePref.setVisible(true);
+//                        }
+//
+//                        editor.putString("theIds", theIds);
+//                        editor.putString("theNames", theNames);
+//                        editor.apply();
+//                        cursor.close();
+//                        mDbHelper.close();
+//
+////                     Update trialListPref
+//                        CharSequence[] entries = theNames.split(",");
+//                        CharSequence[] entryValues = theIds.split(",");
+//
+//                        if (entries.length > 0) {
+//                            trialListPref.setEntries(entries);
+//                            trialListPref.setEntryValues(entryValues);
+//                        }
                     } else {
                         editor.putInt("trialid", -999);
                         editor.putString("theTrialIndex", "-999");
                     }
+
+//                  End of working area
 
                     editor.apply();
 
@@ -1259,6 +1264,25 @@ public class SettingsActivity extends AppCompatActivity {
             requestQueue.add(stringRequest);
         }
 
+        private void setupTrialPrefOptions(int loggedInUserID) {
+            if (loggedInUserID > 0) {
+                TrialDbHelper trialDbHelper = new TrialDbHelper(getContext());
+                ArrayList<HashMap<String, String>> data = trialDbHelper.getUserTrialList(loggedInUserID);
+                int numTrials = data.size();
 
+                if (numTrials > 0) {
+                    String[] theIDS = new String[numTrials];
+                    String[] theTrialNames = new String[numTrials];
+                    for (int i = 0; i < numTrials; i++) {
+                        theIDS[i] = data.get(i).get("id");
+                        theTrialNames[i] = data.get(i).get("name");
+                    }
+                    trialListPref.setEntries(theTrialNames);
+                    trialListPref.setEntryValues(theIDS);
+                }
+            } else {
+//          Setup manual trial
+            }
+        }
     }
 }

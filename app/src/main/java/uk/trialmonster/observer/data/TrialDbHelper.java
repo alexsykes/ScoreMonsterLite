@@ -76,11 +76,17 @@ public class TrialDbHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         ArrayList<HashMap<String, String>> optionList = new ArrayList<>();
 
-        String query = "SELECT group_concat(_id, ','),group_concat(name, ',')  FROM trials " +
+//        String query = "SELECT group_concat(_id, ','),group_concat(name, ',')  FROM trials " +
+//                "WHERE created_by = " + loggedInUserID + "  ORDER BY date ASC";
+
+        String query = "SELECT _id, name  FROM trials " +
                 "WHERE created_by = " + loggedInUserID + "  ORDER BY date ASC";
 
         Log.i("Info", query);
         Cursor cursor = db.rawQuery(query, null);
+        int nu = cursor.getCount();
+        Log.i("Info", "Cursor count: " + nu);
+//        cursor.close();
         return cursor;
     }
 
@@ -110,6 +116,23 @@ public class TrialDbHelper extends SQLiteOpenHelper {
         return trialList;
     }
 
+    public ArrayList<HashMap<String, String>> getUserTrialList(int userID) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ArrayList<HashMap<String, String>> trialList = new ArrayList<>();
+
+        String query = "SELECT _id, name FROM trials WHERE created_by = " + userID;
+        Cursor cursor = db.rawQuery(query, null);
+
+        while (cursor.moveToNext()) {
+            HashMap<String, String> trial = new HashMap<>();
+            trial.put("id", cursor.getString(cursor.getColumnIndex(TrialContract.TrialEntry._ID)));
+            trial.put("name", cursor.getString(cursor.getColumnIndex(TrialContract.TrialEntry.COLUMN_TRIAL_NAME)));
+            trialList.add(trial);
+        }
+        cursor.close();
+        db.close();
+        return trialList;
+    }
     public ArrayList<HashMap<String, String>> getTrialData(int trialid) {
         SQLiteDatabase db = this.getWritableDatabase();
         ArrayList<HashMap<String, String>> trialData = new ArrayList<>();
@@ -134,6 +157,7 @@ public class TrialDbHelper extends SQLiteOpenHelper {
             trialData.add(trial);
         }
         cursor.close();
+        db.close();
         return trialData;
     }
 }
