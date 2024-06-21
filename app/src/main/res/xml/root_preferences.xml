@@ -135,6 +135,18 @@
             app:summary="@string/enter_confirm_password"
             app:key="adminLockConfirmPass" />
         <PreferenceCategory
+            android:key="trialSelectCategory"
+            android:title="@string/select_trial">
+            <ListPreference
+                android:contentDescription="@string/select_trial_from_available_choices"
+                android:title="@string/select_trial"
+                app:entries="@array/trial_entries"
+                app:entryValues="@array/trial_values"
+                app:key="theTrialIndex"
+                app:summary="@string/select_trial"
+                app:title="@string/trial_name" />
+        </PreferenceCategory>
+        <PreferenceCategory
             android:key="loginPrefCategory"
             android:title="@string/login_details">
 
@@ -155,18 +167,6 @@
                 android:singleLine="true"
                 android:title="@string/password"
                 app:summary="Enter login password" />
-        </PreferenceCategory>
-        <PreferenceCategory
-            android:key="trialSelectCategory"
-            android:title="@string/select_trial">
-            <ListPreference
-                android:contentDescription="@string/select_trial_from_available_choices"
-                android:title="@string/select_trial"
-                app:entries="@array/trial_entries"
-                app:entryValues="@array/trial_values"
-                app:key="theTrialIndex"
-                app:summary="@string/select_trial"
-                app:title="@string/trial_name" />
         </PreferenceCategory>
         <PreferenceCategory
             android:key="timingModeCategory"

@@ -62,9 +62,7 @@ import uk.trialmonster.observer.data.TrialDbHelper;
 public class SettingsActivity extends AppCompatActivity {
     boolean isOnline, isLoggedInUser, isAdminUser, manualMode, isManualTrial;
     SharedPreferences localPrefs;
-    //    ArrayList<HashMap<String, String>> theTrialData;
-//    public ArrayList<HashMap<String, String>> theTrialList;
-    ArrayList<HashMap<String, String>> options;
+
     TrialDbHelper mDbHelper;
     TextView statusLine;
     String username, statusLineText;
@@ -82,15 +80,15 @@ public class SettingsActivity extends AppCompatActivity {
         // Enable the Up button
         ab.setDisplayHomeAsUpEnabled(true);
 
+//        Get local prefs
+        localPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = localPrefs.edit();
+
 //      Get online status
         isOnline = isOnline();
-
-        localPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-        loggedInUserID = localPrefs.getInt("loggedInUserID", 0);
-        isLoggedInUser = localPrefs.getBoolean("isLoggedInUser", false);
-//        manualMode = localPrefs.getBoolean("manualMode", true);
-        isManualTrial = localPrefs.getBoolean("isManualTrial", true);
-
+        editor.putBoolean("canConnect", isOnline);
+        editor.apply();
+        getPrefs();
 
         if (savedInstanceState == null) {
             getSupportFragmentManager()
@@ -137,9 +135,10 @@ public class SettingsActivity extends AppCompatActivity {
                         statusLine.setText(statusLineText);
                     }
                 });
-        // Get saved trial data
+        // Get saved trial data for user
         mDbHelper = new TrialDbHelper(this);
         populateTrialList(loggedInUserID);
+
         int section = localPrefs.getInt("section", 1);
         int day = localPrefs.getInt("dayNum", 1);
         username = localPrefs.getString("username", "");
@@ -151,6 +150,17 @@ public class SettingsActivity extends AppCompatActivity {
         statusLine = findViewById(R.id.statusLine);
         statusLine.setVisibility(View.VISIBLE);
         statusLine.setText(statusLineText);
+        mDbHelper.close();
+    }
+
+    @Override
+    protected void onStart() {
+        // Check network connectivity and set Prefs
+        super.onStart();
+        localPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = localPrefs.edit();
+        editor.putBoolean("canConnect", isOnline);
+        editor.apply();
     }
 
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -167,6 +177,13 @@ public class SettingsActivity extends AppCompatActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void getPrefs() {
+        localPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        loggedInUserID = localPrefs.getInt("loggedInUserID", 0);
+        isLoggedInUser = localPrefs.getBoolean("isLoggedInUser", false);
+        isManualTrial = localPrefs.getBoolean("isManualTrial", true);
     }
 
     private void populateTrialList(int loggedInUserID) {
@@ -188,16 +205,6 @@ public class SettingsActivity extends AppCompatActivity {
         mDbHelper.close();
     }
 
-    @Override
-    protected void onStart() {
-        // Check network connectivity and set Prefs
-        localPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-        SharedPreferences.Editor editor = localPrefs.edit();
-        editor.putBoolean("canConnect", isOnline);
-        editor.apply();
-        super.onStart();
-        mDbHelper.close();
-    }
     protected boolean isOnline() {
         ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = cm.getActiveNetworkInfo();
@@ -205,7 +212,7 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     public static class SettingsFragment extends PreferenceFragmentCompat {
-        //      Define variable
+        //      Define variables
         public static final String TAG = "Info";
         String email, username, password, observerName, mobile, trialName, adminLockPass,
                 adminLockNewPass, adminLockConfirmPass, dayText;
@@ -246,14 +253,14 @@ public class SettingsActivity extends AppCompatActivity {
         }
 
         private void setupInitialPrefs() {
-//          Define categories
+//          Define pref categories
             loginPrefCategory = findPreference("loginPrefCategory");
             trialDetailsPrefCategory = findPreference("trialDetails");
             observerDetailsPrefCategory = findPreference("observerDetails");
             timeModePrefCategory = findPreference("timingModeCategory");
             trialSelectCategory = findPreference("trialSelectCategory");
 
-//          Define prefs
+//          Define pref widgets
             isManualTrialPref = findPreference("isManualTrial");
             advancedSwitchPref = findPreference("show_advanced");
             trialListPref = findPreference("theTrialIndex");
@@ -305,6 +312,8 @@ public class SettingsActivity extends AppCompatActivity {
             password = localPrefs.getString("password", "");
             ridingNumber = localPrefs.getInt("ridingNumber", 0);
             isAdminUser = localPrefs.getBoolean("isAdminUser", false);
+
+//          Set up initial visibilities
             userLoggedIn(isLoggedInUser);
 
 //          Observer prefs
@@ -325,19 +334,17 @@ public class SettingsActivity extends AppCompatActivity {
 //          Set inital visibility
 
 //            isManualTrialPref.setSummary(trialName);
-            trialListPref.setVisible(isLoggedInUser);
-            trialNamePref.setVisible(!isLoggedInUser);
-            isManualTrialPref.setVisible(false);
 
+
+            isManualTrialPref.setVisible(false);
             loginPrefCategory.setVisible(true);
-            trialDetailsPrefCategory.setVisible(true);
             observerDetailsPrefCategory.setVisible(true);
             timeModePrefCategory.setVisible(true);
             trialSelectCategory.setVisible(isAdminUser);
 //            isManualTrialPref.setTitle(trialName);
 
             usernamePref.setVisible(true);
-            passwordPref.setVisible(true);//   
+            passwordPref.setVisible(true);
 
             adminUserLoggedIn(isAdminUser);
             usernamePref.setVisible(true);
@@ -348,6 +355,7 @@ public class SettingsActivity extends AppCompatActivity {
             ridingNumberPref.setVisible(false);
         }
 
+        //        Initial visibilities for admin users
         private void adminUserLoggedIn(boolean isAdminUser) {
             restartClockSwitchPref.setVisible(isAdminUser);
             resetScoresSwitchPref.setVisible(isAdminUser);
@@ -360,12 +368,15 @@ public class SettingsActivity extends AppCompatActivity {
             trialSelectCategory.setVisible(isAdminUser);
         }
 
+        //      Initial visibilities
         private void userLoggedIn(boolean isLoggedInUser) {
             numLapsPref.setVisible(!isLoggedInUser);
             numSectionsPref.setVisible(!isLoggedInUser);
             trialListPref.setVisible(isLoggedInUser);
             trialNamePref.setVisible(!isLoggedInUser);
             emailPref.setVisible(!isLoggedInUser);
+            trialDetailsPrefCategory.setVisible(!isLoggedInUser);
+            trialSelectCategory.setVisible(isLoggedInUser);
         }
 
 //        private void setTrials() {
@@ -1171,8 +1182,6 @@ public class SettingsActivity extends AppCompatActivity {
                     result.putInt("userID", id);
                     getParentFragmentManager().setFragmentResult("login", result);
 
-                    trialNamePref.setVisible(!isLoggedInUser);
-                    trialListPref.setVisible(isLoggedInUser);
 
 //                  Set pref visibilities on isLoggedInUser state
                     userLoggedIn(isLoggedInUser);
@@ -1279,9 +1288,20 @@ public class SettingsActivity extends AppCompatActivity {
                     }
                     trialListPref.setEntries(theTrialNames);
                     trialListPref.setEntryValues(theIDS);
+
+                    editor.putBoolean("isManualTrial", false);
+                    editor.apply();
                 }
             } else {
 //          Setup manual trial
+                trialid = -999;
+                isManualTrial = true;
+                trialName = "Manual trial";
+
+                editor.putInt("trialid", trialid);
+//                editor.putString("trialName", trialName);
+                editor.putBoolean("isManualTrial", isManualTrial);
+                editor.apply();
             }
         }
     }

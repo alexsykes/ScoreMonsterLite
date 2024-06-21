@@ -571,7 +571,7 @@ public class ScoreListActivity extends AppCompatActivity {
             String ts = String.valueOf(time);
             filename = "data_" + ts + ".csv";
             String sendMailURL =
-                    "https://www.trialmonster.uk/android/sendMailWithFileLive.php?id=" + ts +
+                    "https://android.trialmonster.uk/sendMailWithFileLive.php?id=" + ts +
                             "&trialid=" + trialid + "&email=" + email;
 
             newSaveToCSV();
