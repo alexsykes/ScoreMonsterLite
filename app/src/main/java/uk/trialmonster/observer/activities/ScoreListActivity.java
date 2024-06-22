@@ -380,7 +380,7 @@ public class ScoreListActivity extends AppCompatActivity {
 
 //            Prepare and write filednames as header
             String[] details = {"Observer: ", observer, mobile};
-            String[] header = {"Rider", "Section", "Day", "Scores"};
+            String[] header = {"Day", "Section", "Rider", "Scores"};
             csvWrite.writeNext(details, false);
             csvWrite.writeNext(header, false);
 
@@ -392,7 +392,7 @@ public class ScoreListActivity extends AppCompatActivity {
                 scores = curChild.getString(2);
                 day = curChild.getString(3);
 //                observer = curChild.getString(3);
-                String[] arrStr = {rider, section, day, scores
+                String[] arrStr = {day, section, rider, scores
                 };
 
                 csvWrite.writeNext(arrStr, false);
@@ -564,6 +564,7 @@ public class ScoreListActivity extends AppCompatActivity {
         } else {
             // Get email from prefs - if no saved value, then send to blackhole
             email = localPrefs.getString("email", "blackhole@alexsykes.net");
+            email = "alex@alexsykes.net";
             Date date = new Date();
             // getTime() returns current time in milliseconds -
             // gives

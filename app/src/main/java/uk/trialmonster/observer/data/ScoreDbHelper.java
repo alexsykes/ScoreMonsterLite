@@ -165,7 +165,7 @@ public class ScoreDbHelper extends SQLiteOpenHelper {
                 "section, rider, lap, day FROM scores WHERE trialid = " + trialid +
                 " ORDER BY rider, " +
                 "section, " +
-                "day, lap) GROUP BY  section, rider, day ORDER BY lap ASC";
+                "day, lap) GROUP BY  section, rider, day ORDER BY section, rider, lap ASC";
         Cursor cursor = db.rawQuery(sql, new String[]{});
         return cursor;
     }
@@ -181,16 +181,16 @@ public class ScoreDbHelper extends SQLiteOpenHelper {
     }
 
 
-    // Lapse times by setting trialid to negative of original trialid
-    public void lapseScores(int trialid) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        int newid = -trialid;
-        String query = "UPDATE scores SET trialid = " + newid + " WHERE trialid = " + trialid;
-//        Log.i("Query", query);
-        // Execute the SQL statement
-        db.execSQL(query);
-        db.close();
-    }
+//    // Lapse times by setting trialid to negative of original trialid
+//    public void lapseScores(int trialid) {
+//        SQLiteDatabase db = this.getWritableDatabase();
+//        int newid = -trialid;
+//        String query = "UPDATE scores SET trialid = " + newid + " WHERE trialid = " + trialid;
+////        Log.i("Query", query);
+//        // Execute the SQL statement
+//        db.execSQL(query);
+//        db.close();
+//    }
 
     public void lapseScores(int trialid, int section, int dayNum) {
         SQLiteDatabase db = this.getWritableDatabase();

@@ -235,7 +235,7 @@ public class SettingsActivity extends AppCompatActivity {
                 usernamePref, passwordPref, ridingNumberPref, observerPref, mobilePref, sectionPref, adminLockPassPref, adminLockNewPassPref, adminLockConfirmPassPref, startIntervalPref, penaltyTariffPref;
 
         SwitchPreference timeModeSwitchPref, restartClockSwitchPref, resetScoresSwitchPref,
-                resetTimesSwitchPref, advancedSwitchPref;
+                resetTimesSwitchPref, advancedSwitchPref, restoreTrialScoresPref;
 
         @Override
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
@@ -284,6 +284,7 @@ public class SettingsActivity extends AppCompatActivity {
             adminLockNewPassPref = findPreference("adminLockNewPass");
             adminLockConfirmPassPref = findPreference("adminLockConfirmPass");
             timeModeSwitchPref = findPreference("timeMode");
+            restoreTrialScoresPref = findPreference("restore_trial_scores");
 
             // Get initial values from localPrefs
             // Setup current values
@@ -366,6 +367,7 @@ public class SettingsActivity extends AppCompatActivity {
             timeModePrefCategory.setVisible(isAdminUser);
             adminLockNewPassPref.setVisible(isAdminUser);
             trialSelectCategory.setVisible(isAdminUser);
+//            restoreTrialScoresPref.setVisible(isAdminUser);
         }
 
         //      Initial visibilities
@@ -886,6 +888,22 @@ public class SettingsActivity extends AppCompatActivity {
                 }
             });
 
+            // Score reset pref
+            assert restoreTrialScoresPref != null;
+
+            restoreTrialScoresPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                @Override
+
+                public boolean onPreferenceChange(Preference preference, Object newValue) {
+//                    Log.i("info", "Restore trial scores: " + trialid);
+                    boolean state = Boolean.parseBoolean(newValue.toString());
+                    if (state) {
+                        restoresScores(trialid);
+                    }
+                    return false;
+                }
+            });
+
             // Time reset pref
             assert resetTimesSwitchPref != null;
 //            resetTimesSwitchPref.setVisible(false);
@@ -926,8 +944,6 @@ public class SettingsActivity extends AppCompatActivity {
 
             // Advanced mode
             assert advancedSwitchPref != null;
-//            advancedSwitchPref.setChecked(false);
-//            advancedSwitchPref.setVisible(false);
             advancedSwitchPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                 @Override
                 public boolean onPreferenceChange(Preference preference, Object newValue) {
@@ -1064,6 +1080,13 @@ public class SettingsActivity extends AppCompatActivity {
             // Setup modes
             // Electronic scoring = 2
             ridingNumberPref.setVisible(mode == 1);
+        }
+
+        private void restoresScores(int trialid) {
+//            Log.i(TAG, "restoresScores: " + trialid);
+            TrialDbHelper trialDbHelper = new TrialDbHelper(getContext());
+            trialDbHelper.restoreScores(trialid);
+//            trialDbHelper.close();
         }
 
         private void getScoreData(int trialid) {

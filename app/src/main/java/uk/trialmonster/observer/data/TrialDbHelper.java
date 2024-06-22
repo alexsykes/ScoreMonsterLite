@@ -53,6 +53,7 @@ public class TrialDbHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         String query = "DELETE FROM trials";
         db.execSQL(query);
+        db.close();
     }
 
     public ArrayList<HashMap<String, String>> getPrefsOptions(int loggedInUserID) {
@@ -159,5 +160,16 @@ public class TrialDbHelper extends SQLiteOpenHelper {
         cursor.close();
         db.close();
         return trialData;
+    }
+
+    public void restoreScores(int trialid) {
+        Log.i("Info", "restoresScores: " + trialid);
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        String query = "UPDATE scores SET sync = -1 WHERE trialid = " + trialid;
+
+        Log.i("Info", "SQL: " + query);
+        db.execSQL(query);
+        db.close();
     }
 }

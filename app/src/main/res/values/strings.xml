@@ -298,6 +298,9 @@ If you wish your data to be deleted, please send an email request to admin@trial
     <string name="enterDayNumber">Enter day number</string>
     <string name="day_number">Day number</string>
     <string name="email_results_to">Email results to:</string>
+    <string name="restore_all_data">Restore all scores</string>
+    <string name="restore_scores">Restore scores</string>
+    <string name="restore_scores_for_this_trial">Restore scores for this trial</string>
     <string-array name="scores">
         <item>Clean</item>
         <item>One</item>
