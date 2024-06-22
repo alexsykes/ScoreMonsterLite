@@ -467,4 +467,11 @@ public class ScoreDbHelper extends SQLiteOpenHelper {
 //        db.close();
     }
 
+    public ArrayList<HashMap<String, String>> dumpTrialScores() {
+        ArrayList<HashMap<String, String>> theScoreList = new ArrayList<>();
+
+        String sql = "SELECT  trialid, rider, allscores FROM (SELECT   trialid, rider,  GROUP_CONCAT(sectionscores) AS allscores FROM (SELECT trialid, rider,  GROUP_CONCAT(IIF(score IS NULL,  '.', score), '') AS sectionscores FROM scores GROUP BY  trialid, rider, section) GROUP BY trialid, rider) ";
+
+        return theScoreList;
+    }
 }

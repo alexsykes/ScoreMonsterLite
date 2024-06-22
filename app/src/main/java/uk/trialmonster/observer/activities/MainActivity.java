@@ -212,7 +212,11 @@ public class MainActivity extends AppCompatActivity {
         if (ridingNumber > 0) {
             numberLabel.setText(String.valueOf(ridingNumber));
         }
-        scoreLabel.setText(String.valueOf(score));
+        String scoreString = String.valueOf(score);
+        if (score == 10) {
+            scoreString = "X";
+        }
+        scoreLabel.setText(scoreString);
     }
 
     private void getPrefs() {
@@ -384,9 +388,9 @@ public class MainActivity extends AppCompatActivity {
         } else {
             // Otherwise enter scores
             int riderNumber = Integer.parseInt(rider);
-            int scoreValue = Integer.parseInt(score);
+//            int scoreValue = Integer.parseInt(score);
 
-            if (score.equals("10")) {
+            if (score.equals("X")) {
                 score = "x";
             }
             // Update prefs for single rider
@@ -444,7 +448,7 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "Already completed " + numlaps + " laps", Toast.LENGTH_LONG).show();
         } else {
             String query =
-                    "UPDATE scores SET score = " + score + ", sync = -1, updated = DATETIME" +
+                    "UPDATE scores SET score = '" + score + "', sync = -1, updated = DATETIME" +
                             " ('now'), " +
                             " observer = '" + observer +
                             "' WHERE trialid = " + trialid +
@@ -552,7 +556,11 @@ public class MainActivity extends AppCompatActivity {
                     score++;
                 break;
         }
-        scoreLabel.setText(valueOf(score));
+        String scoreString = valueOf(score);
+        if (score == 10) {
+            scoreString = "X";
+        }
+        scoreLabel.setText(scoreString);
         SharedPreferences.Editor editor = localPrefs.edit();
         editor.putInt("score", score);
         editor.apply();
