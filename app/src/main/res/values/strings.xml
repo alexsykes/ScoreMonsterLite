@@ -301,6 +301,8 @@ If you wish your data to be deleted, please send an email request to admin@trial
     <string name="restore_all_data">Restore all scores</string>
     <string name="restore_scores">Restore scores</string>
     <string name="restore_scores_for_this_trial">Restore scores for this trial</string>
+    <string name="dump_scores">Score dump</string>
+    <string name="dump_scores_for_this_trial">Dump all scores for this trial</string>
     <string-array name="scores">
         <item>Clean</item>
         <item>One</item>

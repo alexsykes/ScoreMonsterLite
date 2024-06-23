@@ -41,6 +41,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.gson.Gson;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -235,7 +236,7 @@ public class SettingsActivity extends AppCompatActivity {
                 usernamePref, passwordPref, ridingNumberPref, observerPref, mobilePref, sectionPref, adminLockPassPref, adminLockNewPassPref, adminLockConfirmPassPref, startIntervalPref, penaltyTariffPref;
 
         SwitchPreference timeModeSwitchPref, restartClockSwitchPref, resetScoresSwitchPref,
-                resetTimesSwitchPref, advancedSwitchPref, restoreTrialScoresPref;
+                resetTimesSwitchPref, advancedSwitchPref, restoreTrialScoresPref, dumpTrialScoresPref;
 
         @Override
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
@@ -285,6 +286,7 @@ public class SettingsActivity extends AppCompatActivity {
             adminLockConfirmPassPref = findPreference("adminLockConfirmPass");
             timeModeSwitchPref = findPreference("timeMode");
             restoreTrialScoresPref = findPreference("restore_trial_scores");
+            dumpTrialScoresPref = findPreference("dump_trial_scores");
 
             // Get initial values from localPrefs
             // Setup current values
@@ -888,6 +890,22 @@ public class SettingsActivity extends AppCompatActivity {
                 }
             });
 
+//            Score dump preference
+            assert dumpTrialScoresPref != null;
+
+            dumpTrialScoresPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                                                                  @Override
+                                                                  public boolean onPreferenceChange(@NonNull Preference preference, Object newValue) {
+                                                                      Log.i("info", "Dump trial scores: " + trialid);
+                                                                      dumpAllScores(trialid);
+                                                                      return false;
+                                                                  }
+                                                              }
+
+            );
+
+
+
             // Score reset pref
             assert restoreTrialScoresPref != null;
 
@@ -1086,7 +1104,17 @@ public class SettingsActivity extends AppCompatActivity {
 //            Log.i(TAG, "restoresScores: " + trialid);
             TrialDbHelper trialDbHelper = new TrialDbHelper(getContext());
             trialDbHelper.restoreScores(trialid);
-//            trialDbHelper.close();
+            trialDbHelper.close();
+        }
+
+        private void dumpAllScores(int trialid) {
+            ArrayList<HashMap<String, String>> theTrialScores;
+            ScoreDbHelper scoreDbHelper = new ScoreDbHelper(getContext());
+            theTrialScores = scoreDbHelper.dumpTrialScores(trialid);
+            String scoreJSON = new Gson().toJson(theTrialScores);
+//            Log.i(TAG, "numScores: " + theTrialScores.size());
+//            Log.i(TAG, "json: " + json);
+            scoreDbHelper.close();
         }
 
         private void getScoreData(int trialid) {

@@ -203,6 +203,12 @@
             android:summary="@string/restore_scores_for_this_trial"
             android:title="@string/restore_scores" />
         <SwitchPreference
+            android:contentDescription="@string/dump_scores"
+            android:defaultValue="false"
+            android:key="dump_trial_scores"
+            android:summary="@string/dump_scores_for_this_trial"
+            android:title="@string/dump_scores" />
+        <SwitchPreference
             android:contentDescription="@string/restart_clock"
             android:defaultValue="false"
             android:icon="@drawable/ic_warning_24dp"
