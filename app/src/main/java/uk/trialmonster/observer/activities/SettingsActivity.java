@@ -1112,8 +1112,8 @@ public class SettingsActivity extends AppCompatActivity {
             ScoreDbHelper scoreDbHelper = new ScoreDbHelper(getContext());
             theTrialScores = scoreDbHelper.dumpTrialScores(trialid);
             String scoreJSON = new Gson().toJson(theTrialScores);
-//            Log.i(TAG, "numScores: " + theTrialScores.size());
-//            Log.i(TAG, "json: " + json);
+
+            postTrialScoreData(scoreJSON);
             scoreDbHelper.close();
         }
 
@@ -1355,5 +1355,65 @@ public class SettingsActivity extends AppCompatActivity {
                 editor.apply();
             }
         }
+
+        private void postTrialScoreData(String jsonData) {
+            String url = "https://android.trialmonster.uk/processScoreDump.php";
+
+            // creating a new variable for our request queue
+            RequestQueue queue = Volley.newRequestQueue(getContext());
+
+            // on below line we are calling a string
+            // request method to post the data to our API
+            // in this we are calling a post method.
+            StringRequest request = new StringRequest(Request.Method.POST, url, new com.android.volley.Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+
+
+                    // on below line we are displaying a success toast message.
+                    Toast.makeText(getContext(), "Scores uploaded for trialid: " + trialid,
+                            Toast.LENGTH_LONG).show();
+                    try {
+                        // on below line we are parsing the response
+                        // to json object to extract data from it.
+                        Log.i(TAG, "Response: " + response);
+//                    JSONObject respObj = new JSONObject(response);
+                        // below are the strings which we
+                        // extract from our json object.
+//                    String name = respObj.getString("name");
+//                    String job = respObj.getString("job");
+
+                        // on below line we are setting this string s to our text view.
+//                    responseTV.setText("Name : " + name + "\n" + "Job : " + job);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }, new com.android.volley.Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    // method to handle errors.
+                    Toast.makeText(getContext(), "Fail to get response = " + error, Toast.LENGTH_SHORT).show();
+                }
+            }) {
+                @Override
+                protected Map<String, String> getParams() {
+                    // below line we are creating a map for
+                    // storing our values in key and value pair.
+                    Map<String, String> params = new HashMap<String, String>();
+
+                    // on below line we are passing our key
+                    // and value pair to our parameters.
+                    params.put("data", jsonData);
+                    params.put("trialid", String.valueOf(trialid));
+
+                    return params;
+                }
+            };
+            // below line is to make
+            // a json object request.
+            queue.add(request);
+        }
     }
 }
+

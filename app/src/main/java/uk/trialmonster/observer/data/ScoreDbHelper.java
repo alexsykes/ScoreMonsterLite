@@ -472,7 +472,8 @@ public class ScoreDbHelper extends SQLiteOpenHelper {
 
         SQLiteDatabase db = this.getReadableDatabase();
 
-        String sql = "SELECT rider, GROUP_CONCAT(sectionscores) FROM  (SELECT rider, section, " +
+        String sql = "SELECT rider, GROUP_CONCAT(sectionscores, '|') FROM  (SELECT rider, " +
+                "section, " +
                 "GROUP_CONCAT(IIF(score IS NULL,  '.', score), '') AS sectionscores FROM scores " +
                 "WHERE trialid = " + trialid + " GROUP BY rider, section ORDER by rider, section, " +
                 "lap) " +
@@ -488,6 +489,7 @@ public class ScoreDbHelper extends SQLiteOpenHelper {
                 theScoreList.add(scores);
             } while (cursor.moveToNext());
         }
+        cursor.close();
         return theScoreList;
     }
 }
