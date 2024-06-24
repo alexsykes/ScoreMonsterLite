@@ -613,7 +613,9 @@ public class ScoreListActivity extends AppCompatActivity {
             @Override
             public void onResponse(String response) {
                 Log.d("Volley", "Response: " + response);
-                markAsDone(trialid, day, section);
+                if (response.equals("1")) {
+                    markAsDone(trialid, day, section);
+                }
             }
         }, new Response.ErrorListener() {
             @Override

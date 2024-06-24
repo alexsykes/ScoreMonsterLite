@@ -3,6 +3,7 @@ package uk.trialmonster.observer.activities;
 // TODO - check riderNumber on change/lauch in mode 2
 // TODO - update numsections and numlaps filed on initial load of trial
 
+import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -68,6 +69,7 @@ public class SettingsActivity extends AppCompatActivity {
     TextView statusLine;
     String username, statusLineText;
     int loggedInUserID;
+//    ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +83,7 @@ public class SettingsActivity extends AppCompatActivity {
         // Enable the Up button
         ab.setDisplayHomeAsUpEnabled(true);
 
+//        progressBar = findViewById(R.id.progressBar);
 //        Get local prefs
         localPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor editor = localPrefs.edit();
@@ -227,7 +230,7 @@ public class SettingsActivity extends AppCompatActivity {
         SharedPreferences.Editor editor;
 
         PreferenceCategory loginPrefCategory, trialDetailsPrefCategory,
-                observerDetailsPrefCategory, timeModePrefCategory, trialSelectCategory;
+                observerDetailsPrefCategory, timeModePrefCategory, trialSelectCategory, recoveryModeCategory;
 
         Preference isManualTrialPref;
 
@@ -260,10 +263,11 @@ public class SettingsActivity extends AppCompatActivity {
             observerDetailsPrefCategory = findPreference("observerDetails");
             timeModePrefCategory = findPreference("timingModeCategory");
             trialSelectCategory = findPreference("trialSelectCategory");
+            recoveryModeCategory = findPreference("recoveryModeCategory");
 
 //          Define pref widgets
             isManualTrialPref = findPreference("isManualTrial");
-            advancedSwitchPref = findPreference("show_advanced");
+//            advancedSwitchPref = findPreference("show_advanced");
             trialListPref = findPreference("theTrialIndex");
             trialNamePref = findPreference("trialName");
             numLapsPref = findPreference("numlapsText");
@@ -363,13 +367,15 @@ public class SettingsActivity extends AppCompatActivity {
             restartClockSwitchPref.setVisible(isAdminUser);
             resetScoresSwitchPref.setVisible(isAdminUser);
             resetTimesSwitchPref.setVisible(isAdminUser);
-            advancedSwitchPref.setChecked(isAdminUser);
+//            advancedSwitchPref.setChecked(isAdminUser);
             loginPrefCategory.setVisible(isAdminUser);
             timeModeSwitchPref.setVisible(isAdminUser);
             timeModePrefCategory.setVisible(isAdminUser);
             adminLockNewPassPref.setVisible(isAdminUser);
             trialSelectCategory.setVisible(isAdminUser);
-//            restoreTrialScoresPref.setVisible(isAdminUser);
+            dumpTrialScoresPref.setVisible(isAdminUser);
+            restoreTrialScoresPref.setVisible(isAdminUser);
+            recoveryModeCategory.setVisible(isAdminUser);
         }
 
         //      Initial visibilities
@@ -961,7 +967,7 @@ public class SettingsActivity extends AppCompatActivity {
 
 
             // Advanced mode
-            assert advancedSwitchPref != null;
+/*            assert advancedSwitchPref != null;
             advancedSwitchPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                 @Override
                 public boolean onPreferenceChange(Preference preference, Object newValue) {
@@ -976,7 +982,7 @@ public class SettingsActivity extends AppCompatActivity {
                     timeModeSwitchPref.setVisible(goAhead);
                     return false;
                 }
-            });
+            });*/
 
             // timeMode pref
             timeModeSwitchPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
@@ -1119,13 +1125,17 @@ public class SettingsActivity extends AppCompatActivity {
 
         private void getScoreData(int trialid) {
             // Instantiate the RequestQueue.
+            ProgressDialog progress = new ProgressDialog(getContext());
+            progress.setTitle("Loading");
+            progress.setMessage("Fetching scores...");
+            progress.setCancelable(false); // disable dismiss by tapping outside of the dialog
+
             RequestQueue queue = Volley.newRequestQueue(getContext());
-//            String url = "https://android.trialmonster.uk/getScoreListScoreMonsterLive" +
-//                    ".php?trialid=" + 94 + "&section=" + 1 + "&day=" + 1;
+
             String url = "https://android.trialmonster.uk/getScoreListScoreMonsterLive" +
                     ".php?trialid=" + trialid;
 
-            Log.i("Info", "URL:" + url);
+//            Log.i("Info", "URL:" + url);
 
 // Request a string response from the provided URL
             StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
@@ -1133,7 +1143,7 @@ public class SettingsActivity extends AppCompatActivity {
                         @Override
                         public void onResponse(String response) {
                             updateScoresDB(response);
-
+                            progress.dismiss();
                         }
                     }, new Response.ErrorListener() {
                 @Override
@@ -1144,6 +1154,7 @@ public class SettingsActivity extends AppCompatActivity {
             });
 // Add the request to the RequestQueue.
             queue.add(stringRequest);
+            progress.show();
         }
 
         private void updateScoresDB(String response) {
@@ -1180,11 +1191,13 @@ public class SettingsActivity extends AppCompatActivity {
                 values.put(ScoreContract.ScoreEntry.COLUMN_SCORE_TRIALID, trialid);
                 if (score != "null") {
                     values.put(ScoreContract.ScoreEntry.COLUMN_SCORE_SCORE, score);
+                } else {
+                    values.put(ScoreContract.ScoreEntry.COLUMN_SCORE_SCORE, ".");
                 }
 
                 db.insertWithOnConflict("scores", null, values, SQLiteDatabase.CONFLICT_IGNORE);
             }
-            Toast.makeText(getContext(), "Scores downloaded", Toast.LENGTH_LONG).show();
+//            Toast.makeText(getContext(), "Scores downloaded", Toast.LENGTH_LONG).show();
             db.close();
         }
 

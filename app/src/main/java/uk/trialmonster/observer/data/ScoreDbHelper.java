@@ -181,17 +181,6 @@ public class ScoreDbHelper extends SQLiteOpenHelper {
     }
 
 
-//    // Lapse times by setting trialid to negative of original trialid
-//    public void lapseScores(int trialid) {
-//        SQLiteDatabase db = this.getWritableDatabase();
-//        int newid = -trialid;
-//        String query = "UPDATE scores SET trialid = " + newid + " WHERE trialid = " + trialid;
-////        Log.i("Query", query);
-//        // Execute the SQL statement
-//        db.execSQL(query);
-//        db.close();
-//    }
-
     public void lapseScores(int trialid, int section, int dayNum) {
         SQLiteDatabase db = this.getWritableDatabase();
         int newid = -trialid;
@@ -287,7 +276,7 @@ public class ScoreDbHelper extends SQLiteOpenHelper {
         String query = "SELECT * FROM scores WHERE trialid = " + trialid +
                 " AND section = " + section +
                 " AND day = " + day +
-                " AND score NOT NULL " +
+                " AND score != \".\" " +
                 " ORDER BY updated DESC";
 //        String query = "SELECT * FROM scores WHERE trialid = " + trialid +
 //                " AND section = " + section +
@@ -344,8 +333,7 @@ public class ScoreDbHelper extends SQLiteOpenHelper {
     public void markAsDone(int trialid, int day, int section) {
         SQLiteDatabase db = this.getReadableDatabase();
         String query = "UPDATE scores SET sync = " + SYNCED +
-                " WHERE sync = " + NOT_SYNCED +
-                " AND trialid = " + trialid +
+                " WHERE  trialid = " + trialid +
                 " AND section = " + section +
                 " AND day = " + day;
         db.execSQL(query);
@@ -474,7 +462,7 @@ public class ScoreDbHelper extends SQLiteOpenHelper {
 
         String sql = "SELECT rider, GROUP_CONCAT(sectionscores, '|') FROM  (SELECT rider, " +
                 "section, " +
-                "GROUP_CONCAT(IIF(score IS NULL,  '.', score), '') AS sectionscores FROM scores " +
+                "GROUP_CONCAT(score, '') AS sectionscores FROM scores " +
                 "WHERE trialid = " + trialid + " GROUP BY rider, section ORDER by rider, section, " +
                 "lap) " +
                 "GROUP BY rider";
