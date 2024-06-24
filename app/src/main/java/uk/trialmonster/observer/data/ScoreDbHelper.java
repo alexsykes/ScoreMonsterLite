@@ -20,6 +20,7 @@ public class ScoreDbHelper extends SQLiteOpenHelper {
      * Name of the database file
      */
     private static final String DATABASE_NAME = "monster.db";
+    private static final String TAG = "Info";
     /**
      * Database version. If you change the database schema, you must increment the database version.
      */
@@ -170,15 +171,15 @@ public class ScoreDbHelper extends SQLiteOpenHelper {
         return cursor;
     }
 
-    public void update(String scoreid, String score) {
-
-        SQLiteDatabase db = this.getReadableDatabase();
-
-        String query = "UPDATE scores SET score = '" + score + "', edited = 1, updated = DATETIME" +
-                "('now'), sync = " + NOT_SYNCED + " WHERE _id = " + scoreid;
-        db.execSQL(query);
-        db.close();
-    }
+//    public void update(String scoreid, String score) {
+//
+//        SQLiteDatabase db = this.getReadableDatabase();
+//
+//        String query = "UPDATE scores SET score = '" + score + "', edited = 1, updated = DATETIME" +
+//                "('now'), sync = " + NOT_SYNCED + " WHERE _id = " + scoreid;
+//        db.execSQL(query);
+//        db.close();
+//    }
 
 
     public void lapseScores(int trialid, int section, int dayNum) {
@@ -343,7 +344,7 @@ public class ScoreDbHelper extends SQLiteOpenHelper {
     public int getRiderLap(int rider, int section, int trialid, int day) {
         SQLiteDatabase db = this.getReadableDatabase();
         String query =
-                "SELECT score AS numLaps FROM scores WHERE score IS NOT NULL" +
+                "SELECT score AS numLaps FROM scores WHERE score != \".\"" +
                         " AND rider = " + rider +
                         " AND section = " + section +
                         " AND day = " + day +
@@ -374,77 +375,7 @@ public class ScoreDbHelper extends SQLiteOpenHelper {
         db.close();
     }
 
-    public void deleteScore(String scoreToDeleteID, int numlaps, String observer) {
-        int lap, trialid, day, section, rider;
 
-        Log.i("Info9", "scoreToDeleteID: " + scoreToDeleteID);
-        String score;
-        SQLiteDatabase db = this.getWritableDatabase();
-        JSONArray scoreDetail = new JSONArray();
-        String selectScoreToDelete =
-                "SELECT day, section, lap, score, trialid, rider FROM scores WHERE _id = " + scoreToDeleteID;
-        Cursor scoreToDelete = db.rawQuery(selectScoreToDelete, null);
-
-        scoreToDelete.moveToFirst();
-        day = scoreToDelete.getInt(0);
-        section = scoreToDelete.getInt(1);
-        lap = scoreToDelete.getInt(2);
-        score = scoreToDelete.getString(3);
-        trialid = scoreToDelete.getInt(4);
-        rider = scoreToDelete.getInt(5);
-
-//      Get ids of trial, rider, day, section in lap order
-        String getIdsToEdit = "SELECT _id, score, lap FROM scores WHERE " +
-                " trialid = " + trialid +
-                " AND rider = " + rider +
-                " AND section = " + section +
-                " AND day = " + day +
-//                " AND lap >= " + lap +
-                " ORDER BY lap ASC";
-
-
-        ArrayList<HashMap<String, String>> scoreList = new ArrayList<>();
-        Cursor idsToEdit = db.rawQuery(getIdsToEdit, null);
-        while (idsToEdit.moveToNext()) {
-            HashMap<String, String> scores = new HashMap<>();
-
-            scores.put("_id",
-                    idsToEdit.getString(0));
-            scores.put("score", idsToEdit.getString(1));
-            scores.put("lap", idsToEdit.getString(2));
-            scoreList.add(scores);
-        }
-
-        if (lap < numlaps) {
-            for (int i = numlaps; i > lap; i--) {
-                String sourceID = scoreList.get(i - 1).get("_id");
-                String targetID = scoreList.get(i - 2).get("_id");
-                String updateScoreQuery = "UPDATE scores SET score = " + scoreList.get(i - 1).get(
-                        "score") +
-                        ", observer = '" + observer +
-                        "', updated = DATETIME" +
-                        "('now'), sync = " + NOT_SYNCED +
-                        " WHERE _id = " + scoreList.get(i - 2).get(
-                        "_id");
-                db.execSQL(updateScoreQuery);
-                Log.i("Info9", "SQL: " + updateScoreQuery);
-            }
-            String updateScoreQuery =
-                    "UPDATE scores SET score = NULL , observer = '" + observer +
-                            "', updated = DATETIME" +
-                            "('now'), sync = " + NOT_SYNCED +
-                            " WHERE _id = " + scoreList.get(numlaps - 1).get(
-                            "_id");
-            db.execSQL(updateScoreQuery);
-        }
-//        String deleteScoreQuery =
-//                "UPDATE scores SET score = NULL WHERE _id = " + scoreToDeleteID;
-//        db.execSQL(deleteScoreQuery);
-
-//        Log.i("Info9", "FinalSQL: " + deleteScoreQuery);
-        idsToEdit.close();
-        scoreToDelete.close();
-    }
 
     public void deleteAllTrials() {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -479,5 +410,50 @@ public class ScoreDbHelper extends SQLiteOpenHelper {
         }
         cursor.close();
         return theScoreList;
+    }
+
+    public void deleteScore(String idToDelete, int numlaps, String observer) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+//      Get entry details
+        int rider, section, day, trialid, lap;
+        String getScoreIds =
+                "SELECT rider, trialid, day, section, lap FROM scores WHERE _id = " + idToDelete;
+        Cursor theEntry = db.rawQuery(getScoreIds, null);
+        if (theEntry.moveToFirst()) {
+            rider = theEntry.getInt(0);
+            trialid = theEntry.getInt(1);
+            day = theEntry.getInt(2);
+            section = theEntry.getInt(3);
+            lap = theEntry.getInt(4);
+
+//          Shuffle later laps into nulled score
+            for (int lapToMove = lap; lapToMove < numlaps; lapToMove++) {
+                Log.i(TAG, "LapToMove: " + lapToMove);
+                int source = lapToMove + 1;
+                String query = "UPDATE scores SET updated = DATETIME('now'), edited = 1, sync = " +
+                        "-1, score = (SELECT score FROM scores WHERE trialid" +
+                        " = " + trialid + " AND rider = " + rider + " AND section = " + section +
+                        " AND lap = " + source +
+                        ") WHERE trialid = " + trialid + " AND rider = " + rider + " AND section " +
+                        "= " + section + " AND lap = " + lapToMove;
+
+                db.execSQL(query);
+//                Log.i(TAG, "query: " + query);
+            }
+
+//          then delete removed score
+            String fillLastLapQuery =
+                    "UPDATE scores SET updated = DATETIME('now'), edited = 1, sync = -1 , score =" +
+                            " " +
+                            "'.'" + " " +
+                            "WHERE trialid" +
+                            " = " + trialid + " AND rider = " + rider + " AND section = " + section +
+                            " AND lap = " + numlaps;
+            Log.i(TAG, "query: " + fillLastLapQuery);
+            db.execSQL(fillLastLapQuery);
+        }
+        theEntry.close();
+        db.close();
     }
 }
