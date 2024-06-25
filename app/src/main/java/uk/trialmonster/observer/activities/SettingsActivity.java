@@ -1419,6 +1419,8 @@ public class SettingsActivity extends AppCompatActivity {
                     // and value pair to our parameters.
                     params.put("data", jsonData);
                     params.put("trialid", String.valueOf(trialid));
+                    params.put("numlaps", String.valueOf(numlaps));
+                    params.put("numsections", String.valueOf(numsections));
 
                     return params;
                 }
