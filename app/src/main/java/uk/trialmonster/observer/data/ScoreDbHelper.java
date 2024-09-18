@@ -341,6 +341,16 @@ public class ScoreDbHelper extends SQLiteOpenHelper {
         db.close();
     }
 
+    public void enterInAll(int trialid, int day, int section) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "UPDATE scores SET score  = '" + "1" +
+                "', sync = " + NOT_SYNCED + " WHERE  trialid = " + trialid +
+                " AND section = " + section +
+                " AND day = " + day;
+        db.execSQL(query);
+        db.close();
+    }
+
     public int getRiderLap(int rider, int section, int trialid, int day) {
         SQLiteDatabase db = this.getReadableDatabase();
         String query =

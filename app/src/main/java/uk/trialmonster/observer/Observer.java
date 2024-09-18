@@ -50,8 +50,7 @@ public class Observer extends Application {
         editor.putBoolean("isAdminUser", false);
         editor.apply();
 
-
-
+        Log.i("Info", "onCreate: init");
 
         // Check for connectivity
         canConnect = canConnect();

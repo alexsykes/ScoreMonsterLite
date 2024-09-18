@@ -107,6 +107,7 @@ public class MainActivity extends AppCompatActivity {
         trialDbHelper = new TrialDbHelper(this);
         timeDbHelper = new TimeDbHelper(this);
 
+//        scoreDbHelper.enterInAll(112, 1, 1);
         // TODO - add routine to check for timeMode
         saveButton = findViewById(R.id.saveButton);
         saveButton.setOnLongClickListener(new View.OnLongClickListener() {

@@ -564,7 +564,7 @@ public class ScoreListActivity extends AppCompatActivity {
         } else {
             // Get email from prefs - if no saved value, then send to blackhole
             email = localPrefs.getString("email", "blackhole@alexsykes.net");
-            email = "alex@alexsykes.net";
+//            email = "alex@alexsykes.net";
             Date date = new Date();
             // getTime() returns current time in milliseconds -
             // gives
