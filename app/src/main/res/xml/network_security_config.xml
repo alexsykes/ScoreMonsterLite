@@ -15,7 +15,7 @@
                 <certificates src="@raw/monster" />
             </trust-anchors>
         </domain-config>-->
-    <domain-config cleartextTrafficPermitted="true">
-        <domain includeSubdomains="true">trialmonster.uk</domain>
-    </domain-config>
+    <!--    <domain-config cleartextTrafficPermitted="true">
+            <domain includeSubdomains="true">trialmonster.uk</domain>
+        </domain-config>-->
 </network-security-config>

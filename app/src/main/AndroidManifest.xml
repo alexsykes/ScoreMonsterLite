@@ -10,9 +10,9 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
-    <queries>
-        <package android:name="uk.trialmonster.volleyexample" />
-    </queries>
+    <!--    <queries>
+            <package android:name="uk.trialmonster.volleyexample" />
+        </queries>-->
     <supports-screens
         android:anyDensity="true"
         android:largeScreens="true"
