@@ -385,6 +385,32 @@ public class ScoreDbHelper extends SQLiteOpenHelper {
         db.close();
     }
 
+    public Cursor getScoresForSaving(int trialid, int section) {
+//        ArrayList<HashMap<String, String>> theScoreList = new ArrayList<>();
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String sql = "SELECT rider, sectionscores FROM  (SELECT rider, " +
+                "section, " +
+                "GROUP_CONCAT(score, '') AS sectionscores FROM scores " +
+                "WHERE trialid = " + trialid + " AND section = " + section +
+                " GROUP BY rider ORDER by rider, " +
+                "lap) " +
+                "GROUP BY rider";
+
+        Cursor cursor = db.rawQuery(sql, null);
+
+//        if (cursor.moveToFirst()) {
+//            do {
+//                HashMap<String, String> scores = new HashMap<>();
+//                scores.put("rider", cursor.getString(0));
+//                scores.put("scores", cursor.getString(1));
+////                theScoreList.add(scores);
+//            } while (cursor.moveToNext());
+//        }
+//        cursor.close();
+        return cursor;
+    }
 
 
     public void deleteAllTrials() {

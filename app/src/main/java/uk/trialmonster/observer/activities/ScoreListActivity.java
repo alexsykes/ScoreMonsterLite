@@ -1,11 +1,14 @@
 package uk.trialmonster.observer.activities;
+// see - https://stuff.mit.edu/afs/sipb/project/android/docs/training/basics/data-storage/files.html
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
@@ -32,6 +35,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
 
 import org.json.JSONArray;
@@ -41,6 +45,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -55,6 +62,8 @@ import uk.trialmonster.observer.ScoreListAdapter;
 import uk.trialmonster.observer.data.ScoreDbHelper;
 
 public class ScoreListActivity extends AppCompatActivity {
+    public static final int PICKFILE_RESULT_CODE = 1;
+    private static final String TAG = "Info";
 //    String TAG = "Info";
     /**********  File Path *************/
     final String uploadFilePath = "mnt/sdcard/Documents/Scoremonster/";
@@ -62,6 +71,7 @@ public class ScoreListActivity extends AppCompatActivity {
 
     MenuItem emailMenuItem;
     MenuItem uploadMenuItem;
+    private static final String[] END_OF_MARKERS = new String[]{"End of markers"};
 
     // https://androidexample.com/Upload_File_To_Server_-_Android_Example/index.php?view=article_discription&aid=83
     RecyclerView scoreView;
@@ -69,10 +79,16 @@ public class ScoreListActivity extends AppCompatActivity {
     TextView messageText;
     boolean canConnect;
     SharedPreferences localPrefs;
-    int serverResponseCode = 0, section, trialid, day, numlaps;
+    private static final String[] END_OF_FILE = new String[]{"End of file"};
     private ScoreDbHelper scoreDbHelper;
     private String filename, email, observer, mobile;
     private boolean isLoggedInUser;
+    MenuItem saveToDownloadsItem;
+    int serverResponseCode = 0, section, trialid, day, numlaps, numsections;
+    CSVWriter csvWriter;
+    CSVReader csvReader;
+    private Uri fileUri;
+    private String filePath;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -96,7 +112,8 @@ public class ScoreListActivity extends AppCompatActivity {
         canConnect = canConnect();
         // Get shared preferences for trialid, section
         localPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-        numlaps = localPrefs.getInt("numlaps", 0);
+        numlaps = localPrefs.getInt("numlaps", 1);
+        numsections = localPrefs.getInt("numsections", 1);
         section = localPrefs.getInt("section", 1);
         day = localPrefs.getInt("dayNum", 1);
         trialid = localPrefs.getInt("trialid", -999);
@@ -117,6 +134,7 @@ public class ScoreListActivity extends AppCompatActivity {
 
         emailMenuItem = menu.findItem(R.id.email);
         uploadMenuItem = menu.findItem(R.id.upload);
+        saveToDownloadsItem = menu.findItem(R.id.saveAsFileButton);
 
         if (trialid == -999 || !isLoggedInUser) {
             uploadMenuItem.setEnabled(false);
@@ -150,11 +168,61 @@ public class ScoreListActivity extends AppCompatActivity {
                             Toast.LENGTH_LONG).show();
                 }
                 return true;
+
+            case R.id.saveAsFileButton:
+                String filename = "Section " + section + " scores.txt";
+//                Log.i(TAG, "onOptionsItemSelected: saveAsFileButtonClicked");
+                Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+                intent.setType("text/plain-text");
+                intent.addCategory(Intent.CATEGORY_OPENABLE);
+                intent.putExtra(Intent.EXTRA_TITLE, filename);
+                startActivityForResult(intent, PICKFILE_RESULT_CODE);
+                return true;
             default:
                 // If we got here, the user's action was not recognized.
                 // Invoke the superclass to handle it.
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private File writeToInternal(File exportDir, String filename) {
+        Cursor exportData = scoreDbHelper.getScoresForEmail(trialid);
+        try {
+            exportDir = new File(exportDir, filename);
+            exportDir.createNewFile();
+            CSVWriter csvWriter = new CSVWriter(new FileWriter(exportDir));
+
+            String[] arrStr1 = {"Hello"};
+            csvWriter.writeNext(arrStr1);
+            // Get current data
+            while (exportData.moveToNext()) {
+                String[] arrStr = new String[exportData.getColumnCount()];
+                for (int i = 0; i < exportData.getColumnCount(); i++)
+                    arrStr[i] = exportData.getString(i);
+                csvWriter.writeNext(arrStr);
+            }
+
+            csvWriter.close();
+        } catch (IOException e) {
+            Log.e("Child", e.getMessage(), e);
+        }
+        return exportDir;
+    }
+
+    private void saveToDownloads() {
+        Log.i(TAG, "saveToDownloads");
+        Log.i(TAG, "numlaps: " + numlaps);
+        Log.i(TAG, "numsections: " + numsections);
+        Log.i(TAG, "section: " + section);
+        Log.i(TAG, "trialid: " + trialid);
+        boolean success;
+        File exportDir = getFilesDir();
+        String filename = "Section " + section + " scores.dat";
+        File exportFile = writeToInternal(exportDir, filename);
+
+//        Log.i(TAG, "scores: " + theScoreList.size());
+//        Log.i(TAG, "numlaps" + numlaps);
+//        Log.i(TAG, "numlaps" + numlaps);
     }
 
     public void onClickCalled(String scoreid, int score) {
@@ -368,9 +436,56 @@ public class ScoreListActivity extends AppCompatActivity {
         }
     }    // Save current scores to CSV
 
+    private boolean saveSectionScoresToCSV(String section) {
+        String rider, scores, day;
+        filename = "Section " + section + " scores.csv";
+        try {
+            exportDir = new File(Environment.getExternalStoragePublicDirectory(
+                    Environment.DIRECTORY_DOCUMENTS), "TMData.csv");
+            File file = new File(filename);
+
+//            if (!exportDir.mkdirs()) {
+//                Log.e(TAG, "Directory not created");
+//            }
+
+            // Create new CSV file in storage
+            exportDir.createNewFile();
+            CSVWriter csvWrite = new CSVWriter(new FileWriter(exportDir));
+
+//            Prepare and write filednames as header
+            String[] details = {"Observer: ", observer, mobile};
+            String[] header = {"Day", "Section", "Rider", "Scores"};
+            csvWrite.writeNext(details, false);
+            csvWrite.writeNext(header, false);
+
+            // Get score data for current trial
+            Cursor curChild = scoreDbHelper.getScoresForEmail(trialid);
+            while (curChild.moveToNext()) {
+//                section = curChild.getString(1);
+                rider = curChild.getString(0);
+                scores = curChild.getString(2);
+                day = curChild.getString(3);
+//                observer = curChild.getString(3);
+                String[] arrStr = {day, section, rider, scores
+                };
+
+                csvWrite.writeNext(arrStr, false);
+            }
+            // Close filewriter
+            curChild.close();
+            csvWrite.close();
+            scoreDbHelper.close();
+            return true;
+
+        } catch (IOException e) {
+            Log.e("Child", e.getMessage(), e);
+            return false;
+        }
+    }
+
     private boolean newSaveToCSV() {
         String rider, section, scores, day;
-
+        filename = "scores.csv";
         try {
             exportDir = new File(getFilesDir(), filename);
 
@@ -658,5 +773,72 @@ public class ScoreListActivity extends AppCompatActivity {
         scoreDbHelper.markAsDone(trialid, day, section);
         scoreDbHelper.close();
         populateScoreList();
+    }
+
+
+    private void writeCSVFile(Intent data) {
+        fileUri = data.getData();
+        filePath = fileUri.getPath();
+        Cursor scoresForExport =
+                scoreDbHelper.getScoresForSaving(trialid, section);
+        try {
+            OutputStream os = getContentResolver().openOutputStream(data.getData());
+            Writer writer = new OutputStreamWriter(os);
+            csvWriter = new CSVWriter(writer);
+
+            String[] markerHeaderRecord = {"Rider", "Scores"};
+            csvWriter.writeNext(markerHeaderRecord);
+
+            while (scoresForExport.moveToNext()) {
+                String[] arrStr = new String[scoresForExport.getColumnCount()];
+                for (int i = 0; i < scoresForExport.getColumnCount(); i++)
+                    arrStr[i] = scoresForExport.getString(i);
+                csvWriter.writeNext(arrStr);
+            }
+            csvWriter.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void writeTXTFile(Intent data) {
+        fileUri = data.getData();
+        filePath = fileUri.getPath();
+        Cursor scoresForExport =
+                scoreDbHelper.getScoresForSaving(trialid, section);
+        try {
+            OutputStream os = getContentResolver().openOutputStream(data.getData());
+            Writer writer = new OutputStreamWriter(os);
+
+//            String[] markerHeaderRecord = {"Rider", "Scores"};
+            writer.write("Scores for section" + section + "\n");
+            writer.write("Rider,Scores\n");
+
+            while (scoresForExport.moveToNext()) {
+                String rider = scoresForExport.getString(0);
+                String score = scoresForExport.getString(1);
+                writer.write(rider + "\t" + score + "\n");
+            }
+            writer.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case PICKFILE_RESULT_CODE:
+                if (resultCode == -1) {
+//                    writeCSVFile(data);
+                    writeTXTFile(data);
+                }
+                break;
+
+
+            default:
+                break;
+        }
     }
 }
