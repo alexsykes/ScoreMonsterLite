@@ -6,7 +6,7 @@ android {
         applicationId "uk.trialmonster.observer"
         minSdk 33
         targetSdkVersion 34
-        versionCode 44
+        versionCode 45
         versionName 'LH44'
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
         vectorDrawables.useSupportLibrary = true

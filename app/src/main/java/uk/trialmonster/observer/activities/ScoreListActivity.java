@@ -808,10 +808,10 @@ public class ScoreListActivity extends AppCompatActivity {
                 scoreDbHelper.getScoresForSaving(trialid, section);
         try {
             OutputStream os = getContentResolver().openOutputStream(data.getData());
-            Writer writer = new OutputStreamWriter(os);
+            OutputStreamWriter writer = new OutputStreamWriter(os);
 
 //            String[] markerHeaderRecord = {"Rider", "Scores"};
-            writer.write("Scores for section" + section + "\n");
+            writer.write("Scores for section " + section + "\n");
             writer.write("Rider,Scores\n");
 
             while (scoresForExport.moveToNext()) {
@@ -819,6 +819,7 @@ public class ScoreListActivity extends AppCompatActivity {
                 String score = scoresForExport.getString(1);
                 writer.write(rider + "\t" + score + "\n");
             }
+            writer.flush();
             writer.close();
         } catch (IOException e) {
             throw new RuntimeException(e);
