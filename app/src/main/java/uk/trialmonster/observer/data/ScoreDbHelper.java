@@ -1,5 +1,6 @@
 package uk.trialmonster.observer.data;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -36,6 +37,7 @@ public class ScoreDbHelper extends SQLiteOpenHelper {
     }
 
     // Get Score Details
+    @SuppressLint("Range")
     public ArrayList<HashMap<String, String>> getScoreList(int trialid) {
         SQLiteDatabase db = this.getWritableDatabase();
         ArrayList<HashMap<String, String>> scoreList = new ArrayList<>();
@@ -63,6 +65,7 @@ public class ScoreDbHelper extends SQLiteOpenHelper {
 
     // Used in RecyclerView Score List
 
+    @SuppressLint("Range")
     public ArrayList getScores() {
         String section, rider, lap, score, _id, observer, created, sync;
 
@@ -105,6 +108,7 @@ public class ScoreDbHelper extends SQLiteOpenHelper {
      *
      * @return ArrayList of summary data
      */
+    @SuppressLint("Range")
     public ArrayList<HashMap<String, String>> getRidersSummaryScores() {
         SQLiteDatabase db = this.getWritableDatabase();
         ArrayList<HashMap<String, String>> scoreList = new ArrayList<>();
@@ -203,6 +207,7 @@ public class ScoreDbHelper extends SQLiteOpenHelper {
 
     }
 
+    @SuppressLint("Range")
     public ArrayList<HashMap<String, String>> getScoreListForUpload(int trialid) {
         SQLiteDatabase db = this.getWritableDatabase();
         ArrayList<HashMap<String, String>> scoreList = new ArrayList<>();
@@ -232,6 +237,7 @@ public class ScoreDbHelper extends SQLiteOpenHelper {
         return scoreList;
     }
 
+    @SuppressLint("Range")
     public JSONArray getTrialData(int trialid) {
         SQLiteDatabase db = this.getWritableDatabase();
         JSONArray trialDetail = new JSONArray();
@@ -248,6 +254,7 @@ public class ScoreDbHelper extends SQLiteOpenHelper {
         return trialDetail;
     }
 
+    @SuppressLint("Range")
     public ArrayList<HashMap<String, String>> getNewScoreListForUpload(int trialid) {
         SQLiteDatabase db = this.getWritableDatabase();
         ArrayList<HashMap<String, String>> scoreList = new ArrayList<>();
@@ -270,6 +277,7 @@ public class ScoreDbHelper extends SQLiteOpenHelper {
         return scoreList;
     }
 
+    @SuppressLint("Range")
     public ArrayList<HashMap<String, String>> getScoreList(int trialid, int day, int section) {
 
         SQLiteDatabase db = this.getWritableDatabase();
@@ -306,6 +314,7 @@ public class ScoreDbHelper extends SQLiteOpenHelper {
         return scoreList;
     }
 
+    @SuppressLint("Range")
     public ArrayList<HashMap<String, String>> getNewScoreListForUpload(int trialid, int section, int day) {
         SQLiteDatabase db = this.getWritableDatabase();
         ArrayList<HashMap<String, String>> scoreList = new ArrayList<>();
@@ -369,7 +378,7 @@ public class ScoreDbHelper extends SQLiteOpenHelper {
 
     public void update(String scoreid, String score, String observer) {
         SQLiteDatabase db = this.getReadableDatabase();
-        String query = "";
+        String query;
         if (score.equals("N")) {
             query = "UPDATE scores SET score = NULL, edited = 1," +
                     " observer = '" + observer +
@@ -504,6 +513,13 @@ public class ScoreDbHelper extends SQLiteOpenHelper {
             db.execSQL(fillLastLapQuery);
         }
         theEntry.close();
+        db.close();
+    }
+
+    public void destroyTrialScores(int trialid, int dayNum) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        String destroyTrialScoresQuery = "DELETE FROM scores WHERE trialid = " + trialid + " AND day = " + dayNum;
+        db.execSQL(destroyTrialScoresQuery);
         db.close();
     }
 }

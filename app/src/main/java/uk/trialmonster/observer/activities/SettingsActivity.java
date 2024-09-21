@@ -238,7 +238,7 @@ public class SettingsActivity extends AppCompatActivity {
         EditTextPreference trialNamePref, numLapsPref, daysPref, numSectionsPref, emailPref,
                 usernamePref, passwordPref, ridingNumberPref, observerPref, mobilePref, sectionPref, adminLockPassPref, adminLockNewPassPref, adminLockConfirmPassPref, startIntervalPref, penaltyTariffPref;
 
-        SwitchPreference timeModeSwitchPref, restartClockSwitchPref, resetScoresSwitchPref,
+        SwitchPreference timeModeSwitchPref, restartClockSwitchPref, destroyScoresSwitchPref,
                 resetTimesSwitchPref, advancedSwitchPref, restoreTrialScoresPref, dumpTrialScoresPref;
 
         @Override
@@ -277,7 +277,7 @@ public class SettingsActivity extends AppCompatActivity {
             passwordPref = findPreference("password");
             ridingNumberPref = findPreference("riderText");
             resetTimesSwitchPref = findPreference("reset_times_preference");
-            resetScoresSwitchPref = findPreference("reset_scores_preference");
+            destroyScoresSwitchPref = findPreference("reset_scores_preference");
             restartClockSwitchPref = findPreference("restart_clock_preference");
             daysPref = findPreference("dayText");
             startIntervalPref = findPreference("startIntervalText");
@@ -365,7 +365,7 @@ public class SettingsActivity extends AppCompatActivity {
         //        Initial visibilities for admin users
         private void adminUserLoggedIn(boolean isAdminUser) {
             restartClockSwitchPref.setVisible(isAdminUser);
-            resetScoresSwitchPref.setVisible(isAdminUser);
+            destroyScoresSwitchPref.setVisible(isAdminUser);
             resetTimesSwitchPref.setVisible(isAdminUser);
 //            advancedSwitchPref.setChecked(isAdminUser);
             loginPrefCategory.setVisible(isAdminUser);
@@ -374,8 +374,9 @@ public class SettingsActivity extends AppCompatActivity {
             adminLockNewPassPref.setVisible(isAdminUser);
             trialSelectCategory.setVisible(isAdminUser);
             dumpTrialScoresPref.setVisible(isAdminUser);
+//            restoreTrialScoresPref.setVisible(isAdminUser);
             restoreTrialScoresPref.setVisible(isAdminUser);
-            recoveryModeCategory.setVisible(isAdminUser);
+            recoveryModeCategory.setVisible(false);
         }
 
         //      Initial visibilities
@@ -863,16 +864,16 @@ public class SettingsActivity extends AppCompatActivity {
             });
 
             // Score reset pref
-            assert resetScoresSwitchPref != null;
+            assert destroyScoresSwitchPref != null;
 
-            resetScoresSwitchPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+            destroyScoresSwitchPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                 @Override
 
                 public boolean onPreferenceChange(Preference preference, Object newValue) {
                     Log.i("info", "Time reset changed: ");
                     AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
 
-                    alert.setTitle("Warning - Score data will be destroyed");
+                    alert.setTitle("Warning - Score data will be permanently destroyed.");
                     alert.setIcon(R.drawable.ic_warning_red_48dp);
 
                     alert.setCancelable(true);
@@ -886,8 +887,9 @@ public class SettingsActivity extends AppCompatActivity {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             ScoreDbHelper scoreDbHelper = new ScoreDbHelper(getContext());
-                            scoreDbHelper.lapseScores(trialid, section, dayNum);
-                            Log.i("Info", "Delete scores - trialid: " + trialid);
+//                            scoreDbHelper.lapseScores(trialid, section, dayNum);
+                            scoreDbHelper.destroyTrialScores(trialid, dayNum);
+                            Log.i("Info", "Destroy scores - trialid: " + trialid);
                             dialog.dismiss();
                         }
                     });
