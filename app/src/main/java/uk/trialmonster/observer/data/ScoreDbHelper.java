@@ -412,6 +412,20 @@ public class ScoreDbHelper extends SQLiteOpenHelper {
         return cursor;
     }
 
+    public Cursor getScoreDataForSaving(int trialid, int section) {
+//        ArrayList<HashMap<String, String>> theScoreList = new ArrayList<>();
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String sql = "SELECT _id, score FROM scores " +
+                "WHERE trialid = " + trialid +
+                " AND section = " + section +
+                "  AND score != '.'";
+
+        Cursor cursor = db.rawQuery(sql, null);
+        return cursor;
+    }
+
 
     public void deleteAllTrials() {
         SQLiteDatabase db = this.getWritableDatabase();

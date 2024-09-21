@@ -173,7 +173,7 @@ public class ScoreListActivity extends AppCompatActivity {
                 String filename = "Section " + section + " scores.txt";
 //                Log.i(TAG, "onOptionsItemSelected: saveAsFileButtonClicked");
                 Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
-                intent.setType("text/plain-text");
+                intent.setType("text/plain");
                 intent.addCategory(Intent.CATEGORY_OPENABLE);
                 intent.putExtra(Intent.EXTRA_TITLE, filename);
                 startActivityForResult(intent, PICKFILE_RESULT_CODE);
@@ -804,6 +804,9 @@ public class ScoreListActivity extends AppCompatActivity {
     private void writeTXTFile(Intent data) {
         fileUri = data.getData();
         filePath = fileUri.getPath();
+
+        Cursor scoreData = scoreDbHelper.getScoreDataForSaving(trialid, section);
+
         Cursor scoresForExport =
                 scoreDbHelper.getScoresForSaving(trialid, section);
         try {
@@ -814,10 +817,10 @@ public class ScoreListActivity extends AppCompatActivity {
             writer.write("Scores for section " + section + "\n");
             writer.write("Rider,Scores\n");
 
-            while (scoresForExport.moveToNext()) {
-                String rider = scoresForExport.getString(0);
-                String score = scoresForExport.getString(1);
-                writer.write(rider + "\t" + score + "\n");
+            while (scoreData.moveToNext()) {
+                String rider = scoreData.getString(0);
+                String score = scoreData.getString(1);
+                writer.write(rider + "," + score + "\n");
             }
             writer.flush();
             writer.close();
