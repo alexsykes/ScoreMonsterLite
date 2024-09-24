@@ -10,18 +10,18 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-
-    <!--    <queries>
+    <!--
+    <queries>
             <package android:name="uk.trialmonster.volleyexample" />
-        </queries>-->
+        </queries>
+    -->
     <supports-screens
         android:anyDensity="true"
         android:largeScreens="true"
         android:normalScreens="true"
         android:smallScreens="true"
-        android:xlargeScreens="true">
+        android:xlargeScreens="true"></supports-screens>
 
-    </supports-screens>
     <application
         android:name=".Observer"
         android:allowBackup="true"
@@ -70,6 +70,11 @@
             android:parentActivityName=".activities.MainActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
+        <activity
+            android:name=".activities.InfoActivity"
+            android:exported="false"
+            android:label="Summary"
+            android:parentActivityName=".activities.MainActivity" />
 
         <provider
             android:name="androidx.core.content.FileProvider"

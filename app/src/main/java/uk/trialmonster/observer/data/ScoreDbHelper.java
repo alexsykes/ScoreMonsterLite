@@ -129,6 +129,7 @@ public class ScoreDbHelper extends SQLiteOpenHelper {
         return scoreList;
     }
 
+
     // method to count lap number for current rider
 
     public int getRiderLap(int rider, int section, int trialid) {
@@ -156,6 +157,24 @@ public class ScoreDbHelper extends SQLiteOpenHelper {
         Cursor result = db.rawQuery("SELECT  * FROM scores WHERE  trialid=" + id, new String[]{});
         db.close();
         return result;
+    }
+
+    public ArrayList<HashMap<String, String>> getLapScores(int section, int trialid) {
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        ArrayList<HashMap<String, String>> scoreList = new ArrayList<>();
+        Cursor result = db.rawQuery("SELECT rider, GROUP_CONCAT(score,' ') AS laps FROM scores  WHERE trialid = " + trialid + " AND section = " + section + " GROUP BY rider ORDER BY rider, lap", new String[]{});
+
+        while (result.moveToNext()) {
+            HashMap<String, String> scores = new HashMap<>();
+            scores.put("rider", result.getString(result.getColumnIndex("rider")));
+            scores.put("laps", result.getString(result.getColumnIndex("laps")));
+            scoreList.add(scores);
+        }
+
+        result.close();
+        db.close();
+        return scoreList;
     }
 
     public Cursor getScoresForEmail(int trialid) {

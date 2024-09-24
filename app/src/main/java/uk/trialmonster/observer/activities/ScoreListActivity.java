@@ -16,6 +16,7 @@ import android.os.StrictMode;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -64,6 +65,7 @@ import uk.trialmonster.observer.data.ScoreDbHelper;
 public class ScoreListActivity extends AppCompatActivity {
     public static final int PICKFILE_RESULT_CODE = 1;
     private static final String TAG = "Info";
+    private static final String DEBUG_TAG = "Info";
 //    String TAG = "Info";
     /**********  File Path *************/
     final String uploadFilePath = "mnt/sdcard/Documents/Scoremonster/";
@@ -826,6 +828,29 @@ public class ScoreListActivity extends AppCompatActivity {
             writer.close();
         } catch (IOException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        switch (event.getAction()) {
+            case (MotionEvent.ACTION_DOWN):
+                Log.d(DEBUG_TAG, "Action was DOWN");
+                return true;
+            case (MotionEvent.ACTION_MOVE):
+                Log.d(DEBUG_TAG, "Action was MOVE");
+                return true;
+            case (MotionEvent.ACTION_UP):
+                Log.d(DEBUG_TAG, "Action was UP");
+                return true;
+            case (MotionEvent.ACTION_CANCEL):
+                Log.d(DEBUG_TAG, "Action was CANCEL");
+                return true;
+            case (MotionEvent.ACTION_OUTSIDE):
+                Log.d(DEBUG_TAG, "Movement occurred outside bounds of current screen element");
+                return true;
+            default:
+                return super.onTouchEvent(event);
         }
     }
 

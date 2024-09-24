@@ -135,7 +135,7 @@ public class MainActivity extends AppCompatActivity {
 
             // Show scores on remote server
             case R.id.help:
-                goHelp();
+                goInfo();
                 return true;
 
             // Enter andinitialise section details
@@ -172,6 +172,12 @@ public class MainActivity extends AppCompatActivity {
                 // Invoke the superclass to handle it.
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void goInfo() {
+        Intent intent = new Intent(this, InfoActivity.class);
+//        intent.putExtra(EXTRA_MESSAGE, message);
+        startActivity(intent);
     }
 
     @Override
