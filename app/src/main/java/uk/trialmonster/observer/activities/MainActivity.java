@@ -175,8 +175,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void goInfo() {
-        Intent intent = new Intent(this, InfoActivity.class);
-//        intent.putExtra(EXTRA_MESSAGE, message);
+        Intent intent = new Intent(this, SummaryActivity.class);
+        intent.putExtra(EXTRA_MESSAGE, message);
         startActivity(intent);
     }
 

@@ -42,20 +42,16 @@ public class LapScoresAdapter extends RecyclerView.Adapter<LapScoresAdapter.View
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        private final TextView textView;
         TextView riderTV;
         TextView lapScoresTV;
 
         public ViewHolder(View view) {
             super(view);
-            textView = (TextView) view;
             riderTV = itemView.findViewById(R.id.riderNumberTextView);
             lapScoresTV = itemView.findViewById(R.id.riderScoresTextView);
         }
 
-        public TextView getTextView() {
-            return textView;
-        }
+
     }
 
 //        public void bind(){}

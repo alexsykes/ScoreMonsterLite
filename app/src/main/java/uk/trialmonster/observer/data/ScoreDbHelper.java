@@ -159,11 +159,12 @@ public class ScoreDbHelper extends SQLiteOpenHelper {
         return result;
     }
 
+    @SuppressLint("Range")
     public ArrayList<HashMap<String, String>> getLapScores(int section, int trialid) {
 
         SQLiteDatabase db = this.getReadableDatabase();
         ArrayList<HashMap<String, String>> scoreList = new ArrayList<>();
-        Cursor result = db.rawQuery("SELECT rider, GROUP_CONCAT(score,' ') AS laps FROM scores  WHERE trialid = " + trialid + " AND section = " + section + " GROUP BY rider ORDER BY rider, lap", new String[]{});
+        Cursor result = db.rawQuery("SELECT rider, GROUP_CONCAT(score,'') AS laps FROM scores  WHERE trialid = " + trialid + " AND section = " + section + " AND score != '.' GROUP BY rider ORDER BY rider, lap", new String[]{});
 
         while (result.moveToNext()) {
             HashMap<String, String> scores = new HashMap<>();
