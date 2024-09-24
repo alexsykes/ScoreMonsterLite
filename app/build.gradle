@@ -6,8 +6,8 @@ android {
         applicationId "uk.trialmonster.observer"
         minSdk 33
         targetSdkVersion 34
-        versionCode 46
-        versionName 'LH44'
+        versionCode 47
+        versionName 'Ariel Square Four'
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
         vectorDrawables.useSupportLibrary = true
     }

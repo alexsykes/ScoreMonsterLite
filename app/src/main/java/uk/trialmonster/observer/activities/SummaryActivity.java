@@ -9,7 +9,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
@@ -45,8 +45,11 @@ public class SummaryActivity extends AppCompatActivity {
         ScoreDbHelper scoreDbHelper = new ScoreDbHelper(this);
         theScoreList = scoreDbHelper.getLapScores(1, 112);
         summaryRV = findViewById(R.id.summaryRV);
-        LinearLayoutManager llm = new LinearLayoutManager(this);
-        summaryRV.setLayoutManager(llm);
+//        LinearLayoutManager llm = new LinearLayoutManager(this);
+//        summaryRV.setLayoutManager(llm);
+        GridLayoutManager glm;
+        glm = new GridLayoutManager(this, 3);
+        summaryRV.setLayoutManager(glm);
         summaryRV.setHasFixedSize(true);
         initializeAdapter();
         scoreDbHelper.close();
