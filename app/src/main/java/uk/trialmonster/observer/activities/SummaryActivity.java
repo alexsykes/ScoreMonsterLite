@@ -1,5 +1,6 @@
 package uk.trialmonster.observer.activities;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.activity.EdgeToEdge;
@@ -9,7 +10,9 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
@@ -22,6 +25,9 @@ import uk.trialmonster.observer.data.ScoreDbHelper;
 public class SummaryActivity extends AppCompatActivity {
     ArrayList<HashMap<String, String>> theScoreList;
     RecyclerView summaryRV;
+
+    int section, trialid;
+    SharedPreferences localPrefs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,14 +48,18 @@ public class SummaryActivity extends AppCompatActivity {
         // Enable the Up button
         ab.setDisplayHomeAsUpEnabled(true);
 
+        localPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        section = localPrefs.getInt("section", 1);
+        trialid = localPrefs.getInt("trialid", -999);
+
         ScoreDbHelper scoreDbHelper = new ScoreDbHelper(this);
-        theScoreList = scoreDbHelper.getLapScores(1, 112);
+        theScoreList = scoreDbHelper.getLapScores(section, trialid);
         summaryRV = findViewById(R.id.summaryRV);
-//        LinearLayoutManager llm = new LinearLayoutManager(this);
-//        summaryRV.setLayoutManager(llm);
+        LinearLayoutManager llm = new LinearLayoutManager(this);
+        summaryRV.setLayoutManager(llm);
         GridLayoutManager glm;
-        glm = new GridLayoutManager(this, 3);
-        summaryRV.setLayoutManager(glm);
+//        glm = new GridLayoutManager(this, 3);
+//        summaryRV.setLayoutManager(glm);
         summaryRV.setHasFixedSize(true);
         initializeAdapter();
         scoreDbHelper.close();

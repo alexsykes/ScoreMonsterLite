@@ -12,11 +12,17 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class LapScoresAdapter extends RecyclerView.Adapter<LapScoresAdapter.ViewHolder> {
-    HashMap<String, String> theScore;
+    HashMap<String, String> theScore1, theScore2, theScore3;
+    private final int numColumns = 3;
+    private final int numRows;
+    private final int numEntries;
+
     private final ArrayList<HashMap<String, String>> scoreData;
 
     public LapScoresAdapter(ArrayList<HashMap<String, String>> scoreData) {
         this.scoreData = scoreData;
+        numEntries = scoreData.size();
+        numRows = getItemCount();
     }
 
     @NonNull
@@ -31,24 +37,60 @@ public class LapScoresAdapter extends RecyclerView.Adapter<LapScoresAdapter.View
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        theScore = scoreData.get(position);
-        holder.riderTV.setText(theScore.get("rider"));
-        holder.lapScoresTV.setText(theScore.get("laps"));
+        theScore1 = scoreData.get(position);
+        theScore2 = scoreData.get(position + numRows);
+        theScore3 = scoreData.get(position + numRows + numRows);
+        holder.riderTV1.setText(theScore1.get("rider"));
+        holder.lapScoresTV1.setText(theScore1.get("laps"));
+
+        int offset1 = position + numRows;
+        if (offset1 < numEntries) {
+            theScore2 = scoreData.get(offset1);
+            holder.riderTV2.setText(theScore2.get("rider"));
+            holder.lapScoresTV2.setText(theScore2.get("laps"));
+        } else {
+
+            holder.riderTV2.setText("");
+            holder.lapScoresTV2.setText("");
+
+        }
+
+        int offset2 = offset1 + numRows;
+        if (offset2 < numEntries) {
+            theScore3 = scoreData.get(offset2);
+            holder.riderTV3.setText(theScore3.get("rider"));
+            holder.lapScoresTV3.setText(theScore3.get("laps"));
+        } else {
+            holder.riderTV3.setText("");
+            holder.lapScoresTV3.setText("");
+        }
     }
 
     @Override
     public int getItemCount() {
-        return scoreData.size();
+        int numScores = scoreData.size();
+        int part1 = numScores / numColumns;
+        int mod1 = numScores % numColumns;
+        int count = part1 + mod1;
+        return count;
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView riderTV;
-        TextView lapScoresTV;
+        TextView riderTV1;
+        TextView lapScoresTV1;
+        TextView riderTV2;
+        TextView lapScoresTV2;
+        TextView riderTV3;
+        TextView lapScoresTV3;
 
         public ViewHolder(View view) {
             super(view);
-            riderTV = itemView.findViewById(R.id.riderNumberTextView);
-            lapScoresTV = itemView.findViewById(R.id.riderScoresTextView);
+            riderTV1 = itemView.findViewById(R.id.rider1NumberTextView);
+            lapScoresTV1 = itemView.findViewById(R.id.rider1ScoresTextView);
+            riderTV2 = itemView.findViewById(R.id.rider2NumberTextView);
+            lapScoresTV2 = itemView.findViewById(R.id.rider2ScoresTextView);
+            riderTV3 = itemView.findViewById(R.id.rider3NumberTextView);
+            lapScoresTV3 = itemView.findViewById(R.id.rider3ScoresTextView);
         }
 
 
