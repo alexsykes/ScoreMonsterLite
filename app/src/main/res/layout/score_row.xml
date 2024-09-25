@@ -50,6 +50,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:textAlignment="textEnd"
+        android:visibility="gone"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
         app:layout_constraintEnd_toStartOf="@+id/sync"
         app:layout_constraintHorizontal_bias="0.5"

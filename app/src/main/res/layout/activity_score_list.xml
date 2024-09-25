@@ -69,6 +69,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
+            android:visibility="gone"
             android:text="@string/section"
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
             app:layout_constraintEnd_toStartOf="@+id/textView4"
