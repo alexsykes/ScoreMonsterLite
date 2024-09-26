@@ -5,7 +5,7 @@
         android:id="@+id/help"
         android:contentDescription="@string/display_help_screens"
         android:icon="@drawable/baseline_info_48"
-        android:title="@string/help"
+        android:title="@string/show_scorecard"
         app:showAsAction="always" />
 
     <item

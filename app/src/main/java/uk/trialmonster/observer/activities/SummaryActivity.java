@@ -47,10 +47,11 @@ public class SummaryActivity extends AppCompatActivity {
         ActionBar ab = getSupportActionBar();
         // Enable the Up button
         ab.setDisplayHomeAsUpEnabled(true);
-
         localPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         section = localPrefs.getInt("section", 1);
         trialid = localPrefs.getInt("trialid", -999);
+
+        this.setTitle("Scores - Section " + section);
 
         ScoreDbHelper scoreDbHelper = new ScoreDbHelper(this);
         theScoreList = scoreDbHelper.getLapScores(section, trialid);

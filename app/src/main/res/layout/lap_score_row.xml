@@ -19,15 +19,15 @@
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
         android:textStyle="bold" />
 
-    <TextView
-        android:id="@+id/rider1ScoresTextView"
-        android:layout_width="40dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/mid_margin"
-        android:layout_marginTop="@dimen/top_margin"
-        android:text=""
-        android:textAlignment="textStart"
-        android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+        <TextView
+            android:id="@+id/rider1ScoresTextView"
+            android:layout_width="60dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/mid_margin"
+            android:layout_marginTop="@dimen/top_margin"
+            android:text=""
+            android:textAlignment="textStart"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large" />
     </LinearLayout>
 
     <LinearLayout
@@ -46,12 +46,12 @@
 
         <TextView
             android:id="@+id/rider2ScoresTextView"
-            android:layout_width="40dp"
+            android:layout_width="60dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/mid_margin"
             android:layout_marginTop="@dimen/top_margin"
-        android:text=""
-        android:textAlignment="textStart"
+            android:text=""
+            android:textAlignment="textStart"
             android:textAppearance="@style/TextAppearance.AppCompat.Large" />
     </LinearLayout>
 
@@ -73,7 +73,7 @@
 
         <TextView
             android:id="@+id/rider3ScoresTextView"
-            android:layout_width="40dp"
+            android:layout_width="60dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/mid_margin"
             android:layout_marginTop="@dimen/top_margin"

@@ -307,6 +307,7 @@ If you wish your data to be deleted, please send an email request to admin@trial
     <string name="recovery_mode">Recovery mode</string>
     <string name="saveButton">Save</string>
     <string name="list_of_current_times">List of current times</string>
+    <string name="show_scorecard">Scorecard</string>
     <string-array name="scores">
         <item>Clean</item>
         <item>One</item>
