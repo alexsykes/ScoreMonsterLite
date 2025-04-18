@@ -342,7 +342,6 @@ public class ScoreDbHelper extends SQLiteOpenHelper {
         String query = "SELECT * FROM scores WHERE trialid = " + trialid +
                 " AND day = " + day +
                 " AND section = " + section +
-                " AND sync = -1 ORDER " +
                 "BY _id DESC";
 
         Cursor cursor = db.rawQuery(query, null);
