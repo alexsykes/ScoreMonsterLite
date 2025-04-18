@@ -447,7 +447,7 @@ public class ScoreDbHelper extends SQLiteOpenHelper {
 
         SQLiteDatabase db = this.getReadableDatabase();
 
-        String sql = "SELECT _id, score FROM scores " +
+        String sql = "SELECT rider, score FROM scores " +
                 "WHERE trialid = " + trialid +
                 " AND section = " + section +
                 "  AND score != '.'";
