@@ -1,5 +1,6 @@
 package uk.trialmonster.observer;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +26,8 @@ public class ManualScoresAdapter extends RecyclerView.Adapter<ManualScoresAdapte
         if (numScores % numColumns > 0) {
             numRows++;
         }
+        Log.i("info", "numScores: " + numScores);
+        Log.i("info", "numRows: " + numRows);
     }
 
     @NonNull
@@ -40,16 +43,14 @@ public class ManualScoresAdapter extends RecyclerView.Adapter<ManualScoresAdapte
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         int index;
-//        Log.i("info", "numScores: " + numScores);
-//        Log.i("info", "numRows: " + numRows);
-//        Log.i("info", "position: " + position);
 
 //        First cell always full
-        theScore1 = scoreData.get(position * 3);
+        theScore1 = scoreData.get(position);
         holder.riderTV1.setText(theScore1.get("rider"));
         holder.lapScoresTV1.setText(theScore1.get("laps"));
 
-        index = (position * 3) + 1;
+//        index = (position * 3) + 1;
+        index = numRows + position;
 //        int offset1 = position + numRows;
         if (index < numScores - 1) {
             theScore2 = scoreData.get(index);
@@ -60,7 +61,7 @@ public class ManualScoresAdapter extends RecyclerView.Adapter<ManualScoresAdapte
             holder.lapScoresTV2.setText("");
         }
 
-        index = (position * 3) + 2;
+        index = (numRows * 2) + position;
         if (index < numScores) {
             theScore3 = scoreData.get(index);
             holder.riderTV3.setText(theScore3.get("rider"));
