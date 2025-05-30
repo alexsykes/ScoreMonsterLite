@@ -34,6 +34,10 @@ public class SummaryActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ;
+//        int numsections = localPrefs.getInt("numsections", 1);
+
+
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_summary);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
@@ -53,12 +57,11 @@ public class SummaryActivity extends AppCompatActivity {
         section = localPrefs.getInt("section", 1);
         trialid = localPrefs.getInt("trialid", -999);
         isManualTrial = localPrefs.getBoolean("isManualTrial", false);
-        numLaps = localPrefs.getInt("numlaps", 0);
+        numLaps = localPrefs.getInt("numlaps", 1);
         this.setTitle("Scores - Section " + section);
         if (isManualTrial) {
             showManualScores();
         } else {
-
             ScoreDbHelper scoreDbHelper = new ScoreDbHelper(this);
             theScoreList = scoreDbHelper.getLapScores(section, trialid);
             summaryRV = findViewById(R.id.summaryRV);
@@ -76,22 +79,23 @@ public class SummaryActivity extends AppCompatActivity {
     private void showManualScores() {
         ScoreDbHelper scoreDbHelper = new ScoreDbHelper(this);
         theScoreList = scoreDbHelper.getLapScores(section, trialid);
-        String buffer = new String(new char[numLaps]).replace('\0', '.');
+        String buffer = "................................";
+if(!theScoreList.isEmpty()) {
+            for (HashMap item : theScoreList) {
+                String theScore = item.get("laps") + buffer;
+                theScore = theScore.substring(0, numLaps);
+                item.put("laps", theScore);
+            }
+            summaryRV = findViewById(R.id.summaryRV);
 
-        for (HashMap item : theScoreList) {
-            String theScore = item.get("laps") + buffer;
-            theScore = theScore.substring(0, numLaps);
-            item.put("laps", theScore);
-        }
-        summaryRV = findViewById(R.id.summaryRV);
-
-        LinearLayoutManager llm = new LinearLayoutManager(this);
-        summaryRV.setLayoutManager(llm);
-        GridLayoutManager glm;
+            LinearLayoutManager llm = new LinearLayoutManager(this);
+            summaryRV.setLayoutManager(llm);
+            GridLayoutManager glm;
 //        glm = new GridLayoutManager(this, 3);
 //        summaryRV.setLayoutManager(glm);
-        summaryRV.setHasFixedSize(true);
-        initializeManualAdapter();
+            summaryRV.setHasFixedSize(true);
+            initializeManualAdapter();
+        }
         scoreDbHelper.close();
 
     }

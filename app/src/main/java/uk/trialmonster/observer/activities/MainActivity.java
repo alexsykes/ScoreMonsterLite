@@ -428,10 +428,11 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "Already completed " + numlaps + " laps", Toast.LENGTH_LONG).show();
         } else {
             String query =
-                    "INSERT INTO scores ('lap', 'rider', 'score', 'created', 'trialid', " +
+                    "INSERT INTO scores ('lap', 'rider', 'score', 'created', 'updated', 'trialid', " +
                             "'section', " +
                             "'sync') " +
                             "VALUES(" + lap + " , " + rider + "," + score + "," +
+                            " DATETIME('now'), " +
                             " DATETIME('now'), " + trialid + ", " + section + ", -1) ";
 //            Log.i(TAG, "Query: " + query);
             db.execSQL(query);

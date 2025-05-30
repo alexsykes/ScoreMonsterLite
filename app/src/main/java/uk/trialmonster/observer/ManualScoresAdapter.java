@@ -18,6 +18,7 @@ public class ManualScoresAdapter extends RecyclerView.Adapter<ManualScoresAdapte
     private final ArrayList<HashMap<String, String>> scoreData;
     HashMap<String, String> theScore1, theScore2, theScore3;
     private int numRows;
+//    public static final String TAG = "Note";
 
     public ManualScoresAdapter(ArrayList<HashMap<String, String>> scoreData) {
         this.scoreData = scoreData;
@@ -26,8 +27,6 @@ public class ManualScoresAdapter extends RecyclerView.Adapter<ManualScoresAdapte
         if (numScores % numColumns > 0) {
             numRows++;
         }
-        Log.i("info", "numScores: " + numScores);
-        Log.i("info", "numRows: " + numRows);
     }
 
     @NonNull
@@ -42,35 +41,42 @@ public class ManualScoresAdapter extends RecyclerView.Adapter<ManualScoresAdapte
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        int index;
+//        if(position < numRows) {
+            int offset = 0;
 
-//        First cell always full
-        theScore1 = scoreData.get(position);
-        holder.riderTV1.setText(theScore1.get("rider"));
-        holder.lapScoresTV1.setText(theScore1.get("laps"));
+            // Column 1
+        offset = position * 3;
+            if(offset <= numScores) {
+                theScore1 = scoreData.get(offset);
+                holder.riderTV1.setText(theScore1.get("rider"));
+                holder.lapScoresTV1.setText(theScore1.get("laps"));
+            } else {
+                holder.riderTV1.setText("");
+                holder.lapScoresTV1.setText("");
+            }
+            // Column 2
+            offset = (position * 3) + 1;
 
-//        index = (position * 3) + 1;
-        index = numRows + position;
-//        int offset1 = position + numRows;
-        if (index < numScores - 1) {
-            theScore2 = scoreData.get(index);
-            holder.riderTV2.setText(theScore2.get("rider"));
-            holder.lapScoresTV2.setText(theScore2.get("laps"));
-        } else {
-            holder.riderTV2.setText("");
-            holder.lapScoresTV2.setText("");
+            if (offset < numScores) {
+                theScore2 = scoreData.get(offset);
+                holder.riderTV2.setText(theScore2.get("rider"));
+                holder.lapScoresTV2.setText(theScore2.get("laps"));
+            } else {
+                holder.riderTV2.setText("");
+                holder.lapScoresTV2.setText("");
+            }
+
+        offset = (position * 3) + 2  ;
+            if (offset < numScores) {
+                theScore3 = scoreData.get(offset);
+                holder.riderTV3.setText(theScore3.get("rider"));
+                holder.lapScoresTV3.setText(theScore3.get("laps"));
+            } else {
+                holder.riderTV3.setText("");
+                holder.lapScoresTV3.setText("");
+            }
         }
-
-        index = (numRows * 2) + position;
-        if (index < numScores) {
-            theScore3 = scoreData.get(index);
-            holder.riderTV3.setText(theScore3.get("rider"));
-            holder.lapScoresTV3.setText(theScore3.get("laps"));
-        } else {
-            holder.riderTV3.setText("");
-            holder.lapScoresTV3.setText("");
-        }
-    }
+//    }
 
     @Override
     public int getItemCount() {
