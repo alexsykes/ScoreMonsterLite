@@ -342,7 +342,7 @@ public class ScoreDbHelper extends SQLiteOpenHelper {
         String query = "SELECT * FROM scores WHERE trialid = " + trialid +
                 " AND day = " + day +
                 " AND section = " + section +
-                "BY _id DESC";
+                " ORDER BY _id ASC";
 
         Cursor cursor = db.rawQuery(query, null);
         while (cursor.moveToNext()) {
@@ -541,5 +541,23 @@ public class ScoreDbHelper extends SQLiteOpenHelper {
         String destroyTrialScoresQuery = "DELETE FROM scores WHERE trialid = " + trialid + " AND day = " + dayNum;
         db.execSQL(destroyTrialScoresQuery);
         db.close();
+    }
+
+    public ArrayList<HashMap<String, String>> getManualLapScores(int section, int trialid) {
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        ArrayList<HashMap<String, String>> scoreList = new ArrayList<>();
+        Cursor result = db.rawQuery("SELECT rider, GROUP_CONCAT(score,'') AS laps FROM scores  WHERE trialid = " + trialid + " AND section = " + section + "  GROUP BY rider ORDER BY rider, lap", new String[]{});
+
+        while (result.moveToNext()) {
+            HashMap<String, String> scores = new HashMap<>();
+            scores.put("rider", result.getString(result.getColumnIndex("rider")));
+            scores.put("laps", result.getString(result.getColumnIndex("laps")));
+            scoreList.add(scores);
+        }
+
+        result.close();
+        db.close();
+        return scoreList;
     }
 }

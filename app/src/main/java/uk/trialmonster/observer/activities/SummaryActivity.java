@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import uk.trialmonster.observer.LapScoresAdapter;
+import uk.trialmonster.observer.ManualScoresAdapter;
 import uk.trialmonster.observer.R;
 import uk.trialmonster.observer.data.ScoreDbHelper;
 
@@ -26,7 +27,8 @@ public class SummaryActivity extends AppCompatActivity {
     ArrayList<HashMap<String, String>> theScoreList;
     RecyclerView summaryRV;
 
-    int section, trialid;
+    int section, trialid, numLaps;
+    boolean isManualTrial;
     SharedPreferences localPrefs;
 
     @Override
@@ -50,25 +52,56 @@ public class SummaryActivity extends AppCompatActivity {
         localPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         section = localPrefs.getInt("section", 1);
         trialid = localPrefs.getInt("trialid", -999);
-
+        isManualTrial = localPrefs.getBoolean("isManualTrial", false);
+        numLaps = localPrefs.getInt("numlaps", 0);
         this.setTitle("Scores - Section " + section);
+        if (isManualTrial) {
+            showManualScores();
+        } else {
 
+            ScoreDbHelper scoreDbHelper = new ScoreDbHelper(this);
+            theScoreList = scoreDbHelper.getLapScores(section, trialid);
+            summaryRV = findViewById(R.id.summaryRV);
+            LinearLayoutManager llm = new LinearLayoutManager(this);
+            summaryRV.setLayoutManager(llm);
+            GridLayoutManager glm;
+//        glm = new GridLayoutManager(this, 3);
+//        summaryRV.setLayoutManager(glm);
+            summaryRV.setHasFixedSize(true);
+            initializeAdapter();
+            scoreDbHelper.close();
+        }
+    }
+
+    private void showManualScores() {
         ScoreDbHelper scoreDbHelper = new ScoreDbHelper(this);
         theScoreList = scoreDbHelper.getLapScores(section, trialid);
+        String buffer = new String(new char[numLaps]).replace('\0', '.');
+
+        for (HashMap item : theScoreList) {
+            String theScore = item.get("laps") + buffer;
+            theScore = theScore.substring(0, numLaps);
+            item.put("laps", theScore);
+        }
         summaryRV = findViewById(R.id.summaryRV);
+
         LinearLayoutManager llm = new LinearLayoutManager(this);
         summaryRV.setLayoutManager(llm);
         GridLayoutManager glm;
 //        glm = new GridLayoutManager(this, 3);
 //        summaryRV.setLayoutManager(glm);
         summaryRV.setHasFixedSize(true);
-        initializeAdapter();
+        initializeManualAdapter();
         scoreDbHelper.close();
 
     }
-
     private void initializeAdapter() {
         LapScoresAdapter adapter = new LapScoresAdapter(theScoreList);
+        summaryRV.setAdapter(adapter);
+    }
+
+    private void initializeManualAdapter() {
+        ManualScoresAdapter adapter = new ManualScoresAdapter(theScoreList);
         summaryRV.setAdapter(adapter);
     }
 }

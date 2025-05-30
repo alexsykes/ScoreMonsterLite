@@ -16,7 +16,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -417,7 +416,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void saveManualScore(int rider, String score, int day) {
-        Log.i(TAG, "saveManualScore: ");
+//        Log.i(TAG, "saveManualScore: ");
         ToneGenerator toneGen1 = new ToneGenerator(AudioManager.STREAM_MUSIC, ToneGenerator.MAX_VOLUME);
 
         // Check number of laps completed
@@ -434,7 +433,7 @@ public class MainActivity extends AppCompatActivity {
                             "'sync') " +
                             "VALUES(" + lap + " , " + rider + "," + score + "," +
                             " DATETIME('now'), " + trialid + ", " + section + ", -1) ";
-            Log.i(TAG, "Query: " + query);
+//            Log.i(TAG, "Query: " + query);
             db.execSQL(query);
 
             playSoundFile(R.raw.ting);
@@ -495,7 +494,7 @@ public class MainActivity extends AppCompatActivity {
             db.insert(ScoreContract.ScoreEntry.TABLE_NAME, null, values);
             //   toneGen1.startTone(ToneGenerator.TONE_CDMA_CONFIRM, ToneGenerator.MAX_VOLUME);
 
-            Log.i("Note", "trialid: " + trialid);
+//            Log.i("Note", "trialid: " + trialid);
             // Confirm committed with sound
             playSoundFile(R.raw.ting);
             Toast.makeText(this, "Score saved", Toast.LENGTH_SHORT).show();
@@ -602,7 +601,7 @@ public class MainActivity extends AppCompatActivity {
 
     // Time utility methods
     private void saveTime(View.OnLongClickListener view) {
-        Log.i("Note", "Saving finish time");
+//        Log.i("Note", "Saving finish time");
 
         ToneGenerator toneGen1 = new ToneGenerator(AudioManager.STREAM_MUSIC, ToneGenerator.MAX_VOLUME);
         // Get String values for rider and scoreLabel
