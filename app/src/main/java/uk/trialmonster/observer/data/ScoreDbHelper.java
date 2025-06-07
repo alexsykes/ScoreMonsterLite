@@ -551,8 +551,27 @@ public class ScoreDbHelper extends SQLiteOpenHelper {
 
         while (result.moveToNext()) {
             HashMap<String, String> scores = new HashMap<>();
-            scores.put("rider", result.getString(result.getColumnIndex("rider")));
-            scores.put("laps", result.getString(result.getColumnIndex("laps")));
+            scores.put("rider", result.getString(result.getColumnIndexOrThrow("rider")));
+            scores.put("laps", result.getString(result.getColumnIndexOrThrow("laps")));
+            scoreList.add(scores);
+        }
+
+        result.close();
+        db.close();
+        return scoreList;
+    }
+
+    public ArrayList<HashMap<String, String>> getManualLapScores(int trialid, int day, int section) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        ArrayList<HashMap<String, String>> scoreList = new ArrayList<>();
+        Cursor result = db.rawQuery("SELECT rider, GROUP_CONCAT(score,'') AS laps FROM scores  " +
+                "WHERE trialid = " + trialid + " AND section = " + section + " AND day = " + day +
+                "  GROUP BY rider ORDER BY rider, lap", new String[]{});
+
+        while (result.moveToNext()) {
+            HashMap<String, String> scores = new HashMap<>();
+            scores.put("rider", result.getString(result.getColumnIndexOrThrow("rider")));
+            scores.put("laps", result.getString(result.getColumnIndexOrThrow("laps")));
             scoreList.add(scores);
         }
 

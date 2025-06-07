@@ -16,6 +16,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -434,7 +435,7 @@ public class MainActivity extends AppCompatActivity {
                             "VALUES(" + lap + " , " + rider + "," + score + "," +
                             " DATETIME('now'), " +
                             " DATETIME('now'), " + trialid + ", " + section + ", -1) ";
-//            Log.i(TAG, "Query: " + query);
+            Log.i(TAG, "Query: " + query);
             db.execSQL(query);
 
             playSoundFile(R.raw.ting);

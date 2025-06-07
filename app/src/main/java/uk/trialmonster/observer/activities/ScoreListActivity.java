@@ -78,6 +78,7 @@ public class ScoreListActivity extends AppCompatActivity {
     // https://androidexample.com/Upload_File_To_Server_-_Android_Example/index.php?view=article_discription&aid=83
     RecyclerView scoreView;
     ArrayList<HashMap<String, String>> theScoreList;
+    ArrayList<HashMap<String, String>> theManualScoreList;
     TextView messageText;
     boolean canConnect;
     SharedPreferences localPrefs;
@@ -304,8 +305,14 @@ public class ScoreListActivity extends AppCompatActivity {
 
     private void populateScoreList() {
         scoreDbHelper = new ScoreDbHelper(this);
-        theScoreList = scoreDbHelper.getScoreList(trialid, day, section);
-//        Log.i("trialid", "" + trialid);
+        Log.i("Info", "IsManual");
+        boolean isManualTrial = localPrefs.getBoolean("isManualTrial", true);
+        if(isManualTrial) {
+            theScoreList = scoreDbHelper.getManualLapScores(trialid, day, section);
+
+        } else {
+            theScoreList = scoreDbHelper.getScoreList(trialid, day, section);
+        } Log.i("trialid", "" + trialid);
         scoreView = findViewById(R.id.scoreView);
         LinearLayoutManager llm = new LinearLayoutManager(this);
         scoreView.setLayoutManager(llm);
