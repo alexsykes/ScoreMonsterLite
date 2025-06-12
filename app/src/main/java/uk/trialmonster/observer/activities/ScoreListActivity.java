@@ -1,11 +1,14 @@
 package uk.trialmonster.observer.activities;
+// see - https://stuff.mit.edu/afs/sipb/project/android/docs/training/basics/data-storage/files.html
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
@@ -13,6 +16,7 @@ import android.os.StrictMode;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,6 +36,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
 
 import org.json.JSONArray;
@@ -41,6 +46,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -55,6 +63,9 @@ import uk.trialmonster.observer.ScoreListAdapter;
 import uk.trialmonster.observer.data.ScoreDbHelper;
 
 public class ScoreListActivity extends AppCompatActivity {
+    public static final int PICKFILE_RESULT_CODE = 1;
+    private static final String TAG = "Info";
+    private static final String DEBUG_TAG = "Info";
 //    String TAG = "Info";
     /**********  File Path *************/
     final String uploadFilePath = "mnt/sdcard/Documents/Scoremonster/";
@@ -62,20 +73,25 @@ public class ScoreListActivity extends AppCompatActivity {
 
     MenuItem emailMenuItem;
     MenuItem uploadMenuItem;
+    private static final String[] END_OF_MARKERS = new String[]{"End of markers"};
 
     // https://androidexample.com/Upload_File_To_Server_-_Android_Example/index.php?view=article_discription&aid=83
     RecyclerView scoreView;
     ArrayList<HashMap<String, String>> theScoreList;
+    ArrayList<HashMap<String, String>> theManualScoreList;
     TextView messageText;
-    //    private final String processURL = null;
-//    ProgressDialog dialog = null;
     boolean canConnect;
     SharedPreferences localPrefs;
-    // Button processButton;
-    int serverResponseCode = 0, section, trialid;
+    private static final String[] END_OF_FILE = new String[]{"End of file"};
     private ScoreDbHelper scoreDbHelper;
     private String filename, email, observer, mobile;
     private boolean isLoggedInUser;
+    MenuItem saveToDownloadsItem;
+    int serverResponseCode = 0, section, trialid, day, numlaps, numsections;
+    CSVWriter csvWriter;
+    CSVReader csvReader;
+    private Uri fileUri;
+    private String filePath;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -99,14 +115,14 @@ public class ScoreListActivity extends AppCompatActivity {
         canConnect = canConnect();
         // Get shared preferences for trialid, section
         localPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        numlaps = localPrefs.getInt("numlaps", 1);
+        numsections = localPrefs.getInt("numsections", 1);
         section = localPrefs.getInt("section", 1);
+        day = localPrefs.getInt("dayNum", 1);
         trialid = localPrefs.getInt("trialid", -999);
         observer = localPrefs.getString("observer", "");
         mobile = localPrefs.getString("mobile", "");
         isLoggedInUser = localPrefs.getBoolean("isLoggedInUser", false);
-
-        // Create database connection
-//        mDbHelper = new ScoreDbHelper(this);
         populateScoreList();
     }
 
@@ -121,6 +137,7 @@ public class ScoreListActivity extends AppCompatActivity {
 
         emailMenuItem = menu.findItem(R.id.email);
         uploadMenuItem = menu.findItem(R.id.upload);
+        saveToDownloadsItem = menu.findItem(R.id.saveAsFileButton);
 
         if (trialid == -999 || !isLoggedInUser) {
             uploadMenuItem.setEnabled(false);
@@ -154,11 +171,61 @@ public class ScoreListActivity extends AppCompatActivity {
                             Toast.LENGTH_LONG).show();
                 }
                 return true;
+
+            case R.id.saveAsFileButton:
+                String filename = "Section " + section + " scores.txt";
+//                Log.i(TAG, "onOptionsItemSelected: saveAsFileButtonClicked");
+                Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+                intent.setType("text/plain");
+                intent.addCategory(Intent.CATEGORY_OPENABLE);
+                intent.putExtra(Intent.EXTRA_TITLE, filename);
+                startActivityForResult(intent, PICKFILE_RESULT_CODE);
+                return true;
             default:
                 // If we got here, the user's action was not recognized.
                 // Invoke the superclass to handle it.
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private File writeToInternal(File exportDir, String filename) {
+        Cursor exportData = scoreDbHelper.getScoresForEmail(trialid);
+        try {
+            exportDir = new File(exportDir, filename);
+            exportDir.createNewFile();
+            CSVWriter csvWriter = new CSVWriter(new FileWriter(exportDir));
+
+            String[] arrStr1 = {"Hello"};
+            csvWriter.writeNext(arrStr1);
+            // Get current data
+            while (exportData.moveToNext()) {
+                String[] arrStr = new String[exportData.getColumnCount()];
+                for (int i = 0; i < exportData.getColumnCount(); i++)
+                    arrStr[i] = exportData.getString(i);
+                csvWriter.writeNext(arrStr);
+            }
+
+            csvWriter.close();
+        } catch (IOException e) {
+            Log.e("Child", e.getMessage(), e);
+        }
+        return exportDir;
+    }
+
+    private void saveToDownloads() {
+        Log.i(TAG, "saveToDownloads");
+        Log.i(TAG, "numlaps: " + numlaps);
+        Log.i(TAG, "numsections: " + numsections);
+        Log.i(TAG, "section: " + section);
+        Log.i(TAG, "trialid: " + trialid);
+        boolean success;
+        File exportDir = getFilesDir();
+        String filename = "Section " + section + " scores.dat";
+        File exportFile = writeToInternal(exportDir, filename);
+
+//        Log.i(TAG, "scores: " + theScoreList.size());
+//        Log.i(TAG, "numlaps" + numlaps);
+//        Log.i(TAG, "numlaps" + numlaps);
     }
 
     public void onClickCalled(String scoreid, int score) {
@@ -203,27 +270,25 @@ public class ScoreListActivity extends AppCompatActivity {
                             break;
                         case 1:
                             score1 = "1";
-
                             break;
                         case 2:
                             score1 = "2";
-
                             break;
                         case 3:
                             score1 = "3";
-
                             break;
                         case 4:
                             score1 = "5";
-
                             break;
                         case 5:
                             score1 = "x";
-
                             break;
+                        case 6:
+                            deleteScore(scoreid);
+                            return;
                     }
                     scoreDbHelper = new ScoreDbHelper(ScoreListActivity.this);
-                    scoreDbHelper.update(scoreid, score1);
+                    scoreDbHelper.update(scoreid, score1, observer);
                     scoreDbHelper.close();
                     populateScoreList();
                 })
@@ -233,10 +298,21 @@ public class ScoreListActivity extends AppCompatActivity {
                 .show();
     }
 
+    private void deleteScore(String id) {
+        scoreDbHelper.deleteScore(id, numlaps, observer);
+        populateScoreList();
+    }
+
     private void populateScoreList() {
         scoreDbHelper = new ScoreDbHelper(this);
-        theScoreList = scoreDbHelper.getScoreList(trialid);
-//        Log.i("trialid", "" + trialid);
+        Log.i("Info", "IsManual");
+        boolean isManualTrial = localPrefs.getBoolean("isManualTrial", true);
+        if(isManualTrial) {
+            theScoreList = scoreDbHelper.getManualLapScores(trialid, day, section);
+
+        } else {
+            theScoreList = scoreDbHelper.getScoreList(trialid, day, section);
+        } Log.i("trialid", "" + trialid);
         scoreView = findViewById(R.id.scoreView);
         LinearLayoutManager llm = new LinearLayoutManager(this);
         scoreView.setLayoutManager(llm);
@@ -369,9 +445,56 @@ public class ScoreListActivity extends AppCompatActivity {
         }
     }    // Save current scores to CSV
 
-    private boolean newSaveToCSV() {
-        String rider, section, scores;
+    private boolean saveSectionScoresToCSV(String section) {
+        String rider, scores, day;
+        filename = "Section " + section + " scores.csv";
+        try {
+            exportDir = new File(Environment.getExternalStoragePublicDirectory(
+                    Environment.DIRECTORY_DOCUMENTS), "TMData.csv");
+            File file = new File(filename);
 
+//            if (!exportDir.mkdirs()) {
+//                Log.e(TAG, "Directory not created");
+//            }
+
+            // Create new CSV file in storage
+            exportDir.createNewFile();
+            CSVWriter csvWrite = new CSVWriter(new FileWriter(exportDir));
+
+//            Prepare and write filednames as header
+            String[] details = {"Observer: ", observer, mobile};
+            String[] header = {"Day", "Section", "Rider", "Scores"};
+            csvWrite.writeNext(details, false);
+            csvWrite.writeNext(header, false);
+
+            // Get score data for current trial
+            Cursor curChild = scoreDbHelper.getScoresForEmail(trialid);
+            while (curChild.moveToNext()) {
+//                section = curChild.getString(1);
+                rider = curChild.getString(0);
+                scores = curChild.getString(2);
+                day = curChild.getString(3);
+//                observer = curChild.getString(3);
+                String[] arrStr = {day, section, rider, scores
+                };
+
+                csvWrite.writeNext(arrStr, false);
+            }
+            // Close filewriter
+            curChild.close();
+            csvWrite.close();
+            scoreDbHelper.close();
+            return true;
+
+        } catch (IOException e) {
+            Log.e("Child", e.getMessage(), e);
+            return false;
+        }
+    }
+
+    private boolean newSaveToCSV() {
+        String rider, section, scores, day;
+        filename = "scores.csv";
         try {
             exportDir = new File(getFilesDir(), filename);
 
@@ -381,7 +504,7 @@ public class ScoreListActivity extends AppCompatActivity {
 
 //            Prepare and write filednames as header
             String[] details = {"Observer: ", observer, mobile};
-            String[] header = {"Rider", "Section", "Scores"};
+            String[] header = {"Day", "Section", "Rider", "Scores"};
             csvWrite.writeNext(details, false);
             csvWrite.writeNext(header, false);
 
@@ -391,8 +514,9 @@ public class ScoreListActivity extends AppCompatActivity {
                 section = curChild.getString(1);
                 rider = curChild.getString(0);
                 scores = curChild.getString(2);
+                day = curChild.getString(3);
 //                observer = curChild.getString(3);
-                String[] arrStr = {rider, section, scores
+                String[] arrStr = {day, section, rider, scores
                 };
 
                 csvWrite.writeNext(arrStr, false);
@@ -551,7 +675,7 @@ public class ScoreListActivity extends AppCompatActivity {
                     Toast.LENGTH_LONG).show();
         } else {
             volleyScoreUpload();
-            markAsDone(trialid);
+//            markAsDone(trialid);
         }
     }
 
@@ -564,6 +688,7 @@ public class ScoreListActivity extends AppCompatActivity {
         } else {
             // Get email from prefs - if no saved value, then send to blackhole
             email = localPrefs.getString("email", "blackhole@alexsykes.net");
+//            email = "alex@alexsykes.net";
             Date date = new Date();
             // getTime() returns current time in milliseconds -
             // gives
@@ -571,7 +696,7 @@ public class ScoreListActivity extends AppCompatActivity {
             String ts = String.valueOf(time);
             filename = "data_" + ts + ".csv";
             String sendMailURL =
-                    "https://www.trialmonster.uk/android/sendMailWithFileLive.php?id=" + ts +
+                    "https://android.trialmonster.uk/sendMailWithFileLive.php?id=" + ts +
                             "&trialid=" + trialid + "&email=" + email;
 
             newSaveToCSV();
@@ -580,28 +705,21 @@ public class ScoreListActivity extends AppCompatActivity {
     }
 
     private JSONArray getDataForUpload() {
-        ArrayList<HashMap<String, String>> dataToUpload = scoreDbHelper.getScoreListForUpload(trialid);
+        ArrayList<HashMap<String, String>> dataToUpload =
+                scoreDbHelper.getNewScoreListForUpload(trialid, section, day);
         JSONArray scoresJSONArray = new JSONArray();
 
+        String scoreStr;
         for (int i = 0; i < dataToUpload.size(); i++) {
             JSONArray score = new JSONArray();
             HashMap<String, String> scoreItem = dataToUpload.get(i);
             score.put(scoreItem.get("id"));
-            score.put(scoreItem.get("rider"));
-            score.put(scoreItem.get("lap"));
-//            score.put(scoreItem.get("score"));
-            if (scoreItem.get("score").equals("x")) {
-                score.put("X");
-            } else {
-                score.put(scoreItem.get("score"));
-            }
-            score.put(scoreItem.get("section"));
-            score.put(scoreItem.get("trialid"));
-            score.put(scoreItem.get("sync"));
-            score.put(scoreItem.get("edited"));
-            score.put(scoreItem.get("created"));
-            score.put(scoreItem.get("updated"));
 
+            scoreStr = scoreItem.get("score");
+//            scoreStr = scoreStr.toUpperCase();
+            score.put(scoreStr);
+            score.put(scoreItem.get("updated"));
+            score.put(scoreItem.get("created"));
             scoresJSONArray.put(score);
         }
         return scoresJSONArray;
@@ -609,7 +727,7 @@ public class ScoreListActivity extends AppCompatActivity {
 
     private void volleyScoreUpload() {
         RequestQueue requestQueue = Volley.newRequestQueue(this);
-        String URL = "https://android.trialmonster.uk/androidScoreUploadLive.php";
+        String URL = "https://android.trialmonster.uk/androidNewScoreUploadLive.php";
 
         JSONArray data = getDataForUpload();
         String requestBody = data.toString();
@@ -619,11 +737,14 @@ public class ScoreListActivity extends AppCompatActivity {
             @Override
             public void onResponse(String response) {
                 Log.d("Volley", "Response: " + response);
+                if (response.equals("1")) {
+                    markAsDone(trialid, day, section);
+                }
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.d("VOLLEY", error.toString());
+                Log.d("Volley", error.toString());
             }
         }) {
             @Override
@@ -654,5 +775,106 @@ public class ScoreListActivity extends AppCompatActivity {
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         requestQueue.add(stringRequest);
+    }
+
+    private void markAsDone(int trialid, int day, int section) {
+        scoreDbHelper = new ScoreDbHelper(this);
+        scoreDbHelper.markAsDone(trialid, day, section);
+        scoreDbHelper.close();
+        populateScoreList();
+    }
+
+
+    private void writeCSVFile(Intent data) {
+        fileUri = data.getData();
+        filePath = fileUri.getPath();
+        Cursor scoresForExport =
+                scoreDbHelper.getScoresForSaving(trialid, section);
+        try {
+            OutputStream os = getContentResolver().openOutputStream(data.getData());
+            Writer writer = new OutputStreamWriter(os);
+            csvWriter = new CSVWriter(writer);
+
+            String[] markerHeaderRecord = {"Rider", "Scores"};
+            csvWriter.writeNext(markerHeaderRecord);
+
+            while (scoresForExport.moveToNext()) {
+                String[] arrStr = new String[scoresForExport.getColumnCount()];
+                for (int i = 0; i < scoresForExport.getColumnCount(); i++)
+                    arrStr[i] = scoresForExport.getString(i);
+                csvWriter.writeNext(arrStr);
+            }
+            csvWriter.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void writeTXTFile(Intent data) {
+        fileUri = data.getData();
+        filePath = fileUri.getPath();
+
+        Cursor scoreData = scoreDbHelper.getScoreDataForSaving(trialid, section);
+
+        Cursor scoresForExport =
+                scoreDbHelper.getScoresForSaving(trialid, section);
+        try {
+            OutputStream os = getContentResolver().openOutputStream(data.getData());
+            OutputStreamWriter writer = new OutputStreamWriter(os);
+
+//            String[] markerHeaderRecord = {"Rider", "Scores"};
+            writer.write("Scores for section " + section + "\n");
+            writer.write("Rider,Scores\n");
+
+            while (scoreData.moveToNext()) {
+                String rider = scoreData.getString(0);
+                String score = scoreData.getString(1);
+                writer.write(rider + "," + score + "\n");
+            }
+            writer.flush();
+            writer.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        switch (event.getAction()) {
+            case (MotionEvent.ACTION_DOWN):
+                Log.d(DEBUG_TAG, "Action was DOWN");
+                return true;
+            case (MotionEvent.ACTION_MOVE):
+                Log.d(DEBUG_TAG, "Action was MOVE");
+                return true;
+            case (MotionEvent.ACTION_UP):
+                Log.d(DEBUG_TAG, "Action was UP");
+                return true;
+            case (MotionEvent.ACTION_CANCEL):
+                Log.d(DEBUG_TAG, "Action was CANCEL");
+                return true;
+            case (MotionEvent.ACTION_OUTSIDE):
+                Log.d(DEBUG_TAG, "Movement occurred outside bounds of current screen element");
+                return true;
+            default:
+                return super.onTouchEvent(event);
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case PICKFILE_RESULT_CODE:
+                if (resultCode == -1) {
+//                    writeCSVFile(data);
+                    writeTXTFile(data);
+                }
+                break;
+
+
+            default:
+                break;
+        }
     }
 }

@@ -27,7 +27,6 @@
         android:layout_margin="4dp"
         android:text="@string/status_line"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-        android:textSize="12sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/top_toolbar" />
@@ -60,7 +59,7 @@
                 android:text="@string/prev"
                 android:textAlignment="textStart"
                 android:textColor="@color/purple_700"
-                android:textSize="20sp"
+                android:textSize="30sp"
                 android:textStyle="normal" />
 
             <TextView
@@ -71,7 +70,7 @@
                 android:contentDescription="@string/section_number"
                 android:text="@string/_1"
                 android:textAlignment="center"
-                android:textSize="20sp"
+                android:textSize="30sp"
                 android:textStyle="bold" />
 
             <Button
@@ -85,7 +84,7 @@
                 android:text="@string/next"
                 android:textAlignment="textEnd"
                 android:textColor="@color/purple_700"
-                android:textSize="20sp"
+                android:textSize="30sp"
                 android:textStyle="normal" />
         </LinearLayout>
 
@@ -98,7 +97,6 @@
             android:layout_margin="4dp"
             android:gravity="center_horizontal"
             android:textAlignment="center"
-            android:textSize="34sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/sectionLabelLayout" />
@@ -122,10 +120,9 @@
         android:contentDescription="@string/score_"
         android:gravity="center_horizontal"
         android:text="@string/_0"
-        android:textSize="34sp"
         app:layout_constraintBottom_toTopOf="@+id/bottom"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -144,7 +141,7 @@
         android:layout_marginBottom="4dp"
         android:text="@string/save"
         android:textColor="@color/colorButtonText"
-        android:textSize="20sp"
+        android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

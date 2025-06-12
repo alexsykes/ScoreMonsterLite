@@ -47,9 +47,11 @@ import uk.trialmonster.observer.data.TrialDbHelper;
 
 public class MainActivity extends AppCompatActivity {
     public static final String EXTRA_MESSAGE = "com.alexsykes.scoremonster.activities.MESSAGE";
+    public static final String TAG = "Info";
     public static final int TEXT_REQUEST = 1;
     public static final int NOT_SYNCED = -1;
     SharedPreferences localPrefs;
+    SharedPreferences.Editor editor;
     MainViewModel model;
     String[] theTrials, theIDs;
     ArrayList<HashMap<String, String>> theTrialData;
@@ -60,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
     Button saveButton;
 
     // Layout variables
-    TextView numberLabel, scoreLabel, sectionNumberTextView, decrementTextView,
+    TextView numberLabel, scoreLabel, newScoreLabel, sectionNumberTextView, decrementTextView,
             incrementTextView, statusLine;
     LinearLayout sectionPicker, sectionLabelLayout;
     ConstraintLayout top, bottom;
@@ -76,6 +78,7 @@ public class MainActivity extends AppCompatActivity {
     private String status, mobile, observer, theTrialName, detail, email, club, message, username;
     private final int serverResponseCode = 0;
     private int score;
+    private int day;
     private int scoreCount;
     private int usermode;
     private int section;
@@ -84,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
     private int loggedInUserID;
     private int numberInGroup;
     private boolean isSingleUser, trialHasChanged, canConnect, timeMode, isManualTrial,
-            isLoggedInUser;
+            isLoggedInUser, isAdminUser;
     private int ridingNumber, trialid, mode;
 
     @Override
@@ -104,6 +107,7 @@ public class MainActivity extends AppCompatActivity {
         trialDbHelper = new TrialDbHelper(this);
         timeDbHelper = new TimeDbHelper(this);
 
+//        scoreDbHelper.enterInAll(112, 1, 1);
         // TODO - add routine to check for timeMode
         saveButton = findViewById(R.id.saveButton);
         saveButton.setOnLongClickListener(new View.OnLongClickListener() {
@@ -131,7 +135,7 @@ public class MainActivity extends AppCompatActivity {
 
             // Show scores on remote server
             case R.id.help:
-                goHelp();
+                goInfo();
                 return true;
 
             // Enter andinitialise section details
@@ -170,6 +174,12 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void goInfo() {
+        Intent intent = new Intent(this, SummaryActivity.class);
+        intent.putExtra(EXTRA_MESSAGE, message);
+        startActivity(intent);
+    }
+
     @Override
     protected void onStart() {
         super.onStart();
@@ -188,9 +198,7 @@ public class MainActivity extends AppCompatActivity {
         if (mobile.equals("")) {
             return false;
         }
-        if (email.equals("")) {
-            return false;
-        }
+
 
         if (!timeMode) {
             if (section == 0) {
@@ -211,44 +219,49 @@ public class MainActivity extends AppCompatActivity {
         if (ridingNumber > 0) {
             numberLabel.setText(String.valueOf(ridingNumber));
         }
-        scoreLabel.setText(String.valueOf(score));
+        String scoreString = String.valueOf(score);
+        if (score == 10) {
+            scoreString = "X";
+        }
+        scoreLabel.setText(scoreString);
     }
 
     private void getPrefs() {
         localPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        editor = localPrefs.edit();
         clockStartTime = localPrefs.getLong("clockStartTime", 0);
         startInterval = localPrefs.getLong("startInterval", 60);
         penaltyTariff = localPrefs.getLong("penaltyTariff", 60);
         observer = localPrefs.getString("observer", "");
         mobile = localPrefs.getString("mobile", "");
-        section = localPrefs.getInt("section", 0);
-        trialid = localPrefs.getInt("trialid", 0);
-        numlaps = localPrefs.getInt("numlaps", 0);
-        numsections = localPrefs.getInt("numsections", 0);
+        section = localPrefs.getInt("section", 1);
+        trialid = localPrefs.getInt("trialid", -999);
+        numlaps = localPrefs.getInt("numlaps", 1);
+        numsections = localPrefs.getInt("numsections", 1);
         email = localPrefs.getString("email", "");
         isSingleUser = localPrefs.getBoolean("isSingleUser", false);
-        isManualTrial = localPrefs.getBoolean("manualTrial", true);
+        isManualTrial = localPrefs.getBoolean("isManualTrial", true);
+//        isAdminUser = false;
         ridingNumber = localPrefs.getInt("ridingNumber", 0);
+        day = localPrefs.getInt("dayNum", 1);
         score = localPrefs.getInt("score", 0);
         numberInGroup = localPrefs.getInt("numberInGroup", 6);
         scoreCount = localPrefs.getInt("scoreCount", 0);
-        theTrialName = localPrefs.getString("trialName", "");
+        theTrialName = localPrefs.getString("trialName", "My Trial");
         club = localPrefs.getString("club", "None selected");
-        trialHasChanged = localPrefs.getBoolean("", true);
         mode = localPrefs.getInt("mode", 0);
         usermode = Integer.valueOf(localPrefs.getString("usermode", "0"));
         timeMode = localPrefs.getBoolean("timeMode", false);
         isLoggedInUser = localPrefs.getBoolean("isLoggedInUser", false);
         loggedInUserID = localPrefs.getInt("loggedInUserID", 0);
         username = localPrefs.getString("username", "");
+
         if (loggedInUserID == 0) {
-            SharedPreferences.Editor editor = localPrefs.edit();
             editor.putInt("loggedInUserID", 0);
             editor.putBoolean("isLoggedInUser", false);
-            editor.apply();
         }
+        editor.apply();
     }
-
     void initialUISetup() {
         // Initialise UI fields
         numberLabel = findViewById(R.id.numberLabel);
@@ -309,7 +322,8 @@ public class MainActivity extends AppCompatActivity {
 
         } else {
             sectionLabelLayout.setVisibility(View.GONE);
-            status = theTrialName + " - Observer: " + observer + " - Section: " + section;
+            status = theTrialName + " - Observer: " + observer + " - Day: " + day + " - " +
+                    "Section: " + section;
             statusLine.setText(status);
             saveButton.setText(R.string.save);
             scoreLabel.setVisibility(View.VISIBLE);
@@ -381,9 +395,9 @@ public class MainActivity extends AppCompatActivity {
         } else {
             // Otherwise enter scores
             int riderNumber = Integer.parseInt(rider);
-            int scoreValue = Integer.parseInt(score);
+//            int scoreValue = Integer.parseInt(score);
 
-            if (score.equals("10")) {
+            if (score.equals("X")) {
                 score = "x";
             }
             // Update prefs for single rider
@@ -391,10 +405,69 @@ public class MainActivity extends AppCompatActivity {
             editor.putInt("ridingNumber", riderNumber);
             editor.putString("riderText", rider);
             editor.apply();
+            if (!isManualTrial) {
+                updateScore(riderNumber, score, day);
+                scoreCount++;
+                clearScore();
+            } else {
+                saveManualScore(riderNumber, score, day);
+                clearScore();
+            }
+        }
+    }
 
-            insertScore(riderNumber, score);
-            scoreCount++;
-            clearScore();
+    private void saveManualScore(int rider, String score, int day) {
+//        Log.i(TAG, "saveManualScore: ");
+        ToneGenerator toneGen1 = new ToneGenerator(AudioManager.STREAM_MUSIC, ToneGenerator.MAX_VOLUME);
+
+        // Check number of laps completed
+        SQLiteDatabase db = scoreDbHelper.getWritableDatabase();
+        int lap = 1 + scoreDbHelper.getRiderLap(rider, section, trialid, day);
+
+        if (lap > numlaps) {
+            toneGen1.startTone(ToneGenerator.TONE_CDMA_ALERT_CALL_GUARD, 150);
+            Toast.makeText(this, "Already completed " + numlaps + " laps", Toast.LENGTH_LONG).show();
+        } else {
+            String query =
+                    "INSERT INTO scores ('lap', 'rider', 'score', 'created', 'updated', 'trialid', " +
+                            "'section', " +
+                            "'sync') " +
+                            "VALUES(" + lap + " , " + rider + "," + score + "," +
+                            " DATETIME('now'), " +
+                            " DATETIME('now'), " + trialid + ", " + section + ", -1) ";
+            Log.i(TAG, "Query: " + query);
+            db.execSQL(query);
+
+            playSoundFile(R.raw.ting);
+            Toast.makeText(this, "Score saved", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void updateScore(int rider, String score, int day) {
+
+        ToneGenerator toneGen1 = new ToneGenerator(AudioManager.STREAM_MUSIC, ToneGenerator.MAX_VOLUME);
+
+        // Check number of laps completed
+        SQLiteDatabase db = scoreDbHelper.getWritableDatabase();
+        int lap = 1 + scoreDbHelper.getRiderLap(rider, section, trialid, day);
+
+        if (lap > numlaps) {
+            toneGen1.startTone(ToneGenerator.TONE_CDMA_ALERT_CALL_GUARD, 150);
+            Toast.makeText(this, "Already completed " + numlaps + " laps", Toast.LENGTH_LONG).show();
+        } else {
+            String query =
+                    "UPDATE scores SET score = '" + score + "', sync = -1, updated = DATETIME" +
+                            " ('now'), " +
+                            " observer = '" + observer +
+                            "' WHERE trialid = " + trialid +
+                            " AND section =  " + section +
+                            " AND day = " + day +
+                            " AND lap = " + lap +
+                            " AND rider = " + rider;
+            db.execSQL(query);
+
+            playSoundFile(R.raw.ting);
+            Toast.makeText(this, "Score saved", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -403,7 +476,7 @@ public class MainActivity extends AppCompatActivity {
         // Check for numberof completed laps
         // Gets the database in write mode
         SQLiteDatabase db = scoreDbHelper.getWritableDatabase();
-        int lap = 1 + scoreDbHelper.getRiderLap(rider, section, trialid);
+        int lap = 1 + scoreDbHelper.getRiderLap(rider, section, trialid, day);
         if (lap > numlaps) {
             toneGen1.startTone(ToneGenerator.TONE_CDMA_ALERT_CALL_GUARD, 150);
             Toast.makeText(this, "Already completed " + numlaps + " laps", Toast.LENGTH_LONG).show();
@@ -423,7 +496,7 @@ public class MainActivity extends AppCompatActivity {
             db.insert(ScoreContract.ScoreEntry.TABLE_NAME, null, values);
             //   toneGen1.startTone(ToneGenerator.TONE_CDMA_CONFIRM, ToneGenerator.MAX_VOLUME);
 
-            Log.i("Note", "trialid: " + trialid);
+//            Log.i("Note", "trialid: " + trialid);
             // Confirm committed with sound
             playSoundFile(R.raw.ting);
             Toast.makeText(this, "Score saved", Toast.LENGTH_SHORT).show();
@@ -491,7 +564,11 @@ public class MainActivity extends AppCompatActivity {
                     score++;
                 break;
         }
-        scoreLabel.setText(valueOf(score));
+        String scoreString = valueOf(score);
+        if (score == 10) {
+            scoreString = "X";
+        }
+        scoreLabel.setText(scoreString);
         SharedPreferences.Editor editor = localPrefs.edit();
         editor.putInt("score", score);
         editor.apply();
@@ -526,7 +603,7 @@ public class MainActivity extends AppCompatActivity {
 
     // Time utility methods
     private void saveTime(View.OnLongClickListener view) {
-        Log.i("Note", "Saving finish time");
+//        Log.i("Note", "Saving finish time");
 
         ToneGenerator toneGen1 = new ToneGenerator(AudioManager.STREAM_MUSIC, ToneGenerator.MAX_VOLUME);
         // Get String values for rider and scoreLabel

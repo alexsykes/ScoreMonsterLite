@@ -158,7 +158,7 @@ public class TimeListActivity extends AppCompatActivity {
             long time = date.getTime();
             String ts = String.valueOf(time);
             filename = "data_" + ts + ".csv";
-            String sendMailURL = "https://www.trialmonster.uk/android/sendMailWithFile.php?id=" + ts + "&trialid=" + trialid + "&email=" + email;
+            String sendMailURL = "https://android.trialmonster.uk/sendMailWithFile.php?id=" + ts + "&trialid=" + trialid + "&email=" + email;
 
             Log.i("Monitor", sendMailURL);
             processCSV(sendMailURL);

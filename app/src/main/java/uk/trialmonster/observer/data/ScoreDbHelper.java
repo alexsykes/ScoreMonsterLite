@@ -1,9 +1,12 @@
 package uk.trialmonster.observer.data;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import org.json.JSONArray;
 
@@ -13,10 +16,12 @@ import java.util.HashMap;
 public class ScoreDbHelper extends SQLiteOpenHelper {
     private static final int SYNCED = 0;
     private static final int NOT_SYNCED = -1;
+    SharedPreferences localPrefs;
     /**
      * Name of the database file
      */
     private static final String DATABASE_NAME = "monster.db";
+    private static final String TAG = "Info";
     /**
      * Database version. If you change the database schema, you must increment the database version.
      */
@@ -32,10 +37,12 @@ public class ScoreDbHelper extends SQLiteOpenHelper {
     }
 
     // Get Score Details
+    @SuppressLint("Range")
     public ArrayList<HashMap<String, String>> getScoreList(int trialid) {
         SQLiteDatabase db = this.getWritableDatabase();
         ArrayList<HashMap<String, String>> scoreList = new ArrayList<>();
-       String query = "SELECT * FROM scores WHERE trialid = " + trialid + " ORDER BY _id DESC";
+        String query = "SELECT * FROM scores WHERE trialid = " + trialid + " AND score NOT NULL " +
+                "ORDER BY updated DESC";
 //       Log.i("Query", query);
         //  String query = "SELECT * FROM scores  ORDER BY _id DESC";
         Cursor cursor = db.rawQuery(query, null);
@@ -58,6 +65,7 @@ public class ScoreDbHelper extends SQLiteOpenHelper {
 
     // Used in RecyclerView Score List
 
+    @SuppressLint("Range")
     public ArrayList getScores() {
         String section, rider, lap, score, _id, observer, created, sync;
 
@@ -82,6 +90,7 @@ public class ScoreDbHelper extends SQLiteOpenHelper {
             theScores.add(theScore);
         }
         cursor.close();
+        db.close();
         return theScores;
     }
 
@@ -89,6 +98,7 @@ public class ScoreDbHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         String query  = "DELETE FROM scores";
         db.execSQL(query);
+        db.close();
     }
 
     // Used in Score List
@@ -98,6 +108,7 @@ public class ScoreDbHelper extends SQLiteOpenHelper {
      *
      * @return ArrayList of summary data
      */
+    @SuppressLint("Range")
     public ArrayList<HashMap<String, String>> getRidersSummaryScores() {
         SQLiteDatabase db = this.getWritableDatabase();
         ArrayList<HashMap<String, String>> scoreList = new ArrayList<>();
@@ -114,20 +125,22 @@ public class ScoreDbHelper extends SQLiteOpenHelper {
             scoreList.add(scores);
         }
         cursor.close();
-        // db.close();
+        db.close();
         return scoreList;
     }
+
 
     // method to count lap number for current rider
 
     public int getRiderLap(int rider, int section, int trialid) {
         SQLiteDatabase db = this.getReadableDatabase();
-        String query = "SELECT score AS numLaps FROM scores WHERE rider = " + rider + " AND section = " + section + " AND trialid = " + trialid;
+        String query =
+                "SELECT score AS numLaps FROM scores WHERE score IS NOT NULL AND rider = " + rider + " AND section = " + section + " AND trialid = " + trialid;
         Cursor cursor = db.rawQuery(query, null);
         int numLaps = cursor.getCount();
         cursor.close();
 
-        // db.close();
+        db.close();
         return numLaps;
     }
 
@@ -136,14 +149,34 @@ public class ScoreDbHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
         String query = "UPDATE scores SET sync = " + SYNCED + " WHERE sync = " + NOT_SYNCED + " AND trialid = " + trialid;
         db.execSQL(query);
-//        db.close();
+        db.close();
     }
 
     public Cursor getAll(int id) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor result = db.rawQuery("SELECT  * FROM scores WHERE  trialid=" + id, new String[]{});
-//        db.close();
+        db.close();
         return result;
+    }
+
+    @SuppressLint("Range")
+    public ArrayList<HashMap<String, String>> getLapScores(int section, int trialid) {
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        ArrayList<HashMap<String, String>> scoreList = new ArrayList<>();
+//        Cursor result = db.rawQuery("SELECT rider, GROUP_CONCAT(score,'') AS laps FROM scores  WHERE trialid = " + trialid + " AND section = " + section + " AND score != '.' GROUP BY rider ORDER BY rider, lap", new String[]{});
+        Cursor result = db.rawQuery("SELECT rider, GROUP_CONCAT(score,'') AS laps FROM scores  WHERE trialid = " + trialid + " AND section = " + section + "  GROUP BY rider ORDER BY rider, lap", new String[]{});
+
+        while (result.moveToNext()) {
+            HashMap<String, String> scores = new HashMap<>();
+            scores.put("rider", result.getString(result.getColumnIndex("rider")));
+            scores.put("laps", result.getString(result.getColumnIndex("laps")));
+            scoreList.add(scores);
+        }
+
+        result.close();
+        db.close();
+        return scoreList;
     }
 
     public Cursor getScoresForEmail(int trialid) {
@@ -152,42 +185,33 @@ public class ScoreDbHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         ArrayList<ScoreData> theScores = new ArrayList<>();
 //        SQLiteDatabase db = this.getReadableDatabase();
-        String sql = "SELECT rider, section, GROUP_CONCAT(score, '') AS scores FROM " +
+        String sql = "SELECT rider, section, GROUP_CONCAT(score, '') AS scores, day FROM " +
                 "(SELECT " +
                 "score, " +
-                "section, rider, lap FROM scores WHERE trialid = " + trialid +
+                "section, rider, lap, day FROM scores WHERE trialid = " + trialid +
                 " ORDER BY rider, " +
                 "section, " +
-                "lap) GROUP BY  section, rider ORDER BY lap ASC";
+                "day, lap) GROUP BY  section, rider, day ORDER BY section, rider, lap ASC";
         Cursor cursor = db.rawQuery(sql, new String[]{});
-//        while (cursor.moveToNext()) {
-//            section = cursor.getString(1);
-//            rider = cursor.getString(0);
-//            scores = cursor.getString(2);
-//
-//            ScoreData theScore = new ScoreData(section, rider, scores);
-//            theScores.add(theScore);
-//        }
-//        cursor.close();
         return cursor;
     }
 
-    public void update(String scoreid, String score) {
+//    public void update(String scoreid, String score) {
+//
+//        SQLiteDatabase db = this.getReadableDatabase();
+//
+//        String query = "UPDATE scores SET score = '" + score + "', edited = 1, updated = DATETIME" +
+//                "('now'), sync = " + NOT_SYNCED + " WHERE _id = " + scoreid;
+//        db.execSQL(query);
+//        db.close();
+//    }
 
-        SQLiteDatabase db = this.getReadableDatabase();
-        // String query = "UPDATE scores SET score = " + score + ", edited = 1, updated = DATETIME('now','localtime'), sync = " + NOT_SYNCED + " WHERE _id = " + scoreid;
-        String query = "UPDATE scores SET score = '" + score + "', edited = 1, updated = DATETIME" +
-                "('now'), sync = " + NOT_SYNCED + " WHERE _id = " + scoreid;
-        db.execSQL(query);
-        // db.close();
-    }
 
-
-    // Lapse times by setting trialid to negative of original trialid
-    public void lapseScores(int trialid) {
+    public void lapseScores(int trialid, int section, int dayNum) {
         SQLiteDatabase db = this.getWritableDatabase();
         int newid = -trialid;
-        String query = "UPDATE scores SET trialid = " + newid + " WHERE trialid = " + trialid;
+        String query = "UPDATE scores SET trialid = " + newid + " WHERE trialid = " + trialid +
+                " AND DAY = " + dayNum + " AND section = " + section;
 //        Log.i("Query", query);
         // Execute the SQL statement
         db.execSQL(query);
@@ -204,6 +228,7 @@ public class ScoreDbHelper extends SQLiteOpenHelper {
 
     }
 
+    @SuppressLint("Range")
     public ArrayList<HashMap<String, String>> getScoreListForUpload(int trialid) {
         SQLiteDatabase db = this.getWritableDatabase();
         ArrayList<HashMap<String, String>> scoreList = new ArrayList<>();
@@ -229,16 +254,16 @@ public class ScoreDbHelper extends SQLiteOpenHelper {
             scoreList.add(scores);
         }
         cursor.close();
-//        db.close();
+        db.close();
         return scoreList;
     }
 
+    @SuppressLint("Range")
     public JSONArray getTrialData(int trialid) {
         SQLiteDatabase db = this.getWritableDatabase();
         JSONArray trialDetail = new JSONArray();
         String query = "SELECT * FROM trials WHERE trialid = " + trialid ;
         Cursor cursor = db.rawQuery(query, null);
-        int colindex = Integer.parseInt(TrialContract.TrialEntry._ID);
         String id = cursor.getString(cursor.getColumnIndex(TrialContract.TrialEntry._ID));
         String name = cursor.getString(cursor.getColumnIndex(TrialContract.TrialEntry.COLUMN_TRIAL_NAME));
 //        trialDetail.add(cursor.getString(cursor.getColumnIndex(ScoreEntry._ID));
@@ -246,6 +271,312 @@ public class ScoreDbHelper extends SQLiteOpenHelper {
         trialDetail.put(name);
 
         cursor.close();
+        db.close();
         return trialDetail;
+    }
+
+    @SuppressLint("Range")
+    public ArrayList<HashMap<String, String>> getNewScoreListForUpload(int trialid) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ArrayList<HashMap<String, String>> scoreList = new ArrayList<>();
+        String query = "SELECT * FROM scores WHERE trialid = " + trialid + " AND sync = -1 ORDER " +
+                "BY _id DESC";
+
+        Cursor cursor = db.rawQuery(query, null);
+        while (cursor.moveToNext()) {
+            HashMap<String, String> scores = new HashMap<>();
+            scores.put("id", cursor.getString(cursor.getColumnIndex(ScoreContract.ScoreEntry._ID)));
+            scores.put("score", cursor.getString(cursor.getColumnIndex(ScoreContract.ScoreEntry.COLUMN_SCORE_SCORE)));
+            scores.put("updated",
+                    cursor.getString(cursor.getColumnIndex(ScoreContract.ScoreEntry.COLUMN_SCORE_UPDATED)));
+            scores.put("created",
+                    cursor.getString(cursor.getColumnIndex(ScoreContract.ScoreEntry.COLUMN_SCORE_CREATED)));
+            scoreList.add(scores);
+        }
+        cursor.close();
+        db.close();
+        return scoreList;
+    }
+
+    @SuppressLint("Range")
+    public ArrayList<HashMap<String, String>> getScoreList(int trialid, int day, int section) {
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        ArrayList<HashMap<String, String>> scoreList = new ArrayList<>();
+        String query = "SELECT * FROM scores WHERE trialid = " + trialid +
+                " AND section = " + section +
+                " AND day = " + day +
+                " AND score != \".\" " +
+                " ORDER BY updated DESC";
+//        String query = "SELECT * FROM scores WHERE trialid = " + trialid +
+//                " AND section = " + section +
+//                " AND day = " + day +
+//                " AND sync = -1 " +
+//                " ORDER BY updated DESC";
+//       Log.i("Query", query);
+        //  String query = "SELECT * FROM scores  ORDER BY _id DESC";
+        Cursor cursor = db.rawQuery(query, null);
+        while (cursor.moveToNext()) {
+            HashMap<String, String> scores = new HashMap<>();
+            scores.put("id", cursor.getString(cursor.getColumnIndex(ScoreContract.ScoreEntry._ID)));
+            scores.put("rider", cursor.getString(cursor.getColumnIndex(ScoreContract.ScoreEntry.COLUMN_SCORE_RIDER)));
+            scores.put("lap", cursor.getString(cursor.getColumnIndex(ScoreContract.ScoreEntry.COLUMN_SCORE_LAP)));
+            scores.put("score", cursor.getString(cursor.getColumnIndex(ScoreContract.ScoreEntry.COLUMN_SCORE_SCORE)));
+            scores.put("section", cursor.getString(cursor.getColumnIndex(ScoreContract.ScoreEntry.COLUMN_SCORE_SECTION)));
+            scores.put("trialid", cursor.getString(cursor.getColumnIndex(ScoreContract.ScoreEntry.COLUMN_SCORE_TRIALID)));
+            scores.put("sync", cursor.getString(cursor.getColumnIndex(ScoreContract.ScoreEntry.COLUMN_SCORE_SYNC)));
+            scores.put("edited", cursor.getString(cursor.getColumnIndex(ScoreContract.ScoreEntry.COLUMN_SCORE_EDITED)));
+            scores.put("day",
+                    cursor.getString(cursor.getColumnIndex(ScoreContract.ScoreEntry.COLUMN_SCORE_DAY)));
+            scoreList.add(scores);
+        }
+        cursor.close();
+        db.close();
+        return scoreList;
+    }
+
+    @SuppressLint("Range")
+    public ArrayList<HashMap<String, String>> getNewScoreListForUpload(int trialid, int section, int day) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ArrayList<HashMap<String, String>> scoreList = new ArrayList<>();
+        String query = "SELECT * FROM scores WHERE trialid = " + trialid +
+                " AND day = " + day +
+                " AND section = " + section +
+                " ORDER BY _id ASC";
+
+        Cursor cursor = db.rawQuery(query, null);
+        while (cursor.moveToNext()) {
+            HashMap<String, String> scores = new HashMap<>();
+            scores.put("id", cursor.getString(cursor.getColumnIndex(ScoreContract.ScoreEntry._ID)));
+            scores.put("score", cursor.getString(cursor.getColumnIndex(ScoreContract.ScoreEntry.COLUMN_SCORE_SCORE)));
+            scores.put("updated",
+                    cursor.getString(cursor.getColumnIndex(ScoreContract.ScoreEntry.COLUMN_SCORE_UPDATED)));
+            scores.put("created",
+                    cursor.getString(cursor.getColumnIndex(ScoreContract.ScoreEntry.COLUMN_SCORE_CREATED)));
+            scoreList.add(scores);
+        }
+        cursor.close();
+        db.close();
+        return scoreList;
+    }
+
+    public void markAsDone(int trialid, int day, int section) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "UPDATE scores SET sync = " + SYNCED +
+                " WHERE  trialid = " + trialid +
+                " AND section = " + section +
+                " AND day = " + day;
+        db.execSQL(query);
+        db.close();
+    }
+
+    public void enterInAll(int trialid, int day, int section) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "UPDATE scores SET score  = '" + "1" +
+                "', sync = " + NOT_SYNCED + " WHERE  trialid = " + trialid +
+                " AND section = " + section +
+                " AND day = " + day;
+        db.execSQL(query);
+        db.close();
+    }
+
+    public int getRiderLap(int rider, int section, int trialid, int day) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query =
+                "SELECT score AS numLaps FROM scores WHERE score != \".\"" +
+                        " AND rider = " + rider +
+                        " AND section = " + section +
+                        " AND day = " + day +
+                        " AND trialid = " + trialid;
+        Cursor cursor = db.rawQuery(query, null);
+        int numLaps = cursor.getCount();
+        cursor.close();
+
+//        db.close();
+        return numLaps;
+    }
+
+    public void update(String scoreid, String score, String observer) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query;
+        if (score.equals("N")) {
+            query = "UPDATE scores SET score = NULL, edited = 1," +
+                    " observer = '" + observer +
+                    "', updated = DATETIME" +
+                    "('now'), sync = " + NOT_SYNCED + " WHERE _id = " + scoreid;
+        } else {
+            query = "UPDATE scores SET score = '" + score + "', edited = 1," +
+                    " observer = '" + observer +
+                    "', updated = DATETIME" +
+                    "('now'), sync = " + NOT_SYNCED + " WHERE _id = " + scoreid;
+        }
+        db.execSQL(query);
+        db.close();
+    }
+
+    public Cursor getScoresForSaving(int trialid, int section) {
+//        ArrayList<HashMap<String, String>> theScoreList = new ArrayList<>();
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String sql = "SELECT rider, sectionscores FROM  (SELECT rider, " +
+                "section, " +
+                "GROUP_CONCAT(score, '') AS sectionscores FROM scores " +
+                "WHERE trialid = " + trialid + " AND section = " + section +
+                " GROUP BY rider ORDER by rider, " +
+                "lap) " +
+                "GROUP BY rider";
+
+        Cursor cursor = db.rawQuery(sql, null);
+
+//        if (cursor.moveToFirst()) {
+//            do {
+//                HashMap<String, String> scores = new HashMap<>();
+//                scores.put("rider", cursor.getString(0));
+//                scores.put("scores", cursor.getString(1));
+////                theScoreList.add(scores);
+//            } while (cursor.moveToNext());
+//        }
+//        cursor.close();
+        return cursor;
+    }
+
+    public Cursor getScoreDataForSaving(int trialid, int section) {
+//        ArrayList<HashMap<String, String>> theScoreList = new ArrayList<>();
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String sql = "SELECT rider, score FROM scores " +
+                "WHERE trialid = " + trialid +
+                " AND section = " + section +
+                "  AND score != '.'";
+
+        Cursor cursor = db.rawQuery(sql, null);
+        return cursor;
+    }
+
+
+    public void deleteAllTrials() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "DELETE FROM trials";
+        Log.i("Query", query);
+        // Execute the SQL statement
+        db.execSQL(query);
+//        db.close();
+    }
+
+    public ArrayList<HashMap<String, String>> dumpTrialScores(int trialid) {
+        ArrayList<HashMap<String, String>> theScoreList = new ArrayList<>();
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String sql = "SELECT rider, GROUP_CONCAT(sectionscores, '|') FROM  (SELECT rider, " +
+                "section, " +
+                "GROUP_CONCAT(score, '') AS sectionscores FROM scores " +
+                "WHERE trialid = " + trialid + " GROUP BY rider, section ORDER by rider, section, " +
+                "lap) " +
+                "GROUP BY rider";
+
+        Cursor cursor = db.rawQuery(sql, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                HashMap<String, String> scores = new HashMap<>();
+                scores.put("rider", cursor.getString(0));
+                scores.put("scores", cursor.getString(1));
+                theScoreList.add(scores);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        return theScoreList;
+    }
+
+    public void deleteScore(String idToDelete, int numlaps, String observer) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+//      Get entry details
+        int rider, section, day, trialid, lap;
+        String getScoreIds =
+                "SELECT rider, trialid, day, section, lap FROM scores WHERE _id = " + idToDelete;
+        Cursor theEntry = db.rawQuery(getScoreIds, null);
+        if (theEntry.moveToFirst()) {
+            rider = theEntry.getInt(0);
+            trialid = theEntry.getInt(1);
+            day = theEntry.getInt(2);
+            section = theEntry.getInt(3);
+            lap = theEntry.getInt(4);
+
+//          Shuffle later laps into nulled score
+            for (int lapToMove = lap; lapToMove < numlaps; lapToMove++) {
+                Log.i(TAG, "LapToMove: " + lapToMove);
+                int source = lapToMove + 1;
+                String query = "UPDATE scores SET updated = DATETIME('now'), edited = 1, sync = " +
+                        "-1, score = (SELECT score FROM scores WHERE trialid" +
+                        " = " + trialid + " AND rider = " + rider + " AND section = " + section +
+                        " AND lap = " + source +
+                        ") WHERE trialid = " + trialid + " AND rider = " + rider + " AND section " +
+                        "= " + section + " AND lap = " + lapToMove;
+
+                db.execSQL(query);
+//                Log.i(TAG, "query: " + query);
+            }
+
+//          then delete removed score
+            String fillLastLapQuery =
+                    "UPDATE scores SET updated = DATETIME('now'), edited = 1, sync = -1 , score =" +
+                            " " +
+                            "'.'" + " " +
+                            "WHERE trialid" +
+                            " = " + trialid + " AND rider = " + rider + " AND section = " + section +
+                            " AND lap = " + numlaps;
+            Log.i(TAG, "query: " + fillLastLapQuery);
+            db.execSQL(fillLastLapQuery);
+        }
+        theEntry.close();
+        db.close();
+    }
+
+    public void destroyTrialScores(int trialid, int dayNum) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        String destroyTrialScoresQuery = "DELETE FROM scores WHERE trialid = " + trialid + " AND day = " + dayNum;
+        db.execSQL(destroyTrialScoresQuery);
+        db.close();
+    }
+
+    public ArrayList<HashMap<String, String>> getManualLapScores(int section, int trialid) {
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        ArrayList<HashMap<String, String>> scoreList = new ArrayList<>();
+        Cursor result = db.rawQuery("SELECT rider, GROUP_CONCAT(score,'') AS laps FROM scores  WHERE trialid = " + trialid + " AND section = " + section + "  GROUP BY rider ORDER BY rider, lap", new String[]{});
+
+        while (result.moveToNext()) {
+            HashMap<String, String> scores = new HashMap<>();
+            scores.put("rider", result.getString(result.getColumnIndexOrThrow("rider")));
+            scores.put("laps", result.getString(result.getColumnIndexOrThrow("laps")));
+            scoreList.add(scores);
+        }
+
+        result.close();
+        db.close();
+        return scoreList;
+    }
+
+    public ArrayList<HashMap<String, String>> getManualLapScores(int trialid, int day, int section) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        ArrayList<HashMap<String, String>> scoreList = new ArrayList<>();
+        Cursor result = db.rawQuery("SELECT rider, GROUP_CONCAT(score,'') AS laps FROM scores  " +
+                "WHERE trialid = " + trialid + " AND section = " + section + " AND day = " + day +
+                "  GROUP BY rider ORDER BY rider, lap", new String[]{});
+
+        while (result.moveToNext()) {
+            HashMap<String, String> scores = new HashMap<>();
+            scores.put("rider", result.getString(result.getColumnIndexOrThrow("rider")));
+            scores.put("laps", result.getString(result.getColumnIndexOrThrow("laps")));
+            scoreList.add(scores);
+        }
+
+        result.close();
+        db.close();
+        return scoreList;
     }
 }

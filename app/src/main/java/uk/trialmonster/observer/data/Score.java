@@ -13,9 +13,12 @@ public class Score {
     String created;
     String updated;
     String edited;
+    String day;
     String scoredata;
 
-    public Score(String section, String score,  String rider, String lap, String trialid, String count, String observer, String created, String updated, String edited, String scoredata) {
+    public Score(String section, String score, String rider, String lap, String trialid,
+                 String count, String observer, String created, String updated, String edited,
+                 String scoredata, String day) {
         this.section = section;
         this.score = score;
         this.rider = rider;
@@ -24,13 +27,16 @@ public class Score {
         this.count = count;
         this.observer = observer;
         this.created = created;
+        this.day = day;
         this.updated = updated;
         this.edited = edited;
         this.scoredata = scoredata;
         this.sync = "-1";
     }
 
-    public Score(String section, String score,  String rider, String lap, String trialid, String count, String observer, String created, String updated, String edited, String scoredata, String sync) {
+    public Score(String section, String score, String rider, String lap, String trialid,
+                 String count, String observer, String created, String updated, String edited,
+                 String scoredata, String sync, String day) {
         this.section = section;
         this.score = score;
         this.rider = rider;
@@ -43,6 +49,7 @@ public class Score {
         this.edited = edited;
         this.scoredata = scoredata;
         this.sync = sync;
+        this.day = day;
     }
 
     public Score(String section, String score, String rider, String lap, int _id, String observer) {
@@ -127,5 +134,13 @@ public class Score {
 
     public String getSync() {
         return sync;
+    }
+
+    public String getDay() {
+        return day;
+    }
+
+    public void setDay(String day) {
+        this.day = day;
     }
 }

@@ -1,6 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <network-security-config>
-    <domain-config cleartextTrafficPermitted="true">
-        <domain includeSubdomains="true">trialmonster.uk</domain>
-    </domain-config>
+    <!--    <domain-config cleartextTrafficPermitted="true">-->
+    <!--        <domain includeSubdomains="false">trialmonster.uk</domain>-->
+    <!--    </domain-config>-->
+    <!--   <domain-config>
+            <domain includeSubdomains="false">android.trialmonster.uk</domain>
+            <trust-anchors>
+                <certificates src="@raw/android" />
+            </trust-anchors>
+        </domain-config>-->
+    <!--    <domain-config>
+            <domain includeSubdomains="false">trialmonster.uk</domain>
+            <trust-anchors>
+                <certificates src="@raw/monster" />
+            </trust-anchors>
+        </domain-config>-->
+    <!--    <domain-config cleartextTrafficPermitted="true">
+            <domain includeSubdomains="true">trialmonster.uk</domain>
+        </domain-config>-->
 </network-security-config>

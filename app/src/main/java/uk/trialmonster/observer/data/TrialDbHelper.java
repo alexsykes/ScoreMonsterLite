@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -52,13 +53,14 @@ public class TrialDbHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         String query = "DELETE FROM trials";
         db.execSQL(query);
+        db.close();
     }
 
     public ArrayList<HashMap<String, String>> getPrefsOptions(int loggedInUserID) {
         SQLiteDatabase db = this.getWritableDatabase();
         ArrayList<HashMap<String, String>> optionList = new ArrayList<>();
         String query = "SELECT group_concat(_id, ','),group_concat(name, ',')  FROM trials " +
-                "WHERE created_by = " + loggedInUserID + " ORDER BY date ASC";
+                "WHERE created_by = " + loggedInUserID + " AND date > DATE('now')  ORDER BY date ASC";
 //        Log.i("Query", query);
         Cursor cursor = db.rawQuery(query, null);
         while (cursor.moveToNext()) {
@@ -69,6 +71,24 @@ public class TrialDbHelper extends SQLiteOpenHelper {
         }
         cursor.close();
         return optionList;
+    }
+
+    public Cursor getTrialOptions(int loggedInUserID) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ArrayList<HashMap<String, String>> optionList = new ArrayList<>();
+
+//        String query = "SELECT group_concat(_id, ','),group_concat(name, ',')  FROM trials " +
+//                "WHERE created_by = " + loggedInUserID + "  ORDER BY date ASC";
+
+        String query = "SELECT _id, name  FROM trials " +
+                "WHERE created_by = " + loggedInUserID + "  ORDER BY date ASC";
+
+        Log.i("Info", query);
+        Cursor cursor = db.rawQuery(query, null);
+        int nu = cursor.getCount();
+        Log.i("Info", "Cursor count: " + nu);
+//        cursor.close();
+        return cursor;
     }
 
     public ArrayList<HashMap<String, String>> getTrialList(int loggedInUserID) {
@@ -89,12 +109,31 @@ public class TrialDbHelper extends SQLiteOpenHelper {
             trial.put("mode", cursor.getString(cursor.getColumnIndex(TrialContract.TrialEntry.COLUMN_TRIAL_MODE)));
             trial.put("email", cursor.getString(cursor.getColumnIndex(TrialContract.TrialEntry.COLUMN_TRIAL_EMAIL)));
             trial.put("club", cursor.getString(cursor.getColumnIndex(TrialContract.TrialEntry.COLUMN_TRIAL_CLUB)));
+            trial.put("numdays",
+                    cursor.getString(cursor.getColumnIndex(TrialContract.TrialEntry.COLUMN_TRIAL_NUMDAYS)));
             trialList.add(trial);
         }
         cursor.close();
         return trialList;
     }
 
+    public ArrayList<HashMap<String, String>> getUserTrialList(int userID) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ArrayList<HashMap<String, String>> trialList = new ArrayList<>();
+
+        String query = "SELECT _id, name FROM trials WHERE created_by = " + userID;
+        Cursor cursor = db.rawQuery(query, null);
+
+        while (cursor.moveToNext()) {
+            HashMap<String, String> trial = new HashMap<>();
+            trial.put("id", cursor.getString(cursor.getColumnIndex(TrialContract.TrialEntry._ID)));
+            trial.put("name", cursor.getString(cursor.getColumnIndex(TrialContract.TrialEntry.COLUMN_TRIAL_NAME)));
+            trialList.add(trial);
+        }
+        cursor.close();
+        db.close();
+        return trialList;
+    }
     public ArrayList<HashMap<String, String>> getTrialData(int trialid) {
         SQLiteDatabase db = this.getWritableDatabase();
         ArrayList<HashMap<String, String>> trialData = new ArrayList<>();
@@ -114,9 +153,23 @@ public class TrialDbHelper extends SQLiteOpenHelper {
             trial.put("email", cursor.getString(cursor.getColumnIndex(TrialContract.TrialEntry.COLUMN_TRIAL_EMAIL)));
             trial.put("club", cursor.getString(cursor.getColumnIndex(TrialContract.TrialEntry.COLUMN_TRIAL_CLUB)));
             trial.put("startInterval", cursor.getString(cursor.getColumnIndex(TrialContract.TrialEntry.COLUMN_TRIAL_INTERVAL)));
+            trial.put("numdays",
+                    cursor.getString(cursor.getColumnIndex(TrialContract.TrialEntry.COLUMN_TRIAL_NUMDAYS)));
             trialData.add(trial);
         }
         cursor.close();
+        db.close();
         return trialData;
+    }
+
+    public void restoreScores(int trialid) {
+        Log.i("Info", "restoresScores: " + trialid);
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        String query = "UPDATE scores SET sync = -1 WHERE trialid = " + trialid;
+
+        Log.i("Info", "SQL: " + query);
+        db.execSQL(query);
+        db.close();
     }
 }

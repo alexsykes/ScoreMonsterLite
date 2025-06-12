@@ -14,4 +14,9 @@
         android:title="@string/email_data"
         android:contentDescription="@string/email_data"
         app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/saveAsFileButton"
+        android:icon="@drawable/ic_baseline_save_48"
+        android:title="@string/saveButton"
+        app:showAsAction="ifRoom" />
 </menu>
