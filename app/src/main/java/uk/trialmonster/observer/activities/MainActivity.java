@@ -149,7 +149,6 @@ public class MainActivity extends AppCompatActivity {
                 goSetup();
                 return true;
 
-
             // Sync scores with remote db
             // Shows scores stored on device
             case R.id.scoresheet:
