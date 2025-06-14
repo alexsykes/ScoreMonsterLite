@@ -129,8 +129,8 @@
         android:id="@+id/bottom"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="4dp"
-        app:layout_constraintBottom_toTopOf="@id/saveButton"
+        android:layout_margin="104dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent" />
@@ -138,11 +138,11 @@
     <Button
         android:id="@+id/saveButton"
         style="@style/ScoreButton"
-        android:layout_marginBottom="4dp"
+        android:layout_marginBottom="48dp"
         android:text="@string/save"
         android:textColor="@color/colorButtonText"
         android:textSize="24sp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/bottom"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
