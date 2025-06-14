@@ -33,4 +33,13 @@
         <item>reply</item>
         <item>reply_all</item>
     </string-array>
+
+    <string-array name="pads">
+        <item>Traditional</item>
+        <item>Dab</item>
+    </string-array>
+    <string-array name="padIndex">
+        <item>trad</item>
+        <item>pad</item>
+    </string-array>
 </resources>

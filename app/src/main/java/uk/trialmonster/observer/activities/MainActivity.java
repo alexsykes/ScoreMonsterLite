@@ -25,9 +25,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.fragment.app.Fragment;
 import androidx.preference.PreferenceManager;
 
 import java.text.SimpleDateFormat;
@@ -37,6 +39,7 @@ import java.util.HashMap;
 
 import uk.trialmonster.observer.MainViewModel;
 import uk.trialmonster.observer.NumberPadFragment;
+import uk.trialmonster.observer.PadFragment;
 import uk.trialmonster.observer.R;
 import uk.trialmonster.observer.TouchFragment;
 import uk.trialmonster.observer.data.ScoreContract;
@@ -59,13 +62,14 @@ public class MainActivity extends AppCompatActivity {
     // UI Components
     TouchFragment touchFragment;
     NumberPadFragment numberPadFragment;
+    Fragment padFragment;
     Button saveButton;
 
     // Layout variables
     TextView numberLabel, scoreLabel, newScoreLabel, sectionNumberTextView, decrementTextView,
             incrementTextView, statusLine;
     LinearLayout sectionPicker, sectionLabelLayout;
-    ConstraintLayout top, bottom;
+    ConstraintLayout top, bottom, bottom2;
     // Utility
     ProgressDialog dialog = null;
     MediaPlayer mediaPlayer;
@@ -89,12 +93,14 @@ public class MainActivity extends AppCompatActivity {
     private boolean isSingleUser, trialHasChanged, canConnect, timeMode, isManualTrial,
             isLoggedInUser, isAdminUser;
     private int ridingNumber, trialid, mode;
+    private String scorePadType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 //        Log.i("Info", "MainACtivityNew onCreate: called");
         setContentView(R.layout.activity_main_new);
+
 
         // Add custom ActionBar
         Toolbar myToolbar = findViewById(R.id.top_toolbar);
@@ -107,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
         trialDbHelper = new TrialDbHelper(this);
         timeDbHelper = new TimeDbHelper(this);
 
-//        scoreDbHelper.enterInAll(112, 1, 1);
+
         // TODO - add routine to check for timeMode
         saveButton = findViewById(R.id.saveButton);
         saveButton.setOnLongClickListener(new View.OnLongClickListener() {
@@ -143,12 +149,6 @@ public class MainActivity extends AppCompatActivity {
                 goSetup();
                 return true;
 
-            // Show scores on remote server
-//            case R.id.email:
-//                // goShowScoresFromServer();
-//                // goShowSummaryScores();
-//                sendEmail();
-//                return true;
 
             // Sync scores with remote db
             // Shows scores stored on device
@@ -182,6 +182,12 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onStart() {
+        EdgeToEdge.enable(this);
+        View decorView = getWindow().getDecorView();
+
+        int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_FULLSCREEN;
+        decorView.setSystemUiVisibility(uiOptions);
         super.onStart();
 //        Log.i("Info", "MainActivityNew:onStart called");
         getPrefs();
@@ -214,6 +220,12 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onResume() {
+        EdgeToEdge.enable(this);
+        View decorView = getWindow().getDecorView();
+
+        int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_FULLSCREEN;
+        decorView.setSystemUiVisibility(uiOptions);
         super.onResume();
         getPrefs();
         if (ridingNumber > 0) {
@@ -255,6 +267,8 @@ public class MainActivity extends AppCompatActivity {
         isLoggedInUser = localPrefs.getBoolean("isLoggedInUser", false);
         loggedInUserID = localPrefs.getInt("loggedInUserID", 0);
         username = localPrefs.getString("username", "");
+        scorePadType = localPrefs.getString("scorePadType", "trad");
+
 
         if (loggedInUserID == 0) {
             editor.putInt("loggedInUserID", 0);
@@ -262,6 +276,7 @@ public class MainActivity extends AppCompatActivity {
         }
         editor.apply();
     }
+
     void initialUISetup() {
         // Initialise UI fields
         numberLabel = findViewById(R.id.numberLabel);
@@ -328,16 +343,43 @@ public class MainActivity extends AppCompatActivity {
             saveButton.setText(R.string.save);
             scoreLabel.setVisibility(View.VISIBLE);
 
-            if (touchFragment == null && !timeMode) {
-                touchFragment = new TouchFragment();
-                getSupportFragmentManager().beginTransaction().add(R.id.bottom, touchFragment).commit();
-            }
-        }
+//            if (touchFragment == null && !timeMode) {
+//                touchFragment = new TouchFragment();
+//                getSupportFragmentManager().beginTransaction().add(R.id.bottom, touchFragment).commit();
+//            }
+// Set up number pad
 
-        if (numberPadFragment == null) {
+            numberPadFragment = new NumberPadFragment();
+            padFragment = new PadFragment();
+            touchFragment = new TouchFragment();
+            getSupportFragmentManager().beginTransaction().add(R.id.bottom, padFragment).commit();
+            getSupportFragmentManager().beginTransaction().add(R.id.bottom, touchFragment).commit();
+
+            if(scorePadType.equals("trad")) {
+                getSupportFragmentManager().beginTransaction().replace(R.id.bottom, padFragment).commit();
+            } else {
+                getSupportFragmentManager().beginTransaction().replace(R.id.bottom, touchFragment).commit();
+            }
+
+
+//            if (numberPadFragment == null) {
             numberPadFragment = new NumberPadFragment();
             getSupportFragmentManager().beginTransaction().add(R.id.top, numberPadFragment).commit();
+//            }
+
+//            if (padFragment == null && !timeMode) {
+//                if (scorePadType.equals("pad")) {
+////                    padFragment = new PadFragment();
+//                } else {
+////                    padFragment = new TouchFragment();
+//                }
+//                getSupportFragmentManager().beginTransaction().add(R.id.bottom, padFragment).commit();
+//            }
+
+//            bottom.setVisibility(View.GONE);
+//            R.id.bottom2.setVisibility(View.GONE);
         }
+
 
         if (touchFragment != null && timeMode) {
             getSupportFragmentManager().beginTransaction().remove(touchFragment).commit();
@@ -362,6 +404,7 @@ public class MainActivity extends AppCompatActivity {
         editor.putString("sectionText", String.valueOf(section));
         editor.apply();
     }
+
     public void decrement(View v) {
         SharedPreferences.Editor editor = localPrefs.edit();
         if (section > 1) {
@@ -435,7 +478,7 @@ public class MainActivity extends AppCompatActivity {
                             "VALUES(" + lap + " , " + rider + "," + score + "," +
                             " DATETIME('now'), " +
                             " DATETIME('now'), " + trialid + ", " + section + ", -1) ";
-            Log.i(TAG, "Query: " + query);
+//            Log.i(TAG, "Query: " + query);
             db.execSQL(query);
 
             playSoundFile(R.raw.ting);
@@ -599,6 +642,54 @@ public class MainActivity extends AppCompatActivity {
             editor.putInt("section", section);
             editor.apply();
         }
+    }
+
+    public void scoreClean(View view) {
+        score = 0;
+        scoreLabel.setText("0");
+        SharedPreferences.Editor editor = localPrefs.edit();
+        editor.putInt("score", score);
+        editor.apply();
+        Log.i(TAG, "scoreClean: ");
+    }
+
+
+    public void scoreOne(View view) {
+        score = 1;
+        scoreLabel.setText("1");
+        SharedPreferences.Editor editor = localPrefs.edit();
+        editor.putInt("score", score);
+        editor.apply();
+        Log.i(TAG, "scoreOne: ");
+    }
+
+
+    public void scoreTwo(View view) {
+        score = 2;
+        scoreLabel.setText("2");
+        SharedPreferences.Editor editor = localPrefs.edit();
+        editor.putInt("score", score);
+        editor.apply();
+        Log.i(TAG, "scoreTwo: ");
+    }
+
+
+    public void scoreThree(View view) {
+        score = 3;
+        scoreLabel.setText("3");
+        SharedPreferences.Editor editor = localPrefs.edit();
+        editor.putInt("score", score);
+        editor.apply();
+        Log.i(TAG, "scoreThree: ");
+    }
+
+    public void scoreFive(View view) {
+        score = 5;
+        scoreLabel.setText("5");
+        SharedPreferences.Editor editor = localPrefs.edit();
+        editor.putInt("score", score);
+        editor.apply();
+        Log.i(TAG, "scoreFive: ");
     }
 
     // Time utility methods

@@ -95,6 +95,16 @@
             app:title="@string/number_of_sections" />
     </PreferenceCategory>
 
+    <PreferenceCategory android:title="Score pad layout">
+        <DropDownPreference
+            android:key="scorePadType"
+            android:title=""
+            android:entries="@array/pads"
+            app:useSimpleSummaryProvider="true"
+            android:entryValues="@array/padIndex"/>
+
+    </PreferenceCategory>
+
     <PreferenceCategory android:title="Admin">
         <!--        <SwitchPreference
                     android:contentDescription="@string/advanced__settings"
@@ -195,18 +205,18 @@
             android:key="recoveryModeCategory"
             android:title="@string/recovery_mode">
             >
-        <SwitchPreference
-            android:contentDescription="@string/restore_scores"
-            android:defaultValue="false"
-            android:key="restore_trial_scores"
-            android:summary="@string/restore_scores_for_this_trial"
-            android:title="@string/restore_scores" />
-        <SwitchPreference
-            android:contentDescription="@string/dump_scores"
-            android:defaultValue="false"
-            android:key="dump_trial_scores"
-            android:summary="@string/dump_scores_for_this_trial"
-            android:title="@string/dump_scores" />
+            <SwitchPreference
+                android:contentDescription="@string/restore_scores"
+                android:defaultValue="false"
+                android:key="restore_trial_scores"
+                android:summary="@string/restore_scores_for_this_trial"
+                android:title="@string/restore_scores" />
+            <SwitchPreference
+                android:contentDescription="@string/dump_scores"
+                android:defaultValue="false"
+                android:key="dump_trial_scores"
+                android:summary="@string/dump_scores_for_this_trial"
+                android:title="@string/dump_scores" />
         </PreferenceCategory>
         <SwitchPreference
             android:contentDescription="@string/restart_clock"
