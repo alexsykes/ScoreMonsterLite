@@ -49,6 +49,7 @@ import uk.trialmonster.observer.data.TimeDbHelper;
 import uk.trialmonster.observer.data.TrialDbHelper;
 
 public class MainActivity extends AppCompatActivity {
+//    Starts here
     public static final String EXTRA_MESSAGE = "com.alexsykes.scoremonster.activities.MESSAGE";
     public static final String TAG = "Info";
     public static final int TEXT_REQUEST = 1;
