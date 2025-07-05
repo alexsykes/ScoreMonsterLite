@@ -100,7 +100,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 //        Log.i("Info", "MainACtivityNew onCreate: called");
-        setContentView(R.layout.activity_main_new);
+        setContentView(R.layout.activity_main);
 
 
         // Add custom ActionBar
