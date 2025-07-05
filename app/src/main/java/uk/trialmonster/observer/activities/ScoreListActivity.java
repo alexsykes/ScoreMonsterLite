@@ -307,12 +307,12 @@ public class ScoreListActivity extends AppCompatActivity {
         scoreDbHelper = new ScoreDbHelper(this);
         Log.i("Info", "IsManual");
         boolean isManualTrial = localPrefs.getBoolean("isManualTrial", true);
-        if(isManualTrial) {
-            theScoreList = scoreDbHelper.getManualLapScores(trialid, day, section);
-
-        } else {
+//        if(isManualTrial) {
+//            theScoreList = scoreDbHelper.getManualLapScores(trialid, day, section);
+//
+//        } else {
             theScoreList = scoreDbHelper.getScoreList(trialid, day, section);
-        } Log.i("trialid", "" + trialid);
+//        } Log.i("trialid", "" + trialid);
         scoreView = findViewById(R.id.scoreView);
         LinearLayoutManager llm = new LinearLayoutManager(this);
         scoreView.setLayoutManager(llm);

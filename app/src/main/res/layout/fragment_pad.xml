@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/frameLayout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:context="uk.trialmonster.observer.PadFragment">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="0dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <Button
+            android:id="@+id/buttonClean"
+            style="@style/CustomButtonStyle2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/colorButtonGreen"
+            android:onClick="scoreClean"
+            android:padding="4dp"
+            android:text="@string/clean"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="4dp"
+            android:padding="0dp">
+
+            <Button
+                android:id="@+id/buttonOneDab"
+                style="@style/CustomButtonStyle2"
+                android:backgroundTint="@color/colorButtonAmber"
+                android:onClick="scoreOne"
+                android:padding="4dp"
+                android:text="@string/_1"
+                app:layout_constraintBaseline_toBaselineOf="@+id/buttonTwoDab"
+                app:layout_constraintEnd_toStartOf="@+id/buttonTwoDab"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <Button
+                android:id="@+id/buttonTwoDab"
+                style="@style/CustomButtonStyle2"
+                android:backgroundTint="@color/colorButtonAmber"
+                android:onClick="scoreTwo"
+                android:padding="4dp"
+                android:text="@string/_2"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                app:layout_constraintEnd_toStartOf="@+id/buttonThreeDab"
+                app:layout_constraintStart_toEndOf="@+id/buttonOneDab"
+                app:layout_constraintTop_toBottomOf="@+id/buttonClean" />
+
+            <Button
+                android:id="@+id/buttonThreeDab"
+                style="@style/CustomButtonStyle2"
+                android:backgroundTint="@color/colorButtonAmber"
+                android:onClick="scoreThree"
+                android:padding="4dp"
+                android:text="@string/_3"
+                app:layout_constraintBaseline_toBaselineOf="@+id/buttonTwoDab"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/buttonTwoDab" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/FiveDab"
+            style="@style/CustomButtonStyle2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/colorButtonBrightRed"
+            android:onClick="scoreFive"
+            android:padding="4dp"
+            android:text="@string/five"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/buttonThreeDab" />
+
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
