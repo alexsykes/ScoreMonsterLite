@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
     TextView numberLabel, scoreLabel, newScoreLabel, sectionNumberTextView, decrementTextView,
             incrementTextView, statusLine;
     LinearLayout sectionPicker, sectionLabelLayout;
-    ConstraintLayout top, bottom, bottom2;
+    LinearLayout top, bottom, bottom2;
     // Utility
     ProgressDialog dialog = null;
     MediaPlayer mediaPlayer;
@@ -106,7 +106,7 @@ public class MainActivity extends AppCompatActivity {
 //        setContentView(R.layout.activity_main);
 
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.new_main_layout);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.container), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);

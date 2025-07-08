@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/top_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimaryVariant"
+        android:elevation="4dp"
+        android:theme="@style/Theme.Theme" />
+
+    <TextView
+        android:id="@+id/statusLine"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="4dp"
+        android:text="@string/status_line"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:textSize="12sp" />
+
+    <LinearLayout
+        android:id="@+id/container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- Section label layout -->
+        <LinearLayout
+            android:id="@+id/sectionLabelLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/decrementTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="#00FFFFFF"
+                android:contentDescription="@string/go_to_previous_section"
+                android:onClick="decrement"
+                android:text="@string/prev"
+                android:textAlignment="textStart"
+                android:textColor="@color/purple_700"
+                android:textSize="20sp"
+                android:textStyle="normal" />
+
+            <TextView
+                android:id="@+id/sectionNumber"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:contentDescription="@string/section_number"
+                android:text="@string/_1"
+                android:textAlignment="center"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <Button
+                android:id="@+id/incrementTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="#00FFFFFF"
+                android:contentDescription="@string/go_to_next_section"
+                android:onClick="increment"
+                android:text="@string/next"
+                android:textAlignment="textEnd"
+                android:textColor="@color/purple_700"
+                android:textSize="20sp"
+                android:textStyle="normal" />
+        </LinearLayout>
+
+        <!-- Number label -->
+        <TextView
+            android:id="@+id/numberLabel"
+            style="@style/bigLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:gravity="center_horizontal"
+            android:textAlignment="center"
+            android:textSize="48sp" />
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/top"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_weight="0"
+        android:layout_gravity="center"
+        tools:ignore="Orientation" />
+
+
+
+    <TextView
+        android:id="@+id/scoreLabel"
+        style="@style/bigLabel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/score_"
+        android:gravity="center_horizontal"
+        android:text="@string/_0"
+        android:textSize="48sp" />
+
+    <LinearLayout
+        android:id="@+id/bottom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_weight="0"
+        android:layout_gravity="center"
+        tools:ignore="Orientation" />
+
+    <Button
+        android:id="@+id/saveButton"
+        style="@style/ScoreButton"
+        android:layout_marginBottom="2dp"
+        android:layout_gravity="center"
+        android:layout_weight="0"
+        android:text="@string/save"
+        android:textColor="@color/colorButtonText"
+        android:textSize="20sp" />
+</LinearLayout>

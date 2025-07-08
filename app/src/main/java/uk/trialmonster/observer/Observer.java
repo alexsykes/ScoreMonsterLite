@@ -2,6 +2,19 @@ package uk.trialmonster.observer;
 // TODO - update elapsedTime to take account of startTime and startInterval
 // TODO - SettingsActivity - update trial data on chamge of trial - done
 
+/*
+Galaxy A32
+Size 6.4 inches, 98.9 cm2 (~84.6% screen-to-body ratio)
+        Resolution 	1080 x 2400 pixels, 20:9 ratio (~411 ppi density)
+
+   Redmi A3
+   Display
+6.71" Dot Drop display 720 x 1650, 268 ppi
+
+Small Phone
+360 x 640
+*/
+
 import android.app.Application;
 import android.content.ContentValues;
 import android.content.Context;
