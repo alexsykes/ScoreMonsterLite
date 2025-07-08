@@ -6,7 +6,7 @@ android {
         applicationId "uk.trialmonster.observer"
         minSdk 27
         targetSdkVersion 35
-        versionCode 58
+        versionCode 71
         versionName 'Nifty Fifty'
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
         vectorDrawables.useSupportLibrary = true
@@ -31,6 +31,7 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.2.1'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'com.google.android.material:material:1.12.0'
+//    implementation 'androidx.core:core:1.17.0-beta01'
     implementation 'androidx.annotation:annotation:1.9.1'
 //    implementation "android.arch.lifecycle:extensions:1.1.1"
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'

@@ -1,7 +1,7 @@
 <!--https://www.youtube.com/watch?v=ApqX9FQA4k0 - Popup-->
 <resources>
     <!-- Base application theme. -->
-    <style name="Theme.Theme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+    <style name="Theme.Theme" parent="Theme.MaterialComponents.Light.NoActionBar">
         <!-- Primary brand color. -->
         <item name="colorPrimaryDark">@color/purple_900</item>
         <item name="colorPrimary">@color/purple_900</item>

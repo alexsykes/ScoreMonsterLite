@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="uk.trialmonster.observer.activities.ScoreListActivity">
@@ -15,8 +16,8 @@
         android:theme="@style/Theme.Theme"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toTopOf="parent"
-    app:popupTheme="@style/Theme.PopupTheme" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:popupTheme="@style/Theme.PopupTheme" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/labels"
@@ -69,9 +70,9 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:visibility="gone"
             android:text="@string/section"
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:visibility="gone"
             app:layout_constraintEnd_toStartOf="@+id/textView4"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/textView3"
