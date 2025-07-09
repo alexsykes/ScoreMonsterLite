@@ -18,7 +18,7 @@
 
         <Button
             android:id="@+id/buttonClean"
-            style="@style/CustomButtonStyle2"
+            style="@style/CustomButtonStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:backgroundTint="@color/colorButtonGreen"
@@ -33,13 +33,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginTop="4dp"
-            android:layout_marginBottom="4dp"
-            android:padding="0dp">
+           android:padding="0dp">
 
             <Button
                 android:id="@+id/buttonOneDab"
-                style="@style/CustomButtonStyle2"
+                style="@style/CustomButtonStyle"
                 android:backgroundTint="@color/colorButtonAmber"
                 android:onClick="scoreOne"
                 android:padding="4dp"
@@ -50,7 +48,7 @@
 
             <Button
                 android:id="@+id/buttonTwoDab"
-                style="@style/CustomButtonStyle2"
+                style="@style/CustomButtonStyle"
                 android:backgroundTint="@color/colorButtonAmber"
                 android:onClick="scoreTwo"
                 android:padding="4dp"
@@ -63,7 +61,7 @@
 
             <Button
                 android:id="@+id/buttonThreeDab"
-                style="@style/CustomButtonStyle2"
+                style="@style/CustomButtonStyle"
                 android:backgroundTint="@color/colorButtonAmber"
                 android:onClick="scoreThree"
                 android:padding="4dp"
@@ -75,7 +73,7 @@
 
         <Button
             android:id="@+id/FiveDab"
-            style="@style/CustomButtonStyle2"
+            style="@style/CustomButtonStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:backgroundTint="@color/colorButtonBrightRed"

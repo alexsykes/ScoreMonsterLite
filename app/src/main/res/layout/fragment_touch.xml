@@ -18,7 +18,7 @@
 
         <Button
             android:id="@+id/cleanButton"
-            style="@style/ScoreButton"
+            style="@style/CustomButtonStyle"
             android:layout_width="match_parent"
             android:backgroundTint="@color/colorButtonGreen"
             android:onClick="countDabs"
@@ -35,7 +35,7 @@
 
             <Button
                 android:id="@+id/dabButton"
-                style="@style/ScoreButton"
+                style="@style/CustomButtonStyle"
                 android:backgroundTint="@color/colorAccent"
                 android:onClick="countDabs"
                 android:text="@string/dab"
@@ -44,7 +44,7 @@
 
             <Button
                 android:id="@+id/fiveButton"
-                style="@style/ScoreButton"
+                style="@style/CustomButtonStyle"
                 android:backgroundTint="@color/colorButtonBrightRed"
                 android:onClick="countDabs"
                 android:text="@string/_5"
@@ -53,7 +53,7 @@
 
             <Button
                 android:id="@+id/tenButton"
-                style="@style/ScoreButton"
+                style="@style/CustomButtonStyle"
                 android:backgroundTint="@color/colorButtonDark"
                 android:onClick="countDabs"
                 android:text="@string/X"

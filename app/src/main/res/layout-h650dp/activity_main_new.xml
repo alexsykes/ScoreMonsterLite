@@ -137,7 +137,7 @@
 
     <Button
         android:id="@+id/saveButton"
-        style="@style/ScoreButton"
+        style="@style/CustomButtonStyle"
         android:layout_marginBottom="48dp"
         android:text="@string/save"
         android:textColor="@color/colorButtonText"

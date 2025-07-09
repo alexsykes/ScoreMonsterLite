@@ -83,8 +83,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="4dp"
             android:gravity="center_horizontal"
-            android:textAlignment="center"
-            android:textSize="48sp" />
+            android:textAlignment="center"/>
 
     </LinearLayout>
 
@@ -107,8 +106,7 @@
         android:layout_height="wrap_content"
         android:contentDescription="@string/score_"
         android:gravity="center_horizontal"
-        android:text="@string/_0"
-        android:textSize="48sp" />
+        android:text="@string/_0" />
 
     <LinearLayout
         android:id="@+id/bottom"
@@ -121,11 +119,11 @@
 
     <Button
         android:id="@+id/saveButton"
-        style="@style/ScoreButton"
-        android:layout_marginBottom="2dp"
+        style="@style/CustomButtonStyle"
+        android:layout_width="wrap_content"
         android:layout_gravity="center"
         android:layout_weight="0"
+        android:paddingHorizontal="5dp"
         android:text="@string/save"
-        android:textColor="@color/colorButtonText"
-        android:textSize="20sp" />
+        android:textColor="@color/colorButtonText" />
 </LinearLayout>
