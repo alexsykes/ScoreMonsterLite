@@ -462,7 +462,6 @@ public class ScoreDbHelper extends SQLiteOpenHelper {
         Log.i("Query", query);
         // Execute the SQL statement
         db.execSQL(query);
-//        db.close();
     }
 
     public ArrayList<HashMap<String, String>> dumpTrialScores(int trialid) {

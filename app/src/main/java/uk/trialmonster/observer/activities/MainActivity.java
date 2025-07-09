@@ -52,7 +52,7 @@ import uk.trialmonster.observer.data.TimeDbHelper;
 import uk.trialmonster.observer.data.TrialDbHelper;
 
 public class MainActivity extends AppCompatActivity {
-//    Starts here
+    //    Starts here
     public static final String EXTRA_MESSAGE = "com.alexsykes.scoremonster.activities.MESSAGE";
     public static final String TAG = "Info";
     public static final int TEXT_REQUEST = 1;
@@ -247,6 +247,19 @@ public class MainActivity extends AppCompatActivity {
             scoreString = "X";
         }
         scoreLabel.setText(scoreString);
+        switch (scoreString) {
+            case "0":
+                scoreLabel.setTextColor(getColor(R.color.colorButtonGreen));
+                break;
+            case "5":
+                scoreLabel.setTextColor(getColor(R.color.colorButtonBrightRed));
+                break;
+            case "X":
+                scoreLabel.setTextColor(getColor(R.color.colorButtonBrightRed));
+                break;
+            default:
+                scoreLabel.setTextColor(getColor(R.color.colorButtonAmber));
+        }
     }
 
     private void getPrefs() {
@@ -294,9 +307,9 @@ public class MainActivity extends AppCompatActivity {
         scoreLabel = findViewById(R.id.scoreLabel);
         statusLine = findViewById(R.id.statusLine);
 //        statusLine.setVisibility(View.INVISIBLE);
-        sectionLabelLayout = findViewById(R.id.sectionLabelLayout);
-        sectionNumberTextView = findViewById(R.id.sectionNumber);
-        sectionNumberTextView.setText(valueOf(section));
+//        sectionLabelLayout = findViewById(R.id.sectionLabelLayout);
+//        sectionNumberTextView = findViewById(R.id.sectionNumber);
+//        sectionNumberTextView.setText(valueOf(section));
         top = findViewById(R.id.top);
         incrementTextView = findViewById(R.id.incrementTextView);
         decrementTextView = findViewById(R.id.decrementTextView);
@@ -347,7 +360,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
         } else {
-            sectionLabelLayout.setVisibility(View.GONE);
+//            sectionLabelLayout.setVisibility(View.GONE);
             status = theTrialName + " - Observer: " + observer + " - Day: " + day + " - " +
                     "Section: " + section;
             statusLine.setText(status);
@@ -366,7 +379,7 @@ public class MainActivity extends AppCompatActivity {
             getSupportFragmentManager().beginTransaction().add(R.id.bottom, padFragment).commit();
             getSupportFragmentManager().beginTransaction().add(R.id.bottom, touchFragment).commit();
 
-            if(scorePadType.equals("trad")) {
+            if (scorePadType.equals("trad")) {
                 getSupportFragmentManager().beginTransaction().replace(R.id.bottom, padFragment).commit();
             } else {
                 getSupportFragmentManager().beginTransaction().replace(R.id.bottom, touchFragment).commit();
@@ -632,6 +645,7 @@ public class MainActivity extends AppCompatActivity {
         // Clear score label
         score = 0;
         scoreLabel.setText("0");
+        scoreLabel.setTextColor(getColor(R.color.colorButtonGreen));
 
         SharedPreferences.Editor editor = localPrefs.edit();
         editor.putInt("ridingNumber", 0);
@@ -658,6 +672,7 @@ public class MainActivity extends AppCompatActivity {
     public void scoreClean(View view) {
         score = 0;
         scoreLabel.setText("0");
+        scoreLabel.setTextColor(getColor(R.color.colorButtonGreen));
         SharedPreferences.Editor editor = localPrefs.edit();
         editor.putInt("score", score);
         editor.apply();
@@ -668,6 +683,7 @@ public class MainActivity extends AppCompatActivity {
     public void scoreOne(View view) {
         score = 1;
         scoreLabel.setText("1");
+        scoreLabel.setTextColor(getColor(R.color.colorButtonAmber));
         SharedPreferences.Editor editor = localPrefs.edit();
         editor.putInt("score", score);
         editor.apply();
@@ -678,6 +694,7 @@ public class MainActivity extends AppCompatActivity {
     public void scoreTwo(View view) {
         score = 2;
         scoreLabel.setText("2");
+        scoreLabel.setTextColor(getColor(R.color.colorButtonAmber));
         SharedPreferences.Editor editor = localPrefs.edit();
         editor.putInt("score", score);
         editor.apply();
@@ -688,6 +705,7 @@ public class MainActivity extends AppCompatActivity {
     public void scoreThree(View view) {
         score = 3;
         scoreLabel.setText("3");
+        scoreLabel.setTextColor(getColor(R.color.colorButtonAmber));
         SharedPreferences.Editor editor = localPrefs.edit();
         editor.putInt("score", score);
         editor.apply();
@@ -697,6 +715,7 @@ public class MainActivity extends AppCompatActivity {
     public void scoreFive(View view) {
         score = 5;
         scoreLabel.setText("5");
+        scoreLabel.setTextColor(getColor(R.color.colorButtonBrightRed));
         SharedPreferences.Editor editor = localPrefs.edit();
         editor.putInt("score", score);
         editor.apply();

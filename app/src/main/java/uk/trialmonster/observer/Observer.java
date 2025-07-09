@@ -11,6 +11,23 @@ Size 6.4 inches, 98.9 cm2 (~84.6% screen-to-body ratio)
    Display
 6.71" Dot Drop display 720 x 1650, 268 ppi
 
+OUKITEL WP28E
+
+Screen Size
+6.52" HD
+*Measured diagonally in the full rectangle. Actual display area may vary slightly.
+Screen-to-Body Ratio
+85%
+Resolution
+576(RGB)x1280
+Pixel Density
+215 PPI
+Refresh Rate
+60Hz
+Brightness
+400nit (Type)
+
+
 Small Phone
 360 x 640
 */
