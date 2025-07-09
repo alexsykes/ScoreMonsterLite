@@ -102,17 +102,15 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        Log.i("Info", "MainACtivityNew onCreate: called");
-//        setContentView(R.layout.activity_main);
 
         EdgeToEdge.enable(this);
         setContentView(R.layout.new_main_layout);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.container), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            Log.i(TAG, "setOnApplyWindowInsetsListener: " + insets.toString());
             return insets;
         });
-
 
         // Add custom ActionBar
         Toolbar myToolbar = findViewById(R.id.top_toolbar);
