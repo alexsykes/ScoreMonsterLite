@@ -296,9 +296,9 @@ public class MainActivity extends AppCompatActivity {
         scoreLabel = findViewById(R.id.scoreLabel);
         statusLine = findViewById(R.id.statusLine);
 //        statusLine.setVisibility(View.VISIBLE);
-//        sectionLabelLayout = findViewById(R.id.sectionLabelLayout);
-//        sectionNumberTextView = findViewById(R.id.sectionNumber);
-//        sectionNumberTextView.setText(valueOf(section));
+        sectionLabelLayout = findViewById(R.id.sectionLabelLayout);
+        sectionNumberTextView = findViewById(R.id.sectionNumber);
+        sectionNumberTextView.setText(valueOf(section));
         top = findViewById(R.id.top);
         incrementTextView = findViewById(R.id.incrementTextView);
         decrementTextView = findViewById(R.id.decrementTextView);
@@ -349,7 +349,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
         } else {
-//            sectionLabelLayout.setVisibility(View.GONE);
+            sectionLabelLayout.setVisibility(View.GONE);
             status = theTrialName + " - Observer: " + observer + " - Day: " + day + " - " +
                     "Section: " + section;
             statusLine.setText(status);

@@ -16,16 +16,16 @@
 
     <style name="CustomButtonStyle">
         <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
         <item name="android:shadowDx">1.2</item>
         <item name="android:shadowDy">1.2</item>
         <item name="android:shadowRadius">2</item>
         <item name="android:insetTop">0dp</item>
         <item name="android:insetBottom">0dp</item>
+        <item name="android:layout_height">36dp</item>
         <item name="android:shadowColor">?android:attr/colorBackground</item>
         <item name="android:textColor">@color/colorWhite</item>
         <item name="android:gravity">center</item>
-        <item name="android:textSize">24sp</item>
+        <item name="android:textSize">18sp</item>
         <item name="android:layout_margin">3dp</item>
     </style>
 

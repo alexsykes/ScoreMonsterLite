@@ -33,7 +33,6 @@
                 android:id="@+id/button1"
                 style="@style/CustomButtonStyle"
                 android:onClick="addDigit"
-                android:padding="0dp"
                 android:text="@string/_1"
                 tools:text="@string/_1" />
 
@@ -73,8 +72,7 @@
                 style="@style/CustomButtonStyle"
                 android:onClick="addDigit"
                 android:text="@string/_4"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/button1" />
+                tools:text="4"/>
 
 
             <Button
@@ -82,17 +80,14 @@
                 style="@style/CustomButtonStyle"
                 android:onClick="addDigit"
                 android:text="@string/_5"
-                app:layout_constraintStart_toEndOf="@+id/button4"
-                app:layout_constraintTop_toBottomOf="@+id/button2" />
+                tools:text="5"/>
 
 
             <Button
                 android:id="@+id/button6"
                 style="@style/CustomButtonStyle"
                 android:onClick="addDigit"
-                android:text="@string/_6"
-                app:layout_constraintStart_toEndOf="@+id/button5"
-                app:layout_constraintTop_toBottomOf="@+id/button3" />
+                android:text="@string/_6"/>
 
             <View
                 android:layout_width="0dp"
@@ -116,24 +111,21 @@
                 style="@style/CustomButtonStyle"
                 android:onClick="addDigit"
                 android:text="@string/_7"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/button4" />
+                tools:text="7"/>
 
             <Button
                 android:id="@+id/button8"
                 style="@style/CustomButtonStyle"
                 android:onClick="addDigit"
                 android:text="@string/_8"
-                app:layout_constraintStart_toEndOf="@+id/button7"
-                app:layout_constraintTop_toBottomOf="@+id/button5" />
+                tools:text="8"/>
 
             <Button
                 android:id="@+id/button9"
                 style="@style/CustomButtonStyle"
                 android:onClick="addDigit"
                 android:text="@string/_9"
-                app:layout_constraintStart_toEndOf="@+id/button8"
-                app:layout_constraintTop_toBottomOf="@+id/button6" />
+                tools:text="9"/>
 
             <View
                 android:layout_width="0dp"
@@ -157,8 +149,7 @@
                 style="@style/CustomButtonStyle"
                 android:onClick="addDigit"
                 android:text="@string/c"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/button7" />
+                tools:text="C"/>
 
             <Button
                 android:id="@+id/button0"
@@ -166,16 +157,15 @@
                 android:enabled="true"
                 android:onClick="addDigit"
                 android:text="@string/_0"
-                app:layout_constraintStart_toEndOf="@+id/buttonClear"
-                app:layout_constraintTop_toBottomOf="@+id/button8" />
+                tools:text="0"/>
 
             <Button
                 android:id="@+id/buttonBack"
                 style="@style/CustomButtonStyle"
                 android:onClick="addDigit"
                 android:text="@string/backSpace"
-                app:layout_constraintStart_toEndOf="@+id/button0"
-                app:layout_constraintTop_toBottomOf="@+id/button9" />
+
+                tools:text="@string/backSpace"/>
 
             <View
                 android:layout_width="0dp"

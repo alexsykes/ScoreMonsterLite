@@ -1,18 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical">
 
 
 
 
-    <LinearLayout
-        android:id="@+id/container"
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/container"
         android:orientation="vertical">
 
         <androidx.appcompat.widget.Toolbar
@@ -35,52 +32,52 @@
             android:textSize="12sp" />
 
         <!-- Section label layout -->
-<!--        <LinearLayout-->
-<!--            android:id="@+id/sectionLabelLayout"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_margin="4dp"-->
-<!--            android:orientation="horizontal">-->
+        <LinearLayout
+            android:id="@+id/sectionLabelLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:orientation="horizontal">
 
-<!--            <Button-->
-<!--                android:id="@+id/decrementTextView"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_weight="1"-->
-<!--                android:background="#00FFFFFF"-->
-<!--                android:contentDescription="@string/go_to_previous_section"-->
-<!--                android:onClick="decrement"-->
-<!--                android:text="@string/prev"-->
-<!--                android:textAlignment="textStart"-->
-<!--                android:textColor="@color/purple_700"-->
-<!--                android:textSize="20sp"-->
-<!--                android:textStyle="normal" />-->
+            <Button
+                android:id="@+id/decrementTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="#00FFFFFF"
+                android:contentDescription="@string/go_to_previous_section"
+                android:onClick="decrement"
+                android:text="@string/prev"
+                android:textAlignment="textStart"
+                android:textColor="@color/purple_700"
+                android:textSize="20sp"
+                android:textStyle="normal" />
 
-<!--            <TextView-->
-<!--                android:id="@+id/sectionNumber"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_weight="1"-->
-<!--                android:contentDescription="@string/section_number"-->
-<!--                android:text="@string/_1"-->
-<!--                android:textAlignment="center"-->
-<!--                android:textSize="20sp"-->
-<!--                android:textStyle="bold" />-->
+            <TextView
+                android:id="@+id/sectionNumber"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:contentDescription="@string/section_number"
+                android:text="@string/_1"
+                android:textAlignment="center"
+                android:textSize="20sp"
+                android:textStyle="bold" />
 
-<!--            <Button-->
-<!--                android:id="@+id/incrementTextView"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_weight="1"-->
-<!--                android:background="#00FFFFFF"-->
-<!--                android:contentDescription="@string/go_to_next_section"-->
-<!--                android:onClick="increment"-->
-<!--                android:text="@string/next"-->
-<!--                android:textAlignment="textEnd"-->
-<!--                android:textColor="@color/purple_700"-->
-<!--                android:textSize="20sp"-->
-<!--                android:textStyle="normal" />-->
-<!--        </LinearLayout>-->
+            <Button
+                android:id="@+id/incrementTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="#00FFFFFF"
+                android:contentDescription="@string/go_to_next_section"
+                android:onClick="increment"
+                android:text="@string/next"
+                android:textAlignment="textEnd"
+                android:textColor="@color/purple_700"
+                android:textSize="20sp"
+                android:textStyle="normal" />
+        </LinearLayout>
 
         <!-- Number label -->
 
@@ -101,9 +98,11 @@
         android:orientation="horizontal"
         android:layout_gravity="center"
         tools:ignore="Orientation" />
-
-
-
+    <View
+    android:layout_width="match_parent"
+    android:layout_height="0dp"
+    android:layout_weight="1"
+    />
     <TextView
         android:id="@+id/scoreLabel"
         style="@style/bigLabel"
@@ -114,6 +113,7 @@
         android:gravity="center_horizontal"
         android:text="@string/_0" />
 
+
     <LinearLayout
         android:id="@+id/bottom"
         android:layout_width="match_parent"
@@ -122,16 +122,18 @@
         android:layout_gravity="center"
         tools:ignore="Orientation" />
 
+    <View
+    android:layout_width="match_parent"
+    android:layout_height="20dp"
+    />
+
     <Button
         android:id="@+id/saveButton"
         style="@style/CustomButtonStyle"
-        android:layout_width="wrap_content"
         android:layout_gravity="center"
-        android:paddingHorizontal="5dp"
+        android:paddingHorizontal="10dp"
         android:text="@string/save"
-        android:textColor="@color/colorButtonText" />
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="80dp" />
+        android:textColor="@color/colorButtonText"
+        tools:ignore="TouchTargetSizeCheck" />
+
     </LinearLayout>
-</LinearLayout>
