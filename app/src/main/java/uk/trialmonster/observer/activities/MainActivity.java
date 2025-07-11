@@ -14,6 +14,7 @@ import android.media.MediaPlayer;
 import android.media.ToneGenerator;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.util.Log;
@@ -26,6 +27,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -55,13 +57,10 @@ public class MainActivity extends AppCompatActivity {
     //    Starts here
     public static final String EXTRA_MESSAGE = "com.alexsykes.scoremonster.activities.MESSAGE";
     public static final String TAG = "Info";
-    public static final int TEXT_REQUEST = 1;
     public static final int NOT_SYNCED = -1;
     SharedPreferences localPrefs;
     SharedPreferences.Editor editor;
     MainViewModel model;
-    String[] theTrials, theIDs;
-    ArrayList<HashMap<String, String>> theTrialData;
 
     // UI Components
     TouchFragment touchFragment;
@@ -72,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
     // Layout variables
     TextView numberLabel, scoreLabel, newScoreLabel, sectionNumberTextView, decrementTextView,
             incrementTextView, statusLine;
-    LinearLayout sectionPicker, sectionLabelLayout;
+    LinearLayout  sectionLabelLayout;
     LinearLayout top, bottom, bottom2;
     // Utility
     ProgressDialog dialog = null;
@@ -108,14 +107,17 @@ public class MainActivity extends AppCompatActivity {
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.container), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            Log.i(TAG, "setOnApplyWindowInsetsListener: " + insets.toString());
             return insets;
         });
-
+        // Add this:
+        StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder(StrictMode.getVmPolicy())
+                .detectLeakedClosableObjects()
+                .build());
         // Add custom ActionBar
-        Toolbar myToolbar = findViewById(R.id.top_toolbar);
-        setSupportActionBar(myToolbar);
-        myToolbar.getMenu();
+        Toolbar toolbar = findViewById(R.id.top_toolbar);
+        setSupportActionBar(toolbar);
+
+        toolbar.getMenu();
         model = new MainViewModel();
 
         // Create database connection
@@ -191,12 +193,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onStart() {
-        EdgeToEdge.enable(this);
-        View decorView = getWindow().getDecorView();
 
-        int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                | View.SYSTEM_UI_FLAG_FULLSCREEN;
-        decorView.setSystemUiVisibility(uiOptions);
         super.onStart();
 //        Log.i("Info", "MainActivityNew:onStart called");
         getPrefs();
@@ -229,12 +226,6 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onResume() {
-        EdgeToEdge.enable(this);
-        View decorView = getWindow().getDecorView();
-
-        int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                | View.SYSTEM_UI_FLAG_FULLSCREEN;
-        decorView.setSystemUiVisibility(uiOptions);
         super.onResume();
         getPrefs();
         if (ridingNumber > 0) {
@@ -304,7 +295,7 @@ public class MainActivity extends AppCompatActivity {
         numberLabel = findViewById(R.id.numberLabel);
         scoreLabel = findViewById(R.id.scoreLabel);
         statusLine = findViewById(R.id.statusLine);
-//        statusLine.setVisibility(View.INVISIBLE);
+//        statusLine.setVisibility(View.VISIBLE);
 //        sectionLabelLayout = findViewById(R.id.sectionLabelLayout);
 //        sectionNumberTextView = findViewById(R.id.sectionNumber);
 //        sectionNumberTextView.setText(valueOf(section));
@@ -698,7 +689,6 @@ public class MainActivity extends AppCompatActivity {
         editor.apply();
         Log.i(TAG, "scoreTwo: ");
     }
-
 
     public void scoreThree(View view) {
         score = 3;

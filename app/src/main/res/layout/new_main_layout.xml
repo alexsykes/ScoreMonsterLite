@@ -3,29 +3,36 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/top_toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorPrimaryVariant"
-        android:elevation="4dp"
-        android:theme="@style/Theme.Theme" />
 
-    <TextView
-        android:id="@+id/statusLine"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="4dp"
-        android:text="@string/status_line"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-        android:textSize="12sp" />
+
+
 
     <LinearLayout
         android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
+
+        <androidx.appcompat.widget.Toolbar
+        android:id="@+id/top_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimaryVariant"
+        android:elevation="4dp"
+        android:theme="@style/Theme.Theme"
+        app:popupTheme="@style/Theme.PopupTheme"
+        />
+
+        <TextView
+            android:id="@+id/statusLine"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:text="@string/status_line"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:textSize="12sp" />
 
         <!-- Section label layout -->
 <!--        <LinearLayout-->
@@ -78,7 +85,6 @@
         <!-- Number label -->
 
 
-    </LinearLayout>
     <TextView
         android:id="@+id/numberLabel"
         style="@style/bigLabel"
@@ -113,7 +119,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_weight="0"
         android:layout_gravity="center"
         tools:ignore="Orientation" />
 
@@ -128,4 +133,5 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="80dp" />
+    </LinearLayout>
 </LinearLayout>
