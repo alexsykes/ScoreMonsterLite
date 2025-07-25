@@ -4,9 +4,9 @@ android {
     compileSdk 35
     defaultConfig {
         applicationId "uk.trialmonster.observer"
-        minSdk 27
+        minSdk 24
         targetSdkVersion 35
-        versionCode 71
+        versionCode 75
         versionName 'Nifty Fifty'
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
         vectorDrawables.useSupportLibrary = true

@@ -1,5 +1,6 @@
 package uk.trialmonster.observer;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,9 +38,8 @@ public class LapScoresAdapter extends RecyclerView.Adapter<LapScoresAdapter.View
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        String empty = "";
         theScore1 = scoreData.get(position);
-        theScore2 = scoreData.get(position + numRows);
-        theScore3 = scoreData.get(position + numRows + numRows);
         holder.riderTV1.setText(theScore1.get("rider"));
         holder.lapScoresTV1.setText(theScore1.get("laps"));
 
@@ -48,18 +48,23 @@ public class LapScoresAdapter extends RecyclerView.Adapter<LapScoresAdapter.View
             theScore2 = scoreData.get(offset1);
             holder.riderTV2.setText(theScore2.get("rider"));
             holder.lapScoresTV2.setText(theScore2.get("laps"));
-        } else {
-
-            holder.riderTV2.setText("");
-            holder.lapScoresTV2.setText("");
-
         }
+//        else {
+//            holder.riderTV2.setText("");
+//            holder.lapScoresTV2.setText("");
+//        }
 
         int offset2 = offset1 + numRows;
         if (offset2 < numEntries) {
+            Log.i("Info", "offset2: " + offset2);
+            try{
             theScore3 = scoreData.get(offset2);
             holder.riderTV3.setText(theScore3.get("rider"));
             holder.lapScoresTV3.setText(theScore3.get("laps"));
+            } catch (Exception e) {
+                holder.riderTV3.setText("");
+                holder.lapScoresTV3.setText("");
+            }
         } else {
             holder.riderTV3.setText("");
             holder.lapScoresTV3.setText("");

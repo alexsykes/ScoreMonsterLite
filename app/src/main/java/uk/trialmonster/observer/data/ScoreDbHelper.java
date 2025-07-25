@@ -174,6 +174,11 @@ public class ScoreDbHelper extends SQLiteOpenHelper {
             scoreList.add(scores);
         }
 
+//        HashMap<String, String> scores = new HashMap<>();
+//        scores.put("rider", "");
+//        scores.put("laps", "");
+//        scoreList.add(scores);
+
         result.close();
         db.close();
         return scoreList;
