@@ -385,6 +385,14 @@ public class ScoreDbHelper extends SQLiteOpenHelper {
         db.close();
     }
 
+    public int checkRiderNumber(int riderNumber, int trialid){
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT _id FROM scores WHERE rider = " + riderNumber + " AND trialid = " + trialid;
+        Cursor cursor = db.rawQuery(query, null);
+        int numScores = cursor.getCount();
+        return numScores;
+    }
+
     public int getRiderLap(int rider, int section, int trialid, int day) {
         SQLiteDatabase db = this.getReadableDatabase();
         String query =

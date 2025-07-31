@@ -100,6 +100,8 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        Log.i("Info", "MainActivityNew:onCreate called");
         super.onCreate(savedInstanceState);
 
         EdgeToEdge.enable(this);
@@ -148,6 +150,46 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onStart() {
+
+        super.onStart();
+        Log.i("Info", "MainActivityNew:onStart called");
+        getPrefs();
+        if (!checkPrefs()) {
+            goSetup();
+        }
+        initialUISetup();
+        if (ridingNumber > 0) {
+            numberLabel.setText(String.valueOf(ridingNumber));
+        }
+        String scoreString = String.valueOf(score);
+        if (score == 10) {
+            scoreString = "X";
+        }
+        scoreLabel.setText(scoreString);
+        switch (scoreString) {
+            case "0":
+                scoreLabel.setTextColor(getColor(R.color.colorButtonGreen));
+                break;
+            case "5":
+                scoreLabel.setTextColor(getColor(R.color.colorButtonBrightRed));
+                break;
+            case "X":
+                scoreLabel.setTextColor(getColor(R.color.colorButtonBrightRed));
+                break;
+            default:
+                scoreLabel.setTextColor(getColor(R.color.colorButtonAmber));
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        Log.i("Info", "MainActivityNew:onResume called");
+        super.onResume();
+//        getPrefs();
+
+    }
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
 
@@ -191,18 +233,6 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    @Override
-    protected void onStart() {
-
-        super.onStart();
-//        Log.i("Info", "MainActivityNew:onStart called");
-        getPrefs();
-        if (!checkPrefs()) {
-            goSetup();
-        }
-        initialUISetup();
-    }
-
     private boolean checkPrefs() {
         if (observer.equals("")) {
             return false;
@@ -222,33 +252,6 @@ public class MainActivity extends AppCompatActivity {
             return numsections != 0;
         }
         return true;
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        getPrefs();
-        if (ridingNumber > 0) {
-            numberLabel.setText(String.valueOf(ridingNumber));
-        }
-        String scoreString = String.valueOf(score);
-        if (score == 10) {
-            scoreString = "X";
-        }
-        scoreLabel.setText(scoreString);
-        switch (scoreString) {
-            case "0":
-                scoreLabel.setTextColor(getColor(R.color.colorButtonGreen));
-                break;
-            case "5":
-                scoreLabel.setTextColor(getColor(R.color.colorButtonBrightRed));
-                break;
-            case "X":
-                scoreLabel.setTextColor(getColor(R.color.colorButtonBrightRed));
-                break;
-            default:
-                scoreLabel.setTextColor(getColor(R.color.colorButtonAmber));
-        }
     }
 
     private void getPrefs() {
@@ -271,7 +274,7 @@ public class MainActivity extends AppCompatActivity {
         day = localPrefs.getInt("dayNum", 1);
         score = localPrefs.getInt("score", 0);
         numberInGroup = localPrefs.getInt("numberInGroup", 6);
-        scoreCount = localPrefs.getInt("scoreCount", 0);
+//        scoreCount = localPrefs.getInt("scoreCount", 0);
         theTrialName = localPrefs.getString("trialName", "My Trial");
         club = localPrefs.getString("club", "None selected");
         mode = localPrefs.getInt("mode", 0);
@@ -303,99 +306,19 @@ public class MainActivity extends AppCompatActivity {
         incrementTextView = findViewById(R.id.incrementTextView);
         decrementTextView = findViewById(R.id.decrementTextView);
 //        sectionDetail = findViewById(R.id.sectionDetail);
+
+//        saveButton - always visible?
         saveButton = findViewById(R.id.saveButton);
+
+//      Number pad - always visible?
+        numberPadFragment = new NumberPadFragment();
+        getSupportFragmentManager().beginTransaction().add(R.id.top, numberPadFragment).commit();
 
         // Set initial values
         if (timeMode) {
-            SimpleDateFormat dateFormat = new SimpleDateFormat("h:mm:ss a");
-            String dateString = dateFormat.format(clockStartTime);
-            statusLine.setText(R.string.clock_started_at + dateString);
-            sectionLabelLayout.setVisibility(View.GONE);
-            scoreLabel.setVisibility(View.INVISIBLE);
-            if (clockStartTime > 0) {
-                saveButton.setText(R.string.enter);
-                saveButton.setOnLongClickListener(new View.OnLongClickListener() {
-                    @Override
-                    public boolean onLongClick(View v) {
-                        saveTime(this);
-                        return false;
-                    }
-                });
-            } else {
-                saveButton.setText(R.string.start_clock);
-                saveButton.setOnLongClickListener(new View.OnLongClickListener() {
-                    @Override
-                    public boolean onLongClick(View v) {
-                        startClock(this);
-                        return false;
-                    }
-
-                    // called when button pressed
-                    private void startClock(View.OnLongClickListener onLongClickListener) {
-                        Calendar startTime = Calendar.getInstance();
-                        clockStartTime = startTime.getTimeInMillis();
-
-                        // Save start time in prefs
-                        SharedPreferences.Editor editor = localPrefs.edit();
-                        editor.putLong("clockStartTime", clockStartTime);
-                        editor.apply();
-                        SimpleDateFormat dateFormat = new SimpleDateFormat("h:mm:ss a");
-                        String dateString = dateFormat.format(clockStartTime);
-                        statusLine.setText(getString(R.string.clock_started_at) + dateString);
-                        saveButton.setText(R.string.enter);
-                        numberLabel.setText("");
-                    }
-                });
-            }
-
+            enterTimingMode();
         } else {
-            sectionLabelLayout.setVisibility(View.GONE);
-            status = theTrialName + " - Observer: " + observer + " - Day: " + day + " - " +
-                    "Section: " + section;
-            statusLine.setText(status);
-            saveButton.setText(R.string.save);
-            scoreLabel.setVisibility(View.VISIBLE);
-
-//            if (touchFragment == null && !timeMode) {
-//                touchFragment = new TouchFragment();
-//                getSupportFragmentManager().beginTransaction().add(R.id.bottom, touchFragment).commit();
-//            }
-// Set up number pad
-
-            numberPadFragment = new NumberPadFragment();
-            padFragment = new PadFragment();
-            touchFragment = new TouchFragment();
-            getSupportFragmentManager().beginTransaction().add(R.id.bottom, padFragment).commit();
-            getSupportFragmentManager().beginTransaction().add(R.id.bottom, touchFragment).commit();
-
-            if (scorePadType.equals("trad")) {
-                getSupportFragmentManager().beginTransaction().replace(R.id.bottom, padFragment).commit();
-            } else {
-                getSupportFragmentManager().beginTransaction().replace(R.id.bottom, touchFragment).commit();
-            }
-
-
-//            if (numberPadFragment == null) {
-            numberPadFragment = new NumberPadFragment();
-            getSupportFragmentManager().beginTransaction().add(R.id.top, numberPadFragment).commit();
-//            }
-
-//            if (padFragment == null && !timeMode) {
-//                if (scorePadType.equals("pad")) {
-////                    padFragment = new PadFragment();
-//                } else {
-////                    padFragment = new TouchFragment();
-//                }
-//                getSupportFragmentManager().beginTransaction().add(R.id.bottom, padFragment).commit();
-//            }
-
-//            bottom.setVisibility(View.GONE);
-//            R.id.bottom2.setVisibility(View.GONE);
-        }
-
-
-        if (touchFragment != null && timeMode) {
-            getSupportFragmentManager().beginTransaction().remove(touchFragment).commit();
+            enterScoringMode();
         }
     }
 
@@ -451,7 +374,7 @@ public class MainActivity extends AppCompatActivity {
         } else {
             // Otherwise enter scores
             int riderNumber = Integer.parseInt(rider);
-//            int scoreValue = Integer.parseInt(score);
+            Log.i(TAG, "rider: " + riderNumber);
 
             if (score.equals("X")) {
                 score = "x";
@@ -463,7 +386,7 @@ public class MainActivity extends AppCompatActivity {
             editor.apply();
             if (!isManualTrial) {
                 updateScore(riderNumber, score, day);
-                scoreCount++;
+//                scoreCount++; think this was only here for group scoring
                 clearScore();
             } else {
                 saveManualScore(riderNumber, score, day);
@@ -511,6 +434,10 @@ public class MainActivity extends AppCompatActivity {
             toneGen1.startTone(ToneGenerator.TONE_CDMA_ALERT_CALL_GUARD, 150);
             Toast.makeText(this, "Already completed " + numlaps + " laps", Toast.LENGTH_LONG).show();
         } else {
+            int riderExists = scoreDbHelper.checkRiderNumber(rider, trialid);
+            if(riderExists > 0) {
+                Log.i(TAG, "riderExists: " + riderExists);
+            }
             String query =
                     "UPDATE scores SET score = '" + score + "', sync = -1, updated = DATETIME" +
                             " ('now'), " +
@@ -709,6 +636,102 @@ public class MainActivity extends AppCompatActivity {
         editor.apply();
         Log.i(TAG, "scoreFive: ");
     }
+
+    public void enterTimingMode() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("h:mm:ss a");
+        String dateString = dateFormat.format(clockStartTime);
+        status = "Start : " + dateString;
+        statusLine.setText(status);
+        sectionLabelLayout.setVisibility(View.GONE);
+        scoreLabel.setVisibility(View.INVISIBLE);
+
+        if (touchFragment != null) {
+            getSupportFragmentManager().beginTransaction().remove(touchFragment).commit();
+        }
+        if (clockStartTime > 0) {
+            saveButton.setText(R.string.enter);
+            saveButton.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    saveTime(this);
+                    return false;
+                }
+            });
+        } else {
+            saveButton.setText(R.string.start_clock);
+            saveButton.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    startClock(this);
+                    return false;
+                }
+
+                // called when button pressed
+                private void startClock(View.OnLongClickListener onLongClickListener) {
+                    Calendar startTime = Calendar.getInstance();
+                    clockStartTime = startTime.getTimeInMillis();
+
+                    // Save start time in prefs
+                    SharedPreferences.Editor editor = localPrefs.edit();
+                    editor.putLong("clockStartTime", clockStartTime);
+                    editor.apply();
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("h:mm:ss a");
+                    String dateString = dateFormat.format(clockStartTime);
+                    statusLine.setText(getString(R.string.clock_started_at) + dateString);
+                    saveButton.setText(R.string.enter);
+                    numberLabel.setText("");
+                }
+            });
+        }
+
+    }
+
+    public void enterScoringMode() {
+            sectionLabelLayout.setVisibility(View.GONE);
+            status = theTrialName + " - Observer: " + observer + " - Day: " + day + " - " +
+                    "Section: " + section;
+            statusLine.setText(status);
+            saveButton.setText(R.string.save);
+            scoreLabel.setVisibility(View.VISIBLE);
+
+//            if (touchFragment == null && !timeMode) {
+//                touchFragment = new TouchFragment();
+//                getSupportFragmentManager().beginTransaction().add(R.id.bottom, touchFragment).commit();
+//            }
+// Set up number pad
+
+            numberPadFragment = new NumberPadFragment();
+            padFragment = new PadFragment();
+            touchFragment = new TouchFragment();
+            getSupportFragmentManager().beginTransaction().add(R.id.bottom, padFragment).commit();
+            getSupportFragmentManager().beginTransaction().add(R.id.bottom, touchFragment).commit();
+
+            if (scorePadType.equals("trad")) {
+                getSupportFragmentManager().beginTransaction().replace(R.id.bottom, padFragment).commit();
+            } else {
+                getSupportFragmentManager().beginTransaction().replace(R.id.bottom, touchFragment).commit();
+            }
+
+
+//            if (numberPadFragment == null) {
+
+//            }
+
+//            if (padFragment == null && !timeMode) {
+//                if (scorePadType.equals("pad")) {
+////                    padFragment = new PadFragment();
+//                } else {
+////                    padFragment = new TouchFragment();
+//                }
+//                getSupportFragmentManager().beginTransaction().add(R.id.bottom, padFragment).commit();
+//            }
+
+//            bottom.setVisibility(View.GONE);
+//            R.id.bottom2.setVisibility(View.GONE);
+        }
+
+
+
 
     // Time utility methods
     private void saveTime(View.OnLongClickListener view) {
