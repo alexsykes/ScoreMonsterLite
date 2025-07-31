@@ -32,7 +32,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Theme">
-
+        <activity
+            android:name=".activities.RiderTimeListActivity"
+            android:label="@string/riders_times"
+            android:parentActivityName=".activities.MainActivity"
+            android:exported="false" />
         <activity
             android:name=".activities.SummaryActivity"
             android:exported="false"

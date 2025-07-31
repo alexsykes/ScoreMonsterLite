@@ -58,8 +58,7 @@ public class ScoreListAdapter extends RecyclerView.Adapter<ScoreListAdapter.Scor
         scoreHolder.lap.setText(theScore.get("lap"));
         scoreHolder.rider.setText(theScore.get("rider"));
         scoreHolder.section.setText(theScore.get("section"));
-        // scoreHolder.trial.setText(theScore.get("trialid"));
-        // scoreHolder.trial.setText("trial");
+
         scoreHolder.sync.setText(syncState);
         scoreHolder.bind(theScore, listener);
 

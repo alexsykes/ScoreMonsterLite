@@ -64,9 +64,9 @@ public class SummaryActivity extends AppCompatActivity {
         } else {
             ScoreDbHelper scoreDbHelper = new ScoreDbHelper(this);
             theScoreList = scoreDbHelper.getLapScores(section, trialid);
+            LinearLayoutManager llm = new LinearLayoutManager(this);
 
             summaryRV = findViewById(R.id.summaryRV);
-            LinearLayoutManager llm = new LinearLayoutManager(this);
             summaryRV.setLayoutManager(llm);
             GridLayoutManager glm;
 //        glm = new GridLayoutManager(this, 3);

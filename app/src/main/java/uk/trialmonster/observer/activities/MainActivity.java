@@ -197,7 +197,11 @@ public class MainActivity extends AppCompatActivity {
 
             // Show scores on remote server
             case R.id.help:
-                goInfo();
+                if (timeMode) {
+                    goRiderTimeList();
+                } else {
+                    goInfo();
+                }
                 return true;
 
             // Enter andinitialise section details
@@ -811,6 +815,15 @@ public class MainActivity extends AppCompatActivity {
 
     private void goTimeList() {
         Intent intent = new Intent(this, TimeListActivity.class);
+        intent.putExtra(EXTRA_MESSAGE, message);
+        startActivity(intent);
+    }
+
+
+
+    private void goRiderTimeList() {
+        Log.i(TAG, "goRiderTimeList: ");
+        Intent intent = new Intent(this, RiderTimeListActivity.class);
         intent.putExtra(EXTRA_MESSAGE, message);
         startActivity(intent);
     }

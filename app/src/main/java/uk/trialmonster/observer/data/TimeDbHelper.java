@@ -45,6 +45,27 @@ public class TimeDbHelper extends SQLiteOpenHelper {
         return timeList;
     }
 
+
+    public ArrayList<HashMap<String, String>> getAllRiderTimes(int trialid) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ArrayList<HashMap<String, String>> timeList = new ArrayList<>();
+        String query = "SELECT * FROM times WHERE trialid = " + trialid + " AND elapsedTime > 0 " +
+                "ORDER BY number ASC";
+        Cursor cursor = db.rawQuery(query, null);
+        while (cursor.moveToNext()) {
+            HashMap<String, String> times = new HashMap<>();
+            times.put("id", cursor.getString(cursor.getColumnIndex(TimeContract.TimeEntry._ID)));
+            times.put("number",
+                    cursor.getString(cursor.getColumnIndex(TimeContract.TimeEntry.COLUMN_TIME_NUMBER)));
+            times.put("elapsedTime", cursor.getString(cursor.getColumnIndex(TimeContract.TimeEntry.COLUMN_TIME_ELAPSEDTIME)));
+            times.put("penalty", cursor.getString(cursor.getColumnIndex(TimeContract.TimeEntry.COLUMN_TIME_PENALTY)));
+            times.put("finishTime", cursor.getString(cursor.getColumnIndex(TimeContract.TimeEntry.COLUMN_TIME_FINISHTIME)));
+            timeList.add(times);
+        }
+        cursor.close();
+        return timeList;
+    }
+
     public long getFastestTime(int trialid) {
         long fastestTime = 0;
         SQLiteDatabase db = this.getWritableDatabase();
@@ -79,6 +100,9 @@ public class TimeDbHelper extends SQLiteOpenHelper {
         return cursor;
 
     }
+
+
+
 
     public void updateTimes(int trialid, long startInterval, long penaltyTariff) {
         SQLiteDatabase db = this.getWritableDatabase();
