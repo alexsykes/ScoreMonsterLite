@@ -13,13 +13,13 @@
 
         <TextView
             android:id="@+id/rider"
-            android:layout_weight="1"
-            android:layout_width="40dp"
+            android:layout_width="48dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:textAlignment="textEnd"
+            android:layout_weight="1"
             android:text=""
-            android:textSize="18sp"
+            android:textAlignment="textEnd"
+            android:textSize="24sp"
             android:textStyle="bold"
 
             app:layout_constraintEnd_toStartOf="@+id/finishTime"
@@ -28,40 +28,40 @@
 
         <TextView
             android:id="@+id/finishTime"
-            android:layout_weight="2"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:textAlignment="textEnd"
+            android:layout_weight="2"
             android:text=""
-            android:textSize="18sp"
+            android:textAlignment="textEnd"
+            android:textSize="24sp"
             app:layout_constraintEnd_toStartOf="@+id/elapsedTime"
             app:layout_constraintStart_toEndOf="@+id/rider"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/elapsedTime"
-            android:layout_weight="2"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
-            android:text=""
             android:layout_marginTop="4dp"
+            android:layout_weight="2"
+            android:text=""
             android:textAlignment="textEnd"
-            android:textSize="18sp"
+            android:textSize="24sp"
             app:layout_constraintEnd_toStartOf="@id/marksLost"
             app:layout_constraintStart_toEndOf="@+id/finishTime"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/marksLost"
-            android:layout_weight="1"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="10dp"
             android:layout_marginTop="4dp"
-            android:textAlignment="textEnd"
+            android:layout_marginEnd="10dp"
+            android:layout_weight="1"
             android:text=""
-            android:textSize="18sp"
+            android:textAlignment="textEnd"
+            android:textSize="24sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/elapsedTime"
             app:layout_constraintTop_toTopOf="parent" />

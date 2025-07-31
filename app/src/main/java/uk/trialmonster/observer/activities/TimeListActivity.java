@@ -88,8 +88,6 @@ public class TimeListActivity extends AppCompatActivity {
                 .detectLeakedClosableObjects()
                 .build());
 
-
-
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 

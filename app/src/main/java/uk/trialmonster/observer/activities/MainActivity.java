@@ -159,6 +159,8 @@ public class MainActivity extends AppCompatActivity {
             goSetup();
         }
         initialUISetup();
+
+//        Moved from onResume
         if (ridingNumber > 0) {
             numberLabel.setText(String.valueOf(ridingNumber));
         }
@@ -182,13 +184,13 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    protected void onResume() {
-        Log.i("Info", "MainActivityNew:onResume called");
-        super.onResume();
-//        getPrefs();
-
-    }
+//    @Override
+//    protected void onResume() {
+//        Log.i("Info", "MainActivityNew:onResume called");
+//        super.onResume();
+//
+//
+//    }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -648,6 +650,12 @@ public class MainActivity extends AppCompatActivity {
         if (touchFragment != null) {
             getSupportFragmentManager().beginTransaction().remove(touchFragment).commit();
         }
+
+        if (padFragment != null) {
+            getSupportFragmentManager().beginTransaction().remove(padFragment).commit();
+        }
+
+
         if (clockStartTime > 0) {
             saveButton.setText(R.string.enter);
             saveButton.setOnLongClickListener(new View.OnLongClickListener() {
