@@ -121,7 +121,8 @@ public class TrialDbHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         ArrayList<HashMap<String, String>> trialList = new ArrayList<>();
 
-        String query = "SELECT _id, name FROM trials WHERE created_by = " + userID;
+        String query = "SELECT _id, name FROM trials WHERE created_by = " + userID + " ORDER BY " +
+                "date DESC";
         Cursor cursor = db.rawQuery(query, null);
 
         while (cursor.moveToNext()) {

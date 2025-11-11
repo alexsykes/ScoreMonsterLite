@@ -49,6 +49,7 @@ public class RiderTimeListActivity extends AppCompatActivity {
         ab.setDisplayHomeAsUpEnabled(true);
         trialid = localPrefs.getInt("trialid", -999);
         timeDbHelper = new TimeDbHelper(this);
+//        long fastestTime = timeDbHelper.getFastestTime(trialid);
 
         populateTimeList();
     }
@@ -64,7 +65,7 @@ public class RiderTimeListActivity extends AppCompatActivity {
         timeDbHelper.close();
     }
     private void initializeAdapter() {
-        TimeListAdapter adapter = new TimeListAdapter(theTimeList);
+        TimeListAdapter adapter = new TimeListAdapter(theTimeList, timeDbHelper.getFastestTime(trialid));
         timeViewRV.setAdapter(adapter);
     }
 }

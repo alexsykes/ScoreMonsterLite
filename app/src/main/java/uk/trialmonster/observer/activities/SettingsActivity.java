@@ -241,10 +241,10 @@ public class SettingsActivity extends AppCompatActivity {
         SharedPreferences.Editor editor;
 
         PreferenceCategory loginPrefCategory, trialDetailsPrefCategory,
+
                 observerDetailsPrefCategory, timeModePrefCategory, trialSelectCategory, recoveryModeCategory;
 
         Preference isManualTrialPref;
-
         ListPreference trialListPref;
         EditTextPreference trialNamePref, numLapsPref, daysPref, numSectionsPref, emailPref,
                 usernamePref, passwordPref, ridingNumberPref, observerPref, mobilePref, sectionPref, adminLockPassPref, adminLockNewPassPref, adminLockConfirmPassPref, startIntervalPref, penaltyTariffPref;
@@ -1236,7 +1236,8 @@ public class SettingsActivity extends AppCompatActivity {
         //        TODO Login check
         private void checkLogin(String newValue, String username) {
             RequestQueue requestQueue = Volley.newRequestQueue(getContext());
-            String URL = "https://android.trialmonster.uk/joomlaAuthLive.php";
+//            String URL = "https://android.trialmonster.uk/joomlaAuthLive.php";
+            String URL = "https://android.trialmonster.uk/login.php";
 
             StringRequest stringRequest = new StringRequest(Request.Method.POST, URL, new Response.Listener<String>() {
 
@@ -1244,9 +1245,11 @@ public class SettingsActivity extends AppCompatActivity {
                 public void onResponse(String response) {
                     Log.d("Volley", "Response: " + response);
 
+
                     String theIds = "";
                     String theNames = "";
                     int id = Integer.parseInt(response);
+
                     editor.putInt("loggedInUserID", id);
                     isLoggedInUser = (id != 0);
                     editor.putBoolean("isLoggedInUser", isLoggedInUser);
@@ -1269,33 +1272,6 @@ public class SettingsActivity extends AppCompatActivity {
                         loggedInUserID = id;
 
                         setupTrialPrefOptions(loggedInUserID);
-//                        // Get users trial data
-//                        TrialDbHelper mDbHelper = new TrialDbHelper(getContext());
-//                        Cursor cursor = mDbHelper.getTrialOptions(loggedInUserID);
-//                        if (cursor.moveToFirst()) {
-//                            theIds = cursor.getString(0);
-//                            theNames = cursor.getString(1);
-//                            trialListPref.setVisible(true);
-//                            trialNamePref.setVisible(false);
-//                        } else {
-//                            trialListPref.setVisible(false);
-//                            trialNamePref.setVisible(true);
-//                        }
-//
-//                        editor.putString("theIds", theIds);
-//                        editor.putString("theNames", theNames);
-//                        editor.apply();
-//                        cursor.close();
-//                        mDbHelper.close();
-//
-////                     Update trialListPref
-//                        CharSequence[] entries = theNames.split(",");
-//                        CharSequence[] entryValues = theIds.split(",");
-//
-//                        if (entries.length > 0) {
-//                            trialListPref.setEntries(entries);
-//                            trialListPref.setEntryValues(entryValues);
-//                        }
                     } else {
                         editor.putInt("trialid", -999);
                         editor.putString("theTrialIndex", "-999");

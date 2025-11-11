@@ -1,0 +1,2 @@
+TrialDbHelper
+    getUserTrialList  - ORDER BY date DESC

@@ -34,8 +34,7 @@ public class SummaryActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ;
-//        int numsections = localPrefs.getInt("numsections", 1);
+        //        int numsections = localPrefs.getInt("numsections", 1);
 
 
         EdgeToEdge.enable(this);

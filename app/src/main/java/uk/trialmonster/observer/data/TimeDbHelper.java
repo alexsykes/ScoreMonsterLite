@@ -77,7 +77,6 @@ public class TimeDbHelper extends SQLiteOpenHelper {
             fastestTime = Long.valueOf(value);
         }
         cursor.close();
-        Log.i("Info", "FastestTime: " + fastestTime);
         return fastestTime;
     }
 
